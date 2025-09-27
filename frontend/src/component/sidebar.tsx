@@ -14,7 +14,11 @@ interface SidebarItem {
 export default function Sidebar() {
   const datasizebar: SidebarItem[] = [
     { text: "หุ้นในพอต", icons: AiOutlineSketch, Link: "Dashboard" },
-    { text: "กราฟเเละกําไร", icons: AiOutlineAreaChart, Link: "Pageกราฟเเละกําไร" },
+    {
+      text: "กราฟเเละกําไร",
+      icons: AiOutlineAreaChart,
+      Link: "Pageกราฟเเละกําไร",
+    },
     { text: "จัดพอตใหม่", icons: AiOutlineControl, Link: "Pageจัดพอตnew" },
   ];
 
@@ -22,7 +26,7 @@ export default function Sidebar() {
 
   return (
     <div
-      className={`h-screen border-r border-purple-500 transition-all duration-300  ${
+      className={`h-screen border-r border-purple-500 bg-blue-500 text-white transition-all duration-300  ${
         onClickSizebar ? "w-64" : "w-16"
       }`}
     >
