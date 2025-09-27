@@ -1,16 +1,10 @@
 import { useState } from "react";
 import { AiOutlineCaretRight } from "react-icons/ai";
-import { AiOutlineAreaChart } from "react-icons/ai";
-import { AiOutlineControl } from "react-icons/ai";
-import { AiOutlineSketch } from "react-icons/ai";
 import { Link } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
 import { BsEnvelopePaper } from "react-icons/bs";
 import { MdOutlineMoreTime } from "react-icons/md";
 import { BsPencilSquare } from "react-icons/bs";
-
-
-
 
 
 interface SidebarItem {

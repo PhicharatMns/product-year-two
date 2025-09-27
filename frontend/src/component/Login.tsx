@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function login() {
+export default function Login() {
   return (
     <div className="flex h-screen">
       <div className="flex-1 flex items-center justify-center bg-white">
