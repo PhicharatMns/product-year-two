@@ -15,30 +15,28 @@ interface SidebarItem {
 
 export default function Sidebar() {
   const datasizebar: SidebarItem[] = [
-    { text: "Dashboard", icons:MdDashboard, Link: "Dashboard" },
+    { text: "Dashboard", icons: MdDashboard, Link: "Dashboard" },
     { text: "รับใบงาน", icons: BsEnvelopePaper, Link: "paper" },
     { text: "บันทึกเวลา", icons: MdOutlineMoreTime, Link: "Time" },
-    { text: "ลงนาม2", icons:  BsPencilSquare, Link: "Name" },
+    { text: "ลงนาม2", icons: BsPencilSquare, Link: "Name" },
   ];
 
   const [onClickSizebar, setOnClickSizebar] = useState(true);
 
   return (
     <div
-      className={`h-screen border-r transition-all duration-300 bg-blue-500 text-white  ${
-        onClickSizebar ? "w-64" : "w-16"
-      }`}
+      className={`h-screen border-r transition-all duration-300 bg-blue-500 text-white  ${onClickSizebar ? "w-16" : "w-64"
+        }`}
     >
       {/* headerSizebar */}
       <div className="flex items-center py-3 p-4">
         <span
-          className={`uppercase mx-auto text-2xl font-black text-white whitespace-nowrap mt-5 ${
-            onClickSizebar ? "opacity-100 w-auto" : "opacity-0 w-0"
-          }`}
+          className={`uppercase mx-auto text-2xl font-black text-white whitespace-nowrap mt-5 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+            }`}
         >
-          Tech 
-          <span className="text-yellow-500"> 
-             Job
+          Tech
+          <span className="text-yellow-500">
+            Job
           </span>
         </span>
         <button className=" relative mt-5 text-blue-400" >
@@ -63,9 +61,8 @@ export default function Sidebar() {
               </div>
               {/* text */}
               <span
-                className={`whitespace-nowrap mt-4 ${
-                  onClickSizebar ? "opacity-100 w-auto" : "opacity-0 w-0"
-                }`}
+                className={`whitespace-nowrap mt-4 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+                  }`}
               >
                 <Link to={`/${event.Link}`}>{event.text}</Link>
               </span>

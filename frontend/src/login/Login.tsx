@@ -28,7 +28,7 @@ export default function Login() {
               placeholder="กรอกรหัสผ่าน"
               className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
-          </div>  
+          </div>
 
 
           <div className="flex justify-between">
@@ -37,9 +37,10 @@ export default function Login() {
                 ลงทะเบียน
               </button>
             </Link>
-            <button className="bg-blue-600 px-6 py-2 text-white font-semibold rounded-md shadow hover:bg-blue-700">
-              เข้าสู่ระบบ
-            </button>
+            <Link to={'/Home'}>
+              <button className="bg-blue-600 px-6 py-2 text-white font-semibold rounded-md shadow hover:bg-blue-700">
+                เข้าสู่ระบบ
+              </button></Link>
           </div>
         </div>
       </div>
