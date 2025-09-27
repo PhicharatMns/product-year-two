@@ -11,6 +11,7 @@ export default function App() {
       <Routes>
         {/* <Route path="/" element={<AddEmployee />} />
         <Route path="/list" element={<EmployeeList />} /> */}
+         <Route path="/login" element={<Login/>} />
       </Routes>
     </BrowserRouter>
   );
