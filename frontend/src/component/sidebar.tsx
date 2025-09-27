@@ -18,7 +18,7 @@ export default function Sidebar() {
     { text: "Dashboard", icons:MdDashboard, Link: "Dashboard" },
     { text: "รับใบงาน", icons: BsEnvelopePaper, Link: "paper" },
     { text: "บันทึกเวลา", icons: MdOutlineMoreTime, Link: "Time" },
-    { text: "ลงนาม", icons:  BsPencilSquare, Link: "Name" },
+    { text: "ลงชื่อ", icons:  BsPencilSquare, Link: "Name" },
   ];
 
   const [onClickSizebar, setOnClickSizebar] = useState(true);
