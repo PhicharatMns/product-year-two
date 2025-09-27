@@ -1,13 +1,9 @@
-import { Link } from "react-router-dom";
-import { IoPersonCircleOutline } from "react-icons/io5";
-
-
 export default function Register() {
   return (
   <div className="flex h-screen">
     
       <div className="flex-1 flex items-center justify-center bg-white rounded-r-[3rem] shadow-lg">
-        <div className="w-full max-w-md p-8">
+        <div className="w-full max-w-md p-8 shadow-lg">
           <h2 className="text-2xl font-bold text-center text-blue-600 mb-8">
             ลงทะเบียน
           </h2>
