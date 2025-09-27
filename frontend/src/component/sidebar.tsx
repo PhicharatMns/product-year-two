@@ -4,6 +4,14 @@ import { AiOutlineAreaChart } from "react-icons/ai";
 import { AiOutlineControl } from "react-icons/ai";
 import { AiOutlineSketch } from "react-icons/ai";
 import { Link } from "react-router-dom";
+import { MdDashboard } from "react-icons/md";
+import { BsEnvelopePaper } from "react-icons/bs";
+import { MdOutlineMoreTime } from "react-icons/md";
+import { BsPencilSquare } from "react-icons/bs";
+
+
+
+
 
 interface SidebarItem {
   text: string;
@@ -13,33 +21,33 @@ interface SidebarItem {
 
 export default function Sidebar() {
   const datasizebar: SidebarItem[] = [
-    { text: "หุ้นในพอต", icons: AiOutlineSketch, Link: "Dashboard" },
-    {
-      text: "กราฟเเละกําไร",
-      icons: AiOutlineAreaChart,
-      Link: "Pageกราฟเเละกําไร",
-    },
-    { text: "จัดพอตใหม่", icons: AiOutlineControl, Link: "Pageจัดพอตnew" },
+    { text: "Dashboard", icons:MdDashboard, Link: "Dashboard" },
+    { text: "รับใบงาน", icons: BsEnvelopePaper, Link: "paper" },
+    { text: "บันทึกเวลา", icons: MdOutlineMoreTime, Link: "Time" },
+    { text: "ลงนาม", icons:  BsPencilSquare, Link: "Name" },
   ];
 
   const [onClickSizebar, setOnClickSizebar] = useState(true);
 
   return (
     <div
-      className={`h-screen border-r border-purple-500 bg-blue-500 text-white transition-all duration-300  ${
+      className={`h-screen border-r transition-all duration-300 bg-blue-500 text-white  ${
         onClickSizebar ? "w-64" : "w-16"
       }`}
     >
       {/* headerSizebar */}
       <div className="flex items-center py-3 p-4">
         <span
-          className={`uppercase mx-auto text-2xl font-black border-b whitespace-nowrap ${
+          className={`uppercase mx-auto text-2xl font-black text-white whitespace-nowrap mt-5 ${
             onClickSizebar ? "opacity-100 w-auto" : "opacity-0 w-0"
           }`}
         >
-          Size bar
+          Tech 
+          <span className="text-yellow-500"> 
+             Job
+          </span>
         </span>
-        <button className=" relative">
+        <button className=" relative mt-5 text-blue-400" >
           <AiOutlineCaretRight
             onClick={() => setOnClickSizebar(!onClickSizebar)}
             size={30}
@@ -56,12 +64,12 @@ export default function Sidebar() {
               className="flex items-center py-3 p-4 text-lg gap-5"
             >
               {/* Icon */}
-              <div className="min-w-[30px] flex justify-center">
+              <div className="min-w-[30px] flex justify-center mt-4">
                 <Icons size={24} />
               </div>
               {/* text */}
               <span
-                className={`whitespace-nowrap ${
+                className={`whitespace-nowrap mt-4 ${
                   onClickSizebar ? "opacity-100 w-auto" : "opacity-0 w-0"
                 }`}
               >
