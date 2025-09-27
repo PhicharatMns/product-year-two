@@ -19,7 +19,14 @@ export default function Sidebar() {
     { text: "รับใบงาน", icons: BsEnvelopePaper, Link: "paper" },
     { text: "บันทึกเวลา", icons: MdOutlineMoreTime, Link: "Time" },
     { text: "ลงนาม", icons:  BsPencilSquare, Link: "Name" },
-    { text: "ลงนาม", icons:  BsPencilSquare, Link: "Name" },
+    { text: "", icons:  BsPencilSquare, Link: "Name" },
+    { text: "", icons:  BsPencilSquare, Link: "Name" },
+    { text: "", icons:  BsPencilSquare, Link: "Name" },
+    { text: "", icons:  BsPencilSquare, Link: "Name" },
+    { text: "", icons:  BsPencilSquare, Link: "Name" },
+    { text: "", icons:  BsPencilSquare, Link: "Name" },
+    { text: "", icons:  BsPencilSquare, Link: "Name" },
+    { text: "", icons:  BsPencilSquare, Link: "Name" },
   ];
 
   const [onClickSizebar, setOnClickSizebar] = useState(true);
