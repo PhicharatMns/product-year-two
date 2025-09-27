@@ -52,7 +52,7 @@ export default function Register() {
       </div>
 
       
-      <div className="hidden md:flex flex-1 bg-blue-600 relative items-center justify-center">
+      <div className="hidden md:flex flex-1 bg-blue-700 relative items-center justify-center">
         
         <img
           src="https://i.pinimg.com/736x/0a/e8/84/0ae884928f23d4858ba38efb96405b7e.jpg"
