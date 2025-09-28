@@ -1,8 +1,8 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Login from "./sighup/Login";
 import Register from "./sighup/Register";
 import Home from "./Admin/Home";
+import Login from "./sighup/Login";
 // import Sidebar from "./component/sidebar";
 // import AddEmployee from "./AddEmployee";
 // import EmployeeList from "./EmployeeList";
@@ -19,7 +19,7 @@ export default function App() {
             {/* <Route path="/list" element={<EmployeeList />} /> */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
-            <Route path="/Home" element={<Home />} />
+            <Route path="/Homepath" element={<Home />} />
           </Routes>
         </div>
       </div>
