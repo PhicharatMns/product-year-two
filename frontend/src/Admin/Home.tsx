@@ -1,118 +1,104 @@
 import Sidebar from "../component/sidebar";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Legend,
-} from "recharts";
 
-export default function Dashboard() {
-  // ข้อมูลสำหรับกราฟ
-  const pieData = [
-    { name: "งานสำเร็จ", value: 45 },
-    { name: "กำลังทำ", value: 30 },
-    { name: "รอดำเนินการ", value: 25 },
-  ];
-
-  const barData = [
-    { name: "ม.ค.", งาน: 12 },
-    { name: "ก.พ.", งาน: 18 },
-    { name: "มี.ค.", งาน: 9 },
-    { name: "เม.ย.", งาน: 15 },
-  ];
-
-  const COLORS = ["#10B981", "#3B82F6", "#FBBF24"];
-
+export default function Home() {
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
+    <div className="flex">
       <Sidebar />
+      <div className="flex-1">
+        {/* แถวบน */}
+        <div className="grid-cols-2 grid gap-10 mx-auto w-fit my-5">
+          {/* สถิติช่าง */}
+          <div className="border h-120 w-200 rounded-xl flex items-center justify-center text-center relative hover:scale-101 duration-300">
+            <img
+              src="https://png.pngtree.com/thumb_back/fh260/background/20250326/pngtree-futuristic-data-dashboard-image_17146904.jpg"
+              alt=""
+              className="absolute w-full h-full object-cover object-center rounded-xl "
+            />
+            <div className="absolute bg-black/30 rounded-xl"></div>
+            <p className="relative text-white font-bold text-xl">สถืติช่าง</p>
+          </div>
 
-      {/* Main Content */}
-      <div className="flex-1 p-6">
-        {/* Top Bar */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">📊 Dashboard</h1>
-          <div className="flex items-center gap-4">
-            <button className="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition">
-              + สร้างใบงาน
-            </button>
-            <div className="w-10 h-10 bg-gray-300 rounded-full shadow-inner"></div>
+          {/* การ์ดย่อย */}
+          <div className="w-200 grid grid-cols-2 gap-5">
+            <div className="border rounded-xl flex items-center justify-center text-center relative hover:scale-101 duration-300">
+              <img
+                src="https://png.pngtree.com/thumb_back/fh260/background/20250326/pngtree-futuristic-data-dashboard-image_17146904.jpg"
+                alt=""
+                className="absolute w-full h-full object-cover object-center rounded-xl "
+              />
+              <div className="absolute bg-black/30 rounded-xl"></div>
+              <p className="relative text-white font-bold text-xl">
+                สร้างใบงานใหม่
+              </p>
+            </div>
+
+            <div className="border rounded-xl flex items-center justify-center text-center relative hover:scale-101 duration-300">
+              <img
+                src="https://png.pngtree.com/thumb_back/fh260/background/20250326/pngtree-futuristic-data-dashboard-image_17146904.jpg"
+                alt=""
+                className="absolute w-full h-full object-cover object-center rounded-xl "
+              />
+              <div className="absolute bg-black/30 rounded-xl"></div>
+              <p className="relative text-white font-bold text-xl">
+                สรุปสถานะงาน
+              </p>
+            </div>
+
+            <div className="col-span-2 border p-2 rounded-xl flex items-center justify-center text-center relative hover:scale-101 duration-300">
+              <img
+                src="https://png.pngtree.com/thumb_back/fh260/background/20250326/pngtree-futuristic-data-dashboard-image_17146904.jpg"
+                alt=""
+                className="absolute w-full h-full object-cover object-center rounded-xl "
+              />
+              <div className="absolute bg-black/30 rounded-xl"></div>
+              <p className="relative text-white font-bold text-xl">
+                ค้นหางานย้อนหลัง
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* สรุปการ์ด */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <SummaryCard title="งานสำเร็จ" value="120" color="bg-green-500" />
-          <SummaryCard title="กำลังทำ" value="35" color="bg-blue-500" />
-          <SummaryCard title="รอดำเนินการ" value="20" color="bg-yellow-500" />
-          <SummaryCard title="ทั้งหมด" value="175" color="bg-purple-500" />
-        </div>
+        {/* แถวล่าง */}
+        <div className="grid grid-cols-2 gap-10 mx-auto w-fit my-5">
+          <div className="h-100 w-200 grid grid-cols-2 gap-5 rounded-xl">
+            <div className="border col-span-2 rounded- flex items-center justify-center text-center relative hover:scale-101 duration-300">
+              <img
+                src="https://png.pngtree.com/thumb_back/fh260/background/20250326/pngtree-futuristic-data-dashboard-image_17146904.jpg"
+                alt=""
+                className="absolute w-full h-full object-cover object-center rounded-xl "
+              />
+              <div className="absolute bg-black/30 rounded-xl"></div>
+              <p className="relative text-white font-bold text-xl">
+                เเจ้งเตือนช่าง
+              </p>
+            </div>
 
-        {/* กราฟ */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Pie Chart */}
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-lg font-semibold mb-4 text-gray-700">
-              สถานะงาน
-            </h2>
-            <ResponsiveContainer width="100%" height={280}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  outerRadius={100}
-                  label
-                  isAnimationActive={true}
-                >
-                  {pieData.map((entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-                <Legend />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="border col-span-2 rounded-xl flex items-center justify-center text-center relative hover:scale-101 duration-300">
+              <img
+                src="https://png.pngtree.com/thumb_back/fh260/background/20250326/pngtree-futuristic-data-dashboard-image_17146904.jpg"
+                alt=""
+                className="absolute w-full h-full object-cover object-center rounded-xl "
+              />
+              <div className="absolute bg-black/30 rounded-xl"></div>
+              <p className="relative text-white font-bold text-xl">
+                จัดการบัญชี
+              </p>
+            </div>
           </div>
 
-          {/* Bar Chart */}
-          <div className="bg-white rounded-xl shadow p-6">
-            <h2 className="text-lg font-semibold mb-4 text-gray-700">
-              จำนวนงานรายเดือน
-            </h2>
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={barData}>
-                <XAxis dataKey="name" stroke="#374151" />
-                <YAxis stroke="#374151" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="งาน" fill="#3B82F6" radius={[8, 8, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+          <div className="border h-100 w-200 rounded-xl flex items-center justify-center text-center relative hover:scale-101 duration-300">
+            <img
+              src="https://png.pngtree.com/thumb_back/fh260/background/20250326/pngtree-futuristic-data-dashboard-image_17146904.jpg"
+              alt=""
+              className="absolute w-full h-full object-cover object-center rounded-xl "
+            />
+            <div className="absolute bg-black/30 rounded-xl"></div>
+            <p className="relative text-white font-bold text-xl">
+              ดูเเผนที่ช่าง
+            </p>
           </div>
         </div>
       </div>
-    </div>
-  );
-}
-
-/* Summary Card */
-function SummaryCard({ title, value, color }) {
-  return (
-    <div
-      className={`${color} text-white p-6 rounded-xl shadow hover:shadow-lg transform hover:scale-105 transition duration-300`}
-    >
-      <h3 className="text-lg">{title}</h3>
-      <p className="text-3xl font-bold mt-2">{value}</p>
     </div>
   );
 }
