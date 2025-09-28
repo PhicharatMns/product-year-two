@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./component/Login";
-import Register from "./component/register";
+import Register from "./component/Register";
 // import Sidebar from "./component/sidebar";
 // import AddEmployee from "./AddEmployee";
 // import EmployeeList from "./EmployeeList";
