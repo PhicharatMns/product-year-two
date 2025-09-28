@@ -13,7 +13,6 @@ import {
 } from "recharts";
 
 export default function Dashboard() {
-  // ข้อมูลสำหรับกราฟ
   const pieData = [
     { name: "งานสำเร็จ", value: 45 },
     { name: "กำลังทำ", value: 30 },
@@ -31,12 +30,10 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
       <Sidebar />
 
-      {/* Main Content */}
+    
       <div className="flex-1 p-6">
-        {/* Top Bar */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Dash <span className="text-3xl font-bold text-yellow-500">Board</span></h1>
           <div className="flex items-center gap-4">
@@ -47,7 +44,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* สรุปการ์ด */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <SummaryCard title="งานสำเร็จ" value="120" color="bg-green-500" />
           <SummaryCard title="กำลังทำ" value="35" color="bg-blue-500" />
@@ -55,9 +51,9 @@ export default function Dashboard() {
           <SummaryCard title="ทั้งหมด" value="175" color="bg-purple-500" />
         </div>
 
-        {/* กราฟ */}
+        
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Pie Chart */}
+          
           <div className="bg-white rounded-xl shadow p-6">
             <h2 className="text-lg font-semibold mb-4 text-gray-700">
               สถานะงาน
@@ -84,7 +80,6 @@ export default function Dashboard() {
             </ResponsiveContainer>
           </div>
 
-          {/* Bar Chart */}
           <div className="bg-white rounded-xl shadow p-6">
             <h2 className="text-lg font-semibold mb-4 text-gray-700">
               จำนวนงานรายเดือน
@@ -104,8 +99,6 @@ export default function Dashboard() {
     </div>
   );
 }
-
-/* Summary Card */
 function SummaryCard({ title, value, color }) {
   return (
     <div
