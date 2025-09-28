@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 
-export default function Login() {
+export default function Login () {
   return (
     <div className="flex h-screen ">
       <div className="flex-1 flex items-center justify-center bg-white rounded-r-[3rem] shadow-lg">
@@ -28,7 +28,7 @@ export default function Login() {
           </div>
 
           <div className="flex justify-between">
-            <Link to="/Register">
+            <Link to={"/register"}>
               <button className="bg-white shadow-md px-6 py-2 rounded-lg text-blue-600 font-medium hover:bg-gray-100">
                 ลงทะเบียน
               </button>
