@@ -48,10 +48,9 @@ export default function App() {
             className="border rounded-l-lg p-2 flex-1"
           />
 
-<button className="border border-l-0 p-2 rounded-r-lg bg-gray-200">
-  <MdOutlineSearch className="text-gray-600 w-6 h-6" />
-</button>
-
+          <button className="border border-l-0 p-2 rounded-r-lg bg-gray-200">
+            <MdOutlineSearch className="text-gray-600 w-6 h-6" />
+          </button>
         </div>
 
         {/* Table */}
