@@ -28,7 +28,7 @@ export default function Searchpastjobs() {
           </div>
           {/* ตราตราง */}
           <div>
-            <div className="grid grid-cols-8 gap-5 font-bold text-lg">
+            <div className="grid grid-cols-8 gap-5 font-bold text-lg my-10 border-b">
               <div>
                 <p>ID</p>
               </div>
@@ -55,7 +55,7 @@ export default function Searchpastjobs() {
               </div>
             </div>
             {/* data ตาตราง */}
-            <div className="grid grid-cols-8 gap-5 my-5">
+            <div className="grid grid-cols-8 gap-5 font-bold text-sm pl-1 my-10 border-b">
               <div className="">
                 <p>ID</p>
               </div>
