@@ -26,6 +26,62 @@ export default function Searchpastjobs() {
               </div>
             </div>
           </div>
+          {/* ตราตราง */}
+          <div>
+            <div className="grid grid-cols-8 gap-5 font-bold text-lg">
+              <div>
+                <p>ID</p>
+              </div>
+              <div>
+                <p>ชื่องาน</p>
+              </div>
+              <div>
+                <p>รายละเอียด</p>
+              </div>
+              <div>
+                <p>สถานะ</p>
+              </div>
+              <div>
+                <p>รายชื่อ</p>
+              </div>
+              <div>
+                <p>วันที่รับ</p>
+              </div>
+              <div>
+                <p>วันที่ต้องปิดงาน</p>
+              </div>
+              <div>
+                <p>รายละเอียด</p>
+              </div>
+            </div>
+            {/* data ตาตราง */}
+            <div className="grid grid-cols-8 gap-5 my-5">
+              <div className="">
+                <p>ID</p>
+              </div>
+              <div>
+                <p>ชื่องาน</p>
+              </div>
+              <div>
+                <p>รายละเอียด</p>
+              </div>
+              <div>
+                <p>สถานะ</p>
+              </div>
+              <div>
+                <p>รายชื่อ</p>
+              </div>
+              <div>
+                <p>วันที่รับ</p>
+              </div>
+              <div>
+                <p>วันที่ต้องปิดงาน</p>
+              </div>
+              <div>
+                <p>รายละเอียด</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
