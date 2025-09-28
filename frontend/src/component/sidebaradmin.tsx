@@ -50,6 +50,12 @@ export default function Sidebar() {
                     <span className="text-yellow-500">
                         Job
                     </span>
+                      <span
+        className={`text-xs text-white mt-1 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"}`}
+    >
+        Admin
+    </span>
+
                 </span>
                 <button className=" relative mt-5 text-white" >
                     <AiOutlineCaretRight
