@@ -5,6 +5,11 @@ import { MdDashboard } from "react-icons/md";
 import { BsEnvelopePaper } from "react-icons/bs";
 import { MdOutlineMoreTime } from "react-icons/md";
 import { BsPencilSquare } from "react-icons/bs";
+import { FaTools } from "react-icons/fa";
+import { SlCalender } from "react-icons/sl";
+import { IoIosLogOut } from "react-icons/io";
+
+
 
 
 interface SidebarItem {
@@ -18,14 +23,18 @@ export default function Sidebar() {
     { text: "Dashboard", icons: MdDashboard, Link: "Dashboard" },
     { text: "รับใบงาน", icons: BsEnvelopePaper, Link: "paper" },
     { text: "บันทึกเวลา", icons: MdOutlineMoreTime, Link: "Time" },
-    { text: "ลงนาม2", icons: BsPencilSquare, Link: "Name" },
+    { text: "ลงนาม", icons: BsPencilSquare, Link: "Name" },
+        { text: "บันทึกวัสดุ", icons: FaTools, Link: "tool" },
+    { text: "ปฏิทิน", icons: SlCalender , Link: "caleder" },
+    { text: "ออกจากระบบ", icons: IoIosLogOut, Link: "login" },
+
   ];
 
   const [onClickSizebar, setOnClickSizebar] = useState(true);
 
   return (
     <div
-      className={`h-screen border-r transition-all duration-300 bg-blue-500 text-white  ${onClickSizebar ? "w-16" : "w-64"
+      className={`h-screen font-bold border-r transition-all duration-300 bg-blue-500 text-white  ${onClickSizebar ? "w-16" : "w-64"
         }`}
     >
       {/* headerSizebar */}
