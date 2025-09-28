@@ -1,14 +1,13 @@
+import { Link } from "react-router-dom";
 
 export default function Login() {
   return (
     <div className="flex h-screen ">
-
       <div className="flex-1 flex items-center justify-center bg-white rounded-r-[3rem] shadow-lg">
         <div className="w-full max-w-md p-8 shadow-lg">
           <h2 className="text-2xl font-bold text-center text-blue-600 mb-8">
             ยินดีต้อนรับ
           </h2>
-
 
           <div className="mb-6">
             <label className="block text-blue-700 mb-2">อีเมล/ชื่อผู้ใช้</label>
@@ -19,7 +18,6 @@ export default function Login() {
             />
           </div>
 
-
           <div className="mb-6">
             <label className="block text-blue-700 mb-2">รหัสผ่าน</label>
             <input
@@ -29,21 +27,20 @@ export default function Login() {
             />
           </div>
 
-
           <div className="flex justify-between">
-            <Link to="/register">
+            <Link to="/Register">
               <button className="bg-white shadow-md px-6 py-2 rounded-lg text-blue-600 font-medium hover:bg-gray-100">
                 ลงทะเบียน
               </button>
             </Link>
-            <Link to={'/Home'}>
+            <Link to={"/Homepath"}>
               <button className="bg-blue-600 px-6 py-2 text-white font-semibold rounded-md shadow hover:bg-blue-700">
                 เข้าสู่ระบบ
-              </button></Link>
+              </button>
+            </Link>
           </div>
         </div>
       </div>
-
 
       <div className="hidden md:flex flex-1 bg-blue-700 relative items-center justify-center">
         <img

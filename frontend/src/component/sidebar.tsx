@@ -39,7 +39,7 @@ export default function Sidebar() {
             Job
           </span>
         </span>
-        <button className=" relative mt-5 text-blue-400" >
+        <button className=" relative mt-5 text-white" >
           <AiOutlineCaretRight
             onClick={() => setOnClickSizebar(!onClickSizebar)}
             size={30}
