@@ -1,4 +1,3 @@
-import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./sighup/Register";
 import Home from "./Admin/Home";
