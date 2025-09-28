@@ -1,9 +1,9 @@
-import Sidebar from "../component/sidebar";
+import Sidebaradmin from "../component/sidebaradmin";
 
 export default function Home() {
   return (
     <div className="flex">
-      <Sidebar />
+      <Sidebaradmin />
       <div className="flex-1">
         <div className="grid-cols-2 grid gap-10 mx-auto w-fit my-5">
           <div className="border h-120 w-200 rounded-xl flex items-center justify-center text-center relative hover:scale-101 duration-300">

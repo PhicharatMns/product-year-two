@@ -1,4 +1,4 @@
-import Sidebar from "../component/sidebaradmin";
+import Sidebar from "../component/Sidebaradmin";
 import { MdOutlineSearch } from "react-icons/md";
 
 const workers = [

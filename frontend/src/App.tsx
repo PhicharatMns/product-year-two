@@ -11,14 +11,6 @@ import Editacc from "./Admin/Editacc";
 // import EmployeeList from "./EmployeeList";
 
 
-
-
-
-
-
-
-
-
 // ปวดขี้ ไอ้เหี้ย
 export default function App() {
   return (

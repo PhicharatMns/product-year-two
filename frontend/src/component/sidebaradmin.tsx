@@ -10,84 +10,81 @@ import { MdOutlineCategory } from "react-icons/md";
 import { LiaUserEditSolid } from "react-icons/lia";
 import { VscNewFile } from "react-icons/vsc";
 
-
-
-
-
 interface SidebarItem {
-    text: string;
-    icons: React.ComponentType<{ size?: number }>;
-    Link: string;
+  text: string;
+  icons: React.ComponentType<{ size?: number }>;
+  Link: string;
 }
 
-export default function Sidebar() {
-    const datasizebar: SidebarItem[] = [
-        { text: "Dashboard", icons: MdDashboard, Link: "Dashboard" },
-        { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "newpaper" },
-        { text: "ค้นหางานย้อนหลัง", icons: MdFindInPage, Link: "findfile" },
-        { text: "ส่งแจ้งการเตือน", icons:  TbBellPlus, Link: "newalert" },
-        { text: "สถิติ", icons: GoGraph, Link: "graph" },
-        { text: "กำหนดประเภท/หมวด", icons:MdOutlineCategory, Link: "setwork" },
-        { text: "จัดการบัญชีช่าง", icons:LiaUserEditSolid, Link: "editacc" },
-        { text: "ออกจากระบบ", icons: IoIosLogOut, Link: "login" },
+export default function Sidebaradmin() {
+  const datasizebar: SidebarItem[] = [
+    { text: "Dashboard", icons: MdDashboard, Link: "Dashboard" },
+    { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "Searchpastjobs" },
+    { text: "ค้นหางานย้อนหลัง", icons: MdFindInPage, Link: "findfile" },
+    { text: "ส่งแจ้งการเตือน", icons: TbBellPlus, Link: "newalert" },
+    { text: "สถิติ", icons: GoGraph, Link: "graph" },
+    { text: "กำหนดประเภท/หมวด", icons: MdOutlineCategory, Link: "setwork" },
+    { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "Editacc" },
+    { text: "ออกจากระบบ", icons: IoIosLogOut, Link: "login" },
+  ];
 
-    ];
+  const [onClickSizebar, setOnClickSizebar] = useState(true);
 
-    const [onClickSizebar, setOnClickSizebar] = useState(true);
-
-    return (
-        <div
-            className={`h-screen font-bold border-r transition-all duration-300 bg-blue-500 text-white  ${onClickSizebar ? "w-16" : "w-64"
-                }`}
-        >
-            {/* headerSizebar */}
-            <div className="flex items-center py-3 p-4">
-                <span
-                    className={`uppercase mx-auto text-2xl font-black text-white whitespace-nowrap mt-5 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
-                        }`}
-                >
-                    Tech
-                    <span className="text-yellow-500">
-                        Job
-                    </span>
-                      <span
-        className={`text-xs text-white mt-1 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"}`}
+  return (
+    <div
+      className={`h-screen font-bold border-r transition-all duration-300 bg-blue-500 text-white  ${
+        onClickSizebar ? "w-16" : "w-64"
+      }`}
     >
-        Admin
-    </span>
-
-                </span>
-                <button className=" relative mt-5 text-white" >
-                    <AiOutlineCaretRight
-                        onClick={() => setOnClickSizebar(!onClickSizebar)}
-                        size={30}
-                    />
-                </button>
+      {/* headerSizebar */}
+      <div className="flex items-center py-3 p-4">
+        <span
+          className={`uppercase mx-auto text-2xl font-black text-white whitespace-nowrap mt-5 ${
+            onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+          }`}
+        >
+          Tech
+          <span className="text-yellow-500">Job</span>
+          <span
+            className={`text-xs text-white mt-1 ${
+              onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+            }`}
+          >
+            Admin
+          </span>
+        </span>
+        <button className=" relative mt-5 text-white">
+          <AiOutlineCaretRight
+            onClick={() => setOnClickSizebar(!onClickSizebar)}
+            size={30}
+          />
+        </button>
+      </div>
+      {/* menuSizeBar */}
+      <div className="mt-4">
+        {datasizebar.map((event, index) => {
+          const Icons = event.icons;
+          return (
+            <div
+              key={index}
+              className="flex items-center py-3 p-4 text-lg gap-5"
+            >
+              {/* Icon */}
+              <div className="min-w-[30px] flex justify-center mt-4">
+                <Link to={`/${event.Link}`}>{<Icons size={24} />}</Link>
+              </div>
+              {/* text */}
+              <span
+                className={`whitespace-nowrap mt-4 ${
+                  onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+                }`}
+              >
+                <Link to={`/${event.Link}`}>{event.text}</Link>
+              </span>
             </div>
-            {/* menuSizeBar */}
-            <div className="mt-4">
-                {datasizebar.map((event, index) => {
-                    const Icons = event.icons;
-                    return (
-                        <div
-                            key={index}
-                            className="flex items-center py-3 p-4 text-lg gap-5"
-                        >
-                            {/* Icon */}
-                            <div className="min-w-[30px] flex justify-center mt-4">
-                                <Icons size={24} />
-                            </div>
-                            {/* text */}
-                            <span
-                                className={`whitespace-nowrap mt-4 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
-                                    }`}
-                            >
-                                <Link to={`/${event.Link}`}>{event.text}</Link>
-                            </span>
-                        </div>
-                    );
-                })}
-            </div>
-        </div>
-    );
+          );
+        })}
+      </div>
+    </div>
+  );
 }

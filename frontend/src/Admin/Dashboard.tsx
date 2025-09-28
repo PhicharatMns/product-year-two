@@ -1,4 +1,4 @@
-import Sidebar from "../component/sidebaradmin";
+
 import {
   PieChart,
   Pie,
@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+import Sidebaradmin from "../component/Sidebaradmin";
 
 export default function Dashboard() {
   const pieData = [
@@ -30,7 +31,7 @@ export default function Dashboard() {
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      <Sidebar />
+      <Sidebaradmin />
 
     
       <div className="flex-1 p-6">
