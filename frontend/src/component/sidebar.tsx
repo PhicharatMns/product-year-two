@@ -26,7 +26,7 @@ export default function Sidebar() {
     { text: "ลงนาม", icons: BsPencilSquare, Link: "Name" },
         { text: "บันทึกวัสดุ", icons: FaTools, Link: "tool" },
     { text: "ปฏิทิน", icons: SlCalender , Link: "caleder" },
-    { text: "ออกจากระบบ", icons: IoIosLogOut, Link: "logout" },
+    { text: "ออกจากระบบ", icons: IoIosLogOut, Link: "login" },
 
   ];
 
@@ -34,7 +34,7 @@ export default function Sidebar() {
 
   return (
     <div
-      className={`h-screen border-r transition-all duration-300 bg-blue-500 text-white  ${onClickSizebar ? "w-16" : "w-64"
+      className={`h-screen font-bold border-r transition-all duration-300 bg-blue-500 text-white  ${onClickSizebar ? "w-16" : "w-64"
         }`}
     >
       {/* headerSizebar */}
