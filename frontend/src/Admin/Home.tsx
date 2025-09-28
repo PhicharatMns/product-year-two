@@ -95,7 +95,6 @@ export default function Home() {
               className="absolute w-full h-full object-cover object-center rounded-xl "
             />
             <div className="absolute bg-black/30 rounded-xl"></div>
-
             <p className="relative text-white font-bold text-xl">
               ดูเเผนที่ช่าง
             </p>
