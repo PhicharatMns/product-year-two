@@ -31,7 +31,7 @@ export default function Login() {
 
 
           <div className="flex justify-between">
-            <Link to={"/register"}>
+            <Link to={"/Register"}>
               <button className="bg-white shadow-md px-6 py-2 rounded-lg text-blue-600 font-medium hover:bg-gray-100">
                 ลงทะเบียน
               </button>
