@@ -2,8 +2,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Register from "./sighup/Register";
 import Home from "./Admin/Home";
 import Login from "./sighup/Login";
-import Dashboard from "./Admin/Dashboard";
-
+import Searchpastjobs from "./Admin/Searchpastjobs";
 // import Sidebar from "./component/sidebar";
 // import AddEmployee from "./AddEmployee";
 // import EmployeeList from "./EmployeeList";
@@ -21,7 +20,7 @@ export default function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/Homepath" element={<Home />} />
-            <Route path="/Dashboard" element={<Dashboard />} />
+            <Route path="/Searchpastjobs" element={<Searchpastjobs />} />
           </Routes>
         </div>
       </div>
