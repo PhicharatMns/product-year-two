@@ -5,11 +5,11 @@ export default function Home() {
         <div className="flex">
             <div className="flex-1">
                 <div className='container mx-auto h-200 my-5'>
-                    <p className="text-xl text-blue-500 my-5">Home</p>
+                    <p className="text-xl font-bold my-5">Home</p>
                     <div className="grid grid-cols-2 gap-5 ">
                         <div className="border h-100 relative rounded-xl shadow-xl shadow-blue-100 hover:scale-101 duration-300">
                             <img
-                                src="https://png.pngtree.com/thumb_back/fh260/background/20250326/pngtree-futuristic-data-dashboard-image_17146904.jpg"
+                                src="https://www.shutterstock.com/image-illustration/creative-forex-chart-wallpaper-investment-260nw-1049200079.jpg"
                                 alt=""
                                 className="absolute w-full h-full object-cover object-center rounded-xl "
                             />
@@ -18,7 +18,7 @@ export default function Home() {
                         <div className="grid grid-cols-2 gap-5">
                             <div className="border relative rounded-xl shadow-xl shadow-blue-100 hover:scale-101 duration-300">
                                 <img
-                                    src="https://png.pngtree.com/thumb_back/fh260/background/20250326/pngtree-futuristic-data-dashboard-image_17146904.jpg"
+                                    src="https://png.pngtree.com/png-clipart/20220106/ourmid/pngtree-cartoon-flat-record-book-png-image_4191940.png"
                                     alt=""
                                     className="absolute w-full h-full object-cover object-center rounded-xl "
                                 />

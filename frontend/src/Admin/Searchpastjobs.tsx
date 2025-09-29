@@ -1,5 +1,18 @@
 import { CiSearch } from "react-icons/ci";
 
+const headerNav = [
+  "ID",
+  "ชื่องาน",
+  "รายละเอียด",
+  "สถานะ",
+  "รายชื่อ",
+  "วันที่รับ",
+  "วันที่ต้องปิดงาน",
+  "รายละเอียด",
+];
+
+
+
 export default function Searchpastjobs() {
   return (
     <div className="flex">
@@ -10,7 +23,7 @@ export default function Searchpastjobs() {
           </p>
           <div className="my-8 flex justify-between ">
             <div>
-              <button className="border p-2 rounded-xl text-xl bg-blue-500 text-white hover:scale-101 duration-300">
+              <button className="border p-2 rounded-xl text-xl bg-blue-500 text-white hover:scale-101 duration-300 hover:bg-white hover:text-blue-500">
                 + เพิ่มใบงาน
               </button>
             </div>
@@ -27,29 +40,32 @@ export default function Searchpastjobs() {
           {/* ตราตราง */}
           <div>
             <div className="grid grid-cols-8 gap-5 font-bold text-lg border-b pb-2">
-              <p>ID</p>
-              <p>ชื่องาน</p>
-              <p>รายละเอียด</p>
-              <p>สถานะ</p>
-              <p>รายชื่อ</p>
-              <p>วันที่รับ</p>
-              <p>วันที่ต้องปิดงาน</p>
-              <p>รายละเอียด</p>
+              {headerNav.map((event, index) => {
+                return (
+                  <div className={index === 0 ? "text-left" : ""} key={index}>
+                    {event}
+
+                  </div>
+                )
+              })}
             </div>
             {/* data ตาตราง */}
             <div className="grid grid-cols-8 gap-5 font-bold text-sm pl-1 mt-3 text-gray-600 border-b pb-2 items-center">
-              <p>ID</p>
-              <p>ชื่องาน</p>
-              <p>รายละเอียด</p>
-              <p>สถานะ</p>
-              <p>รายชื่อ</p>
-              <p>วันที่รับ</p>
-              <p>วันที่ต้องปิดงาน</p>
+              <p className="">00001</p>
+              <p>บางประกงบางเมื่อ</p>
+              <p className=" mx-auto">
+                บางประกงบางเมื่อ สร้างใหม่อยุ่สบาย
+              </p>
+
+              <p>กําลังทํา</p>
+              <p>พิชรัตน์</p>
+              <p>14/5/26</p>
+              <p>16/7/26</p>
               <div className=" flex gap-2">
-                <button className="border  px-2 py-1 text-green-500">
+                <button className="border  px-2 py-1 text-green-500 rounded-lg">
                   รายละเอียด
                 </button>
-                <button className="border  px-2 py-1 text-red-500">
+                <button className="border  px-2 py-1 text-red-500 rounded-lg">
                   {" "}
                   เเก้ไข
                 </button>

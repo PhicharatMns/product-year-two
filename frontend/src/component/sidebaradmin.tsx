@@ -32,23 +32,20 @@ export default function Sidebaradmin() {
 
   return (
     <div
-      className={`h-screen font-bold border-r transition-all duration-300 bg-blue-500 text-white  ${
-        onClickSizebar ? "w-16" : "w-64"
-      }`}
+      className={`h-screen font-bold border-r transition-all duration-300 bg-blue-500 text-white  ${onClickSizebar ? "w-16" : "w-64"
+        }`}
     >
       {/* headerSizebar */}
       <div className="flex items-center py-3 p-4">
         <span
-          className={`uppercase mx-auto text-2xl font-black text-white whitespace-nowrap mt-5 ${
-            onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
-          }`}
+          className={`uppercase mx-auto text-2xl font-black text-white whitespace-nowrap mt-5 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+            }`}
         >
           Tech
           <span className="text-yellow-500">Job</span>
           <span
-            className={`text-xs text-white mt-1 ${
-              onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
-            }`}
+            className={`text-xs text-white mt-1 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+              }`}
           >
             Admin
           </span>
@@ -61,7 +58,7 @@ export default function Sidebaradmin() {
         </button>
       </div>
       {/* menuSizeBar */}
-      <div className="mt-4">
+      {/* <div className="mt-4">
         {datasizebar.map((event, index) => {
           const Icons = event.icons;
           return (
@@ -69,11 +66,11 @@ export default function Sidebaradmin() {
               key={index}
               className="flex items-center py-3 p-4 text-lg gap-5"
             >
-              {/* Icon */}
-              <div className="min-w-[30px] flex justify-center mt-4">
+
+              <div className="min-w-[30px] hover:scale-120 hover:p-1 duration-500 hover:bg-white hover:rounded-xl hover:text-blue-500 flex justify-center mt-4 ">
                 <Link to={`/${event.Link}`}>{<Icons size={24} />}</Link>
               </div>
-              {/* text */}
+
               <span
                 className={`whitespace-nowrap mt-4 ${
                   onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
@@ -84,7 +81,33 @@ export default function Sidebaradmin() {
             </div>
           );
         })}
+      </div> */}
+
+      <div className="mt-4">
+        {datasizebar.map((event, index) => {
+          const Icons = event.icons;
+          return (
+            <Link
+              to={`/${event.Link}`}
+              key={index}
+              className={`flex items-center gap-5 p-4 text-lg hover:bg-white hover:rounded-xl hover:text-blue-500 duration-500`}
+            >
+              {/* Icon */}
+              <div className="min-w-[30px] flex justify-center">
+                <Icons size={24} />
+              </div>
+              {/* Text */}
+              <span
+                className={`whitespace-nowrap ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+                  }`}
+              >
+                {event.text}
+              </span>
+            </Link>
+          );
+        })}
       </div>
+
     </div>
   );
 }
