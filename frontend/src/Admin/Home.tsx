@@ -5,7 +5,7 @@ export default function Home() {
         <div className="flex">
             <Sidebaradmin />
             <div className="flex-1">
-                <div className='container mx-auto  h-200 my-5'>
+                <div className='container mx-auto w-340 h-200 my-5'>
                     <div className="grid grid-cols-2 gap-5 ">
                         <div className="border h-50 relative">
                             <img

@@ -26,8 +26,9 @@ export default function App() {
             
             <Route path="/Homepath" element={<Home />} />
             <Route path="/Searchpastjobs" element={<Searchpastjobs />} />
-            {/* <Route path="/Dashboard" element={<Dashboard />} /> */}
             <Route path="/Editacc" element={<Editacc />} />
+            {/* <Route path="/Dashboard" element={<Dashboard />} /> */}
+     
           </Routes>
         </div>
       </div>
