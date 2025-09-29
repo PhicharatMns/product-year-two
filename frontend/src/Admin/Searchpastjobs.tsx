@@ -1,10 +1,8 @@
 import { CiSearch } from "react-icons/ci";
-import Sidebaradmin from "../component/sidebaradmin";
 
 export default function Searchpastjobs() {
   return (
     <div className="flex">
-      <Sidebaradmin />
       <div className="flex-1">
         <div className="container mx-auto my-5">
           <p className="font-bold text-xl">

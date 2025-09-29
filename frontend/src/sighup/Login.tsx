@@ -33,7 +33,7 @@ export default function Login () {
                 ลงทะเบียน
               </button>
             </Link>
-            <Link to={"/Homepath"}>
+            <Link to={"/Home"}>
               <button className="bg-blue-600 px-6 py-2 text-white font-semibold rounded-md shadow hover:bg-blue-700">
                 เข้าสู่ระบบ
               </button>
