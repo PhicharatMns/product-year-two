@@ -3,7 +3,7 @@ import Register from "./sighup/Register";
 import Home from "./Admin/Home";
 import Login from "./sighup/Login";
 import Searchpastjobs from "./Admin/Searchpastjobs";
-import Dashboard from "./Admin/Dashboard";
+// import Dashboard from "./Admin/Dashboard";
 import Editacc from "./Admin/Editacc";
 
 // import Sidebar from "./component/sidebar";
@@ -26,7 +26,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/Homepath" element={<Home />} />
             <Route path="/Searchpastjobs" element={<Searchpastjobs />} />
-            <Route path="/Dashboard" element={<Dashboard />} />
+            {/* <Route path="/Dashboard" element={<Dashboard />} /> */}
             <Route path="/Editacc" element={<Editacc />} />
           </Routes>
         </div>
