@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Register from "./sighup/Register";
+
 import Home from "./Admin/Home";
 import Login from "./sighup/Login";
 import Searchpastjobs from "./Admin/Searchpastjobs";
@@ -23,7 +23,7 @@ export default function App() {
             {/* <Route path="/" element={<AddEmployee />} /> */}
             {/* <Route path="/list" element={<EmployeeList />} /> */}
             <Route path="/" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            
             <Route path="/Homepath" element={<Home />} />
             <Route path="/Searchpastjobs" element={<Searchpastjobs />} />
             {/* <Route path="/Dashboard" element={<Dashboard />} /> */}
