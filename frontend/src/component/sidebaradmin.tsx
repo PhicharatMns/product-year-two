@@ -7,7 +7,7 @@ import { MdFindInPage } from "react-icons/md";
 import { TbBellPlus } from "react-icons/tb";
 import { GoGraph } from "react-icons/go";
 import { MdOutlineCategory } from "react-icons/md";
-import { LiaUserEditSolid } from "react-icons/lia";
+import {  LiaUserEditSolid } from "react-icons/lia";
 import { VscNewFile } from "react-icons/vsc";
 
 interface SidebarItem {
@@ -62,8 +62,11 @@ export default function Sidebaradmin() {
         {datasizebar.map((event, index) => {
           const Icons = event.icons;
           return (
-            
-              <div key={index} className="flex my-5 pl-5 py-3 hover:bg-yellow-500 duration-300">
+            <Link to={`/${event.Link}`}>
+              <div
+                key={index}
+                className={`flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer rounded-md hover:bg-yellow-500 duration-300`}
+              >
                 {/* Icon */}
                 <div className="flex justify-center">
                   <Icons size={24} />
@@ -71,17 +74,16 @@ export default function Sidebaradmin() {
 
                 {/* Text */}
                 <span
-                  className={`whitespace-nowrap transition-all duration-300 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+                  className={`whitespace-nowrap overflow-hidden transition-all duration-300 ${onClickSizebar ? "w-0 overflow-hidden" : "w-auto opacity-100"
                     }`}
                 >
                   {event.text}
                 </span>
               </div>
-            
+            </Link>
           );
         })}
       </div>
-
 
     </div >
   );
