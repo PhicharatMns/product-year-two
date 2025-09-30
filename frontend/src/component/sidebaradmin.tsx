@@ -62,7 +62,7 @@ export default function Sidebaradmin() {
         {datasizebar.map((event, index) => {
           const Icons = event.icons;
           return (
-            <Link to={`${event.Link}`}>
+            
               <div key={index} className="flex my-5 pl-5 py-3 hover:bg-yellow-500 duration-300">
                 {/* Icon */}
                 <div className="flex justify-center">
@@ -77,7 +77,7 @@ export default function Sidebaradmin() {
                   {event.text}
                 </span>
               </div>
-            </Link>
+            
           );
         })}
       </div>
