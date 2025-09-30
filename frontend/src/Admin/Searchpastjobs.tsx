@@ -8,71 +8,88 @@ const headerNav = [
   "รายชื่อ",
   "วันที่รับ",
   "วันที่ต้องปิดงาน",
-  "รายละเอียด",
+  "จัดการ",
 ];
 
-
+const sampleData = [
+  {
+    id: "00001",
+    title: "บางประกงบางเมื่อ",
+    detail: "บางประกงบางเมื่อ สร้างใหม่อยู่สบาย",
+    status: "กําลังทํา",
+    name: "พิชรัตน์",
+    startDate: "14/5/26",
+    endDate: "16/7/26",
+  },
+  {
+    id: "00002",
+    title: "บางเมืองใหม่",
+    detail: "รายละเอียดงานเพิ่มเติม",
+    status: "เสร็จแล้ว",
+    name: "สมชาย",
+    startDate: "01/6/26",
+    endDate: "15/7/26",
+  },
+];
 
 export default function Searchpastjobs() {
   return (
-    <div className="flex">
-      <div className="flex-1">
-        <div className="container mx-auto my-5 xl:w-380 lg:w-300 mb:w:250 sm:w:150">
-          <p className="font-bold text-xl">
+    <div className="bg-blue-50 min-h-screen py-10">
+      <div className="container mx-auto  bg-white rounded-xl shadow-lg p-6">
+        {/* Header */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
+          <h2 className="text-2xl font-bold text-blue-700">
             รับใบ<span className="text-yellow-500">งาน</span>
-          </p>
-          <div className="my-8 flex justify-between ">
-            <div>
-              <button className="border p-2 rounded-xl text-xl bg-blue-500 text-white hover:scale-101 duration-300 hover:bg-white hover:text-blue-500">
-                + เพิ่มใบงาน
-              </button>
-            </div>
-
-            <div className="flex gap-8 items-center text-lg font-medium">
-              <p>กําหนดประเภทงาน</p>
-              <p>หมวดหมู่</p>
-              <div className="relative">
-                <CiSearch className="absolute left-2 top-1/2 -translate-y-1/2" />
-                <input type="text" className="border rounded-xl pl-8 p-0.5" />
-              </div>
-            </div>
-          </div>
-          {/* ตราตราง */}
-          <div>
-            <div className="grid grid-cols-8 gap-5 font-bold text-lg border-b pb-2">
-              {headerNav.map((event, index) => {
-                return (
-                  <div className={index === 0 ? "text-left" : ""} key={index}>
-                    {event}
-
-                  </div>
-                )
-              })}
-            </div>
-            {/* data ตาตราง */}
-            <div className="grid grid-cols-8 gap-5 font-bold text-sm pl-1 mt-3 text-gray-600 border-b pb-2 items-center">
-              <p className="">00001</p>
-              <p>บางประกงบางเมื่อ</p>
-              <p className=" mx-auto">
-                บางประกงบางเมื่อ สร้างใหม่อยุ่สบาย
-              </p>
-
-              <p>กําลังทํา</p>
-              <p>พิชรัตน์</p>
-              <p>14/5/26</p>
-              <p>16/7/26</p>
-              <div className=" flex gap-2">
-                <button className="border  px-2 py-1 text-green-500 rounded-lg">
-                  รายละเอียด
-                </button>
-                <button className="border  px-2 py-1 text-red-500 rounded-lg">
-                  {" "}
-                  เเก้ไข
-                </button>
-              </div>
+          </h2>
+          <div className="flex flex-wrap gap-6 items-center">
+            <button className="bg-blue-500 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-600 transition">
+              + เพิ่มใบงาน
+            </button>
+            <div className="relative">
+              <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <input
+                type="text"
+                placeholder="ค้นหา..."
+                className="border rounded-xl pl-10 pr-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              />
             </div>
           </div>
         </div>
+
+        {/* Table Header */}
+        <div className="grid grid-cols-8 gap-4 font-bold text-blue-700 border-b-2 pb-2 text-center">
+          {headerNav.map((item, idx) => (
+            <div key={idx} className={idx === 0 ? "text-left pl-2" : ""}>
+              {item}
+            </div>
+          ))}
+        </div>
+
+        {/* Table Rows */}
+        {sampleData.map((row, idx) => (
+          <div
+            key={idx}
+            className="grid grid-cols-8 gap-4 text-gray-700 text-sm border-b py-3 items-center hover:bg-blue-50 transition-all rounded-lg"
+          >
+            <p className="text-left pl-2">{row.id}</p>
+            <p className="text-center">{row.title}</p>
+            <p className="text-center">{row.detail}</p>
+            <p className={`text-center font-medium ${row.status === "เสร็จแล้ว" ? "text-green-600" : "text-yellow-600"}`}>
+              {row.status}
+            </p>
+            <p className="text-center">{row.name}</p>
+            <p className="text-center">{row.startDate}</p>
+            <p className="text-center">{row.endDate}</p>
+            <div className="flex justify-center gap-2">
+              <button className="px-3 py-1 text-green-500 border rounded-lg hover:bg-green-100 transition">
+                รายละเอียด
+              </button>
+              <button className="px-3 py-1 text-red-500 border rounded-lg hover:bg-red-100 transition">
+                เเก้ไข
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
 export default function Editacc() {
   return (
-    <div className="flex container mx-auto min-h-screen">
+    <div className="flex container mx-auto min-h-screen bg-blue-50 ">
     
       <div className="flex-1 p-6">
         <p className="text-lg my-5 ml-5 font-bold">
