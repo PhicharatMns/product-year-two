@@ -17,9 +17,9 @@ export default function Searchpastjobs() {
   return (
     <div className="flex">
       <div className="flex-1">
-        <div className="container mx-auto my-5">
+        <div className="container mx-auto my-5 w-350  ">
           <p className="font-bold text-xl">
-            รับใบ <span className="text-yellow-500">งาน</span>
+            รับใบ<span className="text-yellow-500">งาน</span>
           </p>
           <div className="my-8 flex justify-between ">
             <div>

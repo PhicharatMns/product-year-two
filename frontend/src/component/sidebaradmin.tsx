@@ -65,7 +65,7 @@ export default function Sidebaradmin() {
             <Link to={`/${event.Link}`}>
               <div
                 key={index}
-                className={`flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer rounded-md hover:bg-yellow-500 duration-300`}
+                className={`flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer  hover:bg-yellow-500 duration-300`}
               >
                 {/* Icon */}
                 <div className="flex justify-center">
