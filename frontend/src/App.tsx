@@ -5,7 +5,7 @@ import {
   Navigate
 } from "react-router-dom";
 
-import Register from "./sighup/Register";
+
 import Searchpastjobs from "./Admin/Searchpastjobs";
 import Editacc from "./Admin/Editacc";
 import AdminLayout from "./Admin/AdminLayout";
@@ -18,7 +18,7 @@ const router = createBrowserRouter([
 
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: '/logins', element: <Login /> },
-  { path: "/register", element: <Register /> },
+
 
   {
     element: <AdminLayout />,
