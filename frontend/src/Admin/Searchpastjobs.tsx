@@ -17,7 +17,7 @@ export default function Searchpastjobs() {
   return (
     <div className="flex">
       <div className="flex-1">
-        <div className="container mx-auto my-5 xl:w-380 lg:w-300 mb:w:250 sm:w:150">
+        <div className="container mx-auto my-5 xl:w-300 lg:w-300 mb:w:250 sm:w:150">
           <p className="font-bold text-xl">
             รับใบ<span className="text-yellow-500">งาน</span>
           </p>

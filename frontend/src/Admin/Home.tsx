@@ -7,13 +7,15 @@ export default function Home() {
                 <div className='container mx-auto h-200 my-5'>
                     <p className="text-xl font-bold my-5">Home</p>
                     <div className="grid grid-cols-2 gap-5 ">
-                        <div className="border h-100 relative rounded-xl shadow-xl shadow-blue-100 hover:scale-101 duration-300">
+                        <div className="border h-100 relative rounded-xl shadow-xl shadow-blue-100 hover:scale-101 duration-300 hover:cursor-pointer   ">
                             <img
-                                src="https://www.shutterstock.com/image-illustration/creative-forex-chart-wallpaper-investment-260nw-1049200079.jpg"
+                                src="https://i.pinimg.com/1200x/94/3e/d0/943ed0b57da011bb90711b8d4f00a048.jpg"
                                 alt=""
-                                className="absolute w-full h-full object-cover object-center rounded-xl "
+                                className="absolute w-full h-full object-cover object-center rounded-xl  opacity-90    "
+                                className="blur-xs"
                             />
-                            <p className='relative text-center flex items-center h-full justify-center text-white text-4xl'>สถิติช่าง</p>
+                            
+                            <p className='relative text-center flex items-center h-full justify-center text-black text-4xl'>สถิติช่าง</p>
                         </div>
                         <div className="grid grid-cols-2 gap-5">
                             <div className="border relative rounded-xl shadow-xl shadow-blue-100 hover:scale-101 duration-300">
