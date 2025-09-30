@@ -1,7 +1,7 @@
 export default function Details() {
     return (
         <div>
-            <div className="container mx-auto my-5 w-full p-5">
+            <div className="container mx-auto  my-5">
                 <div>
                     <p className="text-lg font-bold my-5">รายละเอียดงาน</p>
                     <p className="text-sm">ชื่องาน : โครงการสร้างดึกหน้าไก่</p>
@@ -27,7 +27,7 @@ export default function Details() {
                             นาย พิชรัตน์ มีสรรพวงศ์ 
                         </p>
 
-                        <p>ไม้</p>
+                        <p>ไม้`</p>
                     </div>
 
                 </div>
