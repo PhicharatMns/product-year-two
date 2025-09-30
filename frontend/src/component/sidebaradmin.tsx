@@ -57,57 +57,32 @@ export default function Sidebaradmin() {
           />
         </button>
       </div>
-      {/* menuSizeBar */}
-      {/* <div className="mt-4">
-        {datasizebar.map((event, index) => {
-          const Icons = event.icons;
-          return (
-            <div
-              key={index}
-              className="flex items-center py-3 p-4 text-lg gap-5"
-            >
-
-              <div className="min-w-[30px] hover:scale-120 hover:p-1 duration-500 hover:bg-white hover:rounded-xl hover:text-blue-500 flex justify-center mt-4 ">
-                <Link to={`/${event.Link}`}>{<Icons size={24} />}</Link>
-              </div>
-
-              <span
-                className={`whitespace-nowrap mt-4 ${
-                  onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
-                }`}
-              >
-                <Link to={`/${event.Link}`}>{event.text}</Link>
-              </span>
-            </div>
-          );
-        })}
-      </div> */}
 
       <div className="mt-4">
         {datasizebar.map((event, index) => {
           const Icons = event.icons;
           return (
-            <Link
-              to={`/${event.Link}`}
-              key={index}
-              className={`flex items-center gap-5 p-4 text-lg duration-300 hover:bg-yellow-500  hover:text-black`}
-            >
-              {/* Icon */}
-              <div className="min-w-[30px] flex justify-center">
-                <Icons size={24} />
+            <Link to={`${event.Link}`}>
+              <div key={index} className="flex my-5 pl-5 py-3 hover:bg-yellow-500 duration-300">
+                {/* Icon */}
+                <div className="flex justify-center">
+                  <Icons size={24} />
+                </div>
+
+                {/* Text */}
+                <span
+                  className={`whitespace-nowrap transition-all duration-300 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+                    }`}
+                >
+                  {event.text}
+                </span>
               </div>
-              {/* Text */}
-              <span
-                className={`whitespace-nowrap ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
-                  }`}
-              >
-                {event.text}
-              </span>
             </Link>
           );
         })}
       </div>
 
-    </div>
+
+    </div >
   );
 }

@@ -11,7 +11,7 @@ import Editacc from "./Admin/Editacc";
 import AdminLayout from "./Admin/AdminLayout";
 import Home from "./Admin/Home";
 import Login from "./sighup/Login";
-import Details from "./Admin/details";
+import Details from "./Admin/Details";
 
 
 const router = createBrowserRouter([
