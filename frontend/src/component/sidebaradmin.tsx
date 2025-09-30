@@ -90,7 +90,7 @@ export default function Sidebaradmin() {
             <Link
               to={`/${event.Link}`}
               key={index}
-              className={`flex items-center gap-5 p-4 text-lg hover:bg-yellow-500  hover:text-black`}
+              className={`flex items-center gap-5 p-4 text-lg duration-300 hover:bg-yellow-500  hover:text-black`}
             >
               {/* Icon */}
               <div className="min-w-[30px] flex justify-center">

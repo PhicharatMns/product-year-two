@@ -42,7 +42,6 @@ export default function Editacc() {
             <p className=" mx-auto">ประเภทงาน</p>
             <p className=" mx-auto">ตำแหน่ง</p>
             <p className=" mx-auto">วันที่สมัคร</p>
-            <p className=" mx-auto">สถานะ</p>
           </div>
              
           <div className="grid grid-cols-6 gap-5 font-bold text-sm pl-1 mt-3 text-gray-600 border-b pb-2 items-center ml-5 mr-5">
@@ -52,7 +51,8 @@ export default function Editacc() {
             <p className=" mx-auto"> ช่างไม้</p>
              <p className=" mx-auto"> Head Carpenter</p>
              <p className=" mx-auto"> 27/08/2568</p>
-             <p className=" mx-auto"> กำลังทำงาน</p>
+                          <button className="mx-auto border-1 rounded-3xl">แก้ไข</button>
+
      </div>
           </div> 
  <div>
@@ -64,8 +64,9 @@ export default function Editacc() {
             <p className=" mx-auto"> ช่างไม้</p>
              <p className=" mx-auto"> Head Carpenter</p>
              <p className=" mx-auto"> 27/08/2568</p>
-             <p className=" mx-auto"> กำลังทำงาน</p>
+             <button>แก้ไข</button>
      </div>
+     
           </div>
                 <div className="grid grid-cols-6 gap-5 font-bold text-sm pl-1 mt-3 text-gray-600 border-b pb-2 items-center ml-5 mr-5">
             <img src="https://i.pinimg.com/1200x/ca/3b/ee/ca3bee207c4135d0cf99a9874db41ece.jpg" className="w-20 h-full" alt="pic" />
@@ -74,7 +75,8 @@ export default function Editacc() {
             <p className=" mx-auto"> ช่างไม้</p>
              <p className=" mx-auto"> Head Carpenter</p>
              <p className=" mx-auto"> 27/08/2568</p>
-             <p className=" mx-auto"> กำลังทำงาน</p>
+                          <button>แก้ไข</button>
+
      </div>
         </div>
       </div>
