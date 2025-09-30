@@ -1,14 +1,7 @@
-import Sidebar from "../component/sidebaradmin";
-
-
-
 export default function Editacc() {
   return (
-    <div className="flex min-h-screen ">
+    <div className="flex container mx-auto min-h-screen bg-blue-50 ">
     
-    
-
-     
       <div className="flex-1 p-6">
         <p className="text-lg my-5 ml-5 font-bold">
           จัดการบัญชี
@@ -47,7 +40,7 @@ export default function Editacc() {
           </div>
              
           <div className="grid grid-cols-6 gap-5 font-bold text-sm pl-1 mt-3 text-gray-600 border-b pb-2 items-center ml-5 mr-5">
-            <img src="https://i.pinimg.com/1200x/ca/3b/ee/ca3bee207c4135d0cf99a9874db41ece.jpg" className="w-20 h-full" alt="pic" />
+            <img src="https://i.pinimg.com/1200x/ca/3b/ee/ca3bee207c4135d0cf99a9874db41ece.jpg" className="w-20 h-full object-cover object-center" alt="pic" />
             
             <p className="">สมชาย ใจดี</p>
             <p className=" mx-auto"> ช่างไม้</p>
