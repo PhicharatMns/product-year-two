@@ -1,4 +1,4 @@
-import Sidebar from "../component/sidebar";
+import Sidebar from "../component/sidebaradmin";
 
 
 
@@ -10,7 +10,7 @@ export default function Editacc() {
 
      
       <div className="flex-1 p-6">
-        <p className="text-7xl my-5 ml-5 font-bold">
+        <p className="text-lg my-5 ml-5 font-bold">
           จัดการบัญชี
           <span className="font-bold text-yellow-500">ช่าง</span>
         </p>
