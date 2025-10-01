@@ -27,7 +27,7 @@ export default function Editacc() {
     <div className=" container mx-auto min-h-screen flex justify-center py-10">
       <div className="w-full p-6">
         <p className="text-2xl font-bold mb-5 text-blue-700 ml-2">
-          จัดการบัญชี <span className="text-yellow-500">ช่าง</span>
+          จัดการบัญชี<span className="text-yellow-500">ช่าง</span>
         </p>
 
         {/* Search bar */}
