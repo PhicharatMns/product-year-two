@@ -4,68 +4,65 @@ interface Employee {
   _id: string;
   firstName: string;
   lastName: string;
-  gender?: string;
-  email?: string;
-  phone?: string;
-  position?: string;
-  department?: string;
-  hireDate?: string;
-  salary: number;
-  profileImage?: string;
+  email: string;
+  phone: string;
+  position: string;
+  department: string;
+  dateJoined?: string;
+  status?: string;
+  image?: string;
 }
 
-export default function EmployeeList() {
+const EmployeeList: React.FC = () => {
   const [employees, setEmployees] = useState<Employee[]>([]);
 
-  // โหลดพนักงานทั้งหมด
-  const loadEmployees = async () => {
-    const res = await fetch("http://localhost:5000/api/employees");
-    const data = await res.json();
-    setEmployees(data);
+  const fetchEmployees = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/employees");
+      const data: Employee[] = await res.json();
+      setEmployees(data);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
-    loadEmployees();
+    fetchEmployees();
   }, []);
 
-  // ลบพนักงาน
-  const deleteEmployee = async (id: string) => {
-    if (!window.confirm("Are you sure to delete?")) return;
-    await fetch(`http://localhost:5000/api/employees/${id}`, { method: "DELETE" });
-    loadEmployees();
+  const handleDelete = async (id: string) => {
+    try {
+      await fetch(`http://localhost:5000/api/employees/${id}`, { method: "DELETE" });
+      fetchEmployees();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">Employee List</h1>
-
-      {employees.map((emp) => (
-        <div key={emp._id} className="mb-4 border p-2 flex items-center">
-          {emp.profileImage && (
-            <img
-              src={`http://localhost:5000/uploads/${emp.profileImage}`}
-              alt={`${emp.firstName} ${emp.lastName}`}
-              className="w-16 h-16 object-cover mr-4"
-            />
-          )}
-          <div className="flex-1">
-            <p><strong>Name:</strong> {emp.firstName} {emp.lastName}</p>
-            <p><strong>Gender:</strong> {emp.gender}</p>
-            <p><strong>Email:</strong> {emp.email}</p>
-            <p><strong>Phone:</strong> {emp.phone}</p>
-            <p><strong>Position:</strong> {emp.position}</p>
-            <p><strong>Department:</strong> {emp.department}</p>
-            <p><strong>Hire Date:</strong> {emp.hireDate ? new Date(emp.hireDate).toLocaleDateString() : ''}</p>
-            <p><strong>Salary:</strong> {emp.salary}</p>
-          </div>
-          <button
-            onClick={() => deleteEmployee(emp._id)}
-            className="bg-red-500 text-white px-2 py-1"
-          >
-            Delete
-          </button>
-        </div>
-      ))}
+      <ul>
+        {employees.map(emp => (
+          <li key={emp._id} className="mb-4 border p-2 flex items-center flex-wrap">
+            {emp.image && <img src={`http://localhost:5000/uploads/${emp.image}`} alt={emp.firstName} className="w-16 h-16 object-cover mr-4 mb-2" />}
+            <div className="flex-1 min-w-[200px]">
+              <p><strong>Name:</strong> {emp.firstName} {emp.lastName}</p>
+              <p><strong>Email:</strong> {emp.email}</p>
+              <p><strong>Phone:</strong> {emp.phone}</p>
+              <p><strong>Position:</strong> {emp.position}</p>
+              <p><strong>Department:</strong> {emp.department}</p>
+              <p><strong>Status:</strong> {emp.status}</p>
+              <p><strong>Date Joined:</strong> {emp.dateJoined?.split("T")[0]}</p>
+            </div>
+            <button onClick={() => handleDelete(emp._id)} className="bg-red-500 text-white px-2 py-1 h-fit mb-2">
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
+
+export default EmployeeList;
