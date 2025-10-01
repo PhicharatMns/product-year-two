@@ -1,28 +1,30 @@
-export default function Profile() {
+export default function Profileadmin() {
     return (
         <div className="container mx-auto py-10">
 
             <div className="flex justify-center mb-5">
                 <div className="w-full">
                     <p className="text-7xl font-bold text-blue-700 ml-2">
-                        โปร<span className="text-yellow-500">ไฟล์</span>
+                        โปร<span className="text-yellow-500">ไฟล์</span><span className="text-2xl"> Admin</span>
                     </p>
                 </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-lg p-6 flex items-center gap-5 border   ">
-                <img src="https://i.pinimg.com/736x/b7/6a/a8/b76aa8452826d7397a40d79a1dd97656.jpg" className="w-30 h-30  rounded-full " alt="" />
+                <img src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg" className="w-30 h-30  rounded-full " alt="" />
 
-
+            
                 <div className="ml-5 flex flex-col">
                     <div className="font-bold text-4xl">
-                        คุณ จักรยาน สีแดง <span className="text-2xl text-blue-500">#jak01</span>
+                        คุณ จักรยาน สีแดง <span className="text-2xl text-blue-500">#adminjak01</span>
+                    </div>
+                   
+                    <div className="text-xl font-bold text-yellow-400">
+                        Admin
                     </div>
                     
-                    <div className="text-xl font-bold text-blue-500">
-                        ช่างไม้
-                    </div>
                 </div>
+                <button className="border-4">df</button>
             </div>
             <div className="bg-white rounded-xl shadow-lg p-6 flex items-center gap-5 border mt-5  ">
 
@@ -53,7 +55,7 @@ export default function Profile() {
                             </div>
                             <div>
                                 <p className="text-2xl">ตำแหน่ง</p>
-                                <p className="font-bold text-black">ช่างไม้</p>
+                                <p className="font-bold text-black">Admin</p>
                             </div>
                         </div>
                     </div>
@@ -69,7 +71,7 @@ export default function Profile() {
                         <div className="grid grid-cols-3 gap-y-3 gap-x-10 text-gray-400 text-3xl">
                             <div>
                                 <p className="text-2xl">จังหวัด</p>
-                                <p className="font-bold text-black">กรุงเทพ</p>
+                                <p className="font-bold text-black">ประเทศไทย</p>
                             </div>
                              <div>
                                 <p className="text-2xl">อำเภอ</p>
