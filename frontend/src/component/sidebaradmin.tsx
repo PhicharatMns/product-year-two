@@ -87,16 +87,21 @@ export default function Sidebaradmin() {
           );
         })}
       </div>
-
-  {/* ส่วนล่างของ sidebar - Profile */}
+<div className={`flex flex-col bg-blue-500 text-white  transition-all duration-300`}>
   
-  <div className="mt-85">
+  {/* ส่วนบนของ sidebar - เมนู */}
+  <div className="h-full p-4">
+    {/* วางเมนูของคุณที่นี่ */}
+  </div>
+
+  {/* ส่วนล่างสุด - Profile */}
   <Link to="/Profile_woker" className="mt-auto">
     <div
       className={`border-blue-900 bg-blue-900 duration-300 hover:bg-blue-700 h-20 flex items-center gap-4 cursor-pointer px-2 ${
         onClickSizebar ? "justify-center" : "justify-start px-5"
       }`}
     >
+      {/* รูป */}
       <img
         src="https://i.pinimg.com/1200x/f6/47/f8/f647f891a4677ab11c9ae7c1769555a5.jpg"
         className={`object-cover rounded-full duration-300 ${
@@ -105,6 +110,7 @@ export default function Sidebaradmin() {
         alt="pic"
       />
 
+      {/* ข้อความ */}
       {!onClickSizebar && (
         <div className="text-lg font-semibold text-white">
           คุณ จักรยาน สีแดง
