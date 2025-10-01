@@ -14,6 +14,7 @@ import Login from "./sighup/Login";
 import Details from "./Admin/Details";
 import EmployeeList from "./EmployeeList";
 import AddEmployee from "./AddEmployee";
+import Profile from "./Admin/profile";
 
 
 const router = createBrowserRouter([
@@ -28,7 +29,8 @@ const router = createBrowserRouter([
       { path: "searchpastjobs", element: <Searchpastjobs /> },
       { path: 'details', element: <Details /> },
       { path: 'EmployeeList', element: <EmployeeList /> },
-      { path: 'AddEmployee', element: <AddEmployee /> }
+      { path: 'AddEmployee', element: <AddEmployee /> },
+       { path: 'Profile', element: <Profile /> }
     ],
   },
 ]);
