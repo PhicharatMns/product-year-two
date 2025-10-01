@@ -29,8 +29,8 @@ export default function Sidebaradmin() {
   const [onClickSizebar, setOnClickSizebar] = useState(true);
 
   return (
-    <div className={`fixed top-0 z-1 left-0 h-screen font-bold border-r transition-all duration-300 bg-blue-500 text-white flex flex-col justify-between ${onClickSizebar ? "w-16" : "w-64"}`}>
-      
+    <div className={`z-1 fixed top-0 left-0 h-screen font-bold border-r transition-all duration-300 bg-blue-500 text-white flex flex-col justify-between ${onClickSizebar ? "w-16" : "w-64"}`}>
+
       {/* ส่วนบน: Header + Menu */}
       <div className="flex flex-col overflow-y-auto">
         {/* Header */}
@@ -71,7 +71,7 @@ export default function Sidebaradmin() {
       </div>
 
       {/* ส่วนล่าง: Profile */}
-      <div className="">
+      <div className="mb-10">
         <Link to="/Profile_woker">
           <div className={`border-blue-900 bg-blue-900 duration-300 hover:bg-blue-700 h-20 flex items-center gap-4 cursor-pointer px-2 ${onClickSizebar ? "justify-center" : "justify-start px-5"}`}>
             <img

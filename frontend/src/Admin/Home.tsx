@@ -4,7 +4,7 @@ export default function Home() {
     return (
         <div className="flex">
             <div className="flex-1">
-                <div className='container mx-auto h-10000 my-5 bg-blue-50 '>
+                <div className='container mx-auto my-5  '>
                     <p className="text-xl font-bold my-5">Home</p>
                     <div className="grid grid-cols-2 gap-5 ">
                         <div className="group border h-100 relative rounded-xl shadow-xl shadow-blue-100 hover:scale-105 duration-300 cursor-pointer overflow-hidden">
@@ -14,7 +14,6 @@ export default function Home() {
                                     alt=""
                                     className="absolute w-full h-full object-cover object-center rounded-xl opacity-70 transition duration-300 group-hover:blur-sm"
                                 />
-
                                 <p className="relative  text-center flex items-center h-full justify-center font-bold text-black text-4xl opacity-70 group-hover:opacity-100 transition duration-300 drop-shadow-lg">
                                     สถิติช่าง
                                 </p>
