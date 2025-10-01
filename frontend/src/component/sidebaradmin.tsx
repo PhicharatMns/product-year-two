@@ -32,13 +32,13 @@ export default function Sidebaradmin() {
 
   return (
     <div
-      className={`h-screen font-bold border-r transition-all duration-300 bg-blue-500 text-white  ${onClickSizebar ? "w-16" : "w-64"
+      className={`h-screen  font-bold border-r transition-all duration-300 bg-blue-500 text-white  ${onClickSizebar ? "w-16" : "w-64"
         }`}
     >
       {/* headerSizebar */}
       <div className="flex items-center py-3 p-4">
         <span
-          className={`uppercase mx-auto text-2xl font-black text-white whitespace-nowrap mt-5 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
+          className={`uppercase mx-auto text-2xl font-black text-white  whitespace-nowrap mt-5 ${onClickSizebar ? "opacity-0 w-0" : "opacity-100 w-auto"
             }`}
         >
           Tech
@@ -50,7 +50,7 @@ export default function Sidebaradmin() {
             Admin
           </span>
         </span>
-        <button className=" relative mt-5 text-white">
+        <button className=" relative mt-5 cursor-pointer text-white">
           <AiOutlineCaretRight
             onClick={() => setOnClickSizebar(!onClickSizebar)}
             size={30}
