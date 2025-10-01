@@ -5,7 +5,7 @@ export default function Home() {
         <div className="flex">
             <div className="flex-1">
                 <div className='container mx-auto h-200 my-5 bg-blue-50 '>
-                    <p className="text-xl font-bold      my-5">Home</p>
+                    <p className="text-xl font-bold my-5">Home</p>
                     <div className="grid grid-cols-2 gap-5 ">
                         <div className="group border h-100 relative rounded-xl shadow-xl shadow-blue-100 hover:scale-105 duration-300 cursor-pointer overflow-hidden">
                             <div className="group  border h-100 relative rounded-xl shadow-xl shadow-blue-100 hover:scale-105 duration-300 cursor-pointer overflow-hidden">

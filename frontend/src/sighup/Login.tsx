@@ -28,13 +28,9 @@ export default function Login () {
           </div>
 
           <div className="flex justify-between">
-            <Link to={"/Register"}>
-              <button className="bg-white shadow-md px-6 py-2 rounded-lg text-blue-600 font-medium hover:bg-gray-100">
-                ลงทะเบียน
-              </button>
-            </Link>
+       
             <Link to={"/Home"}>
-              <button className="bg-blue-600 px-6 py-2 text-white font-semibold rounded-md shadow hover:bg-blue-700">
+              <button className="bg-blue-600 px-6 py-2 ml-35 text-white font-semibold rounded-md shadow hover:bg-blue-700">
                 เข้าสู่ระบบ
               </button>
             </Link>
