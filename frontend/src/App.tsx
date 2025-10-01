@@ -12,6 +12,8 @@ import AdminLayout from "./Admin/AdminLayout";
 import Home from "./Admin/Home";
 import Login from "./sighup/Login";
 import Details from "./Admin/Details";
+import EmployeeList from "./EmployeeList";
+import AddEmployee from "./AddEmployee";
 
 
 const router = createBrowserRouter([
@@ -24,7 +26,9 @@ const router = createBrowserRouter([
       { path: "home", element: <Home /> },
       { path: "editacc", element: <Editacc /> },
       { path: "searchpastjobs", element: <Searchpastjobs /> },
-      { path: 'details', element: <Details /> }
+      { path: 'details', element: <Details /> },
+      { path: 'EmployeeList', element: <EmployeeList /> },
+      { path: 'AddEmployee', element: <AddEmployee /> }
     ],
   },
 ]);
