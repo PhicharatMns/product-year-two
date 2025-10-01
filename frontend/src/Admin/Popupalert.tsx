@@ -78,9 +78,9 @@ export default function Popup() {
                     </div>
                 </div>
                 <div className=" flex justify-end">
-                <button className=" bg-blue-500 text-white hover:bg-blue-700 mt-5 rounded-lg w-15 h-10 text-center">ยืนยัน</button>
-          </div> 
-           </div>
+                    <button className=" bg-blue-500 text-white hover:bg-blue-700 mt-5 rounded-lg w-15 h-10 text-center">ยืนยัน</button>
+                </div>
+            </div>
 
         </div>
     )

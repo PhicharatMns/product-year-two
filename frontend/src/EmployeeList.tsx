@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-interface Employee {
+interface Employees {
   _id: string;
   firstName: string;
   lastName: string;
@@ -14,12 +14,12 @@ interface Employee {
 }
 
 const EmployeeList: React.FC = () => {
-  const [employees, setEmployees] = useState<Employee[]>([]);
+  const [employees, setEmployees] = useState<Employees[]>([]);
 
   const fetchEmployees = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/employees");
-      const data: Employee[] = await res.json();
+      const data: Employees[] = await res.json();
       setEmployees(data);
     } catch (err) {
       console.error(err);

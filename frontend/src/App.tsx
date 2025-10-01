@@ -14,9 +14,9 @@ import Login from "./sighup/Login";
 import Details from "./Admin/Details";
 import EmployeeList from "./EmployeeList";
 import AddEmployee from "./AddEmployee";
-import Profile from "./Admin/profile";
 import Profileadmin from "./Admin/Profileadmin";
-import Popupalert from "./Admin/popupalert";
+import Popup from "./Admin/Popupalert";
+import Profile from "./Admin/Profile";
 
 
 const router = createBrowserRouter([
@@ -32,9 +32,9 @@ const router = createBrowserRouter([
       { path: 'details', element: <Details /> },
       { path: 'EmployeeList', element: <EmployeeList /> },
       { path: 'AddEmployee', element: <AddEmployee /> },
-       { path: 'Profile', element: <Profile /> },
-       {path: 'Profileadmin', element: < Profileadmin/>},
-        {path: 'Popupalert', element: < Popupalert/>}
+      { path: 'Profile', element: <Profile /> },
+      { path: 'Profileadmin', element: < Profileadmin /> },
+      { path: 'Popupalert', element: < Popup /> }
     ],
   },
 ]);
