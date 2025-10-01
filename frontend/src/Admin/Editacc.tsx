@@ -1,81 +1,85 @@
 export default function Editacc() {
+  const workers = [
+    {
+      img: "https://i.pinimg.com/1200x/ca/3b/ee/ca3bee207c4135d0cf99a9874db41ece.jpg",
+      name: "สมชาย ใจดี",
+      type: "ช่างไม้",
+      position: "Head Carpenter",
+      date: "27/08/2568",
+    },
+    {
+      img: "https://i.pinimg.com/1200x/ca/3b/ee/ca3bee207c4135d0cf99a9874db41ece.jpg",
+      name: "สมชาย ใจดี",
+      type: "ช่างไม้",
+      position: "Head Carpenter",
+      date: "27/08/2568",
+    },
+    {
+      img: "https://i.pinimg.com/1200x/ca/3b/ee/ca3bee207c4135d0cf99a9874db41ece.jpg",
+      name: "สมชาย ใจดี",
+      type: "ช่างไม้",
+      position: "Head Carpenter",
+      date: "27/08/2568",
+    },
+  ];
+
   return (
-    <div className="flex container mx-auto min-h-screen bg-blue-50 ">
-    
-      <div className="flex-1 p-6">
-        <p className="text-lg my-5 ml-5 font-bold">
-          จัดการบัญชี
-          <span className="font-bold text-yellow-500">ช่าง</span>
+    <div className=" container mx-auto min-h-screen flex justify-center py-10">
+      <div className="w-full p-6">
+        <p className="text-2xl font-bold mb-5 text-blue-700 ml-2">
+          จัดการบัญชี <span className="text-yellow-500">ช่าง</span>
         </p>
-        <div>
-       <div className="border rounded-4xl text-gray-500 w-50 h-11 ml-5">
-          <form className="flex items-center">
+
+        {/* Search bar */}
+        <div className="mb-6 ml-2 mr-2">
+          <form className="flex border rounded-full overflow-hidden shadow-sm">
             <input
               type="text"
               placeholder="ค้นหาช่าง"
-              className="flex-grow px-4 py-2  rounded-4xl focus:outline-none"
+              className="flex-grow px-4 py-2 focus:outline-none"
             />
-     <button
+            <button
               type="submit"
-              className="bg-blue-500 text-white px-4 py-2 rounded-4xl hover:bg-blue-600 ml-1"
+              className="bg-blue-500 text-white px-6 py-2 hover:bg-blue-600 transition"
             >
               ค้นหา
             </button>
           </form>
-          <div> 
-    
-       
-        </div>
         </div>
 
- <div>
-          <div className="grid grid-cols-6 gap-5 font-bold text-lg border-b pb-2 mt-5 ml-5 mr-5">
-            <p className="">รูป</p>
-            <p>ชื่อ</p>
-            <p className=" mx-auto">ประเภทงาน</p>
-            <p className=" mx-auto">ตำแหน่ง</p>
-            <p className=" mx-auto">วันที่สมัคร</p>
-            <p className=" mx-auto">การจัดการ</p>
+        {/* Table Header */}
+        <div className="grid grid-cols-6 gap-5 font-bold text-lg border-b-2 text-blue-700 py-2 ml-2 mr-2">
+          <p>รูป</p>
+          <p>ชื่อ</p>
+          <p className="text-center">ประเภทงาน</p>
+          <p className="text-center">ตำแหน่ง</p>
+          <p className="text-center">วันที่สมัคร</p>
+          <p className="text-center">การจัดการ</p>
+        </div>
 
+        {/* Table Rows */}
+        {workers.map((worker, idx) => (
+          <div
+            key={idx}
+            className="grid grid-cols-6 gap-5 items-center text-gray-700 border-b py-3 ml-2 mr-2 hover:bg-blue-100 transition rounded-lg"
+          >
+            <img
+              src={worker.img}
+              alt={worker.name}
+              className="w-20 h-20 object-cover rounded-full mx-auto"
+            />
+            <p className="flex items-center justify-center">{worker.name}</p>
+            <p className="text-center">{worker.type}</p>
+            <p className="text-center">{worker.position}</p>
+            <p className="text-center">{worker.date}</p>
+            <div className="flex justify-center">
+              <button className="bg-yellow-500 text-white px-4 py-2 rounded-full hover:bg-yellow-600 transition">
+                แก้ไข
+              </button>
+            </div>
           </div>
-             
-          <div className="grid grid-cols-6 gap-5 font-bold text-sm pl-1 mt-3 text-gray-600 border-b pb-2 items-center ml-5 mr-5">
-            <img src="https://i.pinimg.com/1200x/ca/3b/ee/ca3bee207c4135d0cf99a9874db41ece.jpg" className="w-20 h-full object-cover object-center" alt="pic" />
-            
-            <p className="">สมชาย ใจดี</p>
-            <p className=" mx-auto"> ช่างไม้</p>
-             <p className=" mx-auto"> Head Carpenter</p>
-             <p className=" mx-auto"> 27/08/2568</p>
-              <button className="mx-auto text-white h-10 w-15 bg-yellow-500 rounded-3xl hover:bg-yellow-600 ">แก้ไข</button>
-
-     </div>
-          </div> 
- <div>
-             
-          <div className="grid grid-cols-6 gap-5 font-bold text-sm pl-1 mt-3 text-gray-600 border-b pb-2 items-center ml-5 mr-5">
-            <img src="https://i.pinimg.com/1200x/ca/3b/ee/ca3bee207c4135d0cf99a9874db41ece.jpg" className="w-20 h-full" alt="pic" />
-            
-            <p className="">สมชาย ใจดี</p>
-            <p className=" mx-auto"> ช่างไม้</p>
-             <p className=" mx-auto"> Head Carpenter</p>
-             <p className=" mx-auto"> 27/08/2568</p>
- <button className="mx-auto text-white h-10 w-15 bg-yellow-500 rounded-3xl hover:bg-yellow-600 ">แก้ไข</button>
-     </div>
-     
-          </div>
-                <div className="grid grid-cols-6 gap-5 font-bold text-sm pl-1 mt-3 text-gray-600 border-b pb-2 items-center ml-5 mr-5">
-            <img src="https://i.pinimg.com/1200x/ca/3b/ee/ca3bee207c4135d0cf99a9874db41ece.jpg" className="w-20 h-full" alt="pic" />
-            
-            <p className="">สมชาย ใจดี</p>
-            <p className=" mx-auto"> ช่างไม้</p>
-             <p className=" mx-auto"> Head Carpenter</p>
-             <p className=" mx-auto"> 27/08/2568</p>
- <button className="mx-auto text-white h-10 w-15 bg-yellow-500 rounded-3xl hover:bg-yellow-600 ">แก้ไข</button>
-
-     </div>
-        </div>
+        ))}
       </div>
     </div>
-
   );
 }
