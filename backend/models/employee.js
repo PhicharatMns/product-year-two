@@ -10,15 +10,14 @@ mongoose
   .catch((err) => console.error(err));
 
 const employeeSchema = new mongoose.Schema({
-  firstName: String,  // ชื่อ
-  lastName: String,   // นามสกุล
-  email: String,
-  phone: String,
-  position: String,
-  department: String,
+  JobTitle: String,  // ชื่อ
+  Details: String,   // นามสกุล
+  Status: String,
+  List: String,
+  DateReceived: String,
+  DatetoClose: String,
   dateJoined: Date,
-  status: String,
-   image: String
+  Manage: String,
 });
 
 

@@ -29,7 +29,7 @@ export default function Sidebaradmin() {
   const [onClickSizebar, setOnClickSizebar] = useState(true);
 
   return (
-    <div className="fixed flex h-screen">
+    <div className="fixed z-2 flex h-screen">
     
       <div
         className={` flex flex-col justify-between bg-blue-500 text-white font-bold border-r transition-all duration-300
