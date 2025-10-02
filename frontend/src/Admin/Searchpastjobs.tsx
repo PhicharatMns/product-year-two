@@ -154,11 +154,68 @@ const Searchpastjobs: React.FC = () => {
           //     </button>
           //   </div>
           // </div>
-          <div className="flex fixed inset-0 justify-center items-center">
-            <div className='relative border-5'>
-              <p>5</p>
+          <div className="fixed inset-0 flex justify-center items-center bg-black/30 z-50">
+            <div className="bg-white rounded-xl shadow-lg p-6 w-[900px]">
+
+              {/* แถวชื่อใบงาน, ชื่อนามสกุล, เบอร์โทร */}
+              <div className="grid grid-cols-3 gap-5 mb-4">
+                <div>
+                  <p className="my-1 font-semibold">ชื่อใบงาน</p>
+                  <input type="text" className="border w-full p-2 rounded-lg" />
+                </div>
+                <div>
+                  <p className="my-1 font-semibold">ชื่อนามสกุลผู้จ้างงาน</p>
+                  <input type="text" className="border w-full p-2 rounded-lg" />
+                </div>
+                <div>
+                  <p className="my-1 font-semibold">เบอร์โทรติดต่อ</p>
+                  <input type="text" className="border w-full p-2 rounded-lg" />
+                </div>
+              </div>
+
+              {/* แถวที่อยู่ */}
+              <div className="mb-4">
+                <p className="my-1 font-semibold">ที่อยู่</p>
+                <input type="text" className="border w-full p-2 rounded-lg" />
+              </div>
+
+              {/* แถววันที่และไฟล์ */}
+              <div className="grid grid-cols-2 gap-5 mb-4">
+                <div>
+                  <p className="my-1 font-semibold">เพิ่มผู้รับผิดชอบ</p>
+                  <div className="flex gap-4 mb-2">
+                    <div className="flex flex-col">
+                      <label className="font-medium">วันที่รับงาน</label>
+                      <input type="date" className="border p-2 rounded-lg" />
+                    </div>
+                    <div className="flex flex-col">
+                      <label className="font-medium">วันที่ต้องปิดงาน</label>
+                      <input type="date" className="border p-2 rounded-lg" />
+                    </div>
+                  </div>
+                  <p className="my-1 font-semibold">ไฟล์เริ่มงาน</p>
+                  <input type="file" className="border p-2 rounded-lg w-full" />
+                </div>
+
+                <div className="flex flex-col">
+                  <p className="my-1 font-semibold">รายละเอียดงาน</p>
+                  <textarea className="border p-2 rounded-lg w-full h-full resize-none" />
+                </div>
+              </div>
+
+              {/* ปุ่มบันทึก / ยกเลิก */}
+              <div className="flex justify-end gap-4 mt-4">
+                <button   onClick={() => setShowModal(false)} className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition">
+                  ยกเลิก
+                </button>
+                <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                  บันทึก
+                </button>
+              </div>
+
             </div>
           </div>
+
         )}
       </div>
     </div>
