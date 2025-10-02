@@ -19,7 +19,7 @@ export default function Sidebaradmin() {
   const datasizebar: SidebarItem[] = [
     { text: "Dashboard", icons: MdDashboard, Link: "Dashboard" },
     { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "Searchpastjobs" },
-    { text: "ส่งแจ้งการเตือน", icons: TbBellPlus, Link: "Details" },
+    { text: "ส่งแจ้งการเตือน", icons: TbBellPlus, Link: "newalert" },
     { text: "สถิติ", icons: GoGraph, Link: "graph" },
     { text: "กำหนดประเภท/หมวด", icons: MdOutlineCategory, Link: "setwork" },
     { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "Editacc" },
@@ -29,14 +29,14 @@ export default function Sidebaradmin() {
   const [onClickSizebar, setOnClickSizebar] = useState(true);
 
   return (
-    <div className="fixed flex h-screen">
+    <div className="flex h-screen">
     
       <div
-        className={` flex flex-col justify-between bg-blue-500 text-white font-bold border-r transition-all duration-300
+        className={`flex flex-col justify-between bg-blue-500 text-white font-bold border-r transition-all duration-300
           ${onClickSizebar ? "w-16" : "w-64"}`}
       >
 
-        <div className=" flex flex-col overflow-y-auto">
+        <div className="flex flex-col overflow-y-auto">
    
           <div className="flex items-center py-3 p-4">
             <Link to="/Profile" className="mx-auto">

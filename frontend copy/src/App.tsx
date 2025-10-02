@@ -2,8 +2,9 @@
 import {
   createBrowserRouter,
   RouterProvider,
-  Navigate,
+  Navigate
 } from "react-router-dom";
+
 
 import Searchpastjobs from "./Admin/Searchpastjobs";
 import Editacc from "./Admin/Editacc";
@@ -16,11 +17,12 @@ import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
 import Popup from "./Admin/Popupalert";
 import Profile from "./Admin/Profile";
-import Addwork from "./Admin/Addwork";
+
 
 const router = createBrowserRouter([
+
   { path: "/", element: <Navigate to="/logins" replace /> },
-  { path: "/logins", element: <Login /> },
+  { path: '/logins', element: <Login /> },
   {
     element: <AdminLayout />,
     children: [
@@ -32,8 +34,7 @@ const router = createBrowserRouter([
       { path: 'AddEmployee', element: <AddEmployee /> },
       { path: 'Profile', element: <Profile /> },
       { path: 'Profileadmin', element: < Profileadmin /> },
-      { path: 'Popupalert', element: < Popup /> },
-      { path: 'Addwork', element: <Addwork /> }
+      { path: 'Popupalert', element: < Popup /> }
     ],
   },
 ]);
