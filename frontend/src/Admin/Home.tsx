@@ -2,9 +2,9 @@
 
 export default function Home() {
     return (
-        <div className="flex">
+        <div className="flex Z-1">
             <div className="flex-1">
-                <div className='container mx-auto my-5  '>
+                <div className='container  mx-auto my-5  '>
                     <p className="text-xl font-bold my-5">Home</p>
                     <div className="grid grid-cols-2 gap-5 ">
                         <div className="group border h-100 relative rounded-xl shadow-xl shadow-blue-100 hover:scale-105 duration-300 cursor-pointer overflow-hidden">

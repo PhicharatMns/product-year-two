@@ -29,14 +29,14 @@ export default function Sidebaradmin() {
   const [onClickSizebar, setOnClickSizebar] = useState(true);
 
   return (
-    <div className="fixed flex h-screen">
+    <div className=" fixed z-20 flex h-screen">
     
       <div
-        className={` flex flex-col justify-between bg-blue-500 text-white font-bold border-r transition-all duration-300
+        className={` flex relative  flex-col justify-between bg-blue-500 text-white font-bold border-r transition-all duration-300
           ${onClickSizebar ? "w-16" : "w-64"}`}
       >
 
-        <div className=" flex flex-col overflow-y-auto">
+        <div className="  flex flex-col ">
    
           <div className="flex items-center py-3 p-4">
             <Link to="/Profile" className="mx-auto">
