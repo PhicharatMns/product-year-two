@@ -14,20 +14,21 @@ const headerNav = [
 
 interface Employees {
   _id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  position: string;
-  department: string;
-  dateJoined?: string;
-  status?: string;
-  image?: string;
+  JobTitle: string;
+  Details: string;
+  Status: string;
+  List: string;
+  DateReceived: string;
+  DatetoClose: string;
+  dateJoined: string;
+  Manage: string;
 }
 
 const Searchpastjobs: React.FC = () => {
   const [dataEmployees, setDataEmployees] = useState<Employees[]>([]);
   const [showModal, setShowModal] = useState(false);
+
+  //addDate
 
   // ดึงข้อมูลพนักงาน
   const fetchEmployees = async () => {
@@ -86,7 +87,10 @@ const Searchpastjobs: React.FC = () => {
         <div>
           <div className="grid grid-cols-10 gap-8 font-bold text-blue-700 border-b-2 pb-2">
             {headerNav.map((event, index) => (
-              <div key={index} className={`${index === 0 ? "col-span-2" : ""}`}>
+              <div
+                key={index}
+                className={`${index === 0 ? "text-center col-span-2" : ""}`}
+              >
                 {event}
               </div>
             ))}
@@ -100,13 +104,13 @@ const Searchpastjobs: React.FC = () => {
               className="grid grid-cols-10 gap-8 border-b border-gray-300 pb-5 pt-5"
               key={index}
             >
-              <p className="col-span-2">{event._id}</p>
-              <p>{event.lastName}</p>
-              <p>{event.department}</p>
-              <p>{event.department}</p>
-              <p>{event.department}</p>
-              <p>{event.department}</p>
-              <p>{event.department}</p>
+              <p className="col-span-2 text-center">{event._id}</p>
+              <p>{event.JobTitle}</p>
+              <p>{event.Details}</p>
+              <p>{event.Status}</p>
+              <p>{event.List}</p>
+              <p>{event.DateReceived}</p>
+              <p>{event.DatetoClose}</p>
               <button
                 className="border w-fit px-2 rounded"
                 onClick={() => handleDelete(event._id)}
@@ -156,7 +160,6 @@ const Searchpastjobs: React.FC = () => {
           // </div>
           <div className="fixed inset-0 flex justify-center items-center bg-black/30 z-50">
             <div className="bg-white rounded-xl shadow-lg p-6 w-[900px]">
-
               {/* แถวชื่อใบงาน, ชื่อนามสกุล, เบอร์โทร */}
               <div className="grid grid-cols-3 gap-5 mb-4">
                 <div>
@@ -205,17 +208,18 @@ const Searchpastjobs: React.FC = () => {
 
               {/* ปุ่มบันทึก / ยกเลิก */}
               <div className="flex justify-end gap-4 mt-4">
-                <button   onClick={() => setShowModal(false)} className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition"
+                >
                   ยกเลิก
                 </button>
                 <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
                   บันทึก
                 </button>
               </div>
-
             </div>
           </div>
-
         )}
       </div>
     </div>

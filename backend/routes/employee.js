@@ -8,7 +8,8 @@ const fs = require("fs");
 // Multer config
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, "uploads/"),
-  filename: (req, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
+  filename: (req, file, cb) =>
+    cb(null, Date.now() + path.extname(file.originalname)),
 });
 const upload = multer({ storage });
 
@@ -17,28 +18,27 @@ const upload = multer({ storage });
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      position,
-      department,
-      status,
-      dateJoined
+      JobTitle,
+      Details,
+      Status,
+      List,
+      DateReceived,
+      DatetoClose,
+      dateJoined,
+      Manage,
     } = req.body;
 
     const image = req.file ? req.file.filename : undefined;
 
     const employee = new Employee({
-      firstName,
-      lastName,
-      email,
-      phone,
-      position,
-      department,
-      status: status || "Active",
+      JobTitle,
+      Details,
+      Status,
+      List,
+      DateReceived,
+      DatetoClose,
+      Manage,
       dateJoined: dateJoined || Date.now(),
-      image
     });
 
     await employee.save();
@@ -47,7 +47,6 @@ router.post("/", upload.single("image"), async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // GET all employees
 router.get("/", async (req, res) => {

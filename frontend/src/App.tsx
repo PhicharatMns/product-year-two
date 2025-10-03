@@ -2,9 +2,8 @@
 import {
   createBrowserRouter,
   RouterProvider,
-  Navigate
+  Navigate,
 } from "react-router-dom";
-
 
 import Searchpastjobs from "./Admin/Searchpastjobs";
 import Editacc from "./Admin/Editacc";
@@ -19,11 +18,9 @@ import Popup from "./Admin/Popupalert";
 import Profile from "./Admin/Profile";
 import Addwork from "./Admin/Addwork";
 
-
 const router = createBrowserRouter([
-
   { path: "/", element: <Navigate to="/logins" replace /> },
-  { path: '/logins', element: <Login /> },
+  { path: "/logins", element: <Login /> },
   {
     element: <AdminLayout />,
     children: [
