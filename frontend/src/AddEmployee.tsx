@@ -41,7 +41,7 @@ const AddEmployee: React.FC = () => {
       setList("");
       setDateReceived("");
       setDateToClose("");
-      setDateJoined(new Date().toISOString().split("T")[0]);
+      setDateJoined('')
       setManage("");
     } catch (err) {
       console.error(err);
@@ -126,3 +126,6 @@ const AddEmployee: React.FC = () => {
 };
 
 export default AddEmployee;
+
+
+

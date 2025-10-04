@@ -4,6 +4,7 @@ import { CiSearch } from "react-icons/ci";
 const headerNav = [
   "ID",
   "ชื่องาน",
+  "รายชื่อผู้จ้าง",
   "รายละเอียด",
   "สถานะ",
   "รายชื่อ",
@@ -11,24 +12,32 @@ const headerNav = [
   "วันที่ต้องปิดงาน",
   "จัดการ",
 ];
-
 interface Employees {
   _id: string;
-  JobTitle: string;
-  Details: string;
-  Status: string;
-  List: string;
-  DateReceived: string;
-  DatetoClose: string;
-  dateJoined: string;
-  Manage: string;
+  Worksheet: string;
+  Employer: string;
+  Contact_number: string;
+  address: string;
+  responsible: string;
+  Date_of_acceptance_of_work: string;
+  Closing_date: string;
+  description: string;
+  JobTitle?: string;
 }
 
 const Searchpastjobs: React.FC = () => {
   const [dataEmployees, setDataEmployees] = useState<Employees[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [Worksheet, setWorksheet] = useState('')
+  const [Employer, setEmployer] = useState('')
+  const [Contact_number, setContact_number] = useState('')
+  const [address, setaddress] = useState('')
+  const [responsible, setresponsible] = useState('')
+  const [Date_of_acceptance_of_work, setDate_of_acceptance_of_work] = useState(new Date().toISOString().split("T")[0])
+  const [Closing_date, setClosing_date] = useState(new Date().toISOString().split("T")[0])
+  const [description, setdescription] = useState('')
+  const [image, setimage] = useState('')
 
-  //addDate
 
   // ดึงข้อมูลพนักงาน
   const fetchEmployees = async () => {
@@ -56,6 +65,37 @@ const Searchpastjobs: React.FC = () => {
       console.error(err);
     }
   };
+
+  // เพิ่มฟังก์ชันบันทึก
+  const handleSave = async () => {
+    try {
+      const newJob = {
+        Worksheet,
+        Employer,
+        Contact_number,
+        address,
+        responsible,
+        Date_of_acceptance_of_work,
+        Closing_date,
+        description,
+      };
+
+      await fetch("http://localhost:5000/api/employees", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newJob),
+      });
+
+      // ปิด modal + โหลดข้อมูลใหม่
+      setShowModal(false);
+      fetchEmployees();
+    } catch (err) {
+      console.error("Error saving data:", err);
+    }
+  };
+
 
   return (
     <div className="bg-blue-50 min-h-screen py-10">
@@ -89,7 +129,7 @@ const Searchpastjobs: React.FC = () => {
             {headerNav.map((event, index) => (
               <div
                 key={index}
-                className={`${index === 0 ? "text-center col-span-2" : ""}`}
+                className={`${index === 0 ? "text-center col-span-2" : ""} ${index === 8 ? 'text-center' : ''}`}
               >
                 {event}
               </div>
@@ -104,105 +144,90 @@ const Searchpastjobs: React.FC = () => {
               className="grid grid-cols-10 gap-8 border-b border-gray-300 pb-5 pt-5"
               key={index}
             >
-              <p className="col-span-2 text-center">{event._id}</p>
-              <p>{event.JobTitle}</p>
-              <p>{event.Details}</p>
-              <p>{event.Status}</p>
-              <p>{event.List}</p>
-              <p>{event.DateReceived}</p>
-              <p>{event.DatetoClose}</p>
-              <button
-                className="border w-fit px-2 rounded"
-                onClick={() => handleDelete(event._id)}
-              >
-                delete
-              </button>
+              <p className={`${index === 0 ? 'text-center col-span-2 truncate' : 'text-center col-span-2 truncate'}`}>{event._id}</p>
+              <p className=" truncate ">{event.Worksheet}</p>
+              <p className=" truncate ">{event.Employer}</p>
+              <p className=" truncate ">{event.description}</p>
+              <p className=" truncate ">{event.responsible}</p>
+              <p className=" truncate ">{event.Contact_number}</p>
+              <p className=" truncate ">{event.Date_of_acceptance_of_work.split('T')[0]}</p>
+              <p className=" truncate ">{event.Closing_date.split('T')[0]}</p>
+              {/* <p>{event.JobTitle}</p> */}
+
+              <div className="flex gap-1 mx-auto">
+                <button
+                  className="border p-1 truncate text-red-500 w-fit px-2 rounded"
+                  onClick={() => handleDelete(event._id)}
+                >
+                  รายละเอียด
+                </button>
+                <button
+                  className="border  p-1 text-green-500 w-fit px-2 rounded"
+                  onClick={() => handleDelete(event._id)}
+                >
+                  ลบ
+                </button>
+              </div>
             </div>
           );
         })}
 
         {/* Modal */}
         {showModal && (
-          // <div className="fixed inset-0 flex justify-center items-center">
-          //   <div className="bg-white p-6 rounded-xl w-96 shadow-lg ">
-          //     <h3 className="text-lg font-bold mb-4">เพิ่มใบงาน</h3>
-
-          //     {/* ฟอร์มเพิ่มงาน */}
-          //     <input
-          //       type="text"
-          //       placeholder="ชื่องาน"
-          //       className="border w-full mb-3 px-3 py-2 rounded"
-          //     />
-          //     <textarea
-          //       placeholder="รายละเอียด"
-          //       className="border w-full mb-3 px-3 py-2 rounded"
-          //     ></textarea>
-
-          //     <div className="flex justify-end gap-3">
-          //       <button
-          //         onClick={() => setShowModal(false)}
-          //         className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400"
-          //       >
-          //         ยกเลิก
-          //       </button>
-          //       <button className="px-4 py-2 rounded bg-blue-500 text-white hover:bg-blue-600">
-          //         บันทึก
-          //       </button>
-          //     </div>
-
-          //     <button
-          //       onClick={() => setShowModal(false)}
-          //       className="absolute top-2 right-2 text-gray-500 hover:text-black"
-          //     >
-          //       ✕
-          //     </button>
-          //   </div>
-          // </div>
           <div className="fixed inset-0 flex justify-center items-center bg-black/30 z-50">
             <div className="bg-white rounded-xl shadow-lg p-6 w-[900px]">
               {/* แถวชื่อใบงาน, ชื่อนามสกุล, เบอร์โทร */}
               <div className="grid grid-cols-3 gap-5 mb-4">
                 <div>
                   <p className="my-1 font-semibold">ชื่อใบงาน</p>
-                  <input type="text" className="border w-full p-2 rounded-lg" />
+                  <input type="text" value={Worksheet} onChange={(e) => setWorksheet(e.target.value)} className="border w-full p-2 rounded-lg" />
                 </div>
                 <div>
                   <p className="my-1 font-semibold">ชื่อนามสกุลผู้จ้างงาน</p>
-                  <input type="text" className="border w-full p-2 rounded-lg" />
+                  <input type="text" value={Employer} onChange={(e) => setEmployer(e.target.value)} className="border w-full p-2 rounded-lg" />
                 </div>
                 <div>
                   <p className="my-1 font-semibold">เบอร์โทรติดต่อ</p>
-                  <input type="text" className="border w-full p-2 rounded-lg" />
+                  <input type="text" value={Contact_number} onChange={(e) => setContact_number(e.target.value)} className="border w-full p-2 rounded-lg" />
                 </div>
               </div>
 
               {/* แถวที่อยู่ */}
               <div className="mb-4">
                 <p className="my-1 font-semibold">ที่อยู่</p>
-                <input type="text" className="border w-full p-2 rounded-lg" />
+                <input type="text" value={address} onChange={(e) => setaddress(e.target.value)} className="border w-full p-2 rounded-lg" />
               </div>
 
               {/* แถววันที่และไฟล์ */}
               <div className="grid grid-cols-2 gap-5 mb-4">
                 <div>
-                  <p className="my-1 font-semibold">เพิ่มผู้รับผิดชอบ</p>
+                  <div className="grid grid-cols-2 gap-5">
+                    <div>
+                      <p className="my-1 font-semibold">เพิ่มผู้รับผิดชอบ</p>
+                      <input type="text" value={responsible} onChange={(e) => setresponsible(e.target.value)} className="border p-2 rounded-lg w-full" name="" id="" />
+                    </div>
+                    <div>
+                      <p className="my-1 font-semibold">เพิ่มผู้รับผิดชอบ</p>
+                      <input type="text" className="border p-2 rounded-lg w-full" name="" id="" />
+                    </div>
+                  </div>
                   <div className="flex gap-4 mb-2">
                     <div className="flex flex-col">
                       <label className="font-medium">วันที่รับงาน</label>
-                      <input type="date" className="border p-2 rounded-lg" />
+                      <input type="date" value={Date_of_acceptance_of_work} onChange={(e) => setDate_of_acceptance_of_work(e.target.value)} className="border p-2 rounded-lg" />
                     </div>
                     <div className="flex flex-col">
                       <label className="font-medium">วันที่ต้องปิดงาน</label>
-                      <input type="date" className="border p-2 rounded-lg" />
+                      <input type="date" value={Closing_date} onChange={(e) => setClosing_date(e.target.value)} className="border p-2 rounded-lg" />
                     </div>
                   </div>
                   <p className="my-1 font-semibold">ไฟล์เริ่มงาน</p>
-                  <input type="file" className="border p-2 rounded-lg w-full" />
+                  <input type="file" value={image} onChange={(e) => setimage(e.target.value)} className="border p-2 rounded-lg w-full" />
                 </div>
 
                 <div className="flex flex-col">
                   <p className="my-1 font-semibold">รายละเอียดงาน</p>
-                  <textarea className="border p-2 rounded-lg w-full h-full resize-none" />
+                  <textarea value={description} onChange={(e) => setdescription(e.target.value)} className="border p-2 rounded-lg w-full h-full resize-none" />
                 </div>
               </div>
 
@@ -214,9 +239,10 @@ const Searchpastjobs: React.FC = () => {
                 >
                   ยกเลิก
                 </button>
-                <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
                   บันทึก
                 </button>
+
               </div>
             </div>
           </div>

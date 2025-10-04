@@ -10,17 +10,22 @@ mongoose
   .catch((err) => console.error(err));
 
 const employeeSchema = new mongoose.Schema({
-  JobTitle: String,  // ชื่อ
-  Details: String,   // นามสกุล
-  Status: String,
-  List: String,
-  DateReceived: String,
-  DatetoClose: String,
-  dateJoined: Date,
-  Manage: String,
+  Worksheet: String,
+  Employer: String,
+  Contact_number: String,
+  address: String,
+  responsible: String,
+  Date_of_acceptance_of_work: Date,
+  Closing_date: Date,
+  description: String,
+  image: String
 });
 
 
 const Employee = mongoose.model("Employees", employeeSchema);
 
 module.exports = Employee;
+
+
+
+

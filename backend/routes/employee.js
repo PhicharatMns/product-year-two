@@ -18,28 +18,30 @@ const upload = multer({ storage });
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const {
-      JobTitle,
-      Details,
-      Status,
-      List,
-      DateReceived,
-      DatetoClose,
-      dateJoined,
-      Manage,
+      Worksheet,
+      Employer,
+      Contact_number,
+      address,
+      responsible,
+      Date_of_acceptance_of_work,
+      Closing_date,
+      description,
     } = req.body;
 
     const image = req.file ? req.file.filename : undefined;
 
     const employee = new Employee({
-      JobTitle,
-      Details,
-      Status,
-      List,
-      DateReceived,
-      DatetoClose,
-      Manage,
-      dateJoined: dateJoined || Date.now(),
+      Worksheet,
+      Employer,
+      Contact_number,
+      address,
+      responsible,
+      Date_of_acceptance_of_work: Date_of_acceptance_of_work || Date.now(),
+      Closing_date: Closing_date || Date.now(),
+      description,
+      image,
     });
+
 
     await employee.save();
     res.status(201).json(employee);
