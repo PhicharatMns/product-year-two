@@ -2,16 +2,18 @@ import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 
 const headerNav = [
-  "ID",
+  // "ID",
   "ชื่องาน",
   "รายชื่อผู้จ้าง",
-  "รายละเอียด",
+  "เบอร์ติดต่อ",
+  // "รายละเอียด",
   "สถานะ",
   "รายชื่อ",
   "วันที่รับ",
   "วันที่ต้องปิดงาน",
   "จัดการ",
 ];
+
 interface Employees {
   _id: string;
   Worksheet: string;
@@ -23,21 +25,26 @@ interface Employees {
   Closing_date: string;
   description: string;
   JobTitle?: string;
+  Status?: string;
 }
 
 const Searchpastjobs: React.FC = () => {
   const [dataEmployees, setDataEmployees] = useState<Employees[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [Worksheet, setWorksheet] = useState('')
-  const [Employer, setEmployer] = useState('')
-  const [Contact_number, setContact_number] = useState('')
-  const [address, setaddress] = useState('')
-  const [responsible, setresponsible] = useState('')
-  const [Date_of_acceptance_of_work, setDate_of_acceptance_of_work] = useState(new Date().toISOString().split("T")[0])
-  const [Closing_date, setClosing_date] = useState(new Date().toISOString().split("T")[0])
-  const [description, setdescription] = useState('')
-  const [image, setimage] = useState('')
-
+  const [Worksheet, setWorksheet] = useState("");
+  const [Employer, setEmployer] = useState("");
+  const [Contact_number, setContact_number] = useState("");
+  const [address, setaddress] = useState("");
+  const [responsible, setresponsible] = useState("");
+  const [Date_of_acceptance_of_work, setDate_of_acceptance_of_work] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+  const [Closing_date, setClosing_date] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+  const [description, setdescription] = useState("");
+  const [image, setimage] = useState("");
+  const [Status, setStatus] = useState("Active");
 
   // ดึงข้อมูลพนักงาน
   const fetchEmployees = async () => {
@@ -78,6 +85,7 @@ const Searchpastjobs: React.FC = () => {
         Date_of_acceptance_of_work,
         Closing_date,
         description,
+        Status,
       };
 
       await fetch("http://localhost:5000/api/employees", {
@@ -95,7 +103,6 @@ const Searchpastjobs: React.FC = () => {
       console.error("Error saving data:", err);
     }
   };
-
 
   return (
     <div className="bg-blue-50 min-h-screen py-10">
@@ -125,11 +132,13 @@ const Searchpastjobs: React.FC = () => {
 
         {/* Header Table */}
         <div>
-          <div className="grid grid-cols-10 gap-8 font-bold text-blue-700 border-b-2 pb-2">
+          <div className="grid grid-cols-8 gap-8  font-bold text-blue-700 border-b-2 pb-2">
             {headerNav.map((event, index) => (
               <div
                 key={index}
-                className={`${index === 0 ? "text-center col-span-2" : ""} ${index === 8 ? 'text-center' : ''}`}
+                className={`${index === 0 ? "" : ""} ${
+                  index === 7 ? "text-center" : ""
+                }`}
               >
                 {event}
               </div>
@@ -139,21 +148,21 @@ const Searchpastjobs: React.FC = () => {
 
         {/* Data Rows */}
         {dataEmployees.map((event, index) => {
+          console.log(event.Status); // ตรวจสอบว่ามีค่าไหม
           return (
             <div
-              className="grid grid-cols-10 gap-8 border-b border-gray-300 pb-5 pt-5"
+              className="grid grid-cols-8 gap-8 border-b border-gray-300 pb-5 pt-5"
               key={index}
             >
-              <p className={`${index === 0 ? 'text-center col-span-2 truncate' : 'text-center col-span-2 truncate'}`}>{event._id}</p>
-              <p className=" truncate ">{event.Worksheet}</p>
-              <p className=" truncate ">{event.Employer}</p>
-              <p className=" truncate ">{event.description}</p>
-              <p className=" truncate ">{event.responsible}</p>
-              <p className=" truncate ">{event.Contact_number}</p>
-              <p className=" truncate ">{event.Date_of_acceptance_of_work.split('T')[0]}</p>
-              <p className=" truncate ">{event.Closing_date.split('T')[0]}</p>
-              {/* <p>{event.JobTitle}</p> */}
-
+              <p className="truncate">{event.Worksheet}</p>
+              <p className="truncate">{event.Employer}</p>
+              <p className="truncate">{event.Contact_number}</p>
+              <p className={`truncate ${Status ? 'text-red-500' : ''}` }>{event.Status}</p>
+              <p className="truncate">{event.responsible}</p>
+              <p className="truncate">
+                {event.Date_of_acceptance_of_work.split("T")[0]}
+              </p>
+              <p className="truncate">{event.Closing_date.split("T")[0]}</p>
               <div className="flex gap-1 mx-auto">
                 <button
                   className="border p-1 truncate text-red-500 w-fit px-2 rounded"
@@ -180,22 +189,42 @@ const Searchpastjobs: React.FC = () => {
               <div className="grid grid-cols-3 gap-5 mb-4">
                 <div>
                   <p className="my-1 font-semibold">ชื่อใบงาน</p>
-                  <input type="text" value={Worksheet} onChange={(e) => setWorksheet(e.target.value)} className="border w-full p-2 rounded-lg" />
+                  <input
+                    type="text"
+                    value={Worksheet}
+                    onChange={(e) => setWorksheet(e.target.value)}
+                    className="border w-full p-2 rounded-lg"
+                  />
                 </div>
                 <div>
                   <p className="my-1 font-semibold">ชื่อนามสกุลผู้จ้างงาน</p>
-                  <input type="text" value={Employer} onChange={(e) => setEmployer(e.target.value)} className="border w-full p-2 rounded-lg" />
+                  <input
+                    type="text"
+                    value={Employer}
+                    onChange={(e) => setEmployer(e.target.value)}
+                    className="border w-full p-2 rounded-lg"
+                  />
                 </div>
                 <div>
                   <p className="my-1 font-semibold">เบอร์โทรติดต่อ</p>
-                  <input type="text" value={Contact_number} onChange={(e) => setContact_number(e.target.value)} className="border w-full p-2 rounded-lg" />
+                  <input
+                    type="text"
+                    value={Contact_number}
+                    onChange={(e) => setContact_number(e.target.value)}
+                    className="border w-full p-2 rounded-lg"
+                  />
                 </div>
               </div>
 
               {/* แถวที่อยู่ */}
               <div className="mb-4">
                 <p className="my-1 font-semibold">ที่อยู่</p>
-                <input type="text" value={address} onChange={(e) => setaddress(e.target.value)} className="border w-full p-2 rounded-lg" />
+                <input
+                  type="text"
+                  value={address}
+                  onChange={(e) => setaddress(e.target.value)}
+                  className="border w-full p-2 rounded-lg"
+                />
               </div>
 
               {/* แถววันที่และไฟล์ */}
@@ -203,31 +232,66 @@ const Searchpastjobs: React.FC = () => {
                 <div>
                   <div className="grid grid-cols-2 gap-5">
                     <div>
-                      <p className="my-1 font-semibold">เพิ่มผู้รับผิดชอบ</p>
-                      <input type="text" value={responsible} onChange={(e) => setresponsible(e.target.value)} className="border p-2 rounded-lg w-full" name="" id="" />
+                      <p className="my-1 font-semibold">สถานะ</p>
+
+                      <select
+                        className="border p-2 rounded-lg w-full "
+                        value={Status}
+                        onChange={(e) => setStatus(e.target.value)}
+                      >
+                        <option value="Active">Active</option>
+                      </select>
                     </div>
                     <div>
                       <p className="my-1 font-semibold">เพิ่มผู้รับผิดชอบ</p>
-                      <input type="text" className="border p-2 rounded-lg w-full" name="" id="" />
+                      <input
+                        type="text"
+                        value={responsible}
+                        onChange={(e) => setresponsible(e.target.value)}
+                        className="border p-2 rounded-lg w-full"
+                        name=""
+                        id=""
+                      />
                     </div>
                   </div>
                   <div className="flex gap-4 mb-2">
                     <div className="flex flex-col">
                       <label className="font-medium">วันที่รับงาน</label>
-                      <input type="date" value={Date_of_acceptance_of_work} onChange={(e) => setDate_of_acceptance_of_work(e.target.value)} className="border p-2 rounded-lg" />
+                      <input
+                        type="date"
+                        value={Date_of_acceptance_of_work}
+                        onChange={(e) =>
+                          setDate_of_acceptance_of_work(e.target.value)
+                        }
+                        className="border p-2 rounded-lg"
+                      />
                     </div>
                     <div className="flex flex-col">
                       <label className="font-medium">วันที่ต้องปิดงาน</label>
-                      <input type="date" value={Closing_date} onChange={(e) => setClosing_date(e.target.value)} className="border p-2 rounded-lg" />
+                      <input
+                        type="date"
+                        value={Closing_date}
+                        onChange={(e) => setClosing_date(e.target.value)}
+                        className="border p-2 rounded-lg"
+                      />
                     </div>
                   </div>
                   <p className="my-1 font-semibold">ไฟล์เริ่มงาน</p>
-                  <input type="file" value={image} onChange={(e) => setimage(e.target.value)} className="border p-2 rounded-lg w-full" />
+                  <input
+                    type="file"
+                    value={image}
+                    onChange={(e) => setimage(e.target.value)}
+                    className="border p-2 rounded-lg w-full"
+                  />
                 </div>
 
                 <div className="flex flex-col">
                   <p className="my-1 font-semibold">รายละเอียดงาน</p>
-                  <textarea value={description} onChange={(e) => setdescription(e.target.value)} className="border p-2 rounded-lg w-full h-full resize-none" />
+                  <textarea
+                    value={description}
+                    onChange={(e) => setdescription(e.target.value)}
+                    className="border p-2 rounded-lg w-full h-full resize-none"
+                  />
                 </div>
               </div>
 
@@ -239,10 +303,12 @@ const Searchpastjobs: React.FC = () => {
                 >
                   ยกเลิก
                 </button>
-                <button onClick={handleSave} className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                <button
+                  onClick={handleSave}
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                >
                   บันทึก
                 </button>
-
               </div>
             </div>
           </div>

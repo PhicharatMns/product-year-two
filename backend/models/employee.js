@@ -18,7 +18,8 @@ const employeeSchema = new mongoose.Schema({
   Date_of_acceptance_of_work: Date,
   Closing_date: Date,
   description: String,
-  image: String
+  image: String,
+  Status : String
 });
 
 

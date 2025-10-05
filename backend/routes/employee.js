@@ -26,6 +26,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       Date_of_acceptance_of_work,
       Closing_date,
       description,
+      Status,
     } = req.body;
 
     const image = req.file ? req.file.filename : undefined;
@@ -40,6 +41,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       Closing_date: Closing_date || Date.now(),
       description,
       image,
+      Status
     });
 
 
