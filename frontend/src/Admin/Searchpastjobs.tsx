@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
+import { Link } from "react-router-dom";
 
 const headerNav = [
   // "ID",
@@ -26,6 +27,7 @@ interface Employees {
   description: string;
   JobTitle?: string;
   Status?: string;
+  image: string;
 }
 
 const Searchpastjobs: React.FC = () => {
@@ -43,7 +45,7 @@ const Searchpastjobs: React.FC = () => {
     new Date().toISOString().split("T")[0]
   );
   const [description, setdescription] = useState("");
-  const [image, setimage] = useState("");
+  const [image, setimage] = useState<File | null>(null);
   const [Status, setStatus] = useState("Active");
 
   // ดึงข้อมูลพนักงาน
@@ -87,14 +89,28 @@ const Searchpastjobs: React.FC = () => {
         description,
         Status,
       };
+      //ข้อมูลรูป
+      if (image) {
+        const formData = new FormData();
+        Object.entries(newJob).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+        formData.append("image", image);
 
-      await fetch("http://localhost:5000/api/employees", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newJob),
-      });
+        await fetch("http://localhost:5000/api/employees", {
+          method: "POST",
+          body: formData,
+        });
+      } else {
+        // ถ้าไม่มีรูป -> ส่งเป็น JSON ปกติ
+        await fetch("http://localhost:5000/api/employees", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newJob),
+        });
+      }
 
       // ปิด modal + โหลดข้อมูลใหม่
       setShowModal(false);
@@ -106,7 +122,7 @@ const Searchpastjobs: React.FC = () => {
 
   return (
     <div className="bg-blue-50 min-h-screen py-10">
-      <div className="container mx-auto  bg-white rounded-xl shadow-lg p-6 h-20000">
+      <div className="container mx-auto  bg-white rounded-xl shadow-lg p-6 ">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
           <h2 className="text-2xl font-bold text-blue-700">
@@ -148,16 +164,17 @@ const Searchpastjobs: React.FC = () => {
 
         {/* Data Rows */}
         {dataEmployees.map((event, index) => {
-          console.log(event.Status); // ตรวจสอบว่ามีค่าไหม
           return (
             <div
-              className="grid grid-cols-8 gap-8 border-b border-gray-300 pb-5 pt-5"
+              className="grid grid-cols-8 gap-8 items-center border-b border-gray-300 pb-5 pt-5"
               key={index}
             >
               <p className="truncate">{event.Worksheet}</p>
               <p className="truncate">{event.Employer}</p>
               <p className="truncate">{event.Contact_number}</p>
-              <p className={`truncate ${Status ? 'text-red-500' : ''}` }>{event.Status}</p>
+              <p className={`truncate ${Status ? "text-red-500" : ""}`}>
+                {event.Status}
+              </p>
               <p className="truncate">{event.responsible}</p>
               <p className="truncate">
                 {event.Date_of_acceptance_of_work.split("T")[0]}
@@ -165,17 +182,16 @@ const Searchpastjobs: React.FC = () => {
               <p className="truncate">{event.Closing_date.split("T")[0]}</p>
               <div className="flex gap-1 mx-auto">
                 <button
-                  className="border p-1 truncate text-red-500 w-fit px-2 rounded"
                   onClick={() => handleDelete(event._id)}
-                >
-                  รายละเอียด
-                </button>
-                <button
-                  className="border  p-1 text-green-500 w-fit px-2 rounded"
-                  onClick={() => handleDelete(event._id)}
+                  className="border  p-1 text-red-500 w-fit px-2 rounded"
                 >
                   ลบ
                 </button>
+                <Link to={`/Details/${event._id}`}>
+                  <button className="border p-1 truncate text-green-500 w-fit px-2 rounded">
+                    รายละเอียด
+                  </button>
+                </Link>
               </div>
             </div>
           );
@@ -279,8 +295,9 @@ const Searchpastjobs: React.FC = () => {
                   <p className="my-1 font-semibold">ไฟล์เริ่มงาน</p>
                   <input
                     type="file"
-                    value={image}
-                    onChange={(e) => setimage(e.target.value)}
+                    onChange={(e) =>
+                      setimage(e.target.files ? e.target.files[0] : null)
+                    }
                     className="border p-2 rounded-lg w-full"
                   />
                 </div>
