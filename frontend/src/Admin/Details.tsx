@@ -72,51 +72,54 @@ export default function Details() {
             <div key={index} className="bg-blue-50 min-h-screen py-10">
               {/* หัวข้อ */}
               <div className="container mx-auto my-5 bg-white rounded-xl shadow-md p-6 border border-blue-200">
-                <p className="text-2xl font-bold text-blue-700 mb-3">
+                <p className="text-2xl font-bold text-blue-700 mb-2">ชื่องาน</p>
+                <p className=" text-gray-700 mb-2">{event.Worksheet}</p>
+                <p className="text-2xl font-bold text-blue-700 mb-2">
                   รายละเอียดงาน
                 </p>
-                <p className="text-gray-700">{event.Worksheet}</p>
+                <p className="text-gray-700 mb-2">{event.description}</p>
               </div>
 
               {/* ข้อมูลผู้รับผิดชอบ */}
               <div className="bg-white container mx-auto rounded-xl shadow-md border border-blue-200 p-6 mb-8">
                 <div className="flex flex-col md:flex-row md:justify-between text-gray-700 gap-3">
-                  <p className="font-semibold">นาย พิชรัตน์ มีสรรพวงศ์</p>
+                  <p className="font-semibold">{event.Employer}</p>
                   <p>
                     เบอร์ติดต่อ :{" "}
                     <span className="text-blue-600 font-medium">
-                      097-169-7949
+                      {event.Contact_number}
                     </span>
                   </p>
-                  <p>
-                    ที่อยู่ : กรุงเทพ บางประกง เเละ บางเมืองใหม่ เเละ การเดินทาง
-                    10270
-                  </p>
+                  <p>{event.address}</p>
                 </div>
               </div>
 
               {/* ตาราง */}
               <div className="grid grid-cols-10 gap-4 container mx-auto">
-                {/* ซ้าย */}
-                <div className="col-span-2 bg-white rounded-xl shadow-md border border-blue-200 p-5">
-                  <div className="grid text-center grid-cols-3 text-lg font-bold text-blue-700 gap-4">
+                <div className="border col-span-3 rounded-xl border-blue-200 bg-white shadow-md p-5">
+                  <div className="grid border-b border-blue-200 pb-2 text-blue-700 items-center font-semibold text-lg grid-cols-4 gap-5 mb-5">
                     <p>รูปภาพ</p>
-                    <p>ชื่อ-นามสกุล</p>
+                    <p>ชื่อนามสกุล</p>
                     <p>ตําเเหน่ง</p>
+                    <p className="border w-fit p-1 rounded-xl bg-blue-500 text-white">
+                      เพิ่มช่าง
+                    </p>
                   </div>
-                  <div className="grid text-center my-5 items-center text-sm text-gray-600 grid-cols-3 gap-4">
+
+                  <div className="grid items-center text-blue-700 font-semibold text-lg grid-cols-4 gap-5 ">
                     <img
-                      className="w-16 h-16 mx-auto object-cover rounded-full ring-2 ring-blue-400"
+                      className="w-16 h-16 rounded-4xl"
                       src={`http://localhost:5000/uploads/${event.image}`}
                       alt=""
                     />
-                    <p className="truncate px-2">นาย พิชรัตน์ มีสรรพวงศ์</p>
-                    <p className="text-blue-600 font-medium">ไม้</p>
+                    <p>ชื่อนามสกุล</p>
+                    <p>ตําเเหน่ง</p>
+                    <p>รายการ</p>
                   </div>
                 </div>
 
                 {/* ขวา */}
-                <div className="col-span-8 bg-white rounded-xl shadow-md border border-blue-200 p-5">
+                <div className="col-span-7   bg-white rounded-xl shadow-md border border-blue-200 p-5">
                   <p className="text-xl font-semibold text-blue-700 mb-4">
                     รายละเอียดการดําเนินงาน
                   </p>

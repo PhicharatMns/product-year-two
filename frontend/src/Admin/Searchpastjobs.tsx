@@ -9,7 +9,6 @@ const headerNav = [
   "เบอร์ติดต่อ",
   // "รายละเอียด",
   "สถานะ",
-  "รายชื่อ",
   "วันที่รับ",
   "วันที่ต้องปิดงาน",
   "จัดการ",
@@ -37,7 +36,7 @@ const Searchpastjobs: React.FC = () => {
   const [Employer, setEmployer] = useState("");
   const [Contact_number, setContact_number] = useState("");
   const [address, setaddress] = useState("");
-  const [responsible, setresponsible] = useState("");
+  // const [responsible, setresponsible] = useState("");
   const [Date_of_acceptance_of_work, setDate_of_acceptance_of_work] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -83,7 +82,7 @@ const Searchpastjobs: React.FC = () => {
         Employer,
         Contact_number,
         address,
-        responsible,
+        // responsible,
         Date_of_acceptance_of_work,
         Closing_date,
         description,
@@ -121,11 +120,11 @@ const Searchpastjobs: React.FC = () => {
   };
 
   return (
-    <div className="bg-blue-50 min-h-screen py-10">
-      <div className="container mx-auto  bg-white rounded-xl shadow-lg p-6 ">
+    <div className="bg-blue-50 py-10">
+      <div className="container mx-auto bg-white min-h-screen rounded-xl shadow-lg p-6 ">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
-          <h2 className="text-2xl font-bold text-blue-700">
+          <h2 className="text-3xl font-bold text-blue-700">
             รับใบ <span className="text-yellow-500">งาน</span>
           </h2>
           <div className="flex flex-wrap gap-6 items-center">
@@ -148,7 +147,7 @@ const Searchpastjobs: React.FC = () => {
 
         {/* Header Table */}
         <div>
-          <div className="grid grid-cols-8 gap-8  font-bold text-blue-700 border-b-2 pb-2">
+          <div className="grid grid-cols-7 gap-8  font-bold text-blue-700 border-b-2 pb-2">
             {headerNav.map((event, index) => (
               <div
                 key={index}
@@ -166,7 +165,7 @@ const Searchpastjobs: React.FC = () => {
         {dataEmployees.map((event, index) => {
           return (
             <div
-              className="grid grid-cols-8 gap-8 items-center border-b border-gray-300 pb-5 pt-5"
+              className="grid grid-cols-7 gap-8 items-center border-b border-blue-200 pb-5 pt-5"
               key={index}
             >
               <p className="truncate">{event.Worksheet}</p>
@@ -175,7 +174,7 @@ const Searchpastjobs: React.FC = () => {
               <p className={`truncate ${Status ? "text-red-500" : ""}`}>
                 {event.Status}
               </p>
-              <p className="truncate">{event.responsible}</p>
+
               <p className="truncate">
                 {event.Date_of_acceptance_of_work.split("T")[0]}
               </p>
@@ -199,130 +198,150 @@ const Searchpastjobs: React.FC = () => {
 
         {/* Modal */}
         {showModal && (
-          <div className="fixed inset-0 flex justify-center items-center bg-black/30 z-50">
-            <div className="bg-white rounded-xl shadow-lg p-6 w-[900px]">
+          <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
+            <div className="bg-white rounded-2xl shadow-2xl p-8 w-[900px] border border-blue-200">
+              {/* หัวข้อ */}
+              <div className="mb-6 border-b border-blue-200 pb-3">
+                <h2 className="text-2xl font-bold text-blue-700">
+                  แก้ไขข้อมูลใบงาน
+                </h2>
+              </div>
+
               {/* แถวชื่อใบงาน, ชื่อนามสกุล, เบอร์โทร */}
-              <div className="grid grid-cols-3 gap-5 mb-4">
+              <div className="grid grid-cols-3 gap-6 mb-6">
                 <div>
-                  <p className="my-1 font-semibold">ชื่อใบงาน</p>
+                  <label className="block mb-1 font-semibold text-blue-800">
+                    ชื่อใบงาน
+                  </label>
                   <input
                     type="text"
                     value={Worksheet}
                     onChange={(e) => setWorksheet(e.target.value)}
-                    className="border w-full p-2 rounded-lg"
+                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                   />
                 </div>
                 <div>
-                  <p className="my-1 font-semibold">ชื่อนามสกุลผู้จ้างงาน</p>
+                  <label className="block mb-1 font-semibold text-blue-800">
+                    ชื่อนามสกุลผู้จ้างงาน
+                  </label>
                   <input
                     type="text"
                     value={Employer}
                     onChange={(e) => setEmployer(e.target.value)}
-                    className="border w-full p-2 rounded-lg"
+                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                   />
                 </div>
                 <div>
-                  <p className="my-1 font-semibold">เบอร์โทรติดต่อ</p>
+                  <label className="block mb-1 font-semibold text-blue-800">
+                    เบอร์โทรติดต่อ
+                  </label>
                   <input
                     type="text"
                     value={Contact_number}
                     onChange={(e) => setContact_number(e.target.value)}
-                    className="border w-full p-2 rounded-lg"
+                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                   />
                 </div>
               </div>
 
               {/* แถวที่อยู่ */}
-              <div className="mb-4">
-                <p className="my-1 font-semibold">ที่อยู่</p>
+              <div className="mb-6">
+                <label className="block mb-1 font-semibold text-blue-800">
+                  ที่อยู่
+                </label>
                 <input
                   type="text"
                   value={address}
                   onChange={(e) => setaddress(e.target.value)}
-                  className="border w-full p-2 rounded-lg"
+                  className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
                 />
               </div>
 
-              {/* แถววันที่และไฟล์ */}
-              <div className="grid grid-cols-2 gap-5 mb-4">
+              {/* แถววันที่และรายละเอียด */}
+              <div className="grid grid-cols-2 gap-8 mb-6">
                 <div>
-                  <div className="grid grid-cols-2 gap-5">
+                  <div className="grid grid-cols-2 gap-5 mb-4">
                     <div>
-                      <p className="my-1 font-semibold">สถานะ</p>
-
+                      <label className="block mb-1 font-semibold text-blue-800">
+                        สถานะ
+                      </label>
                       <select
-                        className="border p-2 rounded-lg w-full "
+                        className="border border-blue-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-400 outline-none"
                         value={Status}
                         onChange={(e) => setStatus(e.target.value)}
                       >
                         <option value="Active">Active</option>
                       </select>
                     </div>
-                    <div>
-                      <p className="my-1 font-semibold">เพิ่มผู้รับผิดชอบ</p>
-                      <input
-                        type="text"
-                        value={responsible}
-                        onChange={(e) => setresponsible(e.target.value)}
-                        className="border p-2 rounded-lg w-full"
-                        name=""
-                        id=""
-                      />
-                    </div>
                   </div>
-                  <div className="flex gap-4 mb-2">
-                    <div className="flex flex-col">
-                      <label className="font-medium">วันที่รับงาน</label>
+
+                  {/* วันที่รับและปิดงาน */}
+                  <div className="grid grid-cols-2 gap-5 mb-4">
+                    <div>
+                      <label className="block mb-1 font-semibold text-blue-800">
+                        วันที่รับงาน
+                      </label>
                       <input
                         type="date"
                         value={Date_of_acceptance_of_work}
                         onChange={(e) =>
                           setDate_of_acceptance_of_work(e.target.value)
                         }
-                        className="border p-2 rounded-lg"
+                        className="border border-blue-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-400 outline-none"
                       />
                     </div>
-                    <div className="flex flex-col">
-                      <label className="font-medium">วันที่ต้องปิดงาน</label>
+                    <div>
+                      <label className="block mb-1 font-semibold text-blue-800">
+                        วันที่ต้องปิดงาน
+                      </label>
                       <input
                         type="date"
                         value={Closing_date}
                         onChange={(e) => setClosing_date(e.target.value)}
-                        className="border p-2 rounded-lg"
+                        className="border border-blue-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-400 outline-none"
                       />
                     </div>
                   </div>
-                  <p className="my-1 font-semibold">ไฟล์เริ่มงาน</p>
-                  <input
-                    type="file"
-                    onChange={(e) =>
-                      setimage(e.target.files ? e.target.files[0] : null)
-                    }
-                    className="border p-2 rounded-lg w-full"
-                  />
+
+                  {/* ไฟล์ */}
+                  <div>
+                    <label className="block mb-1 font-semibold text-blue-800">
+                      ไฟล์เริ่มงาน
+                    </label>
+                    <input
+                      type="file"
+                      onChange={(e) =>
+                        setimage(e.target.files ? e.target.files[0] : null)
+                      }
+                      className="border border-blue-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-400 outline-none"
+                    />
+                  </div>
                 </div>
 
+                {/* รายละเอียดงาน */}
                 <div className="flex flex-col">
-                  <p className="my-1 font-semibold">รายละเอียดงาน</p>
+                  <label className="block mb-1 font-semibold text-blue-800">
+                    รายละเอียดงาน
+                  </label>
                   <textarea
                     value={description}
                     onChange={(e) => setdescription(e.target.value)}
-                    className="border p-2 rounded-lg w-full h-full resize-none"
+                    className="border border-blue-300 p-2 rounded-lg w-full h-full resize-none focus:ring-2 focus:ring-blue-400 outline-none"
                   />
                 </div>
               </div>
 
               {/* ปุ่มบันทึก / ยกเลิก */}
-              <div className="flex justify-end gap-4 mt-4">
+              <div className="flex justify-end gap-4 border-t border-blue-100 pt-4">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="bg-gray-300 text-black px-4 py-2 rounded-lg hover:bg-gray-400 transition"
+                  className="bg-gray-200 text-gray-800 px-6 py-2 rounded-lg hover:bg-gray-300 transition font-semibold"
                 >
                   ยกเลิก
                 </button>
                 <button
                   onClick={handleSave}
-                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition"
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition font-semibold shadow-md"
                 >
                   บันทึก
                 </button>
