@@ -151,7 +151,7 @@ const Searchpastjobs: React.FC = () => {
             {headerNav.map((event, index) => (
               <div
                 key={index}
-                className={`${index === 0 ? "" : ""} ${
+                className={`${index === 6 ? "pl-5" : ""} ${
                   index === 7 ? "text-center" : ""
                 }`}
               >
@@ -165,13 +165,13 @@ const Searchpastjobs: React.FC = () => {
         {dataEmployees.map((event, index) => {
           return (
             <div
-              className="grid grid-cols-7 gap-8 items-center border-b border-blue-200 pb-5 pt-5"
+              className="grid grid-cols-7 gap-8 items-center border-b border-blue-200 pb-5 pt-5 transition-all p-3 hover:bg-blue-100 duration-200 mt-2 rounded-xl"
               key={index}
             >
               <p className="truncate">{event.Worksheet}</p>
               <p className="truncate">{event.Employer}</p>
               <p className="truncate">{event.Contact_number}</p>
-              <p className={`truncate ${Status ? "text-red-500" : ""}`}>
+              <p className={`truncate ${Status ? "text-orange-400" : ""}`}>
                 {event.Status}
               </p>
 
@@ -182,12 +182,12 @@ const Searchpastjobs: React.FC = () => {
               <div className="flex gap-1 mx-auto">
                 <button
                   onClick={() => handleDelete(event._id)}
-                  className="border  p-1 text-red-500 w-fit px-2 rounded"
+                  className="  p-1  cursor-pointer duration-200 bg-red-500 w-fit px-2 rounded text-white"
                 >
                   ลบ
                 </button>
                 <Link to={`/Details/${event._id}`}>
-                  <button className="border p-1 truncate text-green-500 w-fit px-2 rounded">
+                  <button className="   cursor-pointer hover: p-1 truncate text-white-500 w-fit px-2 rounded  bg-green-500 text-white ">
                     รายละเอียด
                   </button>
                 </Link>

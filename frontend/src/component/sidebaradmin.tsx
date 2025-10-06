@@ -38,7 +38,7 @@ export default function Sidebaradmin() {
         <div className="  flex flex-col ">
 
           <div className="flex items-center py-3 p-4">
-            <Link to="/Profile" className="mx-auto">
+            <Link to="/Home" className="mx-auto">
               <div
                 className={`uppercase text-2xl font-black text-white whitespace-nowrap mt-5 transition-all duration-300 
                 }`}
