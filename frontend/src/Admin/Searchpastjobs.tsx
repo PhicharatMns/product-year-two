@@ -125,7 +125,7 @@ const Searchpastjobs: React.FC = () => {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
           <h2 className="text-3xl font-bold text-blue-700">
-            รับใบ <span className="text-yellow-500">งาน</span>
+            รับใบ<span className="text-yellow-500">งาน</span>
           </h2>
           <div className="flex flex-wrap gap-6 items-center">
             <button
