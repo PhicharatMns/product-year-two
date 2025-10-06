@@ -8,7 +8,6 @@ import {
 import Searchpastjobs from "./Admin/Searchpastjobs";
 import Editacc from "./Admin/Editacc";
 import AdminLayout from "./Admin/AdminLayout";
-import Home from "./Admin/Home";
 import Login from "./sighup/Login";
 import Details from "./Admin/Details";
 import EmployeeList from "./EmployeeList";
@@ -16,6 +15,7 @@ import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
 import Profile from "./Admin/Profile";
 import Addwork from "./Admin/Addwork";
+import Dashboard from "./Admin/Dashboard";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -23,7 +23,7 @@ const router = createBrowserRouter([
   {
     element: <AdminLayout />,
     children: [
-      { path: "home", element: <Home /> },
+      { path: "dashboard", element: <Dashboard /> },
       { path: "editacc", element: <Editacc /> },
       { path: "searchpastjobs", element: <Searchpastjobs /> },
       { path: "details/:id", element: <Details /> },
