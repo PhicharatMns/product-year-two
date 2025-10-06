@@ -16,7 +16,7 @@ export default function Editacc() {
         {/* Title */}
         <div className="flex items-center justify-between mb-6">
           <p className="text-3xl font-bold text-blue-700">
-            จัดการบัญชี<span className="text-blue-500">ช่าง</span>
+            จัดการบัญชี<span className="text-yellow-500">ช่าง</span>
           </p>
         <div>
           <button className="border p-2 rounded-xl bg-blue-700 text-white cursor-pointer">เพิ่มช่าง</button>
