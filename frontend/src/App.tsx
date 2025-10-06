@@ -14,7 +14,6 @@ import Details from "./Admin/Details";
 import EmployeeList from "./EmployeeList";
 import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
-import Popup from "./Admin/Popupalert";
 import Profile from "./Admin/Profile";
 import Addwork from "./Admin/Addwork";
 
@@ -32,7 +31,6 @@ const router = createBrowserRouter([
       { path: "AddEmployee", element: <AddEmployee /> },
       { path: "Profile", element: <Profile /> },
       { path: "Profileadmin", element: <Profileadmin /> },
-      { path: "Popupalert", element: <Popup /> },
       { path: "Addwork", element: <Addwork /> },
     ],
   },
