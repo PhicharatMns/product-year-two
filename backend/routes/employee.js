@@ -14,7 +14,6 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 // POST create employee
-// POST create employee
 router.post("/", upload.single("image"), async (req, res) => {
   try {
     const {
