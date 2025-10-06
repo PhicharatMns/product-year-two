@@ -1,12 +1,4 @@
 const mongoose = require("mongoose");
-const urlDB = "mogodb://localhost:27017/Project_Y_TWO";
-
-mongoose
-  .connect(urlDB, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
-  .catch((err) => console.error(err));
 
 const tradesmanSchema = new mongoose.Schema({
   Name: String,
@@ -18,9 +10,7 @@ const tradesmanSchema = new mongoose.Schema({
   Email: String,
   Profile: String,
   Position: String,
-  Start_data: Date,
+  Start_data: String,
 });
 
-const Tradesman = mongoose.model("Tradesman", tradesmanSchema);
-
-module.exports = Tradesman;
+module.exports = mongoose.model("Tradesman", tradesmanSchema);
