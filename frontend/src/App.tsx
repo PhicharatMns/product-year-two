@@ -16,6 +16,8 @@ import Profileadmin from "./Admin/Profileadmin";
 import Addwork from "./Admin/Addwork";
 import Dashboard from "./Admin/Dashboard";
 import Profile from "./Admin/Profile";
+import Sidebar from "./component/sidebar";
+import User from "./User/User";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -34,6 +36,11 @@ const router = createBrowserRouter([
       { path: "Addwork", element: <Addwork /> },
     ],
   },
+  {
+    element: <Sidebar />, children: [
+      {path : 'user' , element : <User/>}
+    ]
+  }
 ]);
 
 export default function App() {
