@@ -17,6 +17,7 @@ const Editacc: React.FC = () => {
 
   const [dataTradesman, setdataTradesman] = useState<Tradesman[]>([]);
   const [showModal, setshowModal] = useState(false);
+  const [edit , setedit] = useState(false);
 
   // Data state
   const [Name, setName] = useState("");
@@ -136,11 +137,11 @@ const Editacc: React.FC = () => {
         </div>
 
         {/* Table Header */}
-        <div className="grid grid-cols-6 gap-5 font-semibold text-lg text-blue-800 border-b-4 border-blue-200 pb-2 mb-2">
+        <div className="grid grid-cols-6 gap-5 text-center font-semibold text-lg text-blue-800 border-b-4 border-blue-200 pb-2 mb-2">
           <p>รูป</p>
           <p>ชื่อ</p>
-          <p className="text-center">ประเภทงาน</p>
           <p className="text-center">ตำแหน่ง</p>
+          <p className="text-center">เบอร์โทรศัพท์</p>
           <p className="text-center">วันที่สมัคร</p>
           <p className="text-center">การจัดการ</p>
         </div>
@@ -158,10 +159,10 @@ const Editacc: React.FC = () => {
                 className="w-16 h-16 object-cover rounded-full mx-auto border-2 border-blue-300 shadow-sm"
               />
               <p className="text-center font-medium text-gray-800">
-                {event.ID}
+                {event.Name}
               </p>
-              <p className="text-center text-blue-700">{event.Name}</p>
-              <p className="text-center text-blue-600">{event.Nickname}</p>
+              <p className="text-center text-blue-700">{event.Position}</p>
+              <p className="text-center text-blue-600">{event.Phone_Number}</p>
               <p className="text-center text-gray-600">
                 {new Date(event.Start_data).toLocaleDateString("th-TH")}
               </p>
@@ -171,6 +172,12 @@ const Editacc: React.FC = () => {
                   className="bg-red-600 text-white px-5 py-2 rounded-full hover:bg-red-700 transition-all shadow-md"
                 >
                   ลบ
+                </button>
+                <button
+                 
+                  className="bg-orange-400 duration-300 text-white px-5 py-2 rounded-full hover:bg-orange-500 transition-all shadow-md"
+                >
+                  เเก้ไช
                 </button>
               </div>
             </div>
