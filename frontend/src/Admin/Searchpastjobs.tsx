@@ -2,17 +2,7 @@ import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 
-const headerNav = [
-  // "ID",
-  "ชื่องาน",
-  "รายชื่อผู้จ้าง",
-  "เบอร์ติดต่อ",
-  // "รายละเอียด",
-  "สถานะ",
-  "วันที่รับ",
-  "วันที่ต้องปิดงาน",
-  "จัดการ",
-];
+const headerNav = ["ชื่องาน", "รายชื่อผู้จ้าง", "เบอร์ติดต่อ", "สถานะ", "วันที่รับ", "วันที่ต้องปิดงาน", "จัดการ"];
 
 interface Employees {
   _id: string;
@@ -36,7 +26,6 @@ const Searchpastjobs: React.FC = () => {
   const [Employer, setEmployer] = useState("");
   const [Contact_number, setContact_number] = useState("");
   const [address, setaddress] = useState("");
-  // const [responsible, setresponsible] = useState("");
   const [Date_of_acceptance_of_work, setDate_of_acceptance_of_work] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -47,7 +36,6 @@ const Searchpastjobs: React.FC = () => {
   const [image, setimage] = useState<File | null>(null);
   const [Status, setStatus] = useState("Active");
 
-  // ดึงข้อมูลพนักงาน
   const fetchEmployees = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/employees");
@@ -62,7 +50,6 @@ const Searchpastjobs: React.FC = () => {
     fetchEmployees();
   }, []);
 
-  // ลบข้อมูล
   const handleDelete = async (id: string) => {
     try {
       await fetch(`http://localhost:5000/api/employees/${id}`, {
@@ -74,7 +61,6 @@ const Searchpastjobs: React.FC = () => {
     }
   };
 
-  // เพิ่มฟังก์ชันบันทึก
   const handleSave = async () => {
     try {
       const newJob = {
@@ -82,18 +68,14 @@ const Searchpastjobs: React.FC = () => {
         Employer,
         Contact_number,
         address,
-        // responsible,
         Date_of_acceptance_of_work,
         Closing_date,
         description,
         Status,
       };
-      //ข้อมูลรูป
       if (image) {
         const formData = new FormData();
-        Object.entries(newJob).forEach(([key, value]) => {
-          formData.append(key, value);
-        });
+        Object.entries(newJob).forEach(([key, value]) => formData.append(key, value));
         formData.append("image", image);
 
         await fetch("http://localhost:5000/api/employees", {
@@ -101,17 +83,13 @@ const Searchpastjobs: React.FC = () => {
           body: formData,
         });
       } else {
-        // ถ้าไม่มีรูป -> ส่งเป็น JSON ปกติ
         await fetch("http://localhost:5000/api/employees", {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newJob),
         });
       }
 
-      // ปิด modal + โหลดข้อมูลใหม่
       setShowModal(false);
       fetchEmployees();
     } catch (err) {
@@ -120,101 +98,94 @@ const Searchpastjobs: React.FC = () => {
   };
 
   return (
-    <div className="bg-blue-50 py-10">
-      <div className="container mx-auto bg-white min-h-screen rounded-xl shadow-lg p-6 ">
+    <div className="bg-blue-50 py-10 min-h-screen">
+      <div className="container mx-auto bg-white rounded-xl shadow-lg p-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
           <h2 className="text-3xl font-bold text-blue-700">
             รับใบ<span className="text-yellow-500">งาน</span>
           </h2>
-          <div className="flex flex-wrap gap-6 items-center">
+          <div className="flex flex-wrap gap-4 items-center">
             <button
               onClick={() => setShowModal(true)}
               className="bg-blue-500 text-white px-4 py-2 rounded-xl shadow hover:bg-blue-600 transition"
             >
               + เพิ่มใบงาน
             </button>
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
               <input
                 type="text"
                 placeholder="ค้นหา..."
-                className="border rounded-xl pl-10 pr-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className="border rounded-xl pl-10 pr-3 py-1 w-full sm:w-64 focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
             </div>
           </div>
         </div>
 
-        {/* Header Table */}
-        <div>
-          <div className="grid grid-cols-7 gap-8  font-bold text-blue-700 border-b-2 pb-2">
-            {headerNav.map((event, index) => (
-              <div
-                key={index}
-                className={`${index === 6 ? "pl-5" : ""} ${
-                  index === 7 ? "text-center" : ""
-                }`}
-              >
-                {event}
-              </div>
-            ))}
-          </div>
+        {/* Header Table (desktop only) */}
+        <div className="hidden lg:grid grid-cols-7 gap-8 font-bold text-blue-700 border-b-2 pb-2">
+          {headerNav.map((event, index) => (
+            <div key={index}>{event}</div>
+          ))}
         </div>
 
         {/* Data Rows */}
-        <div className='space-y-3 mt-5'>
-          {dataEmployees.map((event, index) => {
-            return (
-              <div
-                className="grid grid-cols-7 gap-8 items-center border border-blue-100 rounded-xl  bg-blue-50/40 hover:bg-blue-100 transition-all duration-200 shadow-sm py-4 px-2 "
-                key={index}
-              >
-                <p className="truncate">{event.Worksheet}</p>
-                <p className="truncate">{event.Employer}</p>
-                <p className="truncate">{event.Contact_number}</p>
-                <p className={`truncate ${Status ? "text-orange-400" : ""}`}>
-                  {event.Status}
-                </p>
-
-                <p className="truncate">
-                  {event.Date_of_acceptance_of_work.split("T")[0]}
-                </p>
-                <p className="truncate">{event.Closing_date.split("T")[0]}</p>
-                <div className="flex gap-1 mx-auto">
-                  <button
-                    onClick={() => handleDelete(event._id)}
-                    className="  p-1  cursor-pointer duration-200 bg-red-500 w-fit px-2 rounded text-white"
-                  >
-                    ลบ
-                  </button>
-                  <Link to={`/Details/${event._id}`}>
-                    <button className="   cursor-pointer hover: p-1 truncate text-white-500 w-fit px-2 rounded  bg-green-500 text-white ">
-                      รายละเอียด
-                    </button>
-                  </Link>
-                </div>
+        <div className="space-y-3 mt-5">
+          {dataEmployees.map((event, index) => (
+            <div
+              key={index}
+              className="grid grid-cols-1 lg:grid-cols-7 gap-4 lg:gap-8 items-center border border-blue-100 rounded-xl bg-blue-50/40 hover:bg-blue-100 transition-all duration-200 shadow-sm py-4 px-4"
+            >
+              {/* Mobile card layout */}
+              <div className="lg:hidden space-y-1 text-sm text-gray-700">
+                <p><span className="font-semibold text-blue-700">ชื่องาน:</span> {event.Worksheet}</p>
+                <p><span className="font-semibold text-blue-700">ผู้จ้าง:</span> {event.Employer}</p>
+                <p><span className="font-semibold text-blue-700">เบอร์:</span> {event.Contact_number}</p>
+                <p><span className="font-semibold text-blue-700">สถานะ:</span> {event.Status}</p>
+                <p><span className="font-semibold text-blue-700">วันที่รับ:</span> {event.Date_of_acceptance_of_work.split("T")[0]}</p>
+                <p><span className="font-semibold text-blue-700">วันปิดงาน:</span> {event.Closing_date.split("T")[0]}</p>
               </div>
-            );
-          })}
+
+              {/* Desktop table layout */}
+              <p className="hidden lg:block truncate">{event.Worksheet}</p>
+              <p className="hidden lg:block truncate">{event.Employer}</p>
+              <p className="hidden lg:block truncate">{event.Contact_number}</p>
+              <p className="hidden lg:block truncate text-orange-400">{event.Status}</p>
+              <p className="hidden lg:block truncate">{event.Date_of_acceptance_of_work.split("T")[0]}</p>
+              <p className="hidden lg:block truncate">{event.Closing_date.split("T")[0]}</p>
+
+              {/* ปุ่มจัดการ */}
+              <div className="flex gap-2 justify-end lg:justify-center mt-2 lg:mt-0">
+                <button
+                  onClick={() => handleDelete(event._id)}
+                  className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition"
+                >
+                  ลบ
+                </button>
+                <Link to={`/Details/${event._id}`}>
+                  <button className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
+                    รายละเอียด
+                  </button>
+                </Link>
+              </div>
+            </div>
+          ))}
         </div>
 
         {/* Modal */}
         {showModal && (
           <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
-            <div className="bg-white rounded-2xl shadow-2xl p-8 w-[900px] border border-blue-200">
-              {/* หัวข้อ */}
+            <div className="bg-white rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border border-blue-200 max-h-[95vh] overflow-y-auto">
+              {/* Header */}
               <div className="mb-6 border-b border-blue-200 pb-3">
-                <h2 className="text-2xl font-bold text-blue-700">
-                  แก้ไขข้อมูลใบงาน
-                </h2>
+                <h2 className="text-2xl font-bold text-blue-700">แก้ไขข้อมูลใบงาน</h2>
               </div>
 
-              {/* แถวชื่อใบงาน, ชื่อนามสกุล, เบอร์โทร */}
-              <div className="grid grid-cols-3 gap-6 mb-6">
+              {/* ชื่อ/เบอร์/ที่อยู่ */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div>
-                  <label className="block mb-1 font-semibold text-blue-800">
-                    ชื่อใบงาน
-                  </label>
+                  <label className="block mb-1 font-semibold text-blue-800">ชื่อใบงาน</label>
                   <input
                     type="text"
                     value={Worksheet}
@@ -223,9 +194,7 @@ const Searchpastjobs: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block mb-1 font-semibold text-blue-800">
-                    ชื่อนามสกุลผู้จ้างงาน
-                  </label>
+                  <label className="block mb-1 font-semibold text-blue-800">ชื่อนามสกุลผู้จ้างงาน</label>
                   <input
                     type="text"
                     value={Employer}
@@ -234,9 +203,7 @@ const Searchpastjobs: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block mb-1 font-semibold text-blue-800">
-                    เบอร์โทรติดต่อ
-                  </label>
+                  <label className="block mb-1 font-semibold text-blue-800">เบอร์โทรติดต่อ</label>
                   <input
                     type="text"
                     value={Contact_number}
@@ -246,11 +213,9 @@ const Searchpastjobs: React.FC = () => {
                 </div>
               </div>
 
-              {/* แถวที่อยู่ */}
+              {/* ที่อยู่ */}
               <div className="mb-6">
-                <label className="block mb-1 font-semibold text-blue-800">
-                  ที่อยู่
-                </label>
+                <label className="block mb-1 font-semibold text-blue-800">ที่อยู่</label>
                 <input
                   type="text"
                   value={address}
@@ -259,43 +224,31 @@ const Searchpastjobs: React.FC = () => {
                 />
               </div>
 
-              {/* แถววันที่และรายละเอียด */}
-              <div className="grid grid-cols-2 gap-8 mb-6">
-                <div>
-                  <div className="grid grid-cols-2 gap-5 mb-4">
-                    <div>
-                      <label className="block mb-1 font-semibold text-blue-800">
-                        สถานะ
-                      </label>
-                      <select
-                        className="border border-blue-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-400 outline-none"
-                        value={Status}
-                        onChange={(e) => setStatus(e.target.value)}
-                      >
-                        <option value="Active">Active</option>
-                      </select>
-                    </div>
+              {/* วันที่/รายละเอียด */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div className="space-y-4">
+                  <div>
+                    <label className="block mb-1 font-semibold text-blue-800">สถานะ</label>
+                    <select
+                      className="border border-blue-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-400 outline-none"
+                      value={Status}
+                      onChange={(e) => setStatus(e.target.value)}
+                    >
+                      <option value="Active">Active</option>
+                    </select>
                   </div>
-
-                  {/* วันที่รับและปิดงาน */}
-                  <div className="grid grid-cols-2 gap-5 mb-4">
+                  <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block mb-1 font-semibold text-blue-800">
-                        วันที่รับงาน
-                      </label>
+                      <label className="block mb-1 font-semibold text-blue-800">วันที่รับงาน</label>
                       <input
                         type="date"
                         value={Date_of_acceptance_of_work}
-                        onChange={(e) =>
-                          setDate_of_acceptance_of_work(e.target.value)
-                        }
+                        onChange={(e) => setDate_of_acceptance_of_work(e.target.value)}
                         className="border border-blue-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-400 outline-none"
                       />
                     </div>
                     <div>
-                      <label className="block mb-1 font-semibold text-blue-800">
-                        วันที่ต้องปิดงาน
-                      </label>
+                      <label className="block mb-1 font-semibold text-blue-800">วันที่ต้องปิดงาน</label>
                       <input
                         type="date"
                         value={Closing_date}
@@ -304,36 +257,26 @@ const Searchpastjobs: React.FC = () => {
                       />
                     </div>
                   </div>
-
-                  {/* ไฟล์ */}
                   <div>
-                    <label className="block mb-1 font-semibold text-blue-800">
-                      ไฟล์เริ่มงาน
-                    </label>
+                    <label className="block mb-1 font-semibold text-blue-800">ไฟล์เริ่มงาน</label>
                     <input
                       type="file"
-                      onChange={(e) =>
-                        setimage(e.target.files ? e.target.files[0] : null)
-                      }
+                      onChange={(e) => setimage(e.target.files ? e.target.files[0] : null)}
                       className="border border-blue-300 p-2 rounded-lg w-full focus:ring-2 focus:ring-blue-400 outline-none"
                     />
                   </div>
                 </div>
-
-                {/* รายละเอียดงาน */}
-                <div className="flex flex-col">
-                  <label className="block mb-1 font-semibold text-blue-800">
-                    รายละเอียดงาน
-                  </label>
+                <div>
+                  <label className="block mb-1 font-semibold text-blue-800">รายละเอียดงาน</label>
                   <textarea
                     value={description}
                     onChange={(e) => setdescription(e.target.value)}
-                    className="border border-blue-300 p-2 rounded-lg w-full h-full resize-none focus:ring-2 focus:ring-blue-400 outline-none"
+                    className="border border-blue-300 p-2 rounded-lg w-full h-48 resize-none focus:ring-2 focus:ring-blue-400 outline-none"
                   />
                 </div>
               </div>
 
-              {/* ปุ่มบันทึก / ยกเลิก */}
+              {/* ปุ่ม */}
               <div className="flex justify-end gap-4 border-t border-blue-100 pt-4">
                 <button
                   onClick={() => setShowModal(false)}
