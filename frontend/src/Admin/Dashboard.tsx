@@ -40,25 +40,8 @@ export default function Dashboard() {
               </div>
 
 
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-2 ">
-
-                <div className="bg-white h-40 rounded-xl shadow-lg flex items-center justify-center text-white text-xl">
-
-                </div>
-                <div className=" h-40 rounded-xl shadow-lg flex items-center justify-center text-white text-xl">
-                  ที่อยู่
-                </div>
-                <div className="h-40 rounded-xl shadow-lg flex items-center justify-center text-white text-xl">
-                  ที่อยู่
-                </div>
-                <div className="h-40 rounded-xl shadow-lg flex items-center justify-center text-white text-xl">
-                  ที่อยู่
-                </div>
-              </div>
-
-              <div className="bg-gray-500 h-64 rounded-xl shadow-lg flex items-center justify-center text-white text-xl">
-                ข้อมูลเพิ่มเติม
-              </div>
+            <div className="bg-gray-500 h-64 rounded-xl shadow-lg flex items-center justify-center text-white text-xl">
+              ข้อมูลเพิ่มเติมม
             </div>
           </div>
         </div>
