@@ -1,91 +1,111 @@
-export default function Profile() {
-    return (
-        <div className="container mx-auto py-10">
+import React, { useState } from 'react';
 
-            <div className="flex justify-center mb-5">
-                <div className="w-full">
-                    <p className="text-7xl font-bold text-blue-700 ml-2">
-                        โปร<span className="text-yellow-500">ไฟล์</span>
-                    </p>
-                </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-lg p-6 flex items-center gap-5 border   ">
-                <img src="https://i.pinimg.com/736x/b7/6a/a8/b76aa8452826d7397a40d79a1dd97656.jpg" className="w-30 h-30  rounded-full " alt="" />
-
-
-                <div className="ml-5 flex flex-col">
-                    <div className="font-bold text-4xl">
-                        คุณ จักรยาน สีแดง <span className="text-2xl text-blue-500">#jak01</span>
-                    </div>
-                    
-                    <div className="text-xl font-bold text-blue-500">
-                        ช่างไม้
-                    </div>
-                </div>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-6 flex items-center gap-5 border mt-5  ">
-
-
-                <div className="ml-5 flex flex-col">
-                    <div className="font-bold text-4xl  text-yellow-500">
-                        ข้อมูล
-                    </div>
-
-                    <div className=" flex flex-col gap-6 mt-5 ">
-
-                        <div className="grid grid-cols-2 gap-y-3 gap-x-10 text-gray-400 text-3xl">
-                            <div>
-                                <p className="text-2xl">ชื่อ</p>
-                                <p className="font-bold text-black">จักรยาน</p>
-                            </div>
-                            <div>
-                                <p className="text-2xl">นามสกุล</p>
-                                <p className="font-bold text-black">สีแดง</p>
-                            </div>
-                            <div>
-                                <p className="text-2xl">อีเมล</p>
-                                <p className="font-bold text-black">jakkayan@gmail.com</p>
-                            </div>
-                            <div>
-                                <p className="text-2xl">เบอร์ติดต่อ</p>
-                                <p className="font-bold text-black">093 453 4646</p>
-                            </div>
-                            <div>
-                                <p className="text-2xl">ตำแหน่ง</p>
-                                <p className="font-bold text-black">ช่างไม้</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className="bg-white rounded-xl shadow-lg p-6 flex items-center gap-5 border mt-5  ">
-                <div className="ml-5 flex flex-col">
-                    <div className="font-bold text-4xl text-yellow-500">
-                        ที่อยู่
-                    </div>
-                    <div className=" flex flex-col gap-6 mt-3 ">
-
-                        <div className="grid grid-cols-3 gap-y-3 gap-x-10 text-gray-400 text-3xl">
-                            <div>
-                                <p className="text-2xl">จังหวัด</p>
-                                <p className="font-bold text-black">กรุงเทพ</p>
-                            </div>
-                             <div>
-                                <p className="text-2xl">อำเภอ</p>
-                                <p className="font-bold text-black">บ้านเบียร์</p>
-                            </div>
-                             <div>
-                                <p className="text-2xl">รหัสไปรษณีย์</p>
-                                <p className="font-bold text-black">10240</p>
-                            </div>
-                        </div>
-
-
-                  
-                    </div>
-                </div>
-            </div>
-        </div>
-    );
+interface InfoItem {
+  label: string;
+  value: string;
 }
+
+const Profile: React.FC = () => {
+  const [isEditingContact, setIsEditingContact] = useState(false);
+  const [isEditingSkill, setIsEditingSkill] = useState(false);
+
+  const [contactInfo, setContactInfo] = useState<InfoItem[]>([
+    { label: 'เบอร์โทรศัพท์:', value: '0812345678' },
+    { label: 'Gmail:', value: 'somsee@gmail.com' },
+    { label: 'ที่อยู่ปัจจุบัน:', value: '123 หมู่ 4 กรุงเทพฯ' },
+    { label: 'ไลน์/เฟซบุ๊ก:', value: 'somsee' },
+  ]);
+
+  const [skillInfo, setSkillInfo] = useState<InfoItem[]>([
+    { label: 'ตำแหน่ง:', value: 'ช่างไฟฟ้า' },
+    { label: 'ประสบการณ์ทำงาน:', value: '4 ปี' },
+    { label: 'อุปกรณ์/เครื่องมือส่วนตัว:', value: 'มี' },
+    { label: 'สัญญาจ้าง:', value: '---' },
+    { label: 'ประกันอุบัติเหตุ:', value: 'มี' },
+    { label: 'วันที่เริ่มงาน:', value: '10/10/2020' },
+  ]);
+
+  const handleInputChange = (
+    index: number,
+    value: string,
+    type: 'contact' | 'skill'
+  ) => {
+    const updater = type === 'contact' ? setContactInfo : setSkillInfo;
+    const current = type === 'contact' ? contactInfo : skillInfo;
+    const updated = [...current];
+    updated[index].value = value;
+    updater(updated);
+  };
+
+  const toggleEdit = (type: 'contact' | 'skill') => {
+    if (type === 'contact') {
+      setIsEditingContact(!isEditingContact);
+    } else {
+      setIsEditingSkill(!isEditingSkill);
+    }
+  };
+
+  const renderSection = (
+    title: string,
+    items: InfoItem[],
+    isEditing: boolean,
+    type: 'contact' | 'skill'
+  ) => (
+    <div className="flex-1 min-w-[280px]">
+      <div className="font-bold mb-3 text-gray-700">{title}</div>
+      {items.map((item, idx) => (
+       <div className="mb-4" key={idx}>
+  <label className="block text-gray-600 text-sm mb-1">{item.label}</label>
+  {isEditing ? (
+    <input
+      value={item.value}
+      onChange={(e) => handleInputChange(idx, e.target.value, type)}
+      className="border border-gray-300 rounded px-3 py-2 text-sm w-full"
+    />
+  ) : (
+    <div className="font-semibold text-gray-800">{item.value}</div>
+  )}
+</div>
+
+      ))}
+      <button
+        onClick={() => toggleEdit(type)}
+        className={`mt-4 px-4 py-2 rounded font-semibold text-white transition ${
+          isEditing ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
+        }`}
+      >
+        {isEditing ? 'Save' : 'Edit'}
+      </button>
+    </div>
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-100 p-10 font-sans">
+      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
+        <h1 className="text-3xl font-bold text-gray-900 mb-6">
+          <span className="text-blue-500">Pro</span>file
+        </h1>
+
+        <div className="flex items-center gap-5 border-b border-gray-200 pb-5 mb-5">
+          <div className="w-24 h-24 rounded-full bg-gray-300 overflow-hidden">
+            {/* เปลี่ยน src ด้านล่างให้แสดงภาพ */}
+            <img src="" alt="Avatar" className="w-full h-full object-cover" />
+          </div>
+          <div>
+            <p><strong>ID :</strong> 00001</p>
+            <p><strong>นาย สมศรี ดีใจ</strong></p>
+            <p>วัน/เดือน/ปีเกิด : 00/00/0000</p>
+            <p>เลขบัตรประชาชน : 1234567890123</p>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-10">
+          {renderSection('ข้อมูลติดต่อ', contactInfo, isEditingContact, 'contact')}
+          {renderSection('ความเชี่ยวชาญและคุณสมบัติ', skillInfo, isEditingSkill, 'skill')}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Profile;

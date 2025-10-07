@@ -124,14 +124,14 @@ const Searchpastjobs: React.FC = () => {
         </div>
 
         {/* Header Table (desktop only) */}
-        <div className="hidden lg:grid grid-cols-7 gap-8 font-bold text-blue-700 border-b-2 pb-2">
+        <div className="hidden lg:grid grid-cols-7  gap-8 font-bold text-blue-700 border-b-2 pb-2">
           {headerNav.map((event, index) => (
             <div key={index}>{event}</div>
           ))}
         </div>
 
         {/* Data Rows */}
-        <div className="space-y-3 mt-5">
+        <div className="space-y-3 mt-5 h-screen">
           {dataEmployees.map((event, index) => (
             <div
               key={index}

@@ -32,21 +32,7 @@ export default function Details() {
   }
 
   const [dataEmployees, setDataEmployees] = useState<Employees[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [Worksheet, setWorksheet] = useState("");
-  const [Employer, setEmployer] = useState("");
-  const [Contact_number, setContact_number] = useState("");
-  const [address, setaddress] = useState("");
-  const [responsible, setresponsible] = useState("");
-  const [Date_of_acceptance_of_work, setDate_of_acceptance_of_work] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [Closing_date, setClosing_date] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [description, setdescription] = useState("");
-  const [image, setimage] = useState("");
-  const [Status, setStatus] = useState("Active");
+  const [Mobiles, setMobled] = useState(false)
 
   // ดึงข้อมูลพนักงาน
   const fetchEmployees = async () => {
@@ -69,7 +55,7 @@ export default function Details() {
       {dataEmployees.map((event, index) => {
         if (event._id === id)
           return (
-            <div key={index} className="bg-blue-50 min-h-screen py-10">
+            <div key={index} className="bg-blue-50 min-h-screen py-10 p-5">
               {/* หัวข้อ */}
               <div className="container mx-auto my-5 bg-white rounded-xl shadow-md p-6 border border-blue-200">
                 <p className="text-2xl font-bold text-blue-700 mb-2">ชื่องาน</p>
@@ -95,31 +81,53 @@ export default function Details() {
               </div>
 
               {/* ตาราง */}
-              <div className="grid grid-cols-10 gap-4 container mx-auto">
-                <div className="border col-span-3 rounded-xl border-blue-200 bg-white shadow-md p-5">
-                  <div className="grid border-b border-blue-200 pb-2 text-blue-700 items-center font-semibold text-lg grid-cols-4 gap-5 mb-5">
+              <div className="grid lg:grid-cols-10 mb:grid-cols-10 grid-cols-1 gap-4 container mx-auto">
+                {/* ตารางซ้าย */}
+                <div className="border lg:col-span-3 rounded-xl border-blue-200 bg-white shadow-md p-5">
+                  {/* Header Mobile */}
+                  <div className="grid lg:hidden border-b border-blue-200 pb-2 text-blue-700 font-semibold text-lg grid-cols-4 gap-5 mb-5">
                     <p>รูปภาพ</p>
-                    <p>ชื่อนามสกุล</p>
-                    <p>ตําเเหน่ง</p>
-                    <p className="border w-fit p-1 rounded-xl bg-blue-500 text-white">
-                      เพิ่มช่าง
-                    </p>
+                    <p>ชื่อ</p>
+                    <p>ตำแหน่ง</p>
+                    <div className="flex justify-end">
+                      <button onClick={() => setMobled(true)} className="border w-fit p-1 rounded-xl bg-blue-500 text-white">
+                        เพิ่มช่าง
+                      </button>
+                    </div>
                   </div>
 
-                  <div className="grid items-center text-blue-700 font-semibold text-lg grid-cols-4 gap-5 ">
+                  {/* Header Desktop */}
+                  <div className="hidden lg:grid border-b border-blue-200 pb-2 text-blue-700 font-semibold text-lg grid-cols-4 gap-5 mb-5">
+                    <p>รูปภาพ</p>
+                    <p>ชื่อ</p>
+                    <p>ตำแหน่ง</p>
+                    <div className="flex justify-end">
+                      <button onClick={() => setMobled(true)} className="border w-fit p-1 rounded-xl bg-blue-500 text-white">
+                        เพิ่มช่าง
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Row ข้อมูล */}
+                  <div className="grid items-center text-blue-700 font-semibold text-lg grid-cols-4 gap-5">
                     <img
-                      className="w-16 h-16 rounded-4xl"
+                      className="w-16 h-16 rounded-2xl"
                       src={`http://localhost:5000/uploads/${event.image}`}
-                      alt=""
+                      alt={event.name}
                     />
-                    <p>ชื่อนามสกุล</p>
+                    <p>ชื่อ</p>
                     <p>ตําเเหน่ง</p>
-                    <p>รายการ</p>
+                    <p className="flex justify-end">
+                      <button className="border w-fit p-1 rounded-xl bg-yellow-500 text-white">
+                        เเก้ไข
+                      </button>
+                    </p>
                   </div>
                 </div>
 
+
                 {/* ขวา */}
-                <div className="col-span-7   bg-white rounded-xl shadow-md border border-blue-200 p-5">
+                <div className="lg:col-span-7   bg-white rounded-xl shadow-md border border-blue-200 p-5">
                   <p className="text-xl font-semibold text-blue-700 mb-4">
                     รายละเอียดการดําเนินงาน
                   </p>
@@ -158,6 +166,15 @@ export default function Details() {
             </div>
           );
       })}
-    </div>
+      {Mobiles && (
+        <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[9โ00px] border border-blue-200 max-h-[95vh] overflow-y-auto">
+            <div className="mb-6 border-b border-blue-200 pb-3">
+              <h2 className="text-2xl font-bold text-blue-700">เพิ่มช่าง</h2>
+            </div>
+          </div>
+        </div>
+      )}
+    </div >
   );
 }
