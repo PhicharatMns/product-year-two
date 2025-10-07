@@ -42,7 +42,7 @@ export default function Sidebaradmin() {
 
       {/* ====== Sidebar ====== */}
       <div
-        className={`fixed flex flex-col justify-between h-screen w-64 bg-blue-500 text-white font-bold border-r border-blue-600 transition-transform duration-300 z-20
+        className={`fixed flex flex-col justify-between h-screen lg:w-64 sm:10 bg-blue-500 text-white font-bold border-r border-blue-600 transition-transform duration-300 z-20
           ${open ? "translate-x-0" : "-translate-x-full"} md:translate-x-0`}
       >
         {/* Header */}
@@ -97,7 +97,7 @@ export default function Sidebaradmin() {
       {/* ====== Overlay (Mobile) ====== */}
       {open && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm md:hidden z-10"
+          className="fixed inset-0 bg-opacity-50 backdrop-blur-sm  z-10"
           onClick={() => setOpen(false)}
         ></div>
       )}
