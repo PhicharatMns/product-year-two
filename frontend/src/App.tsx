@@ -13,9 +13,9 @@ import Details from "./Admin/Details";
 import EmployeeList from "./EmployeeList";
 import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
-import Profile from "./Admin/Profile";
 import Addwork from "./Admin/Addwork";
 import Dashboard from "./Admin/Dashboard";
+import Profile from "./Admin/Profile";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
