@@ -4,7 +4,6 @@ import { MdDashboard } from "react-icons/md";
 import { IoIosLogOut } from "react-icons/io";
 import { TbBellPlus } from "react-icons/tb";
 import { GoGraph } from "react-icons/go";
-import { MdOutlineCategory } from "react-icons/md";
 import { LiaUserEditSolid } from "react-icons/lia";
 import { VscNewFile } from "react-icons/vsc";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
