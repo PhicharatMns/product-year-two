@@ -54,7 +54,7 @@ export default function Dashboard() {
             </div>
 
             <div className="bg-gray-500 h-64 rounded-xl shadow-lg flex items-center justify-center text-white text-xl">
-              ข้อมูลเพิ่มเติม
+              ข้อมูลเพิ่มเติมม
             </div>
           </div>
         </div>
