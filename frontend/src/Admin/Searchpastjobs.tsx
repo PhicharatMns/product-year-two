@@ -194,7 +194,7 @@ const Searchpastjobs: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block mb-1 font-semibold text-blue-800">ชื่อนามสกุลผู้จ้างงาน</label>
+                  <label className="block mb-1 font-semibold text-blue-800">ชื่อผู้จ้างงาน</label>
                   <input
                     type="text"
                     value={Employer}
@@ -213,7 +213,7 @@ const Searchpastjobs: React.FC = () => {
                 </div>
               </div>
 
-              {/* ที่อยู่ */}
+            
               <div className="mb-6">
                 <label className="block mb-1 font-semibold text-blue-800">ที่อยู่</label>
                 <input
@@ -224,7 +224,7 @@ const Searchpastjobs: React.FC = () => {
                 />
               </div>
 
-              {/* วันที่/รายละเอียด */}
+            
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div className="space-y-4">
                   <div>

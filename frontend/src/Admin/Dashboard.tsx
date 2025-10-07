@@ -35,7 +35,7 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen  p-4 sm:p-6 md:p-10">
-      <div className="max-w-7xl mx-auto space-y-10">
+      <div className="max-w-full mx-auto space-y-10">
         
        
         <header>
