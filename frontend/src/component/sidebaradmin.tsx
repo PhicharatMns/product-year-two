@@ -22,7 +22,7 @@ export default function Sidebaradmin() {
     { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "Searchpastjobs" },
     { text: "ส่งแจ้งการเตือน", icons: TbBellPlus, Link: "Details" },
     { text: "สถิติ", icons: GoGraph, Link: "graph" },
-    { text: "กำหนดประเภท/หมวด", icons: MdOutlineCategory, Link: "setwork" },
+    // { text: "กำหนดประเภท/หมวด", icons: MdOutlineCategory, Link: "setwork" },
     { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "Editacc" },
     { text: "ออกจากระบบ", icons: IoIosLogOut, Link: "Logins" },
   ];
