@@ -162,39 +162,41 @@ const Searchpastjobs: React.FC = () => {
         </div>
 
         {/* Data Rows */}
-        {dataEmployees.map((event, index) => {
-          return (
-            <div
-              className="grid grid-cols-7 gap-8 items-center border-b border-blue-200 pb-5 pt-5 transition-all p-3 hover:bg-blue-100 duration-200 mt-2 rounded-xl"
-              key={index}
-            >
-              <p className="truncate">{event.Worksheet}</p>
-              <p className="truncate">{event.Employer}</p>
-              <p className="truncate">{event.Contact_number}</p>
-              <p className={`truncate ${Status ? "text-orange-400" : ""}`}>
-                {event.Status}
-              </p>
+        <div className='space-y-3 mt-5'>
+          {dataEmployees.map((event, index) => {
+            return (
+              <div
+                className="grid grid-cols-7 gap-8 items-center border border-blue-100 rounded-xl  bg-blue-50/40 hover:bg-blue-100 transition-all duration-200 shadow-sm py-4 px-2 "
+                key={index}
+              >
+                <p className="truncate">{event.Worksheet}</p>
+                <p className="truncate">{event.Employer}</p>
+                <p className="truncate">{event.Contact_number}</p>
+                <p className={`truncate ${Status ? "text-orange-400" : ""}`}>
+                  {event.Status}
+                </p>
 
-              <p className="truncate">
-                {event.Date_of_acceptance_of_work.split("T")[0]}
-              </p>
-              <p className="truncate">{event.Closing_date.split("T")[0]}</p>
-              <div className="flex gap-1 mx-auto">
-                <button
-                  onClick={() => handleDelete(event._id)}
-                  className="  p-1  cursor-pointer duration-200 bg-red-500 w-fit px-2 rounded text-white"
-                >
-                  ลบ
-                </button>
-                <Link to={`/Details/${event._id}`}>
-                  <button className="   cursor-pointer hover: p-1 truncate text-white-500 w-fit px-2 rounded  bg-green-500 text-white ">
-                    รายละเอียด
+                <p className="truncate">
+                  {event.Date_of_acceptance_of_work.split("T")[0]}
+                </p>
+                <p className="truncate">{event.Closing_date.split("T")[0]}</p>
+                <div className="flex gap-1 mx-auto">
+                  <button
+                    onClick={() => handleDelete(event._id)}
+                    className="  p-1  cursor-pointer duration-200 bg-red-500 w-fit px-2 rounded text-white"
+                  >
+                    ลบ
                   </button>
-                </Link>
+                  <Link to={`/Details/${event._id}`}>
+                    <button className="   cursor-pointer hover: p-1 truncate text-white-500 w-fit px-2 rounded  bg-green-500 text-white ">
+                      รายละเอียด
+                    </button>
+                  </Link>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
 
         {/* Modal */}
         {showModal && (
