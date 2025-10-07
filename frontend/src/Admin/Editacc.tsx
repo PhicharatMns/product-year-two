@@ -17,7 +17,7 @@ const Editacc: React.FC = () => {
 
   const [dataTradesman, setdataTradesman] = useState<Tradesman[]>([]);
   const [showModal, setshowModal] = useState(false);
-  const [edit , setedit] = useState(false);
+  const [edit, setedit] = useState(false);
 
   // Data state
   const [Name, setName] = useState("");
@@ -174,7 +174,7 @@ const Editacc: React.FC = () => {
                   ลบ
                 </button>
                 <button
-                 
+                  onClick={() => setedit(true)}
                   className="bg-orange-400 duration-300 text-white px-5 py-2 rounded-full hover:bg-orange-500 transition-all shadow-md"
                 >
                   เเก้ไช
@@ -309,6 +309,15 @@ const Editacc: React.FC = () => {
               >
                 ยืนยัน
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {edit && (
+        <div className='fixed inset-0 flex justify-between items-center bg-black/40 backdrop-blur-md z-50'>
+          <div className="bg-white rounded-2xl shadow-2xl p-8 w-[95%] mx-auto mb:w-[700px] lg:w-[900px] border border-blue-300 overflow-y-auto">
+            <div className="mb-6 border-b border-blue-200 pb-3">
+              <p className="text-2xl font-bold text-blue-700">เพิ่มช่างเข้าระบบ</p>
             </div>
           </div>
         </div>
