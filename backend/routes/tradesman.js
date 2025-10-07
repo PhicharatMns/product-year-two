@@ -32,7 +32,17 @@ router.get("/", async (req, res) => {
 // POST new tradesman
 router.post("/", upload.single("Profile"), async (req, res) => {
   try {
-    const { Name, Nickname, ID, Birthday, Address, Phone_Number, Email, Position, Start_data } = req.body;
+    const {
+      Name,
+      Nickname,
+      ID,
+      Birthday,
+      Address,
+      Phone_Number,
+      Email,
+      Position,
+      Start_data,
+    } = req.body;
     const newTradesman = new Tradesman({
       Name,
       Nickname,
@@ -43,7 +53,7 @@ router.post("/", upload.single("Profile"), async (req, res) => {
       Email,
       Position,
       Start_data,
-      Profile: req.file ? `/uploads/Tradesman/${req.file.filename}` : "",
+      Profile: req.file ? req.file.filename : "",
     });
     await newTradesman.save();
     res.status(201).json(newTradesman);
