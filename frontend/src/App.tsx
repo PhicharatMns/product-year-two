@@ -29,7 +29,7 @@ const router = createBrowserRouter([
       { path: "details/:id", element: <Details /> },
       { path: "EmployeeList", element: <EmployeeList /> },
       { path: "AddEmployee", element: <AddEmployee /> },
-      { path: "Profile", element: <Profile /> },
+      { path: " Profile", element: <Profile /> },
       { path: "Profileadmin", element: <Profileadmin /> },
       { path: "Addwork", element: <Addwork /> },
     ],
