@@ -133,4 +133,26 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
   }
 });
 
+// POST /tradesman/:id/add-tradesman
+router.post("/:id/add-tradesman", async (req, res) => {
+  try {
+    const { tradesmanId } = req.body; // ObjectId ของช่างจาก TradesmanProfile
+    const job = await Tradesman.findById(req.params.id);
+    if (!job) return res.status(404).json({ message: "ไม่พบงาน" });
+
+    // เพิ่มช่างเข้า array tradesmen ถ้ายังไม่มี
+    if (!job.tradesmen.includes(tradesmanId)) {
+      job.tradesmen.push(tradesmanId);
+      await job.save();
+    }
+
+    // ส่งงานพร้อม populated tradesmen กลับ
+    const populatedJob = await Tradesman.findById(req.params.id).populate("tradesmen");
+    res.status(200).json(populatedJob);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
