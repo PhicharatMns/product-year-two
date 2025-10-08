@@ -74,7 +74,7 @@ const Profile: React.FC = () => {
           isEditing ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
         }`}
       >
-        {isEditing ? 'Save' : 'Edit'}
+        {isEditing ? 'บันทึก' : 'แก้ไข'}
       </button>
     </div>
   );
