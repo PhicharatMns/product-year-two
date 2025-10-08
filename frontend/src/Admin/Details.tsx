@@ -38,6 +38,7 @@ export default function Details() {
   const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradsman[]>([]);
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
+  
   const polic = [
     {
       image:

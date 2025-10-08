@@ -349,7 +349,7 @@ export default function Editacc ()  {
           return (
             <div
               key={index}
-              className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50"
+              className="fixed inset-0 flex justify-center items-center backdrop-blur-sm z-50"
             >
               <div className="bg-white rounded-2xl shadow-2xl p-8 w-[900px] border border-blue-200">
                 <div className="mb-6 border-b border-blue-200 pb-3">
