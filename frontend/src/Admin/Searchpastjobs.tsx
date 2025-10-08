@@ -91,7 +91,7 @@ const Searchpastjobs: React.FC = () => {
 
   return (
     <div className={`w-380 mx-auto py-10 min-h-screen ${bg} ${text}`}>
-      <div className={`container mx-auto rounded-xl shadow-lg p-6 ${bg}`}>
+      <div className={`container mx-auto rounded-xl shadow-lg p-6 ${bg}`}>    
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
           <h2 className={`text-3xl font-bold ${theme === "dark" ? "text-yellow-300" : "text-blue-700"}`}>
