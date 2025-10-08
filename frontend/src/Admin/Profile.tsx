@@ -204,11 +204,11 @@ const Profile: React.FC = () => {
           <span className="text-gray-900">file</span>
         </h1>
 
-        {/* ส่วนโปรไฟล์ */}
+        {/* รูปโปร */}
         <div className="flex flex-wrap items-center gap-6 border-b border-gray-300 pb-6 mb-6">
           <div className="relative w-28 h-28 rounded-full overflow-hidden ring-2 ring-gray-400 shadow-md">
             <img
-              // src="https://cdn-icons-png.flaticon.com/512/3177/3177440.png"
+              // src=""
               alt="Avatar"
               className="w-full h-full object-cover"
             />
@@ -225,7 +225,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        {/* ส่วนข้อมูล */}
+      
         <div className="flex flex-wrap gap-6 justify-center">
           {renderSection("ข้อมูลติดต่อ", contactInfo, isEditingContact, "contact")}
           {renderSection("ความเชี่ยวชาญและคุณสมบัติ", skillInfo, isEditingSkill, "skill")}
