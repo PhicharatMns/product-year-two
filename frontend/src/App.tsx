@@ -19,6 +19,8 @@ import User from "./User/User";
 import Profile from "./Admin/Profile";
 import Notification from "./Admin/Notification";
 
+import { ThemeProvider } from "@/components/theme-provider"
+
 
 
 const router = createBrowserRouter([
@@ -48,6 +50,8 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <RouterProvider router={router} />
+    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+      <RouterProvider router={router} />
+    </ThemeProvider>
   );
 }

@@ -7,10 +7,11 @@ import { GoGraph } from "react-icons/go";
 import { MdOutlineCategory } from "react-icons/md";
 import { LiaUserEditSolid } from "react-icons/lia";
 import { VscNewFile } from "react-icons/vsc";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 
 interface SidebarItem {
-  text: string;   
+  text: string;
   icons: React.ComponentType<{ size?: number }>;
   Link: string;
 }
@@ -64,9 +65,10 @@ export default function Sidebaradmin() {
 
         <div>
           <div className="flex justify-center my-4">
-           
+
           </div>
 
+          <ThemeSwitcher />
           {/* Profile */}
           <Link to="/Profile" className="mt-auto">
             <div className="border-t border-blue-600 dark:border-gray-700 bg-blue-900 dark:bg-gray-800 duration-300 hover:bg-blue-700 dark:hover:bg-gray-700 h-20 flex items-center gap-4 cursor-pointer px-2">
