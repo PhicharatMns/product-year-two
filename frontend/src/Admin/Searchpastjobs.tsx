@@ -84,8 +84,8 @@ const Searchpastjobs: React.FC = () => {
 
   // Theme-based classes
   const bg = theme === "dark" ? "bg-gray-900" : "bg-white";
-  const text = theme === "dark" ? "text-white" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-800" : "bg-blue-50/40";
+  const text = theme === "dark" ? "text-white" : "text-gray-900";
+  const cardBg = theme === "dark" ? "bg-gray-400" : "bg-blue-50/40";
   const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
   const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
