@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 
 const tradesmanRouter = require("./routes/tradesman");
 const employeeRouter = require("./routes/employee");
+const otherTradesmanRouter = require("./routes/otherTradesman");
+
 
 const app = express();
 
@@ -22,6 +24,9 @@ mongoose.connect("mongodb://127.0.0.1:27017/Project_Y_TWO")
 // Routes
 app.use("/api/tradesman", tradesmanRouter);
 app.use("/api/employees", employeeRouter);
+app.use("/api/otherTradesman", otherTradesmanRouter);
+
+
 
 // Start server
 app.listen(5000, "localhost", () => {

@@ -339,6 +339,146 @@ export default function Editacc() {
           </div>
         </div>
       )}
+      {edit &&
+        dataTradesman.map((event, index) => {
+          return (
+            <div
+              key={index}
+              className="fixed inset-0 flex justify-center items-center backdrop-blur-sm z-50"
+            >
+              <div className="bg-white rounded-2xl shadow-2xl p-8 w-[900px] border border-blue-200">
+                <div className="mb-6 border-b border-blue-200 pb-3">
+                  <h2 className="text-2xl font-bold text-blue-700">
+                    เพิ่มช่างเข้าระบบ
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-2 gap-5">
+                  <div>
+                    <p>ชื่อนามสกุล</p>
+                    <input
+                      type="text"
+                      placeholder={event.Name}
+                      value={Name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>ชื่อเล่น</p>
+                    <input
+                      type="text"
+                      placeholder={event.Nickname}
+                      value={Nickname}
+                      onChange={(e) => setNickname(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>เลขบัตรประชาชน</p>
+                    <input
+                      type="text"
+                      placeholder={event.ID}
+                      value={ID}
+                      onChange={(e) => setID(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>เบอร์โทรศัพท์</p>
+                    <input
+                      type="text"
+                      placeholder={event.Phone_Number}
+                      value={Phone_Number}
+                      onChange={(e) => setPhone_Number(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>Email</p>
+                    <input
+                      type="email"
+                      placeholder={event.Email}
+                      value={Email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>ตำแหน่ง</p>
+                    <input
+                      type="text"
+                      placeholder={event.Position}
+                      value={Position}
+                      onChange={(e) => setPosition(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>วันเกิด</p>
+                    <input
+                      type="date"
+                      value={Birthday || event.Birthday || ""}
+                      onChange={(e) => setBirthday(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>วันที่เริ่มงาน</p>
+                    <input
+                      type="date"
+                      value={Start_data || event.Start_data || ""}
+                      onChange={(e) => setStart_data(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <p>ที่อยู่</p>
+                    <textarea
+                      value={Address}
+                      placeholder={event.Address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      rows={3}
+                      className="w-full border border-blue-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none mt-2"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <p>รูปภาพพนักงาน</p>
+                    <input
+                      type="file"
+                      onChange={(e) => setProfile(e.target.files?.[0] || null)}
+                      className="w-full mt-2 border border-blue-200 rounded-lg px-3 py-2 bg-blue-50 cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                <div className="ml-auto w-fit mt-5 flex gap-3">
+                  <button
+                    onClick={() => setedit(false)}
+                    className="border rounded-xl p-2 cursor-pointer"
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    onClick={handleUpdate}
+                    className="border rounded-xl text-blue-500 hover:bg-blue-500 hover:text-white duration-300 cursor-pointer p-2"
+                  >
+                    ยืนยัน
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
     </div>
   );
 }
