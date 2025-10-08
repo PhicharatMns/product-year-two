@@ -81,7 +81,7 @@ const Searchpastjobs: React.FC = () => {
       console.error("Error saving data:", err);
     }
   };
-
+  
   // Theme-based classes
   const bg = theme === "dark" ? "bg-gray-900" : "bg-white";
   const text = theme === "dark" ? "text-white" : "text-gray-900";
@@ -90,7 +90,7 @@ const Searchpastjobs: React.FC = () => {
   const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
   return (
-    <div className=" w-380 mx-auto py-10 min-h-screen">
+    <div className=" max-w-380 mx-auto py-10 min-h-screen">
       <div className="container mx-auto  rounded-xl shadow-lg p-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
