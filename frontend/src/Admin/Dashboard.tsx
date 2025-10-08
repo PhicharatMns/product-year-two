@@ -39,7 +39,7 @@ export default function Dashboard() {
         
        
         <header>
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-800 drop-shadow-sm">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold  drop-shadow-sm">
             Dashboard ช่าง
           </h1>
           <p className="text-gray-500 mt-2 text-lg font-medium">
