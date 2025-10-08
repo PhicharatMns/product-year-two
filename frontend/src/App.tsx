@@ -4,7 +4,6 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-import { ThemeProvider } from "@/components/theme-provider"
 import Searchpastjobs from "./Admin/Searchpastjobs";
 import Editacc from "./Admin/Editacc";
 import AdminLayout from "./Admin/AdminLayout";
@@ -19,7 +18,6 @@ import Sidebar from "./component/sidebar";
 import User from "./User/User";
 import Profile from "./Admin/Profile";
 import Notification from "./Admin/Notification";
-import { Children } from "react";
 
 
 
@@ -50,8 +48,6 @@ const router = createBrowserRouter([
 
 export default function App() {
   return (
-    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <RouterProvider router={router} />
   );
 }
