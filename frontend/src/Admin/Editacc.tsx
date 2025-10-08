@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-export default function Editacc ()  {
+export default function Editacc() {
   interface Tradesman {
     _id: string;
     Name: string;
@@ -18,7 +18,8 @@ export default function Editacc ()  {
   const [dataTradesman, setdataTradesman] = useState<Tradesman[]>([]);
   const [showModal, setshowModal] = useState(false);
   const [edit, setedit] = useState(false);
-  const [editId, setEditId] = useState<string | null>(null);
+  const [selectedTradesman, setSelectedTradesman] = useState<Tradesman | null>(null);
+
   // Data state
   const [Name, setName] = useState("");
   const [Nickname, setNickname] = useState("");
@@ -31,23 +32,46 @@ export default function Editacc ()  {
   const [Position, setPosition] = useState("");
   const [Start_data, setStart_data] = useState("");
 
+  // editId เก็บ id ของ tradesman ที่กำลังแก้ไข
+  const [editId, setEditId] = useState<string | null>(null);
+
   const openEditModal = (tradesman: Tradesman) => {
+    setSelectedTradesman(tradesman);
     setedit(true);
     setEditId(tradesman._id);
     setName(tradesman.Name);
     setNickname(tradesman.Nickname);
     setID(tradesman.ID);
-    setBirthday(tradesman.Birthday);
+    setBirthday(tradesman.Birthday.split("T")[0]);
     setAddress(tradesman.Address);
     setPhone_Number(tradesman.Phone_Number);
     setEmail(tradesman.Email);
     setPosition(tradesman.Position);
-    setStart_data(tradesman.Start_data);
-    setProfile(null); // รูปใหม่
+    setStart_data(tradesman.Start_data.split("T")[0]);
+    setProfile(null);
+    setshowModal(true);
+  };
+
+  const resetForm = () => {
+    setName("");
+    setNickname("");
+    setID("");
+    setBirthday("");
+    setAddress("");
+    setPhone_Number("");
+    setEmail("");
+    setPosition("");
+    setStart_data("");
+    setProfile(null);
+    setSelectedTradesman(null);
+    setEditId(null);
+    setedit(false);
+    setshowModal(false);
   };
 
   const handleUpdate = async () => {
     if (!editId) return;
+
     try {
       const formData = new FormData();
       formData.append("Name", Name);
@@ -66,53 +90,13 @@ export default function Editacc ()  {
         body: formData,
       });
 
-      setedit(false);
-      setEditId(null);
       fetchTradesman();
-      // reset state
-      setName("");
-      setNickname("");
-      setID("");
-      setBirthday("");
-      setAddress("");
-      setPhone_Number("");
-      setEmail("");
-      setPosition("");
-      setStart_data("");
-      setProfile(null);
+      resetForm();
     } catch (err) {
       console.error(err);
     }
   };
 
-  // Fetch tradesman
-  const fetchTradesman = async () => {
-    try {
-      const res = await fetch("http://localhost:5000/api/tradesman");
-      const data: Tradesman[] = await res.json();
-      setdataTradesman(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    fetchTradesman();
-  }, []);
-
-  // Delete tradesman
-  const handleDelete = async (id: string) => {
-    try {
-      await fetch(`http://localhost:5000/api/tradesman/${id}`, {
-        method: "DELETE",
-      });
-      fetchTradesman();
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // Save tradesman
   const handleSave = async () => {
     try {
       const formData = new FormData();
@@ -132,22 +116,37 @@ export default function Editacc ()  {
         body: formData,
       });
 
-      setshowModal(false);
-      setName("");
-      setNickname("");
-      setID("");
-      setBirthday("");
-      setAddress("");
-      setPhone_Number("");
-      setEmail("");
-      setPosition("");
-      setStart_data("");
-      setProfile(null);
+      fetchTradesman();
+      resetForm();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchTradesman = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/tradesman");
+      const data: Tradesman[] = await res.json();
+      setdataTradesman(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    try {
+      await fetch(`http://localhost:5000/api/tradesman/${id}`, {
+        method: "DELETE",
+      });
       fetchTradesman();
     } catch (err) {
       console.error(err);
     }
   };
+
+  useEffect(() => {
+    fetchTradesman();
+  }, []);
 
   return (
     <div className="min-h-screen bg-blue-50 py-10 flex justify-center">
@@ -159,7 +158,7 @@ export default function Editacc ()  {
           </p>
           <div>
             <button
-              onClick={() => setshowModal(true)}
+              onClick={() => { setshowModal(true); setedit(false); resetForm(); }}
               className="border p-2 rounded-xl bg-blue-500 text-white cursor-pointer"
             >
               เพิ่มช่าง
@@ -189,9 +188,7 @@ export default function Editacc ()  {
                 alt="profile"
                 className="w-16 h-16 object-cover rounded-full mx-auto border-2 border-blue-300 shadow-sm"
               />
-              <p className="text-center font-medium text-gray-800">
-                {event.Name}
-              </p>
+              <p className="text-center font-medium text-gray-800">{event.Name}</p>
               <p className="text-center text-blue-700">{event.Position}</p>
               <p className="text-center text-blue-600">{event.Phone_Number}</p>
               <p className="text-center text-gray-600">
@@ -208,7 +205,7 @@ export default function Editacc ()  {
                   onClick={() => openEditModal(event)}
                   className="bg-orange-400 duration-300 text-white px-5 py-2 rounded-full hover:bg-orange-500 transition-all shadow-md"
                 >
-                  เเก้ไช
+                  เเก้ไข
                 </button>
               </div>
             </div>
@@ -216,13 +213,13 @@ export default function Editacc ()  {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Modal for Add/Edit */}
       {showModal && (
         <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
           <div className="bg-white rounded-2xl shadow-2xl p-8 w-[900px] border border-blue-200">
             <div className="mb-6 border-b border-blue-200 pb-3">
               <h2 className="text-2xl font-bold text-blue-700">
-                เพิ่มช่างเข้าระบบ
+                {edit ? "แก้ไขช่าง" : "เพิ่มช่างเข้าระบบ"}
               </h2>
             </div>
 
@@ -232,61 +229,61 @@ export default function Editacc ()  {
                 <input
                   type="text"
                   value={Name}
+                  placeholder={selectedTradesman?.Name || ""}
                   onChange={(e) => setName(e.target.value)}
                   className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
                 />
               </div>
-
               <div>
                 <p>ชื่อเล่น</p>
                 <input
                   type="text"
                   value={Nickname}
+                  placeholder={selectedTradesman?.Nickname || ""}
                   onChange={(e) => setNickname(e.target.value)}
                   className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
                 />
               </div>
-
               <div>
                 <p>เลขบัตรประชาชน</p>
                 <input
                   type="text"
                   value={ID}
+                  placeholder={selectedTradesman?.ID || ""}
                   onChange={(e) => setID(e.target.value)}
                   className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
                 />
               </div>
-
               <div>
                 <p>เบอร์โทรศัพท์</p>
                 <input
                   type="text"
                   value={Phone_Number}
+                  placeholder={selectedTradesman?.Phone_Number || ""}
                   onChange={(e) => setPhone_Number(e.target.value)}
                   className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
                 />
               </div>
-
               <div>
                 <p>Email</p>
                 <input
                   type="email"
                   value={Email}
+                  placeholder={selectedTradesman?.Email || ""}
                   onChange={(e) => setEmail(e.target.value)}
                   className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
                 />
               </div>
-
               <div>
                 <p>ตำแหน่ง</p>
                 <input
                   type="text"
                   value={Position}
+                  placeholder={selectedTradesman?.Position || ""}
                   onChange={(e) => setPosition(e.target.value)}
                   className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
                 />
               </div>
-
               <div>
                 <p>วันเกิด</p>
                 <input
@@ -296,7 +293,6 @@ export default function Editacc ()  {
                   className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
                 />
               </div>
-
               <div>
                 <p>วันที่เริ่มงาน</p>
                 <input
@@ -306,17 +302,16 @@ export default function Editacc ()  {
                   className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
                 />
               </div>
-
               <div className="col-span-2">
                 <p>ที่อยู่</p>
                 <textarea
                   value={Address}
+                  placeholder={selectedTradesman?.Address || ""}
                   onChange={(e) => setAddress(e.target.value)}
                   rows={3}
                   className="w-full border border-blue-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none mt-2"
                 />
               </div>
-
               <div className="col-span-2">
                 <p>รูปภาพพนักงาน</p>
                 <input
@@ -329,13 +324,13 @@ export default function Editacc ()  {
 
             <div className="ml-auto w-fit mt-5 flex gap-3">
               <button
-                onClick={() => setshowModal(false)}
+                onClick={resetForm}
                 className="border rounded-xl p-2 cursor-pointer"
               >
                 ยกเลิก
               </button>
               <button
-                onClick={handleSave}
+                onClick={edit ? handleUpdate : handleSave}
                 className="border rounded-xl text-blue-500 hover:bg-blue-500 hover:text-white duration-300 cursor-pointer p-2"
               >
                 ยืนยัน
@@ -349,7 +344,7 @@ export default function Editacc ()  {
           return (
             <div
               key={index}
-              className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50"
+              className="fixed inset-0 flex justify-center items-center backdrop-blur-sm z-50"
             >
               <div className="bg-white rounded-2xl shadow-2xl p-8 w-[900px] border border-blue-200">
                 <div className="mb-6 border-b border-blue-200 pb-3">
@@ -486,6 +481,4 @@ export default function Editacc ()  {
         })}
     </div>
   );
-};
-
-
+}

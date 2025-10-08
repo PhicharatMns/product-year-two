@@ -166,32 +166,27 @@ const Profile: React.FC = () => {
         {title}
       </div>
       {items.map((item, idx) => (
-        <div className="mb-3" key={idx}>
-          <label className="block text-gray-700 font-medium text-sm mb-1">
-            {item.label}
-          </label>
-          {isEditing ? (
-            <input
-              value={item.value}
-              onChange={(e) => handleInputChange(idx, e.target.value, type)}
-              className="border border-gray-500 focus:border-gray-600 focus:ring-1 focus:ring-gray-300 rounded-lg px-3 py-1.5 text-sm w-full outline-none transition-all"
-            />
-          ) : (
-            <div className="font-medium text-gray-900 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200">
-              {item.value}
-            </div>
-          )}
-        </div>
+       <div className="mb-4" key={idx}>
+  <label className="block text-gray-600 text-sm mb-1">{item.label}</label>
+  {isEditing ? (
+    <input
+      value={item.value}
+      onChange={(e) => handleInputChange(idx, e.target.value, type)}
+      className="border border-gray-300 rounded px-3 py-2 text-sm w-full"
+    />
+  ) : (
+    <div className="font-semibold text-gray-800">{item.value}</div>
+  )}
+</div>
+
       ))}
       <button
         onClick={() => toggleEdit(type)}
-        className={`mt-3 w-full py-2 rounded-lg font-bold text-white transition-all shadow-sm ${
-          isEditing
-            ? "bg-gradient-to-r from-red-600 to-red-700"
-            : "bg-gradient-to-r from-green-500 to-green-600"
+        className={`mt-4 px-4 py-2 rounded font-semibold text-white transition ${
+          isEditing ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
         }`}
       >
-        {isEditing ? "บันทึก" : "แก้ไข"}
+        {isEditing ? 'Save' : 'Edit'}
       </button>
     </div>
   );

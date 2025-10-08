@@ -4,7 +4,6 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
-
 import Searchpastjobs from "./Admin/Searchpastjobs";
 import Editacc from "./Admin/Editacc";
 import AdminLayout from "./Admin/AdminLayout";
@@ -15,10 +14,14 @@ import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
 import Addwork from "./Admin/Addwork";
 import Dashboard from "./Admin/Dashboard";
-
 import Sidebar from "./component/sidebar";
 import User from "./User/User";
 import Profile from "./Admin/Profile";
+import Notification from "./Admin/Notification";
+
+import { ThemeProvider } from "@/components/theme-provider"
+
+
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -35,6 +38,7 @@ const router = createBrowserRouter([
       { path: "Profile", element: <Profile /> },
       { path: "Profileadmin", element: <Profileadmin /> },
       { path: "Addwork", element: <Addwork /> },
+      { path: "Notification", element: <Notification /> },
     ],
   },
   {
@@ -45,5 +49,9 @@ const router = createBrowserRouter([
 ]);
 
 export default function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <RouterProvider router={router} />
+    </ThemeProvider>
+  );
 }

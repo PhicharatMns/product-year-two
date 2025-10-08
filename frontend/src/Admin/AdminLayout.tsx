@@ -9,7 +9,7 @@ export default function AdminLayout() {
         <Sidebaradmin />
       </div>
 
-      <div className="flex-1  bg-gray-50">
+      <div className="flex-1  ">
         <Outlet />
       </div>
     </div>

@@ -10,7 +10,6 @@ import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { BsEnvelopePaper } from "react-icons/bs";
 import { FaInbox } from "react-icons/fa6";
 
-
 interface SidebarItem {
   text: string;
   icons: React.ComponentType<{ size?: number }>;
@@ -31,7 +30,7 @@ export default function SidebarUser() {
   ];
 
   return (
-    <div className="relative">
+    <div className="fixed z-20 flex h-screen">
     
       <div className="lg:hidden fixed top-4 left-4 z-30">
         <button
@@ -59,7 +58,7 @@ export default function SidebarUser() {
         {/* Logo */}
         <div className="flex flex-col">
           <div className="flex items-center py-3 p-4">
-            <Link to="/Profile" className="mx-auto">
+            <Link to="/Home" className="mx-auto">
               <div className="uppercase text-2xl font-black text-white whitespace-nowrap mt-5">
                 Tech<span className="text-yellow-500">Job</span>
        
@@ -87,19 +86,20 @@ export default function SidebarUser() {
           </div>
         </div>
 
-        <Link to="/Profile" className="mt-auto">
-          <div className="border-blue-900 bg-blue-900 hover:bg-blue-700 h-20 flex items-center gap-4 cursor-pointer px-2 duration-300">
-            <img
-              src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
-              className="object-cover w-10 rounded-full"
-              alt="pic"
-            />
-            <div className="text-lg font-semibold text-white">
-              คุณ ลำไย ลายย้อน
-             
+        <div>
+          <Link to="/Profile" className="mt-auto">
+            <div className="border-blue-900 bg-blue-900 hover:bg-blue-700 h-20 flex items-center gap-4 cursor-pointer px-2 duration-300">
+              <img
+                src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
+                className="object-cover w-10 rounded-full"
+                alt="pic"
+              />
+              <div className="text-lg font-semibold text-white">
+                คุณ ลำไย ลายย้อน
+              </div>
             </div>
-          </div>
-        </Link>
+          </Link>
+        </div>
       </div>
     </div>
   );

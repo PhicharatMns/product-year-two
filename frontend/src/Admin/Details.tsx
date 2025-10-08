@@ -17,10 +17,28 @@ export default function Details() {
     image: string;
   }
 
+  interface Tradsman {
+    _id: string;
+    Name: string;
+    Nickname: string;
+    ID: string;
+    Birthday: string;
+    Address: string;
+    Phone_Number: string;
+    Email: string;
+    Profile: string;
+    Position: string;
+    Start_data: string;
+  }
+
+
   const [dataEmployees, setDataEmployees] = useState<Employees[]>([]);
   const [Mobiles, setMobled] = useState(false);
+  const [dataTradesman, setdataTradesman] = useState<Tradsman[]>([]);
+  const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradsman[]>([]);
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
+  
   const polic = [
     {
       image:
@@ -44,9 +62,80 @@ export default function Details() {
     }
   };
 
+  // ดึงข้อมูลช่างทั้งหมด (Tradesman)
+  const fetchTradesman = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/tradesman");
+      const data: Tradsman[] = await res.json();
+      setdataTradesman(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ✅ เพิ่มช่างไปยัง otherTradesman
+  // ✅ ดึงข้อมูล otherTradesman เฉพาะของงานนี้
+  const fetchOtherTradesman = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/otherTradesman/${id}`);
+      if (!res.ok) throw new Error("โหลด otherTradesman ไม่สำเร็จ");
+      const data: Tradsman[] = await res.json();
+      setSelectedTradesmen(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ✅ เพิ่มช่างไปยัง otherTradesman พร้อม employeeId
+  const handleAddTradesman = async (tradesman: Tradsman) => {
+    try {
+      const payload = {
+        Name: tradesman.Name,
+        Position: tradesman.Position,
+        Phone_Number: tradesman.Phone_Number,
+        Profile: tradesman.Profile,
+        employeeId: id, // ผูกกับงานปัจจุบัน
+      };
+
+      const res = await fetch("http://localhost:5000/api/otherTradesman", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("ไม่สามารถเพิ่มข้อมูลได้");
+      await res.json();
+
+      // ดึงข้อมูลใหม่หลังเพิ่ม
+      fetchOtherTradesman();
+      setMobled(false);
+    } catch (err) {
+      console.error("เกิดข้อผิดพลาด:", err);
+    }
+  };
+
+  const handeDelete = async (id: string) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/otherTradesman/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error("ลบไม่สำเร็จ");
+
+      fetchOtherTradesman(); // โหลดข้อมูลใหม่
+    } catch (err) {
+      console.error("เกิดข้อผิดพลาดตอนลบ:", err);
+    }
+  };
+
+
+  // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
     fetchEmployees();
+    fetchTradesman();
+    fetchOtherTradesman(); // ✅ โหลดข้อมูล otherTradesman ตอนเปิดหน้า
   }, []);
+
 
   const { id } = useParams();
 
@@ -55,8 +144,9 @@ export default function Details() {
       {dataEmployees.map((event, index) => {
         if (event._id === id)
           return (
-            <div className=" max-w-380 mx-auto" key={index}>
-              <div className=" mx-auto bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
+            <div className="max-w-380 mx-auto" key={index}>
+              {/* ---------- ข้อมูลงาน ---------- */}
+              <div className="mx-auto bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
                 <p className="text-3xl font-extrabold text-blue-700 mb-3">
                   ชื่องาน
                 </p>
@@ -70,7 +160,8 @@ export default function Details() {
                 </p>
               </div>
 
-              <div className=" mx-auto bg-white rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
+              {/* ---------- ผู้ว่าจ้าง ---------- */}
+              <div className="mx-auto bg-white rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
                 <div className="flex flex-col md:flex-row md:justify-between text-gray-700 gap-4 text-lg">
                   <p className="font-semibold">
                     ชื่อผู้จ้าง:{" "}
@@ -94,9 +185,10 @@ export default function Details() {
                 </div>
               </div>
 
+              {/* ---------- รายชื่อช่าง ---------- */}
               <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
                 <div className="border lg:col-span-4 rounded-2xl border-blue-200 bg-white shadow-lg p-5">
-                  <div className="flex justify-between items-center border-b border-blue-200 pb-3 mb-5">
+                  <div className="flex justify-between items-center border-b border-blue-200 pb-3 p-2">
                     <h3 className="text-xl font-bold text-blue-700">
                       รายชื่อช่าง
                     </h3>
@@ -108,27 +200,40 @@ export default function Details() {
                     </button>
                   </div>
 
-                  <div className=" items-center text-gray-700 font-semibold text-lg p-1 shadow-sm rounded-xl hover:shadow-lg duration-300 hover:scale-101">
-                    <div className="flex items-center gap-5">
-                      <img
-                        className="w-16 h-16 rounded-2xl object-cover"
-                        src={`http://localhost:5000/uploads/${event.image}`}
-                        alt={event.Employer}
-                      />
-                      <div className="">
-                        <p>นาย : พิชรัตน์ มีสรรพวงศ์</p>
-                        <p className="text-sm text-gray-500">ตำแหน่ง : ช่างไม้</p>
-                      </div>
-                      <div className="  ml-auto ">
-                        <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-3 py-1 rounded-lg shadow">
-                          แก้ไข
+                  {/* ✅ แสดงรายชื่อช่างที่เพิ่มแล้ว */}
+                  <div className="text-gray-700 font-semibold  text-lg p-2">
+                    {SelectedTradesmen.map((t, index) => (
+                      <div
+                        key={index}
+                        className="flex items-center border my-2 rounded-xl hover:shadow-lg hover:scale-101 duration-300 h-fit justify-between p-2 border-b border-gray-100"
+                      >
+                        <div className="flex items-center gap-5">
+                          <img
+                            src={`http://localhost:5000/uploads/Tradesman/${t.Profile}`}
+                            alt={t.Name}
+                            className="w-12 h-12 rounded-full object-cover"
+                          />
+                          <div>
+                            <p>{t.Name}</p>
+                            <p className="text-sm text-gray-500">{t.Position}</p>
+                            <p className="text-sm text-blue-600">{t.Phone_Number}</p>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => handeDelete(t._id)}
+                          className="border p-2 rounded-xl bg-orange-500 text-white cursor-pointer hover:shadow-lg duration-300 hover:scale-101"
+                        >
+                          ลบ
                         </button>
                       </div>
-                    </div>
+                    ))}
+
                   </div>
                 </div>
 
-                <div className="lg:col-span-6 bg-white rounded-2xl shadow-lg border border-blue-200 p-6">
+                {/* ---------- รายละเอียดการดำเนินงาน ---------- */}
+                <div className="lg:col-span-6 h-fit bg-white rounded-2xl shadow-lg border border-blue-200 p-6">
                   <p className="text-xl font-bold text-blue-700 mb-4">
                     รายละเอียดการดำเนินงาน
                   </p>
@@ -166,6 +271,7 @@ export default function Details() {
           );
       })}
 
+      {/* ---------- Modal เพิ่มช่าง ---------- */}
       {Mobiles && (
         <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
           <div className="bg-white rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border border-blue-200 max-h-[95vh] overflow-y-auto">
@@ -179,35 +285,47 @@ export default function Details() {
               </button>
             </div>
 
-<div className="my-6">
-  <div className="flex items-center justify-between p-6 bg-white border rounded-2xl shadow-sm">
-    {/* รอรูป */}
-    <div className="flex items-center gap-4">
-      <div className="w-20 h-20 rounded-full bg-blue-700 shadow-md"></div>
-      <div>
-        <h2 className="text-xl font-normal text-black">นาย สมศรี ใจดี</h2>
-        <p className="text-gray-400 font-normal">
-          <span className="font-normal">ตำแหน่ง :</span> ช่างไม้
-        </p>
-        <p className="text-gray-400 font-normal">
-          <span className="font-normal">เบอร์โทร :</span> 095-1234567
-        </p>
-      </div>
-    </div>
+            <div className="my-6">
+              {dataTradesman.map((event, index) => (
+                <div
+                  key={index}
+                  className="flex my-5 justify-between gap-5 pr-5 shadow-sm py-2 pl-3 rounded-xl"
+                >
+                  <div className="flex gap-5">
+                    <img
+                      src={`http://localhost:5000/uploads/Tradesman/${event.Profile}`}
+                      alt=""
+                      className="w-20 h-20 rounded-full bg-blue-700 shadow-md"
+                    />
+                    <div className="flex-col">
+                      <h2 className="text-xl font-normal text-black">
+                        {event.Name}
+                      </h2>
+                      <p className="text-gray-400 font-normal">
+                        <span className="font-normal">ตำแหน่ง :</span>{" "}
+                        {event.Address}
+                      </p>
+                      <p className="text-gray-400 font-normal">
+                        <span className="font-normal">เบอร์โทร :</span>{" "}
+                        {event.Phone_Number}
+                      </p>
+                    </div>
+                  </div>
 
-    {/* ยังกดไม่ได้ */}
-    <div className="flex gap-3">
-      <button className="px-5 py-2 bg-red-600 text-white font-normal rounded-xl">
-        ลบ
-      </button>
-    {/* ยังกดไม่ได้ */}
-      <button className="px-5 py-2 bg-green-600 text-white font-normal rounded-xl">
-        เพิ่ม
-      </button>
-    </div>
-  </div>
-</div>
-
+                  <div className="flex gap-3 items-center">
+                    <button className="h-10 p-2 bg-red-600 text-white font-normal rounded-xl cursor-pointer">
+                      ลบ
+                    </button>
+                    <button
+                      onClick={() => handleAddTradesman(event)}
+                      className="h-10 p-2 bg-green-600 text-white font-normal rounded-xl cursor-pointer"
+                    >
+                      เพิ่ม
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
