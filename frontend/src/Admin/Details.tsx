@@ -172,6 +172,36 @@ export default function Details() {
             <div className="mb-6 border-b border-blue-200 pb-3">
               <h2 className="text-2xl font-bold text-blue-700">เพิ่มช่าง</h2>
             </div>
+
+<div className="my-6">
+  <div className="flex items-center justify-between p-6 bg-white border rounded-2xl shadow-sm">
+    {/* รอรูป */}
+    <div className="flex items-center gap-4">
+      <div className="w-20 h-20 rounded-full bg-blue-700 shadow-md"></div>
+      <div>
+        <h2 className="text-xl font-normal text-black">นาย สมศรี ใจดี</h2>
+        <p className="text-gray-400 font-normal">
+          <span className="font-normal">ตำแหน่ง :</span> ช่างไม้
+        </p>
+        <p className="text-gray-400 font-normal">
+          <span className="font-normal">เบอร์โทร :</span> 095-1234567
+        </p>
+      </div>
+    </div>
+
+    {/* ยังกดไม่ได้ */}
+    <div className="flex gap-3">
+      <button className="px-5 py-2 bg-red-600 text-white font-normal rounded-xl">
+        ลบ
+      </button>
+    {/* ยังกดไม่ได้ */}
+      <button className="px-5 py-2 bg-green-600 text-white font-normal rounded-xl">
+        เพิ่ม
+      </button>
+    </div>
+  </div>
+</div>
+
           </div>
         </div>
       )}
