@@ -54,25 +54,24 @@ const Profile: React.FC = () => {
     <div className="flex-1 min-w-[280px]">
       <div className="font-bold mb-3 text-gray-700">{title}</div>
       {items.map((item, idx) => (
-       <div className="mb-4" key={idx}>
-  <label className="block text-gray-600 text-sm mb-1">{item.label}</label>
-  {isEditing ? (
-    <input
-      value={item.value}
-      onChange={(e) => handleInputChange(idx, e.target.value, type)}
-      className="border border-gray-300 rounded px-3 py-2 text-sm w-full"
-    />
-  ) : (
-    <div className="font-semibold text-gray-800">{item.value}</div>
-  )}
-</div>
+        <div className="mb-4" key={idx}>
+          <label className="block text-gray-600 text-sm mb-1">{item.label}</label>
+          {isEditing ? (
+            <input
+              value={item.value}
+              onChange={(e) => handleInputChange(idx, e.target.value, type)}
+              className="border border-gray-300 rounded px-3 py-2 text-sm w-full"
+            />
+          ) : (
+            <div className="font-semibold text-gray-800">{item.value}</div>
+          )}
+        </div>
 
       ))}
       <button
         onClick={() => toggleEdit(type)}
-        className={`mt-4 px-4 py-2 rounded font-semibold text-white transition ${
-          isEditing ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
-        }`}
+        className={`mt-4 px-4 py-2 rounded font-semibold text-white transition ${isEditing ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700'
+          }`}
       >
         {isEditing ? 'บันทึก' : 'แก้ไข'}
       </button>
