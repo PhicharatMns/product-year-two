@@ -98,7 +98,7 @@ const Searchpastjobs: React.FC = () => {
   };
 
   return (
-    <div className="bg-blue-50 py-10 min-h-screen">
+    <div className="bg-blue-50 w-380 mx-auto py-10 min-h-screen">
       <div className="container mx-auto bg-white rounded-xl shadow-lg p-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">

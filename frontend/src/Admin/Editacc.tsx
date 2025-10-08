@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const Editacc: React.FC = () => {
+export default function Editacc ()  {
   interface Tradesman {
     _id: string;
     Name: string;
@@ -17,7 +17,8 @@ const Editacc: React.FC = () => {
 
   const [dataTradesman, setdataTradesman] = useState<Tradesman[]>([]);
   const [showModal, setshowModal] = useState(false);
-
+  const [edit, setedit] = useState(false);
+  const [editId, setEditId] = useState<string | null>(null);
   // Data state
   const [Name, setName] = useState("");
   const [Nickname, setNickname] = useState("");
@@ -29,6 +30,60 @@ const Editacc: React.FC = () => {
   const [Profile, setProfile] = useState<File | null>(null);
   const [Position, setPosition] = useState("");
   const [Start_data, setStart_data] = useState("");
+
+  const openEditModal = (tradesman: Tradesman) => {
+    setedit(true);
+    setEditId(tradesman._id);
+    setName(tradesman.Name);
+    setNickname(tradesman.Nickname);
+    setID(tradesman.ID);
+    setBirthday(tradesman.Birthday);
+    setAddress(tradesman.Address);
+    setPhone_Number(tradesman.Phone_Number);
+    setEmail(tradesman.Email);
+    setPosition(tradesman.Position);
+    setStart_data(tradesman.Start_data);
+    setProfile(null); // รูปใหม่
+  };
+
+  const handleUpdate = async () => {
+    if (!editId) return;
+    try {
+      const formData = new FormData();
+      formData.append("Name", Name);
+      formData.append("Nickname", Nickname);
+      formData.append("ID", ID);
+      formData.append("Birthday", Birthday);
+      formData.append("Address", Address);
+      formData.append("Phone_Number", Phone_Number);
+      formData.append("Email", Email);
+      formData.append("Position", Position);
+      formData.append("Start_data", Start_data);
+      if (Profile) formData.append("Profile", Profile);
+
+      await fetch(`http://localhost:5000/api/tradesman/${editId}`, {
+        method: "PUT",
+        body: formData,
+      });
+
+      setedit(false);
+      setEditId(null);
+      fetchTradesman();
+      // reset state
+      setName("");
+      setNickname("");
+      setID("");
+      setBirthday("");
+      setAddress("");
+      setPhone_Number("");
+      setEmail("");
+      setPosition("");
+      setStart_data("");
+      setProfile(null);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // Fetch tradesman
   const fetchTradesman = async () => {
@@ -60,46 +115,23 @@ const Editacc: React.FC = () => {
   // Save tradesman
   const handleSave = async () => {
     try {
-      if (Profile) {
-        // ส่ง FormData ถ้ามีไฟล์
-        const formData = new FormData();
-        formData.append("Name", Name);
-        formData.append("Nickname", Nickname);
-        formData.append("ID", ID);
-        formData.append("Birthday", Birthday);
-        formData.append("Address", Address);
-        formData.append("Phone_Number", Phone_Number);
-        formData.append("Email", Email);
-        formData.append("Position", Position);
-        formData.append("Start_data", Start_data);
-        formData.append("Profile", Profile);
+      const formData = new FormData();
+      formData.append("Name", Name);
+      formData.append("Nickname", Nickname);
+      formData.append("ID", ID);
+      formData.append("Birthday", Birthday);
+      formData.append("Address", Address);
+      formData.append("Phone_Number", Phone_Number);
+      formData.append("Email", Email);
+      formData.append("Position", Position);
+      formData.append("Start_data", Start_data);
+      if (Profile) formData.append("Profile", Profile);
 
-        await fetch("http://localhost:5000/api/tradesman", {
-          method: "POST",
-          body: formData,
-        });
-      } else {
-        // ส่ง JSON ถ้าไม่มีไฟล์
-        const newTradesman = {
-          Name,
-          Nickname,
-          ID,
-          Birthday,
-          Address,
-          Phone_Number,
-          Email,
-          Position,
-          Start_data,
-        };
+      await fetch("http://localhost:5000/api/tradesman", {
+        method: "POST",
+        body: formData,
+      });
 
-        await fetch("http://localhost:5000/api/tradesman", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newTradesman),
-        });
-      }
-
-      // Reset modal & refresh data
       setshowModal(false);
       setName("");
       setNickname("");
@@ -136,11 +168,11 @@ const Editacc: React.FC = () => {
         </div>
 
         {/* Table Header */}
-        <div className="grid grid-cols-6 gap-5 font-semibold text-lg text-blue-800 border-b-4 border-blue-200 pb-2 mb-2">
+        <div className="grid grid-cols-6 gap-5 text-center font-semibold text-lg text-blue-800 border-b-4 border-blue-200 pb-2 mb-2">
           <p>รูป</p>
           <p>ชื่อ</p>
-          <p className="text-center">ประเภทงาน</p>
           <p className="text-center">ตำแหน่ง</p>
+          <p className="text-center">เบอร์โทรศัพท์</p>
           <p className="text-center">วันที่สมัคร</p>
           <p className="text-center">การจัดการ</p>
         </div>
@@ -158,10 +190,10 @@ const Editacc: React.FC = () => {
                 className="w-16 h-16 object-cover rounded-full mx-auto border-2 border-blue-300 shadow-sm"
               />
               <p className="text-center font-medium text-gray-800">
-                {event.ID}
+                {event.Name}
               </p>
-              <p className="text-center text-blue-700">{event.Name}</p>
-              <p className="text-center text-blue-600">{event.Nickname}</p>
+              <p className="text-center text-blue-700">{event.Position}</p>
+              <p className="text-center text-blue-600">{event.Phone_Number}</p>
               <p className="text-center text-gray-600">
                 {new Date(event.Start_data).toLocaleDateString("th-TH")}
               </p>
@@ -171,6 +203,12 @@ const Editacc: React.FC = () => {
                   className="bg-red-600 text-white px-5 py-2 rounded-full hover:bg-red-700 transition-all shadow-md"
                 >
                   ลบ
+                </button>
+                <button
+                  onClick={() => openEditModal(event)}
+                  className="bg-orange-400 duration-300 text-white px-5 py-2 rounded-full hover:bg-orange-500 transition-all shadow-md"
+                >
+                  เเก้ไช
                 </button>
               </div>
             </div>
@@ -306,8 +344,148 @@ const Editacc: React.FC = () => {
           </div>
         </div>
       )}
+      {edit &&
+        dataTradesman.map((event, index) => {
+          return (
+            <div
+              key={index}
+              className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50"
+            >
+              <div className="bg-white rounded-2xl shadow-2xl p-8 w-[900px] border border-blue-200">
+                <div className="mb-6 border-b border-blue-200 pb-3">
+                  <h2 className="text-2xl font-bold text-blue-700">
+                    เพิ่มช่างเข้าระบบ
+                  </h2>
+                </div>
+
+                <div className="grid grid-cols-2 gap-5">
+                  <div>
+                    <p>ชื่อนามสกุล</p>
+                    <input
+                      type="text"
+                      placeholder={event.Name}
+                      value={Name}
+                      onChange={(e) => setName(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>ชื่อเล่น</p>
+                    <input
+                      type="text"
+                      placeholder={event.Nickname}
+                      value={Nickname}
+                      onChange={(e) => setNickname(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>เลขบัตรประชาชน</p>
+                    <input
+                      type="text"
+                      placeholder={event.ID}
+                      value={ID}
+                      onChange={(e) => setID(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>เบอร์โทรศัพท์</p>
+                    <input
+                      type="text"
+                      placeholder={event.Phone_Number}
+                      value={Phone_Number}
+                      onChange={(e) => setPhone_Number(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>Email</p>
+                    <input
+                      type="email"
+                      placeholder={event.Email}
+                      value={Email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>ตำแหน่ง</p>
+                    <input
+                      type="text"
+                      placeholder={event.Position}
+                      value={Position}
+                      onChange={(e) => setPosition(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>วันเกิด</p>
+                    <input
+                      type="date"
+                      value={Birthday || event.Birthday || ""}
+                      onChange={(e) => setBirthday(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div>
+                    <p>วันที่เริ่มงาน</p>
+                    <input
+                      type="date"
+                      value={Start_data || event.Start_data || ""}
+                      onChange={(e) => setStart_data(e.target.value)}
+                      className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <p>ที่อยู่</p>
+                    <textarea
+                      value={Address}
+                      placeholder={event.Address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      rows={3}
+                      className="w-full border border-blue-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none mt-2"
+                    />
+                  </div>
+
+                  <div className="col-span-2">
+                    <p>รูปภาพพนักงาน</p>
+                    <input
+                      type="file"
+                      onChange={(e) => setProfile(e.target.files?.[0] || null)}
+                      className="w-full mt-2 border border-blue-200 rounded-lg px-3 py-2 bg-blue-50 cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                <div className="ml-auto w-fit mt-5 flex gap-3">
+                  <button
+                    onClick={() => setedit(false)}
+                    className="border rounded-xl p-2 cursor-pointer"
+                  >
+                    ยกเลิก
+                  </button>
+                  <button
+                    onClick={handleUpdate}
+                    className="border rounded-xl text-blue-500 hover:bg-blue-500 hover:text-white duration-300 cursor-pointer p-2"
+                  >
+                    ยืนยัน
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
     </div>
   );
 };
 
-export default Editacc;
+

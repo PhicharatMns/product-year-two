@@ -51,13 +51,12 @@ export default function Details() {
   const { id } = useParams();
 
   return (
-    <div className="bg-blue-50 min-h-screen py-10 px-4 md:px-10">
+    <div className="bg-blue-50  min-h-screen p-2 py-10 ">
       {dataEmployees.map((event, index) => {
         if (event._id === id)
           return (
-            <div key={index}>
-            
-              <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
+            <div className=" max-w-380 mx-auto" key={index}>
+              <div className=" mx-auto bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
                 <p className="text-3xl font-extrabold text-blue-700 mb-3">
                   ชื่องาน
                 </p>
@@ -71,17 +70,14 @@ export default function Details() {
                 </p>
               </div>
 
-           
-              <div className="max-w-7xl mx-auto bg-white rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
+              <div className=" mx-auto bg-white rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
                 <div className="flex flex-col md:flex-row md:justify-between text-gray-700 gap-4 text-lg">
-
                   <p className="font-semibold">
-                      ชื่อผู้จ้าง:{" "}
+                    ชื่อผู้จ้าง:{" "}
                     <span className="text-blue-600 font-bold">
-                    {event.Employer}
+                      {event.Employer}
                     </span>
-                    
-                    </p>
+                  </p>
 
                   <p className="font-semibold">
                     เบอร์ติดต่อ:{" "}
@@ -95,19 +91,11 @@ export default function Details() {
                       {event.address}
                     </span>
                   </p>
-                <p className="font-semibold">
-                    ผู้รับผิดชอบ:{" "}
-                    <span className="text-blue-600 font-bold">
-                      {event.responsible}
-                    </span>
-                  </p>
                 </div>
               </div>
 
-              <div className="grid lg:grid-cols-10 grid-cols-1 gap-6 max-w-7xl mx-auto">
-              
-                <div className="border lg:col-span-3 rounded-2xl border-blue-200 bg-white shadow-lg p-5">
-                 
+              <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
+                <div className="border lg:col-span-4 rounded-2xl border-blue-200 bg-white shadow-lg p-5">
                   <div className="flex justify-between items-center border-b border-blue-200 pb-3 mb-5">
                     <h3 className="text-xl font-bold text-blue-700">
                       รายชื่อช่าง
@@ -120,37 +108,37 @@ export default function Details() {
                     </button>
                   </div>
 
-             
-                  <div className="grid items-center grid-cols-4 gap-4 text-gray-700 font-semibold text-lg">
-                    <img
-                      className="w-16 h-16 rounded-2xl object-cover"
-                      src={`http://localhost:5000/uploads/${event.image}`}
-                      alt={event.Employer}
-                    />
-                    <p>ชื่อ</p>
-                    <p>ตำแหน่ง</p>
-                    <div className="flex justify-end">
-                      <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-3 py-1 rounded-lg shadow">
-                        แก้ไข
-                      </button>
+                  <div className=" items-center text-gray-700 font-semibold text-lg p-1 shadow-sm rounded-xl hover:shadow-lg duration-300 hover:scale-101">
+                    <div className="flex items-center gap-5">
+                      <img
+                        className="w-16 h-16 rounded-2xl object-cover"
+                        src={`http://localhost:5000/uploads/${event.image}`}
+                        alt={event.Employer}
+                      />
+                      <div className="">
+                        <p>นาย : พิชรัตน์ มีสรรพวงศ์</p>
+                        <p className="text-sm text-gray-500">ตำแหน่ง : ช่างไม้</p>
+                      </div>
+                      <div className="  ml-auto ">
+                        <button className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold px-3 py-1 rounded-lg shadow">
+                          แก้ไข
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-         
-                <div className="lg:col-span-7 bg-white rounded-2xl shadow-lg border border-blue-200 p-6">
+                <div className="lg:col-span-6 bg-white rounded-2xl shadow-lg border border-blue-200 p-6">
                   <p className="text-xl font-bold text-blue-700 mb-4">
                     รายละเอียดการดำเนินงาน
                   </p>
 
-               
                   <div className="grid grid-cols-6 gap-5 bg-blue-100 p-3 rounded-lg font-bold text-blue-700 text-center text-lg">
                     {data.map((event, index) => (
                       <p key={index}>{event}</p>
                     ))}
                   </div>
 
-               
                   {polic.map((event, index) => (
                     <div
                       key={index}
@@ -178,7 +166,6 @@ export default function Details() {
           );
       })}
 
-    
       {Mobiles && (
         <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
           <div className="bg-white rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border border-blue-200 max-h-[95vh] overflow-y-auto">
