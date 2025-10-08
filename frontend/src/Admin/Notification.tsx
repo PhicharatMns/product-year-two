@@ -8,12 +8,12 @@ export default function Notification() {
   // dynamic colors ตาม theme
   const bg = theme === "dark" ? "bg-gray-900" : "bg-white";
   const text = theme === "dark" ? "text-white" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-800" : "bg-blue-50/40";
+  const cardBg = theme === "dark" ? "bg-gray-600" : "bg-blue-50/40";
   const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
   const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
   return (
-    <div className={`p-6 max-w-4xl mx-auto ${bg} ${text}`}>
+    <div className={`p-6 max-w-380 mx-auto  ${text}`}>
       <p className="text-5xl font-bold text-blue-500">การแจ้งเตือน</p>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 gap-3 mt-5">
         {/* Notification Card 1 */}
