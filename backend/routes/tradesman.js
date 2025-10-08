@@ -78,4 +78,59 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+// UPDATE tradesman by ID
+router.put("/:id", upload.single("Profile"), async (req, res) => {
+  try {
+    const {
+      Name,
+      Nickname,
+      ID,
+      Birthday,
+      Address,
+      Phone_Number,
+      Email,
+      Position,
+      Start_data,
+    } = req.body;
+
+    const tradesman = await Tradesman.findById(req.params.id);
+    if (!tradesman) {
+      return res.status(404).json({ message: "ไม่พบช่าง" });
+    }
+
+    // อัปเดตข้อมูล
+    tradesman.Name = Name !== undefined ? Name : tradesman.Name;
+    tradesman.Nickname = Nickname !== undefined ? Nickname : tradesman.Nickname;
+    tradesman.ID = ID !== undefined ? ID : tradesman.ID;
+    tradesman.Birthday = Birthday !== undefined ? Birthday : tradesman.Birthday;
+    tradesman.Address = Address !== undefined ? Address : tradesman.Address;
+    tradesman.Phone_Number =
+      Phone_Number !== undefined ? Phone_Number : tradesman.Phone_Number;
+    tradesman.Email = Email !== undefined ? Email : tradesman.Email;
+    tradesman.Position = Position !== undefined ? Position : tradesman.Position;
+    tradesman.Start_data =
+      Start_data !== undefined ? Start_data : tradesman.Start_data;
+
+    // อัปเดตรูปภาพ ถ้ามีไฟล์ใหม่
+    if (req.file) {
+      // ลบไฟล์เก่า
+      if (tradesman.Profile) {
+        const oldFilePath = path.join(
+          __dirname,
+          "../uploads/Tradesman",
+          tradesman.Profile
+        );
+        if (fs.existsSync(oldFilePath)) fs.unlinkSync(oldFilePath);
+      }
+      tradesman.Profile = req.file.filename;
+    }
+
+    await tradesman.save();
+    res.json(tradesman);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "แก้ไขข้อมูลช่างไม่สำเร็จ" });
+  }
+});
+
 module.exports = router;

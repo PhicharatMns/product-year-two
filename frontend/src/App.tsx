@@ -15,6 +15,9 @@ import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
 import Addwork from "./Admin/Addwork";
 import Dashboard from "./Admin/Dashboard";
+
+import Sidebar from "./component/sidebar";
+import User from "./User/User";
 import Profile from "./Admin/Profile";
 
 const router = createBrowserRouter([
@@ -29,11 +32,16 @@ const router = createBrowserRouter([
       { path: "details/:id", element: <Details /> },
       { path: "EmployeeList", element: <EmployeeList /> },
       { path: "AddEmployee", element: <AddEmployee /> },
-      { path: " Profile", element: <Profile /> },
+      { path: "Profile", element: <Profile /> },
       { path: "Profileadmin", element: <Profileadmin /> },
       { path: "Addwork", element: <Addwork /> },
     ],
   },
+  {
+    element: <Sidebar />, children: [
+      { path: 'user', element: <User /> }
+    ]
+  }
 ]);
 
 export default function App() {

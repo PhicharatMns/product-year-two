@@ -13,16 +13,16 @@ export default function Profileadmin() {
             <div className="bg-white rounded-xl shadow-lg p-6 flex items-center gap-5 border   ">
                 <img src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg" className="w-30 h-30  rounded-full " alt="" />
 
-            
+
                 <div className="ml-5 flex flex-col">
                     <div className="font-bold text-4xl">
                         คุณ จักรยาน สีแดง <span className="text-2xl text-blue-500">#adminjak01</span>
                     </div>
-                   
+
                     <div className="text-xl font-bold text-yellow-400">
                         Admin
                     </div>
-                    
+
                 </div>
                 <button className="border-4">df</button>
             </div>
@@ -73,18 +73,18 @@ export default function Profileadmin() {
                                 <p className="text-2xl">จังหวัด</p>
                                 <p className="font-bold text-black">ประเทศไทย</p>
                             </div>
-                             <div>
+                            <div>
                                 <p className="text-2xl">อำเภอ</p>
                                 <p className="font-bold text-black">บ้านเบียร์</p>
                             </div>
-                             <div>
+                            <div>
                                 <p className="text-2xl">รหัสไปรษณีย์</p>
                                 <p className="font-bold text-black">10240</p>
                             </div>
                         </div>
 
 
-                  
+
                     </div>
                 </div>
             </div>
