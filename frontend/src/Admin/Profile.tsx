@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTheme } from '@/components/theme-provider'; // import theme hook
 
 interface InfoItem {
   label: string;
@@ -52,10 +53,10 @@ const Profile: React.FC = () => {
     type: 'contact' | 'skill'
   ) => (
     <div className="flex-1 min-w-[280px]">
-      <div className="font-bold mb-3 text-gray-700">{title}</div>
+      <div className={`font-bold mb-3 text-gray-700 ${text}`}>{title}</div>
       {items.map((item, idx) => (
        <div className="mb-4" key={idx}>
-  <label className="block text-gray-600 text-sm mb-1">{item.label}</label>
+  <label className={`block text-gray-600 text-sm mb-1 ${text}`}>{item.label}</label>
   {isEditing ? (
     <input
       value={item.value}
@@ -63,7 +64,7 @@ const Profile: React.FC = () => {
       className="border border-gray-300 rounded px-3 py-2 text-sm w-full"
     />
   ) : (
-    <div className="font-semibold text-gray-800">{item.value}</div>
+    <div className={`font-semibold text-gray-800 ${theme === "dark" ? "text-yellow-300" : "text-blue-700"}`}>{item.value}</div>
   )}
 </div>
 
@@ -78,20 +79,28 @@ const Profile: React.FC = () => {
       </button>
     </div>
   );
+  const { theme } = useTheme();
+
+
+  const bg = theme === "dark" ? "bg-gray-900" : "bg-white";
+  const text = theme === "dark" ? "text-white" : "text-gray-800";
+  const cardBg = theme === "dark" ? "bg-gray-600" : "bg-blue-50/40";
+  const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
+  const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
   return (
-    <div className="min-h-screen bg-gray-100 p-10 font-sans">
-      <div className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-6">
-          <span className="text-blue-500">Pro</span>file
+    <div className="min-h-screen  p-10 font-sans">
+      <div className={`max-w-4xl mx-auto  rounded-xl shadow-lg p-8 ${bg}`}>
+        <h1 className={`text-3xl font-bold mb-6 ${theme === "dark" ? "text-yellow-300" : "text-blue-500"}`}>
+          <span className={`text-blue-500 ${text}`}>Pro</span><span className={`${theme === "dark" ? "text-yellow-300" : "text-blue-500"}`}>file</span>
         </h1>
 
-        <div className="flex items-center gap-5 border-b border-gray-200 pb-5 mb-5">
+        <div className="flex items-center gap-5 border-b pb-5 mb-5">
           <div className="w-24 h-24 rounded-full bg-gray-300 overflow-hidden">
             {/* เปลี่ยน src ด้านล่างให้แสดงภาพ */}
             <img src="" alt="Avatar" className="w-full h-full object-cover" />
           </div>
-          <div>
+          <div className={`${text}`}>
             <p><strong>ID :</strong> 00001</p>
             <p><strong>นาย สมศรี ดีใจ</strong></p>
             <p>วัน/เดือน/ปีเกิด : 00/00/0000</p>
@@ -99,7 +108,7 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-10">
+        <div className={`flex flex-wrap gap-10 ${text}`}>
           {renderSection('ข้อมูลติดต่อ', contactInfo, isEditingContact, 'contact')}
           {renderSection('ความเชี่ยวชาญและคุณสมบัติ', skillInfo, isEditingSkill, 'skill')}
         </div>

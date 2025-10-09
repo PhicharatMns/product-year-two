@@ -90,7 +90,7 @@ const Searchpastjobs: React.FC = () => {
   const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
   return (
-    <div className=" max-w-380 mx-auto py-10 min-h-screen">
+    <div className=" max-w-380 mx-auto py-10 min-h-screen ">
       <div className="container mx-auto  rounded-xl shadow-lg p-6">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
@@ -104,8 +104,8 @@ const Searchpastjobs: React.FC = () => {
             >
               + เพิ่มใบงาน
             </button>
-            <div className="relative w-full sm:w-auto">
-              <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <div className={`relative w-full sm:w-auto ${text}`}>
+              <CiSearch className={`absolute left-3 top-1/2 -translate-y-1/2  ${labelText}`} />
               <input
                 type="text"
                 placeholder="ค้นหา..."
