@@ -165,7 +165,7 @@ export default function Editacc() {
           </p>
           <div>
             <button
-              onClick={() => { setshowModal(true); setedit(false); resetForm(); }}
+              onClick={() => { setshowModal(true) }}
               className="border p-2 rounded-xl bg-blue-500 text-white cursor-pointer hover:bg-blue-600 transition"
             >
               เพิ่มช่าง

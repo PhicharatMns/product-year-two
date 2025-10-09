@@ -4,6 +4,8 @@ import {
   RouterProvider,
   Navigate,
 } from "react-router-dom";
+
+// Admin 
 import Searchpastjobs from "./Admin/Searchpastjobs";
 import Editacc from "./Admin/Editacc";
 import AdminLayout from "./Admin/AdminLayout";
@@ -14,18 +16,27 @@ import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
 import Addwork from "./Admin/Addwork";
 import Dashboard from "./Admin/Dashboard";
-import Sidebar from "./component/sidebar";
-import User from "./User/User";
-import Profile from "./Admin/Profile";
 import Notification from "./Admin/Notification";
 
-import { ThemeProvider } from "@/components/theme-provider"
+// User Worker
+import Sidebar from "./component/sidebar";
+import DashboardUser from "./User/DashboardUser";
+import Profile from "./User/Profile";
+import UserLayout from "./User/UserLayout";
+import GetPaper from "./User/GetPaper";
+import Box from "./User/Box";
+
+// color theme web A
+import { ThemeProvider } from "@/components/theme-provider";
+import { ImportIcon } from "lucide-react";
 
 
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
+
+  // Admin RT
   {
     element: <AdminLayout />,
     children: [
@@ -33,19 +44,25 @@ const router = createBrowserRouter([
       { path: "editacc", element: <Editacc /> },
       { path: "searchpastjobs", element: <Searchpastjobs /> },
       { path: "details/:id", element: <Details /> },
-      { path: "EmployeeList", element: <EmployeeList /> },
-      { path: "AddEmployee", element: <AddEmployee /> },
-      { path: "Profile", element: <Profile /> },
-      { path: "Profileadmin", element: <Profileadmin /> },
-      { path: "Addwork", element: <Addwork /> },
-      { path: "Notification", element: <Notification /> },
+      { path: "employeelist", element: <EmployeeList /> },
+      { path: "addemployee", element: <AddEmployee /> },
+      { path: "profileadmin", element: <Profileadmin /> },
+      { path: "addwork", element: <Addwork /> },
+      { path: "notification", element: <Notification /> },
     ],
   },
-  {
-    element: <Sidebar />, children: [
-      { path: 'user', element: <User /> }
-    ]
-  }
+
+// User RT
+{
+  path: "/User",
+  element: <UserLayout />,
+  children: [
+    { path: "Dashboard", element: <DashboardUser /> }, // /user/dashboard
+    { path: "Profile", element: <Profile /> },         // /user/profile
+    { path: "Getpaper", element: <GetPaper /> },       // /user/getpaper}
+    { path: "Box", element: <Box /> },                 // /user/box}
+  ],
+},
 ]);
 
 export default function App() {

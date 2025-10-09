@@ -112,7 +112,7 @@
 
 
 import React, { useState } from "react";
-
+import { useTheme } from "@/components/theme-provider";
 interface InfoItem {
   label: string;
   value: string;
@@ -161,13 +161,13 @@ const Profile: React.FC = () => {
     isEditing: boolean,
     type: "contact" | "skill"
   ) => (
-    <div className="flex-1 min-w-[280px] bg-white rounded-xl border border-gray-700 shadow-md p-4 transition-all hover:shadow-lg">
-      <div className="font-extrabold text-base text-gray-800 mb-4 border-b border-gray-300 pb-2">
+    <div className={`flex-1 min-w-[280px] rounded-xl border border-gray-700 shadow-md p-4 transition-all hover:shadow-lg ${bg}`}>
+      <div className={`font-extrabold text-base  mb-4 border-b border-gray-300 pb-2 ${text}`}>
         {title}
       </div>
       {items.map((item, idx) => (
         <div className="mb-3" key={idx}>
-          <label className="block text-gray-700 font-medium text-sm mb-1">
+          <label className={`block  font-medium text-sm mb-1 ${text}`}>
             {item.label}
           </label>
           {isEditing ? (
@@ -177,7 +177,7 @@ const Profile: React.FC = () => {
               className="border border-gray-500 focus:border-gray-600 focus:ring-1 focus:ring-gray-300 rounded-lg px-3 py-1.5 text-sm w-full outline-none transition-all"
             />
           ) : (
-            <div className="font-medium text-gray-900 bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-200">
+            <div className={`font-medium  px-3 py-1.5 rounded-lg border  border-gray-200 ${text} ${bg}`}>
               {item.value}
             </div>
           )}
@@ -187,21 +187,26 @@ const Profile: React.FC = () => {
         onClick={() => toggleEdit(type)}
         className={`mt-3 w-full py-2 rounded-lg font-bold text-white transition-all shadow-sm ${
           isEditing
-            ? "bg-gradient-to-r from-red-600 to-red-700"
-            : "bg-gradient-to-r from-green-500 to-green-600"
+            ? "bg-gradient-to-r bg-green-600 hover:bg-green-800"
+            : "bg-gradient-to-r bg-yellow-500 hover:bg-amber-500 "
         }`}
       >
         {isEditing ? "บันทึก" : "แก้ไข"}
       </button>
     </div>
   );
+    const { theme } = useTheme();
+
+  // dynamic colors ตาม theme
+ const bg = theme === "dark" ? "bg-gray-900" : "bg-white";
+  const text = theme === "dark" ? "text-white" : "text-gray-800";
+ 
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-100 via-gray-50 to-gray-200 p-8 font-sans">
-      <div className="max-w-5xl mx-auto bg-white rounded-2xl border border-gray-400 shadow-xl p-8">
-        <h1 className="text-4xl font-extrabold text-center mb-8 text-gray-900">
-          <span className="text-gray-800">Pro</span>
-          <span className="text-gray-900">file</span>
+    <div className={`min-h-screen bg-gradient-to-br  p-8 font-sans${bg}`}>
+      <div className={`max-w-5xl mx-auto  rounded-2xl border shadow-xl p-8 ${bg}`}>
+        <h1 className={`text-4xl font-extrabold text-center mb-8 text-gray-900 ${text}`}>
+       <p>Pro<span className="text-blue-500">File</span></p>
         </h1>
 
         {/* รูปโปร */}
@@ -213,11 +218,11 @@ const Profile: React.FC = () => {
               className="w-full h-full object-cover"
             />
           </div>
-          <div className="space-y-1 text-gray-800">
+          <div className={`space-y-1 ${text}`}>
             <p className="font-semibold">
-              <span className="text-gray-600">ID:</span> 00001
+              <span >ID:</span> 00001
             </p>
-            <p className="text-xl font-extrabold text-gray-900">
+            <p className="text-xl font-extrabold">
               นาย สมศรี ดีใจ
             </p>
             <p className="font-medium">วัน/เดือน/ปีเกิด : 00/00/0000</p>
@@ -226,7 +231,7 @@ const Profile: React.FC = () => {
         </div>
 
       
-        <div className="flex flex-wrap gap-6 justify-center">
+        <div className={`flex flex-wrap gap-6 justify-center ${text} `}>
           {renderSection("ข้อมูลติดต่อ", contactInfo, isEditingContact, "contact")}
           {renderSection("ความเชี่ยวชาญและคุณสมบัติ", skillInfo, isEditingSkill, "skill")}
         </div>
