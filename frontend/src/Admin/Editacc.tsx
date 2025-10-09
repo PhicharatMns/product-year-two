@@ -18,7 +18,9 @@ export default function Editacc() {
   const [dataTradesman, setdataTradesman] = useState<Tradesman[]>([]);
   const [showModal, setshowModal] = useState(false);
   const [edit, setedit] = useState(false);
-  const [selectedTradesman, setSelectedTradesman] = useState<Tradesman | null>(null);
+  const [selectedTradesman, setSelectedTradesman] = useState<Tradesman | null>(
+    null
+  );
 
   // Data state
   const [Name, setName] = useState("");
@@ -158,7 +160,9 @@ export default function Editacc() {
           </p>
           <div>
             <button
-              onClick={() => { setshowModal(true); setedit(false); resetForm(); }}
+              onClick={() => {
+                setshowModal(true);
+              }}
               className="border p-2 rounded-xl bg-blue-500 text-white cursor-pointer"
             >
               เพิ่มช่าง
@@ -189,7 +193,9 @@ export default function Editacc() {
                 alt="profile"
                 className="w-16 h-16 object-cover rounded-full mx-auto border-2 border-blue-300 shadow-sm"
               />
-              <p className="text-center font-medium text-gray-800">{event.Name}</p>
+              <p className="text-center font-medium text-gray-800">
+                {event.Name}
+              </p>
               <p className="text-center text-blue-700">{event.Position}</p>
               <p className="text-center text-blue-600">{event.Phone_Number}</p>
               <p className="text-center text-blue-600">{event.Email}</p>
