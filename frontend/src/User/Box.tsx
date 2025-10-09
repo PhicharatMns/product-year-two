@@ -1,6 +1,7 @@
 export default function Box() {
     return (
-        <div></div>
+        <div>
+            
+        </div>
     )
-
 }

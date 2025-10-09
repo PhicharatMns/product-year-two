@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useTheme } from "@/components/theme-provider"; // import theme hook
 
 export default function Editacc() {
   interface Tradesman {
@@ -148,25 +147,19 @@ export default function Editacc() {
   useEffect(() => {
     fetchTradesman();
   }, []);
-  const { theme } = useTheme();
 
-  const bg = theme === "dark" ? "bg-gray-900" : "bg-white";
-  const text = theme === "dark" ? "text-white" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-600" : "bg-blue-50/40";
-  const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
-  const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
   return (
-    <div className="max-w-380 mx-auto h-screen  py-10 flex justify-center">
-      <div className="mx-auto container  rounded-2xl shadow-xl p-6">
+    <div className="min-h-screen bg-blue-50 py-10 flex justify-center">
+      <div className="mx-auto container bg-white rounded-2xl shadow-xl p-6">
         {/* Title */}
         <div className="flex items-center justify-between mb-6">
-          <p className={`text-3xl font-bold  ${theme === "dark" ? "text-yellow-500" : "text-blue-500"}`}>
-            จัดการบัญชี<span className={` ${theme === "dark" ? "text-white" : "text-yellow-500"}`}>ช่าง</span>
+          <p className="text-3xl font-bold text-blue-700">
+            จัดการบัญชี<span className="text-yellow-500">ช่าง</span>
           </p>
           <div>
             <button
-              onClick={() => { setshowModal(true) }}
-              className="border p-2 rounded-xl bg-blue-500 text-white cursor-pointer hover:bg-blue-600 transition"
+              onClick={() => { setshowModal(true); setedit(false); resetForm(); }}
+              className="border p-2 rounded-xl bg-blue-500 text-white cursor-pointer"
             >
               เพิ่มช่าง
             </button>
@@ -174,11 +167,12 @@ export default function Editacc() {
         </div>
 
         {/* Table Header */}
-        <div className={`grid grid-cols-6 gap-5 text-center font-semibold text-lg text-blue-500 border-b-4 border-blue-200 pb-2 mb-2${theme === "dark" ? "text-yellow-300" : "text-blue-700"}`}>
+        <div className="grid grid-cols-7 gap-5 text-center font-semibold text-lg text-blue-800 border-b-4 border-blue-200 pb-2 mb-2">
           <p>รูป</p>
           <p>ชื่อ</p>
           <p className="text-center">ตำแหน่ง</p>
           <p className="text-center">เบอร์โทรศัพท์</p>
+          <p className="text-center">เมล</p>
           <p className="text-center">วันที่สมัคร</p>
           <p className="text-center">การจัดการ</p>
         </div>
@@ -188,7 +182,7 @@ export default function Editacc() {
           {dataTradesman.map((event) => (
             <div
               key={event._id}
-              className="grid grid-cols-6 gap-5 items-center border border-blue-100 rounded-xl  bg-blue-50/40 hover:bg-blue-100 transition-all duration-200 shadow-sm py-4 px-2"
+              className="grid grid-cols-7 gap-5 items-center border border-blue-100 rounded-xl  bg-blue-50/40 hover:bg-blue-100 transition-all duration-200 shadow-sm py-4 px-2"
             >
               <img
                 src={`http://localhost:5000/uploads/Tradesman/${event.Profile}`}
@@ -198,6 +192,7 @@ export default function Editacc() {
               <p className="text-center font-medium text-gray-800">{event.Name}</p>
               <p className="text-center text-blue-700">{event.Position}</p>
               <p className="text-center text-blue-600">{event.Phone_Number}</p>
+              <p className="text-center text-blue-600">{event.Email}</p>
               <p className="text-center text-gray-600">
                 {new Date(event.Start_data).toLocaleDateString("th-TH")}
               </p>
