@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { useTheme } from "@/components/theme-provider";
 interface InfoItem {
   label: string;
   value: string;
