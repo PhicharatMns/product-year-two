@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTheme } from "@/components/theme-provider"; // import theme hook
+
 
 export default function Details() {
   interface Employees {
@@ -31,14 +33,20 @@ export default function Details() {
     Start_data: string;
   }
 
-
+  const { theme } = useTheme();
   const [dataEmployees, setDataEmployees] = useState<Employees[]>([]);
   const [Mobiles, setMobled] = useState(false);
   const [dataTradesman, setdataTradesman] = useState<Tradsman[]>([]);
   const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradsman[]>([]);
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
-  
+
+  const text = theme === "dark" ? "text-white" : "text-yellow-500";
+  const cardBg = theme === "dark" ? "bg-gray-400" : "bg-blue-50/40";
+  const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
+  const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
+
+
   const polic = [
     {
       image:
@@ -140,19 +148,19 @@ export default function Details() {
   const { id } = useParams();
 
   return (
-    <div className="bg-blue-50  min-h-screen p-2 py-10 ">
+    <div className={`min-h-screen p-2 py-10 ${theme ? 'text-yellow-500' : ''}`}>
       {dataEmployees.map((event, index) => {
         if (event._id === id)
           return (
-            <div className="max-w-380 mx-auto" key={index}>
+            <div className={`max-w-380 mx-auto `} key={index}>
               {/* ---------- ข้อมูลงาน ---------- */}
               <div className="mx-auto bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
-                <p className="text-3xl font-extrabold text-blue-700 mb-3">
+                <p className="text-3xl font-extrabold  mb-3">
                   ชื่องาน
                 </p>
                 <p className="text-gray-700 mb-5 text-lg">{event.Worksheet}</p>
 
-                <p className="text-2xl font-bold text-blue-700 mb-2">
+                <p className="text-2xl font-bold  mb-2">
                   รายละเอียดงาน
                 </p>
                 <p className="text-gray-700 leading-relaxed text-lg">
@@ -160,7 +168,6 @@ export default function Details() {
                 </p>
               </div>
 
-              {/* ---------- ผู้ว่าจ้าง ---------- */}
               <div className="mx-auto bg-white rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
                 <div className="flex flex-col md:flex-row md:justify-between text-gray-700 gap-4 text-lg">
                   <p className="font-semibold">
@@ -187,7 +194,7 @@ export default function Details() {
 
               {/* ---------- รายชื่อช่าง ---------- */}
               <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
-                <div className="border lg:col-span-4 rounded-2xl border-blue-200 bg-white shadow-lg p-5">
+                <div className={`border lg:col-span-4 rounded-2xl  shadow-lg p-5 ${text}`}>
                   <div className="flex justify-between items-center border-b border-blue-200 pb-3 p-2">
                     <h3 className="text-xl font-bold text-blue-700">
                       รายชื่อช่าง
