@@ -1,0 +1,19 @@
+// src/User/UserLayout.tsx
+import { Outlet } from "react-router-dom";
+import Sidebar from "../component/sidebar"; // แก้ชื่อ import ให้ตรงกับ component จริง
+
+export default function UserLayout() {
+  return (
+    <div className="flex min-h-screen">
+      {/* Sidebar fixed width */}
+      <div className="lg:w-64">
+        <Sidebar />
+      </div>
+
+      {/* Main content */}
+      <div className="flex-1 p-6 bg-gray-50 dark:bg-gray-900">
+        <Outlet />
+      </div>
+    </div>
+  );
+}
