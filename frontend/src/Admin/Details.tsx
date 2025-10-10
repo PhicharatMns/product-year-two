@@ -41,12 +41,6 @@ export default function Details() {
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
 
-  const text = theme === "dark" ? "text-white" : "text-yellow-500";
-  const cardBg = theme === "dark" ? "bg-gray-400" : "bg-blue-50/40";
-  const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
-  const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
-
-
   const polic = [
     {
       image:
@@ -147,45 +141,50 @@ export default function Details() {
 
   const { id } = useParams();
 
+  const bg = theme === 'dark' ? 'bg-black/20 ' : 'bg-white';
+  const text = theme === 'dark' ? 'text-white' : 'text-gray-950'
+  const texthead = theme === "dark" ? "text-yellow-500 " : "text-blue-700"
+
   return (
-    <div className={`min-h-screen p-2 py-10 ${theme ? 'text-yellow-500' : ''}`}>
+    <div className={`min-h-screen p-2 py-10 transition-colors duration-500 ${bg} ${text}`}>
       {dataEmployees.map((event, index) => {
         if (event._id === id)
           return (
             <div className={`max-w-380 mx-auto `} key={index}>
               {/* ---------- ข้อมูลงาน ---------- */}
-              <div className="mx-auto bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
-                <p className="text-3xl font-extrabold  mb-3">
+              <div className={`mx-auto rounded-xl shadow-lg p-6 mb-6   ${bg}`}>
+                <p className={`text-3xl font-extrabold  mb-3 ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
                   ชื่องาน
                 </p>
-                <p className="text-gray-700 mb-5 text-lg">{event.Worksheet}</p>
+                <p className={` mb-5 text-lg ${text}`}>{event.Worksheet}</p>
 
-                <p className="text-2xl font-bold  mb-2">
+                <p className={`text-2xl font-bold  mb-2 ${texthead}`}>
                   รายละเอียดงาน
                 </p>
-                <p className="text-gray-700 leading-relaxed text-lg">
+                <p className={` mb-5 text-lg ${text}`}>
                   {event.description}
                 </p>
               </div>
 
-              <div className="mx-auto bg-white rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
-                <div className="flex flex-col md:flex-row md:justify-between text-gray-700 gap-4 text-lg">
-                  <p className="font-semibold">
+              <div className={`mx-auto  rounded-2xl shadow-lg p-6 mb-8 ${bg}`}>
+                <div className="flex flex-col md:flex-row md:justify-between  gap-4 text-lg">
+                  <p className={`font-bold ${texthead}`}>
                     ชื่อผู้จ้าง:{" "}
-                    <span className="text-blue-600 font-bold">
+
+                    <span className={`text-blue-600  ${text}`}>
                       {event.Employer}
                     </span>
                   </p>
 
-                  <p className="font-semibold">
+                  <p className={`font-bold ${texthead}`}>
                     เบอร์ติดต่อ:{" "}
-                    <span className="text-blue-600 font-bold">
+                    <span className={`text-blue-600  ${text}`}>
                       {event.Contact_number}
                     </span>
                   </p>
-                  <p className="font-semibold">
+                  <p className={`font-bold ${texthead}`}>
                     ที่อยู่:{" "}
-                    <span className="text-blue-600 font-bold">
+                    <span className={`text-blue-600  ${text}`}>
                       {event.address}
                     </span>
                   </p>
@@ -194,25 +193,25 @@ export default function Details() {
 
               {/* ---------- รายชื่อช่าง ---------- */}
               <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
-                <div className={`border lg:col-span-4 rounded-2xl  shadow-lg p-5 ${text}`}>
-                  <div className="flex justify-between items-center border-b border-blue-200 pb-3 p-2">
-                    <h3 className="text-xl font-bold text-blue-700">
+                <div className={`lg:col-span-4 rounded-2xl  shadow-lg p-5 ${bg}`}>
+                  <div className={`flex justify-between items-center pb-3 p-2 ${theme === 'dark' ? 'border-b border-yellow-500' : 'border-b border-blue-500'}`}>
+                    <h3 className={`text-xl font-bold ${texthead}`}>
                       รายชื่อช่าง
                     </h3>
                     <button
                       onClick={() => setMobled(true)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl shadow"
+                      className={` font-semibold px-4 py-2 rounded-xl shadow border duration-300 cursor-pointer  ${theme === 'dark' ? 'text-white bg-yellow-500  hover:bg-yellow-700 ' : 'text-white bg-blue-500  hover:bg-blue-600 hover:border'}`}
                     >
                       + เพิ่มช่าง
                     </button>
                   </div>
 
-                  {/* ✅ แสดงรายชื่อช่างที่เพิ่มแล้ว */}
+
                   <div className="text-gray-700 font-semibold  text-lg p-2">
                     {SelectedTradesmen.map((t, index) => (
                       <div
                         key={index}
-                        className="flex items-center border my-2 rounded-xl hover:shadow-lg hover:scale-101 duration-300 h-fit justify-between p-2 border-b border-gray-100"
+                        className={`flex items-center my-2 rounded-xl hover:shadow-lg hover:scale-101 duration-300 h-fit justify-between p-2 ${theme === 'dark' ? 'border border-yellow-200' : 'border-blue-100 border  '}`}
                       >
                         <div className="flex items-center gap-5">
                           <img
@@ -221,9 +220,9 @@ export default function Details() {
                             className="w-12 h-12 rounded-full object-cover"
                           />
                           <div>
-                            <p>{t.Name}</p>
-                            <p className="text-sm text-gray-500">{t.Position}</p>
-                            <p className="text-sm text-blue-600">{t.Phone_Number}</p>
+                            <p className={`text-sm ${text}`}>{t.Name}</p>
+                            <p className={`text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-600'}`}>{t.Position}</p>
+                            <p className={`text-sm ${texthead}`}>{t.Phone_Number}</p>
                           </div>
                         </div>
 
@@ -240,12 +239,12 @@ export default function Details() {
                 </div>
 
                 {/* ---------- รายละเอียดการดำเนินงาน ---------- */}
-                <div className="lg:col-span-6 h-fit bg-white rounded-2xl shadow-lg border border-blue-200 p-6">
-                  <p className="text-xl font-bold text-blue-700 mb-4">
+                <div className={`lg:col-span-6 h-fit rounded-2xl shadow-lg   p-6 ${bg}`}>
+                  <p className={`text-xl font-bold  mb-4 ${texthead}`}>
                     รายละเอียดการดำเนินงาน
                   </p>
 
-                  <div className="grid grid-cols-6 gap-5 bg-blue-100 p-3 rounded-lg font-bold text-blue-700 text-center text-lg">
+                  <div className={`grid grid-cols-6 gap-5  p-3 rounded-lg font-bold  text-center text-lg ${theme === 'dark' ? 'bg-gray-800 text-yellow-500' : 'bg-blue-50 text-blue-500'}`}>
                     {data.map((event, index) => (
                       <p key={index}>{event}</p>
                     ))}
@@ -254,7 +253,7 @@ export default function Details() {
                   {polic.map((event, index) => (
                     <div
                       key={index}
-                      className="grid grid-cols-6 gap-5 text-center text-gray-700 mt-4 items-center hover:bg-blue-50 rounded-lg p-3 transition font-medium"
+                      className="grid grid-cols-6 gap-5 text-center text-gray-700 mt-4 items-center  rounded-lg p-3 transition font-medium"
                     >
                       <img
                         src={event.image}
@@ -267,7 +266,7 @@ export default function Details() {
                       <p className="text-yellow-600 font-bold">
                         {event.status}
                       </p>
-                      <button className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow">
+                      <button className={`px-3 py-1  text-white rounded-lg duration-300 cursor-pointer shadow ${theme === 'dark' ? 'border border-yellow-500 bg-yellow-500 hover:bg-yellow-600' : 'border bg-blue-500 hover:bg-blue-600'}`}>
                         {event.reply}
                       </button>
                     </div>
@@ -281,9 +280,9 @@ export default function Details() {
       {/* ---------- Modal เพิ่มช่าง ---------- */}
       {Mobiles && (
         <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
-          <div className="bg-white rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border border-blue-200 max-h-[95vh] overflow-y-auto">
+          <div className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border  max-h-[95vh] overflow-y-auto ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
             <div className="mb-6 border-b border-blue-200 pb-3 flex justify-between items-center">
-              <h2 className="text-2xl font-bold text-blue-700">เพิ่มช่าง</h2>
+              <h2 className={`text-2xl font-bold ${texthead}`}>เพิ่มช่าง</h2>
               <button
                 onClick={() => setMobled(false)}
                 className="text-gray-500 hover:text-red-500 font-semibold"
@@ -305,7 +304,7 @@ export default function Details() {
                       className="w-20 h-20 rounded-full bg-blue-700 shadow-md"
                     />
                     <div className="flex-col">
-                      <h2 className="text-xl font-normal text-black">
+                      <h2 className={`text-xl font-normal ${theme === 'dark' ? ' text-yellow-500' : 'text-black'}`}>
                         {event.Name}
                       </h2>
                       <p className="text-gray-400 font-normal">

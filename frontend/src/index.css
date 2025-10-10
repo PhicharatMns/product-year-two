@@ -50,7 +50,7 @@ body {
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(97.614% 0.00011 271.152);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -127,6 +127,6 @@ body {
   }
 }
 
-* {
+/* * {
   transition: background-color 0.47s ease, color 0.47s ease, border-color 0.47s ease;
-}
+} */

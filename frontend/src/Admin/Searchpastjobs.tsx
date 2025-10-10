@@ -102,7 +102,7 @@ const Searchpastjobs: React.FC = () => {
 
   return (
     <div className="max-w-380 mx-auto py-10 min-h-screen">
-      <div className={`container mx-auto rounded-xl shadow-lg p-6 transition-colors duration-500 ${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
+      <div className={`container mx-auto rounded-xl shadow-lg p-6 transition-colors duration-600 ${theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
           <h2 className={`text-3xl font-bold ${theme === "dark" ? "text-yellow-300" : "text-blue-700"}`}>
@@ -111,7 +111,7 @@ const Searchpastjobs: React.FC = () => {
           <div className="flex flex-wrap gap-4 items-center">
             <button
               onClick={openModal}
-              className={`text-white px-4 py-2 rounded-xl shadow transition duration-300 ${
+              className={`text-white px-4 py-2 rounded-xl shadow transition  ${
                 theme === "dark" ? "bg-yellow-500 hover:bg-yellow-400" : "bg-blue-500 hover:bg-blue-400"
               }`}
             >
@@ -144,7 +144,7 @@ const Searchpastjobs: React.FC = () => {
           {dataEmployees.map((event, i) => (
             <div
               key={i}
-              className={`grid grid-cols-1 lg:grid-cols-7 gap-4 items-center ${border} rounded-xl ${cardBg} hover:scale-[1.01] transition-all duration-300 shadow-sm py-4 px-4`}
+              className={`grid grid-cols-1 lg:grid-cols-7 gap-4 items-center ${border} rounded-xl ${cardBg} hover:scale-[1.01] transition-all  shadow-sm py-4 px-4`}
             >
               {/* Mobile view */}
               <div className="lg:hidden space-y-1 text-sm">
@@ -178,12 +178,12 @@ const Searchpastjobs: React.FC = () => {
         {/* Modal */}
         {showModal && (
           <div
-            className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm transition-opacity duration-500 ${
+            className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm transition-opacity  ${
               animationshowModal ? "opacity-100" : "opacity-0"
             }`}
           >
             <div
-              className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all duration-500 ${
+              className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all  ${
                 animationshowModal ? "translate-y-0 opacity-100 scale-100" : "translate-y-10 opacity-0 scale-95"
               } ${
                 theme === "dark"
