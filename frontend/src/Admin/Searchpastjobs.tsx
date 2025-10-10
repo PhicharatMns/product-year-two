@@ -111,9 +111,8 @@ const Searchpastjobs: React.FC = () => {
           <div className="flex flex-wrap gap-4 items-center">
             <button
               onClick={openModal}
-              className={`text-white px-4 py-2 rounded-xl shadow transition  ${
-                theme === "dark" ? "bg-yellow-500 hover:bg-yellow-400" : "bg-blue-500 hover:bg-blue-400"
-              }`}
+              className={`text-white px-4 py-2 rounded-xl shadow transition  ${theme === "dark" ? "bg-yellow-500 hover:bg-yellow-400" : "bg-blue-500 hover:bg-blue-400"
+                }`}
             >
               + เพิ่มใบงาน
             </button>
@@ -122,11 +121,10 @@ const Searchpastjobs: React.FC = () => {
               <input
                 type="text"
                 placeholder="ค้นหา..."
-                className={`border rounded-xl pl-10 pr-3 py-1 w-full sm:w-64 focus:outline-none focus:ring-2 ${
-                  theme === "dark"
-                    ? "border-gray-700 bg-gray-700 text-white focus:ring-yellow-400"
-                    : "border-blue-300 bg-white text-gray-800 focus:ring-blue-400"
-                }`}
+                className={`border rounded-xl pl-10 pr-3 py-1 w-full sm:w-64 focus:outline-none focus:ring-2 ${theme === "dark"
+                  ? "border-gray-700 bg-gray-700 text-white focus:ring-yellow-400"
+                  : "border-blue-300 bg-white text-gray-800 focus:ring-blue-400"
+                  }`}
               />
             </div>
           </div>
@@ -156,6 +154,11 @@ const Searchpastjobs: React.FC = () => {
 
               {/* Desktop view */}
               <p className="hidden lg:block truncate">{event.Worksheet}</p>
+              <img
+                src={`http://localhost:5000/uploads/${event.image}`}
+                alt="employee"
+                className="h-20 w-20 object-cover rounded"
+              />
               <p className="hidden lg:block truncate">{event.Employer}</p>
               <p className="hidden lg:block truncate">{event.Contact_number}</p>
               <p className="hidden lg:block truncate text-orange-400">{event.Status}</p>
@@ -178,18 +181,15 @@ const Searchpastjobs: React.FC = () => {
         {/* Modal */}
         {showModal && (
           <div
-            className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm transition-opacity  ${
-              animationshowModal ? "opacity-100" : "opacity-0"
-            }`}
+            className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm transition-opacity  ${animationshowModal ? "opacity-100" : "opacity-0"
+              }`}
           >
             <div
-              className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all  ${
-                animationshowModal ? "translate-y-0 opacity-100 scale-100" : "translate-y-10 opacity-0 scale-95"
-              } ${
-                theme === "dark"
+              className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all  ${animationshowModal ? "translate-y-0 opacity-100 scale-100" : "translate-y-10 opacity-0 scale-95"
+                } ${theme === "dark"
                   ? "bg-gray-800 border-gray-700 text-white"
                   : "bg-white border-blue-200 text-gray-800"
-              }`}
+                }`}
             >
               <div className={`mb-6 border-b pb-3 ${theme === "dark" ? "border-gray-700" : "border-blue-200"}`}>
                 <h2 className={`text-2xl font-bold ${theme === "dark" ? "text-yellow-300" : "text-blue-700"}`}>เพิ่มใบงาน</h2>
@@ -203,11 +203,10 @@ const Searchpastjobs: React.FC = () => {
                     type="text"
                     value={Worksheet}
                     onChange={(e) => setWorksheet(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${
-                      theme === "dark"
-                        ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                        : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${theme === "dark"
+                      ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+                      : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
+                      }`}
                   />
                 </div>
                 <div>
@@ -216,11 +215,10 @@ const Searchpastjobs: React.FC = () => {
                     type="text"
                     value={Employer}
                     onChange={(e) => setEmployer(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${
-                      theme === "dark"
-                        ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                        : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${theme === "dark"
+                      ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+                      : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
+                      }`}
                   />
                 </div>
                 <div>
@@ -229,11 +227,10 @@ const Searchpastjobs: React.FC = () => {
                     type="text"
                     value={Contact_number}
                     onChange={(e) => setContact_number(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${
-                      theme === "dark"
-                        ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                        : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${theme === "dark"
+                      ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+                      : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
+                      }`}
                   />
                 </div>
               </div>
@@ -245,11 +242,10 @@ const Searchpastjobs: React.FC = () => {
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${
-                    theme === "dark"
-                      ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                      : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                  }`}
+                  className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${theme === "dark"
+                    ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+                    : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
+                    }`}
                 />
               </div>
 
@@ -258,11 +254,10 @@ const Searchpastjobs: React.FC = () => {
                   <div>
                     <label className={`block mb-1 font-semibold ${labelText}`}>สถานะ</label>
                     <select
-                      className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${
-                        theme === "dark"
-                          ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                          : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                      }`}
+                      className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${theme === "dark"
+                        ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+                        : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
+                        }`}
                       value={Status}
                       onChange={(e) => setStatus(e.target.value)}
                     >
@@ -277,11 +272,10 @@ const Searchpastjobs: React.FC = () => {
                         type="date"
                         value={Date_of_acceptance_of_work}
                         onChange={(e) => setDate_of_acceptance_of_work(e.target.value)}
-                        className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${
-                          theme === "dark"
-                            ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                            : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                        }`}
+                        className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${theme === "dark"
+                          ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+                          : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
+                          }`}
                       />
                     </div>
                     <div>
@@ -290,11 +284,10 @@ const Searchpastjobs: React.FC = () => {
                         type="date"
                         value={Closing_date}
                         onChange={(e) => setClosing_date(e.target.value)}
-                        className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${
-                          theme === "dark"
-                            ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                            : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                        }`}
+                        className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${theme === "dark"
+                          ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+                          : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
+                          }`}
                       />
                     </div>
                   </div>
@@ -304,11 +297,10 @@ const Searchpastjobs: React.FC = () => {
                     <input
                       type="file"
                       onChange={(e) => setImage(e.target.files ? e.target.files[0] : null)}
-                      className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${
-                        theme === "dark"
-                          ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                          : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                      }`}
+                      className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${theme === "dark"
+                        ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+                        : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
+                        }`}
                     />
                   </div>
                 </div>
@@ -318,11 +310,10 @@ const Searchpastjobs: React.FC = () => {
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className={`border p-2 rounded-lg w-full h-48 resize-none focus:ring-2 outline-none ${
-                      theme === "dark"
-                        ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                        : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                    }`}
+                    className={`border p-2 rounded-lg w-full h-48 resize-none focus:ring-2 outline-none ${theme === "dark"
+                      ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+                      : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
+                      }`}
                   />
                 </div>
               </div>
@@ -331,21 +322,19 @@ const Searchpastjobs: React.FC = () => {
               <div className="flex justify-end gap-4 border-t pt-4">
                 <button
                   onClick={closeModal}
-                  className={`px-6 py-2 rounded-lg font-semibold transition ${
-                    theme === "dark"
-                      ? "bg-gray-700 text-white hover:bg-gray-600"
-                      : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                  }`}
+                  className={`px-6 py-2 rounded-lg font-semibold transition ${theme === "dark"
+                    ? "bg-gray-700 text-white hover:bg-gray-600"
+                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                    }`}
                 >
                   ยกเลิก
                 </button>
                 <button
                   onClick={handleSave}
-                  className={`px-6 py-2 rounded-lg font-semibold shadow-md transition ${
-                    theme === "dark"
-                      ? "bg-yellow-400 text-gray-900 hover:bg-yellow-300"
-                      : "bg-blue-600 text-white hover:bg-blue-700"
-                  }`}
+                  className={`px-6 py-2 rounded-lg font-semibold shadow-md transition ${theme === "dark"
+                    ? "bg-yellow-400 text-gray-900 hover:bg-yellow-300"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                    }`}
                 >
                   บันทึก
                 </button>
