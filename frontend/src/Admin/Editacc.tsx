@@ -239,8 +239,8 @@ export default function Editacc() {
     ${theme === 'dark' ? 'bg-gray-800 border-gray-700 text-white' : 'bg-black/40'}
   `}
             >
-              <div className="mb-6 border-b border-blue-200 pb-3">
-                <h2 className="text-2xl font-bold text-blue-700">
+              <div className="mb-6 border-b border- yellow -500 pb-3">
+                <h2 className="text-2xl font-bold text-yellow-500 " >
                   {edit ? "แก้ไขช่าง" : "เพิ่มช่างเข้าระบบ"}
                 </h2>
               </div>
@@ -253,7 +253,7 @@ export default function Editacc() {
                     value={Name}
                     placeholder={selectedTradesman?.Name || ""}
                     onChange={(e) => setName(e.target.value)}
-                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    className="border bg-gray-700 w-full p-2 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none mt-2"
                   />
                 </div>
                 <div>
@@ -263,7 +263,7 @@ export default function Editacc() {
                     value={Nickname}
                     placeholder={selectedTradesman?.Nickname || ""}
                     onChange={(e) => setNickname(e.target.value)}
-                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    className="border bg-gray-700 w-full p-2 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none mt-2"
                   />
                 </div>
                 <div>
@@ -273,7 +273,7 @@ export default function Editacc() {
                     value={ID}
                     placeholder={selectedTradesman?.ID || ""}
                     onChange={(e) => setID(e.target.value)}
-                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    className="border bg-gray-700 w-full p-2 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none mt-2"
                   />
                 </div>
                 <div>
@@ -283,7 +283,7 @@ export default function Editacc() {
                     value={Phone_Number}
                     placeholder={selectedTradesman?.Phone_Number || ""}
                     onChange={(e) => setPhone_Number(e.target.value)}
-                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    className="border bg-gray-700 w-full p-2 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none mt-2"
                   />
                 </div>
                 <div>
@@ -293,7 +293,7 @@ export default function Editacc() {
                     value={Email}
                     placeholder={selectedTradesman?.Email || ""}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    className="border bg-gray-700 w-full p-2 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none mt-2"
                   />
                 </div>
                 <div>
@@ -303,7 +303,7 @@ export default function Editacc() {
                     value={Position}
                     placeholder={selectedTradesman?.Position || ""}
                     onChange={(e) => setPosition(e.target.value)}
-                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    className="border bg-gray-700 w-full p-2 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none mt-2"
                   />
                 </div>
                 <div>
@@ -312,7 +312,7 @@ export default function Editacc() {
                     type="date"
                     value={Birthday}
                     onChange={(e) => setBirthday(e.target.value)}
-                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    className="border bg-gray-700 w-full p-2 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none mt-2"
                   />
                 </div>
                 <div>
@@ -321,7 +321,7 @@ export default function Editacc() {
                     type="date"
                     value={Start_data}
                     onChange={(e) => setStart_data(e.target.value)}
-                    className="border border-blue-300 w-full p-2 rounded-lg focus:ring-2 focus:ring-blue-400 outline-none mt-2"
+                    className="border bg-gray-700 w-full p-2 rounded-lg focus:ring-2 focus:ring-yellow-500 outline-none mt-2"
                   />
                 </div>
                 <div className="col-span-2">
@@ -331,7 +331,7 @@ export default function Editacc() {
                     placeholder={selectedTradesman?.Address || ""}
                     onChange={(e) => setAddress(e.target.value)}
                     rows={3}
-                    className="w-full border border-blue-200 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none mt-2"
+                    className="w-full border bg-gray-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 focus:outline-none mt-2"
                   />
                 </div>
                 <div className="col-span-2">
@@ -339,7 +339,7 @@ export default function Editacc() {
                   <input
                     type="file"
                     onChange={(e) => setProfile(e.target.files?.[0] || null)}
-                    className="w-full mt-2 border border-blue-200 rounded-lg px-3 py-2 bg-blue-50 cursor-pointer"
+                    className="w-full mt-2 border bg-gray-700 rounded-lg px-3 py-2 bg-blue-50 cursor-pointer"
                   />
                 </div>
               </div>
@@ -353,7 +353,7 @@ export default function Editacc() {
                 </button>
                 <button
                   onClick={edit ? handleUpdate : handleSave}
-                  className="border rounded-xl text-blue-500 hover:bg-blue-500 hover:text-white duration-300 cursor-pointer p-2"
+                  className = {`border rounded-xl  duration-300 cursor-pointer p-2  ${theme === 'dark' ? 'bg-yellow-500 hover:bg-yellow-700 hover:border text-white' : 'text-blue-500 hover:bg-blue-500 hover:text-white'}`}
                 >
                   ยืนยัน
                 </button>
@@ -485,7 +485,7 @@ export default function Editacc() {
                   </div>
                 </div>
 
-                <div className="ml-auto w-fit mt-5 flex gap-3">
+                <div className="ml-auto w-fit mt-5 flex gap-3"> 
                   <button
                     onClick={() => setedit(false)}
                     className="border rounded-xl p-2 cursor-pointer"
