@@ -3,7 +3,7 @@
 @plugin "tailwindcss-animate";
 @import "tw-animate-css";
 
- 
+
 
 /* global.css */
 body {
@@ -50,7 +50,7 @@ body {
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(97.614% 0.00011 271.152);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -84,7 +84,7 @@ body {
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: #1e2939;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -127,12 +127,6 @@ body {
   }
 }
 
-.dark {
-  --background:#1d211ef3;
-}
-
-body {
-  background-color: var(--background);
-  color: var(--text-primary);
-  transition: background-color 0.3s ease, color 0.3s ease;
-}
+/* * {
+  transition: background-color 0.47s ease, color 0.47s ease, border-color 0.47s ease;
+} */
