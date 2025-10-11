@@ -151,7 +151,6 @@
           if (event._id === id)
             return (
               <div className={`max-w-380 mx-auto `} key={index}>
-                {/* ---------- ข้อมูลงาน ---------- */}
                 <div className={`mx-auto rounded-xl shadow-lg p-6 mb-6   ${bg}`}>
                   <p className={`text-3xl font-extrabold  mb-3 ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
                     ชื่องาน

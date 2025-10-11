@@ -111,7 +111,7 @@ const Searchpastjobs: React.FC = () => {
           <div className="flex flex-wrap gap-4 items-center">
             <button
               onClick={openModal}
-              className={`text-white px-4 py-2 rounded-xl shadow transition  ${theme === "dark" ? "bg-yellow-500 hover:bg-yellow-400" : "bg-blue-500 hover:bg-blue-400"
+              className={`text-white px-4 py-2 rounded-xl shadow transition   ${theme === "dark" ? "bg-yellow-500 hover:bg-yellow-400" : "bg-blue-500 hover:bg-blue-400"
                 }`}
             >
               + เพิ่มใบงาน
@@ -131,9 +131,9 @@ const Searchpastjobs: React.FC = () => {
         </div>
 
         {/* Table Header */}
-        <div className={`hidden lg:grid grid-cols-7 gap-8 font-bold ${theme === "dark" ? "text-yellow-300" : "text-blue-700"} border-b-2 pb-2`}>
+        <div className={`hidden lg:grid grid-cols-7 gap-5 items-center pl-5  ${theme === "dark" ? "text-yellow-300" : "text-blue-700"} border-b-2 pb-2`}>
           {headerNav.map((header, i) => (
-            <div key={i}>{header}</div>
+            <div className={`${i === 6 ? 'text-center' : ' '}`} key={i}>{header}</div>
           ))}
         </div>
 
@@ -142,7 +142,7 @@ const Searchpastjobs: React.FC = () => {
           {dataEmployees.map((event, i) => (
             <div
               key={i}
-              className={`grid grid-cols-1 lg:grid-cols-7 gap-4 items-center ${border} rounded-xl ${cardBg} hover:scale-[1.01] transition-all  shadow-sm py-4 px-4`}
+              className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center ${border} rounded-xl ${cardBg} pl-5 hover:scale-[1.01] transition-all  shadow-sm py-5`}
             >
               {/* Mobile view */}
               <div className="lg:hidden space-y-1 text-sm">
@@ -154,11 +154,11 @@ const Searchpastjobs: React.FC = () => {
 
               {/* Desktop view */}
               <p className="hidden lg:block truncate">{event.Worksheet}</p>
-              <img
+              {/* <img
                 src={`http://localhost:5000/uploads/${event.image}`}
                 alt="employee"
                 className="h-20 w-20 object-cover rounded"
-              />
+              /> */}
               <p className="hidden lg:block truncate">{event.Employer}</p>
               <p className="hidden lg:block truncate">{event.Contact_number}</p>
               <p className="hidden lg:block truncate text-orange-400">{event.Status}</p>
@@ -166,7 +166,7 @@ const Searchpastjobs: React.FC = () => {
               <p className="hidden lg:block truncate">{event.Closing_date.split("T")[0]}</p>
 
               {/* Buttons */}
-              <div className="flex gap-2 justify-end lg:justify-center">
+              <div className="flex gap-2  justify-center">
                 <button onClick={() => handleDelete(event._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
                   ลบ
                 </button>

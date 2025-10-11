@@ -3,11 +3,9 @@
 @plugin "tailwindcss-animate";
 @import "tw-animate-css";
 
-
-
 /* global.css */
 body {
-  font-family: 'Kanit', 'Noto Sans Thai', 'Prompt', sans-serif;
+  font-family: "Kanit", "Noto Sans Thai", "Prompt", sans-serif;
 }
 
 @theme inline {
@@ -130,3 +128,13 @@ body {
 /* * {
   transition: background-color 0.47s ease, color 0.47s ease, border-color 0.47s ease;
 } */
+
+
+html {
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+body {
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
