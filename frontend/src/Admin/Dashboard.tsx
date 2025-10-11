@@ -49,7 +49,7 @@ export default function Dashboard() {
     <div className="min-h-screen p-4 sm:p-6 md:p-10">
       <div className="max-w-full mx-auto space-y-10">
         <header>
-          <h1 className={`text-4xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-sm ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
+          <h1 className={`text-4xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-sm ${text}`}>
             Dashboard ช่าง
           </h1>
           <p className={`  mt-2 text-lg font-medium ${descrtiption}`}>

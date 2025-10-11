@@ -1,7 +1,5 @@
-  import { useEffect, useState } from "react";
-  import { useParams } from "react-router-dom";
-  import { useTheme } from "@/components/theme-provider"; // import theme hook
-
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
   export default function Details() {
     interface Employees {
@@ -139,11 +137,20 @@
     }, []);
 
 
-    const { id } = useParams();
+  const { id } = useParams();
 
-    const bg = theme === 'dark' ? 'bg-black/20 ' : 'bg-white';
-    const text = theme === 'dark' ? 'text-white' : 'text-gray-950'
-    const texthead = theme === "dark" ? "text-yellow-500 " : "text-blue-700"
+  return (
+    <div className="bg-blue-50  min-h-screen p-2 py-10 ">
+      {dataEmployees.map((event, index) => {
+        if (event._id === id)
+          return (
+            <div className="max-w-380 mx-auto" key={index}>
+              {/* ---------- ข้อมูลงาน ---------- */}
+              <div className="mx-auto bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
+                <p className="text-3xl font-extrabold text-blue-700 mb-3">
+                  ชื่องาน
+                </p>
+                <p className="text-gray-700 mb-5 text-lg">{event.Worksheet}</p>
 
     return (
       <div className={`min-h-screen p-2 py-10 transition-colors duration-500 ${bg} ${text}`}>
@@ -155,25 +162,6 @@
                   <p className={`text-3xl font-extrabold  mb-3 ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
                     ชื่องาน
                   </p>
-                  <p className={` mb-5 text-lg ${text}`}>{event.Worksheet}</p>
-
-                  <p className={`text-2xl font-bold  mb-2 ${texthead}`}>
-                    รายละเอียดงาน
-                  </p>
-                  <p className={` mb-5 text-lg ${text}`}>
-                    {event.description}
-                  </p>
-                </div>
-
-                <div className={`mx-auto  rounded-2xl shadow-lg p-6 mb-8 ${bg}`}>
-                  <div className="flex flex-col md:flex-row md:justify-between  gap-4 text-lg">
-                    <p className={`font-bold ${texthead}`}>
-                      ชื่อผู้จ้าง:{" "}
-
-                      <span className={`text-blue-600  ${text}`}>
-                        {event.Employer}
-                      </span>
-                    </p>
 
                     <p className={`font-bold ${texthead}`}>
                       เบอร์ติดต่อ:{" "}
@@ -190,20 +178,20 @@
                   </div>
                 </div>
 
-                {/* ---------- รายชื่อช่าง ---------- */}
-                <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
-                  <div className={`lg:col-span-4 rounded-2xl  shadow-lg p-5 ${bg}`}>
-                    <div className={`flex justify-between items-center pb-3 p-2 ${theme === 'dark' ? 'border-b border-yellow-500' : 'border-b border-blue-500'}`}>
-                      <h3 className={`text-xl font-bold ${texthead}`}>
-                        รายชื่อช่าง
-                      </h3>
-                      <button
-                        onClick={() => setMobled(true)}
-                        className={` font-semibold px-4 py-2 rounded-xl shadow border duration-300 cursor-pointer  ${theme === 'dark' ? 'text-white bg-yellow-500  hover:bg-yellow-700 ' : 'text-white bg-blue-500  hover:bg-blue-600 hover:border'}`}
-                      >
-                        + เพิ่มช่าง
-                      </button>
-                    </div>
+              {/* ---------- รายชื่อช่าง ---------- */}
+              <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
+                <div className="border lg:col-span-4 rounded-2xl border-blue-200 bg-white shadow-lg p-5">
+                  <div className="flex justify-between items-center border-b border-blue-200 pb-3 p-2">
+                    <h3 className="text-xl font-bold text-blue-700">
+                      รายชื่อช่าง
+                    </h3>
+                    <button
+                      onClick={() => setMobled(true)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl shadow"
+                    >
+                      + เพิ่มช่าง
+                    </button>
+                  </div>
 
 
                     <div className="text-gray-700 font-semibold  text-lg p-2">
@@ -237,44 +225,44 @@
                     </div>
                   </div>
 
-                  {/* ---------- รายละเอียดการดำเนินงาน ---------- */}
-                  <div className={`lg:col-span-6 h-fit rounded-2xl shadow-lg   p-6 ${bg}`}>
-                    <p className={`text-xl font-bold  mb-4 ${texthead}`}>
-                      รายละเอียดการดำเนินงาน
-                    </p>
+                {/* ---------- รายละเอียดการดำเนินงาน ---------- */}
+                <div className="lg:col-span-6 h-fit bg-white rounded-2xl shadow-lg border border-blue-200 p-6">
+                  <p className="text-xl font-bold text-blue-700 mb-4">
+                    รายละเอียดการดำเนินงาน
+                  </p>
 
-                    <div className={`grid grid-cols-6 gap-5  p-3 rounded-lg font-bold  text-center text-lg ${theme === 'dark' ? 'bg-gray-800 text-yellow-500' : 'bg-blue-50 text-blue-500'}`}>
-                      {data.map((event, index) => (
-                        <p key={index}>{event}</p>
-                      ))}
-                    </div>
-
-                    {polic.map((event, index) => (
-                      <div
-                        key={index}
-                        className="grid grid-cols-6 gap-5 text-center text-gray-700 mt-4 items-center  rounded-lg p-3 transition font-medium"
-                      >
-                        <img
-                          src={event.image}
-                          alt={event.name}
-                          className="w-12 h-12 object-cover rounded-full mx-auto"
-                        />
-                        <p>{event.name}</p>
-                        <p className="text-blue-600">{event.position}</p>
-                        <p>{event.report}</p>
-                        <p className="text-yellow-600 font-bold">
-                          {event.status}
-                        </p>
-                        <button className={`px-3 py-1  text-white rounded-lg duration-300 cursor-pointer shadow ${theme === 'dark' ? 'border border-yellow-500 bg-yellow-500 hover:bg-yellow-600' : 'border bg-blue-500 hover:bg-blue-600'}`}>
-                          {event.reply}
-                        </button>
-                      </div>
+                  <div className="grid grid-cols-6 gap-5 bg-blue-100 p-3 rounded-lg font-bold text-blue-700 text-center text-lg">
+                    {data.map((event, index) => (
+                      <p key={index}>{event}</p>
                     ))}
                   </div>
+
+                  {polic.map((event, index) => (
+                    <div
+                      key={index}
+                      className="grid grid-cols-6 gap-5 text-center text-gray-700 mt-4 items-center hover:bg-blue-50 rounded-lg p-3 transition font-medium"
+                    >
+                      <img
+                        src={event.image}
+                        alt={event.name}
+                        className="w-12 h-12 object-cover rounded-full mx-auto"
+                      />
+                      <p>{event.name}</p>
+                      <p className="text-blue-600">{event.position}</p>
+                      <p>{event.report}</p>
+                      <p className="text-yellow-600 font-bold">
+                        {event.status}
+                      </p>
+                      <button className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow">
+                        {event.reply}
+                      </button>
+                    </div>
+                  ))}
                 </div>
               </div>
-            );
-        })}
+            </div>
+          );
+      })}
 
         {/* ---------- Modal เพิ่มช่าง ---------- */}
         {Mobiles && (
