@@ -80,11 +80,11 @@ export default function Sidebar() {
           <Link to="Profile" className="mt-auto">
             <div className="border-t border-blue-600 bg-blue-900 h-20 flex items-center gap-4 cursor-pointer px-2 hover:bg-blue-700 duration-300">
               <img
-                src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
+                src="https://i.pinimg.com/736x/f7/94/54/f79454c439ea58e65d2bb675a1faf77b.jpg"
                 className="object-cover w-10 rounded-full"
                 alt="profile"
               />
-              <div className="text-lg font-semibold">คุณ ใบไผ่ สองทอง</div>
+              <div className="text-lg font-semibold">คุณ <span className="text-yellow-500">ใบไผ่ สองทอง</span></div>
             </div>
           </Link>
         </div>

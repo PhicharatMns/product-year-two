@@ -49,7 +49,7 @@ export default function Dashboard() {
       <div className="max-w-full mx-auto space-y-10">
         <header>
           <h1 className={`text-4xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-sm ${text}`}>
-            Dashboard ช่าง
+            Dashboard Admin
           </h1>
           <p className="text-gray-500 mt-2 text-lg font-medium">
             ภาพรวมการทำงานทั้งหมดในระบบ

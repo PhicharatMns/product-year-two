@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTheme } from "@/components/theme-provider";
 
 export default function Details() {
   interface Employees {
@@ -139,30 +140,38 @@ export default function Details() {
 
   const { id } = useParams();
 
+    const { theme } = useTheme();
+
+    const bg = theme === "dark" ? "bg-gray-900" : "bg-white";
+  const text = theme === "dark" ? "text-white" : "text-gray-800";
+  const cardBg = theme === "dark" ? "bg-gray-600" : "bg-blue-50/40";
+  const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
+  const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
+
   return (
-    <div className="bg-blue-50  min-h-screen p-2 py-10 ">
+    <div className="  min-h-screen p-2 py-10 ">
       {dataEmployees.map((event, index) => {
         if (event._id === id)
           return (
             <div className="max-w-380 mx-auto" key={index}>
               {/* ---------- ข้อมูลงาน ---------- */}
-              <div className="mx-auto bg-white rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
-                <p className="text-3xl font-extrabold text-blue-700 mb-3">
+              <div className="mx-auto  rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
+                <p className={`text-3xl font-extrabold  mb-3 ${text}`}>
                   ชื่องาน
                 </p>
-                <p className="text-gray-700 mb-5 text-lg">{event.Worksheet}</p>
+                <p className={` mb-5 text-lg ${theme === "dark" ? "text-blue-500" : "text-blue-700" }`}>{event.Worksheet}</p>
 
-                <p className="text-2xl font-bold text-blue-700 mb-2">
+                <p className={`text-2xl font-bold  mb-2 ${text}`}>
                   รายละเอียดงาน
                 </p>
-                <p className="text-gray-700 leading-relaxed text-lg">
+                <p className={`leading-relaxed text-lg ${theme === "dark" ? "text-blue-500" : "text-blue-700" }`}>
                   {event.description}
                 </p>
               </div>
 
               {/* ---------- ผู้ว่าจ้าง ---------- */}
-              <div className="mx-auto bg-white rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
-                <div className="flex flex-col md:flex-row md:justify-between text-gray-700 gap-4 text-lg">
+              <div className="mx-auto   rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
+                <div className={`flex flex-col md:flex-row md:justify-between gap-4 text-lg ${text}`}>
                   <p className="font-semibold">
                     ชื่อผู้จ้าง:{" "}
                     <span className="text-blue-600 font-bold">
@@ -187,9 +196,9 @@ export default function Details() {
 
               {/* ---------- รายชื่อช่าง ---------- */}
               <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
-                <div className="border lg:col-span-4 rounded-2xl border-blue-200 bg-white shadow-lg p-5">
+                <div className="border lg:col-span-4 rounded-2xl border-blue-200  shadow-lg p-5">
                   <div className="flex justify-between items-center border-b border-blue-200 pb-3 p-2">
-                    <h3 className="text-xl font-bold text-blue-700">
+                    <h3 className={`text-xl font-bold ${text}`}>
                       รายชื่อช่าง
                     </h3>
                     <button
@@ -233,12 +242,12 @@ export default function Details() {
                 </div>
 
                 {/* ---------- รายละเอียดการดำเนินงาน ---------- */}
-                <div className="lg:col-span-6 h-fit bg-white rounded-2xl shadow-lg border border-blue-200 p-6">
-                  <p className="text-xl font-bold text-blue-700 mb-4">
+                <div className="lg:col-span-6 h-fit  rounded-2xl shadow-lg border border-blue-200 p-6">
+                  <p className={`text-xl font-bold text-blue-700 mb-4 ${text}`}>
                     รายละเอียดการดำเนินงาน
                   </p>
 
-                  <div className="grid grid-cols-6 gap-5 bg-blue-100 p-3 rounded-lg font-bold text-blue-700 text-center text-lg">
+                  <div className={`grid grid-cols-6 gap-5 shadowp-lg border border-blue-200 p-3 rounded-lg font-bold text-center text-lg ${text}`}>
                     {data.map((event, index) => (
                       <p key={index}>{event}</p>
                     ))}
@@ -247,7 +256,7 @@ export default function Details() {
                   {polic.map((event, index) => (
                     <div
                       key={index}
-                      className="grid grid-cols-6 gap-5 text-center text-gray-700 mt-4 items-center hover:bg-blue-50 rounded-lg p-3 transition font-medium"
+                      className={`grid grid-cols-6 gap-5 text-center  mt-4 items-center hover:bg-blue-50 rounded-lg p-3 transition font-medium ${text}`}
                     >
                       <img
                         src={event.image}
