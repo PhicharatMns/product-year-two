@@ -35,7 +35,8 @@ export default function Dashboard() {
   ];
 
   const { theme } = useTheme();
-  const text = theme === "dark" ? "text-white" : "text-gray-800";
+  const text = theme === "dark" ? "text-yellow-500" : "text-gray-800";
+  const descrtiption = theme === 'dark' ? 'text-white' : 'text-gray-500'
   const cardBg = theme === "dark" ? "bg-gray-700" : "bg-blue-50/40";
   const barColor1 = theme === "dark" ? "#60a5fa" : "#3b82f6";
   const barColor2 = theme === "dark" ? "#34d399" : "#10b981";
@@ -49,9 +50,9 @@ export default function Dashboard() {
       <div className="max-w-full mx-auto space-y-10">
         <header>
           <h1 className={`text-4xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-sm ${text}`}>
-            Dashboard Admin
+            Dashboard ช่าง
           </h1>
-          <p className="text-gray-500 mt-2 text-lg font-medium">
+          <p className={`  mt-2 text-lg font-medium ${descrtiption}`}>
             ภาพรวมการทำงานทั้งหมดในระบบ
           </p>
         </header>
