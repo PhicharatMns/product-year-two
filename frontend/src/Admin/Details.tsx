@@ -32,14 +32,13 @@ export default function Details() {
     Start_data: string;
   }
 
-
   const [dataEmployees, setDataEmployees] = useState<Employees[]>([]);
   const [Mobiles, setMobled] = useState(false);
   const [dataTradesman, setdataTradesman] = useState<Tradsman[]>([]);
   const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradsman[]>([]);
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
-  
+
   const polic = [
     {
       image:
@@ -117,9 +116,12 @@ export default function Details() {
 
   const handeDelete = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/otherTradesman/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/otherTradesman/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!res.ok) throw new Error("ลบไม่สำเร็จ");
 
@@ -129,7 +131,6 @@ export default function Details() {
     }
   };
 
-
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
     fetchEmployees();
@@ -137,16 +138,11 @@ export default function Details() {
     fetchOtherTradesman(); // ✅ โหลดข้อมูล otherTradesman ตอนเปิดหน้า
   }, []);
 
-
   const { id } = useParams();
 
-    const { theme } = useTheme();
+  const { theme } = useTheme();
 
-    const bg = theme === "dark" ? "bg-gray-900" : "bg-white";
   const text = theme === "dark" ? "text-white" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-600" : "bg-blue-50/40";
-  const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
-  const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
   return (
     <div className="  min-h-screen p-2 py-10 ">
@@ -159,19 +155,31 @@ export default function Details() {
                 <p className={`text-3xl font-extrabold  mb-3 ${text}`}>
                   ชื่องาน
                 </p>
-                <p className={` mb-5 text-lg ${theme === "dark" ? "text-blue-500" : "text-blue-700" }`}>{event.Worksheet}</p>
+                <p
+                  className={` mb-5 text-lg ${
+                    theme === "dark" ? "text-blue-500" : "text-blue-700"
+                  }`}
+                >
+                  {event.Worksheet}
+                </p>
 
                 <p className={`text-2xl font-bold  mb-2 ${text}`}>
                   รายละเอียดงาน
                 </p>
-                <p className={`leading-relaxed text-lg ${theme === "dark" ? "text-blue-500" : "text-blue-700" }`}>
+                <p
+                  className={`leading-relaxed text-lg ${
+                    theme === "dark" ? "text-blue-500" : "text-blue-700"
+                  }`}
+                >
                   {event.description}
                 </p>
               </div>
 
               {/* ---------- ผู้ว่าจ้าง ---------- */}
               <div className="mx-auto   rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
-                <div className={`flex flex-col md:flex-row md:justify-between gap-4 text-lg ${text}`}>
+                <div
+                  className={`flex flex-col md:flex-row md:justify-between gap-4 text-lg ${text}`}
+                >
                   <p className="font-semibold">
                     ชื่อผู้จ้าง:{" "}
                     <span className="text-blue-600 font-bold">
@@ -198,9 +206,7 @@ export default function Details() {
               <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
                 <div className="border lg:col-span-4 rounded-2xl border-blue-200  shadow-lg p-5">
                   <div className="flex justify-between items-center border-b border-blue-200 pb-3 p-2">
-                    <h3 className={`text-xl font-bold ${text}`}>
-                      รายชื่อช่าง
-                    </h3>
+                    <h3 className={`text-xl font-bold ${text}`}>รายชื่อช่าง</h3>
                     <button
                       onClick={() => setMobled(true)}
                       className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl shadow"
@@ -224,8 +230,12 @@ export default function Details() {
                           />
                           <div>
                             <p>{t.Name}</p>
-                            <p className="text-sm text-gray-500">{t.Position}</p>
-                            <p className="text-sm text-blue-600">{t.Phone_Number}</p>
+                            <p className="text-sm text-gray-500">
+                              {t.Position}
+                            </p>
+                            <p className="text-sm text-blue-600">
+                              {t.Phone_Number}
+                            </p>
                           </div>
                         </div>
 
@@ -237,7 +247,6 @@ export default function Details() {
                         </button>
                       </div>
                     ))}
-
                   </div>
                 </div>
 
@@ -247,7 +256,9 @@ export default function Details() {
                     รายละเอียดการดำเนินงาน
                   </p>
 
-                  <div className={`grid grid-cols-6 gap-5 shadowp-lg border border-blue-200 p-3 rounded-lg font-bold text-center text-lg ${text}`}>
+                  <div
+                    className={`grid grid-cols-6 gap-5 shadowp-lg border border-blue-200 p-3 rounded-lg font-bold text-center text-lg ${text}`}
+                  >
                     {data.map((event, index) => (
                       <p key={index}>{event}</p>
                     ))}
