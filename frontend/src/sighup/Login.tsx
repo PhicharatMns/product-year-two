@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [user, setUser] = useState("");
@@ -26,7 +27,7 @@ export default function Login() {
       alert(data.message);
 
       if (res.status === 200) {
-        navigate("/User/Dashboard"); // ไปหน้า Dashboard 
+        navigate("/User/Dashboard"); // ไปหน้า Dashboard
       }
     } catch (err) {
       console.error(err);
@@ -72,6 +73,7 @@ export default function Login() {
               เข้าสู่ระบบ
             </button>
           </div>
+          <Link to={"Register"}>เทสใว้ก่อน ขก</Link>
         </div>
       </div>
 

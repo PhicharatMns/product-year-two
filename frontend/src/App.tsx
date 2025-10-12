@@ -23,13 +23,14 @@ import Box from "./User/Box";
 
 // Auth
 import Login from "./sighup/Login";
-// import Register from "./sighup/Register";
+import Register from "./sighup/Register";
 import PrivateRoute from "./sighup/PrivateRoute";
+
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
-  // { path: "/register", element: <Register /> },
+  { path: "/logins/Register", element: <Register /> },
 
   // Admin Routes
   {
