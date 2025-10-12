@@ -138,11 +138,11 @@ const Searchpastjobs: React.FC = () => {
         </div>
 
         {/* Table Rows */}
-        <div className="space-y-3 mt-5">
+        <div className="space-y-2 mt-3">
           {dataEmployees.map((event, i) => (
             <div
               key={i}
-              className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center ${border} rounded-xl ${cardBg} pl-5 hover:scale-[1.01] transition-all  shadow-sm py-5`}
+              className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center ${border} rounded-xl ${cardBg} pl-5 hover:scale-[1.01] transition-all  shadow-sm py-1`}
             >
               {/* Mobile view */}
               <div className="lg:hidden space-y-1 text-sm">
@@ -166,12 +166,12 @@ const Searchpastjobs: React.FC = () => {
               <p className="hidden lg:block truncate">{event.Closing_date.split("T")[0]}</p>
 
               {/* Buttons */}
-              <div className="flex gap-2  justify-center">
-                <button onClick={() => handleDelete(event._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+              <div className="flex gap-2 justify-center">
+                <button onClick={() => handleDelete(event._id)} className="bg-red-500 text-white px-2 rounded-lg hover:bg-red-600 transition">
                   ลบ
                 </button>
                 <Link to={`/Details/${event._id}`}>
-                  <button className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">รายละเอียด</button>
+                  <button className="bg-green-500 text-white px-3 py-1  rounded-lg hover:bg-green-600 transition">รายละเอียด</button>
                 </Link>
               </div>
             </div>

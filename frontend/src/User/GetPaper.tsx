@@ -1,4 +1,4 @@
-import { Search, Filter, MoreVertical, Plus } from "lucide-react";
+import { Search, MoreVertical, Plus } from "lucide-react";
 
 interface User {
   id: number;

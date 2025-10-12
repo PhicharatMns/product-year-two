@@ -19,7 +19,6 @@ import Dashboard from "./Admin/Dashboard";
 import Notification from "./Admin/Notification";
 
 // User Worker
-import Sidebar from "./component/sidebar";
 import DashboardUser from "./User/DashboardUser";
 import Profile from "./User/Profile";
 import UserLayout from "./User/UserLayout";
@@ -28,15 +27,11 @@ import Box from "./User/Box";
 
 // color theme web A
 import { ThemeProvider } from "@/components/theme-provider";
-import { ImportIcon } from "lucide-react";
-
-
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
 
-  // Admin RT
   {
     element: <AdminLayout />,
     children: [
@@ -52,15 +47,14 @@ const router = createBrowserRouter([
     ],
   },
 
-// User RT
 {
   path: "/User",
   element: <UserLayout />,
   children: [
-    { path: "Dashboard", element: <DashboardUser /> }, // /user/dashboard
-    { path: "Profile", element: <Profile /> },         // /user/profile
-    { path: "Getpaper", element: <GetPaper /> },       // /user/getpaper}
-    { path: "Box", element: <Box /> },                 // /user/box}
+    { path: "Dashboard", element: <DashboardUser /> }, 
+    { path: "Profile", element: <Profile /> },       
+    { path: "Getpaper", element: <GetPaper /> },     
+    { path: "Box", element: <Box /> },                
   ],
 },
 ]);

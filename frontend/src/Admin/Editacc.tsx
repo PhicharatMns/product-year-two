@@ -191,7 +191,7 @@ export default function Editacc() {
 
         {/* Table Header */}
         <div
-          className={`grid grid-cols-7 gap-5 text-center font-semibold text-lg text-blue-500  pb-2 mb-3 ${texthaeder}`}
+          className={`grid grid-cols-7 gap-5 text-center font-semibold text-lg text-blue-500   mb-3 ${texthaeder}`}
         >
           <p>รูป</p>
           <p>ชื่อ</p>
@@ -203,16 +203,16 @@ export default function Editacc() {
         </div>
 
         {/* Table Rows */}
-        <div className="space-y-3">
+        <div className="space-y-1">
           {dataTradesman.map((event) => (
             <div
               key={event._id}
-              className={`grid grid-cols-7 gap-5 items-center border  rounded-xl  bg transition-all duration-200 shadow-sm py-4 px-2 ${cardBg}`}
+              className={`grid grid-cols-7 gap-5 items-center border  rounded-xl  bg transition-all duration-200 shadow-sm py-2 ${cardBg}`}
             >
               <img
                 src={`http://localhost:5000/uploads/Tradesman/${event.Profile}`}
                 alt="profile"
-                className="w-16 h-16 object-cover rounded-full mx-auto border-2 border-blue-300 shadow-sm"
+                className="w-10 h-10 object-cover rounded-full mx-auto border-2 border-blue-300 shadow-sm"
               />
               <p
                 className={`text-center font-medium text-gray-800 ${
