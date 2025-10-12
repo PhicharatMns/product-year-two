@@ -1,39 +1,44 @@
-// src/App.js
-import {
-  createBrowserRouter,
-  RouterProvider,
-  Navigate,
-} from "react-router-dom";
+// src/App.tsx
+import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import { ThemeProvider } from "@/components/theme-provider";
 
-// Admin 
-import Searchpastjobs from "./Admin/Searchpastjobs";
-import Editacc from "./Admin/Editacc";
+// Admin
 import AdminLayout from "./Admin/AdminLayout";
-import Login from "./sighup/Login";
+import Dashboard from "./Admin/Dashboard";
+import Editacc from "./Admin/Editacc";
+import Searchpastjobs from "./Admin/Searchpastjobs";
 import Details from "./Admin/Details";
 import EmployeeList from "./EmployeeList";
 import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
 import Addwork from "./Admin/Addwork";
-import Dashboard from "./Admin/Dashboard";
 import Notification from "./Admin/Notification";
 
 // User Worker
+import UserLayout from "./User/UserLayout";
 import DashboardUser from "./User/DashboardUser";
 import Profile from "./User/Profile";
-import UserLayout from "./User/UserLayout";
 import GetPaper from "./User/GetPaper";
 import Box from "./User/Box";
 
-// color theme web A
-import { ThemeProvider } from "@/components/theme-provider";
+// Auth
+import Login from "./sighup/Login";
+// import Register from "./sighup/Register";
+import PrivateRoute from "./sighup/PrivateRoute";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
+  // { path: "/register", element: <Register /> },
 
+  // Admin Routes
   {
-    element: <AdminLayout />,
+    path: "/", 
+    element: (
+      <PrivateRoute>
+        <AdminLayout />
+      </PrivateRoute>
+    ),
     children: [
       { path: "dashboard", element: <Dashboard /> },
       { path: "editacc", element: <Editacc /> },
@@ -47,16 +52,21 @@ const router = createBrowserRouter([
     ],
   },
 
-{
-  path: "/User",
-  element: <UserLayout />,
-  children: [
-    { path: "Dashboard", element: <DashboardUser /> }, 
-    { path: "Profile", element: <Profile /> },       
-    { path: "Getpaper", element: <GetPaper /> },     
-    { path: "Box", element: <Box /> },                
-  ],
-},
+  // User Routes
+  {
+    path: "/user",
+    element: (
+      <PrivateRoute>
+        <UserLayout />
+      </PrivateRoute>
+    ),
+    children: [
+      { path: "dashboard", element: <DashboardUser /> },
+      { path: "profile", element: <Profile /> },
+      { path: "getpaper", element: <GetPaper /> },
+      { path: "box", element: <Box /> },
+    ],
+  },
 ]);
 
 export default function App() {
