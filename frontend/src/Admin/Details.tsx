@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTheme } from "@/components/theme-provider";
 
   export default function Details() {
     interface Employees {
