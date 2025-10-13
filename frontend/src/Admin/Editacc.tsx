@@ -14,6 +14,8 @@ export default function Editacc() {
     Profile: string;
     Position: string;
     Start_data: string;
+    User: string;
+    Pass: string;
   }
 
   const [dataTradesman, setdataTradesman] = useState<Tradesman[]>([]);
@@ -34,10 +36,11 @@ export default function Editacc() {
   const [Profile, setProfile] = useState<File | null>(null);
   const [Position, setPosition] = useState("");
   const [Start_data, setStart_data] = useState("");
+  const [User, setUser] = useState("");
+  const [Pass, setPass] = useState("");
 
   // editId เก็บ id ของ tradesman ที่กำลังแก้ไข
   const [editId, setEditId] = useState<string | null>(null);
-
   const openEditModal = (tradesman: Tradesman) => {
     setSelectedTradesman(tradesman);
     setedit(true);
@@ -51,6 +54,8 @@ export default function Editacc() {
     setEmail(tradesman.Email);
     setPosition(tradesman.Position);
     setStart_data(tradesman.Start_data.split("T")[0]);
+    setUser(tradesman.User);
+    setPass(tradesman.Pass);
     setProfile(null);
     setshowModal(true);
   };
@@ -65,6 +70,8 @@ export default function Editacc() {
     setEmail("");
     setPosition("");
     setStart_data("");
+    setUser("");
+    setPass("");
     setProfile(null);
     setSelectedTradesman(null);
     setEditId(null);
@@ -86,6 +93,8 @@ export default function Editacc() {
       formData.append("Email", Email);
       formData.append("Position", Position);
       formData.append("Start_data", Start_data);
+      formData.append("User", User);
+      formData.append("Pass", Pass);
       if (Profile) formData.append("Profile", Profile);
 
       await fetch(`http://localhost:5000/api/tradesman/${editId}`, {
@@ -112,6 +121,8 @@ export default function Editacc() {
       formData.append("Email", Email);
       formData.append("Position", Position);
       formData.append("Start_data", Start_data);
+      formData.append("User", User);
+      formData.append("Pass", Pass);
       if (Profile) formData.append("Profile", Profile);
 
       await fetch("http://localhost:5000/api/tradesman", {
@@ -371,6 +382,28 @@ export default function Editacc() {
                   type="date"
                   value={Start_data}
                   onChange={(e) => setStart_data(e.target.value)}
+                  className={`border  w-full p-2 rounded-lg focus:ring-2 outline-none  mt-2 ${
+                    theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                  }`}
+                />
+              </div>
+              <div>
+                <p>User</p>
+                <input
+                  type="text"
+                  value={User}
+                  onChange={(e) => setUser(e.target.value)}
+                  className={`border  w-full p-2 rounded-lg focus:ring-2 outline-none  mt-2 ${
+                    theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                  }`}
+                />
+              </div>
+              <div>
+                <p>รหัสผ่าน</p>
+                <input
+                  type="text"
+                  value={Pass}
+                  onChange={(e) => setPass(e.target.value)}
                   className={`border  w-full p-2 rounded-lg focus:ring-2 outline-none  mt-2 ${
                     theme === "dark" ? "bg-gray-700" : "bg-gray-50"
                   }`}

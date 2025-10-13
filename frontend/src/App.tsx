@@ -1,5 +1,9 @@
 // src/App.tsx
-import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
+import {
+  createBrowserRouter,
+  RouterProvider,
+  Navigate,
+} from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
 
 // Admin
@@ -26,7 +30,6 @@ import Login from "./sighup/Login";
 import Register from "./sighup/Register";
 import PrivateRoute from "./sighup/PrivateRoute";
 
-
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
@@ -34,10 +37,11 @@ const router = createBrowserRouter([
 
   // Admin Routes
   {
-    path: "/", 
+    path: "/",
     element: (
-      <PrivateRoute>
+      <PrivateRoute allowedRoles={["admin"]}>
         <AdminLayout />
+        //{" "}
       </PrivateRoute>
     ),
     children: [
@@ -57,7 +61,7 @@ const router = createBrowserRouter([
   {
     path: "/user",
     element: (
-      <PrivateRoute>
+      <PrivateRoute allowedRoles={["user"]}>
         <UserLayout />
       </PrivateRoute>
     ),

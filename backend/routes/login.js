@@ -55,7 +55,7 @@ router.post("/login", async (req, res) => {
       httpOnly: true,
       secure: false,
       sameSite: "lax",
-      maxAge: 30 * 60 *1000  // 10 นาที
+      maxAge: 2 * 1000,
     });
 
     res.json({ message: "เข้าสู่ระบบสำเร็จ", user: foundUser.user });

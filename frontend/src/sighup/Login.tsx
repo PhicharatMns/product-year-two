@@ -3,31 +3,36 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 export default function Login() {
-  const [user, setUser] = useState("");
-  const [pass, setPass] = useState("");
+  const [User, setUser] = useState("");
+  const [Pass, setPass] = useState("");
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    if (!user || !pass) {
+    if (!User || !Pass) {
       alert("กรุณากรอกข้อมูลให้ครบ");
       return;
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/login/login", {
+      const res = await fetch("http://localhost:5000/api/tradesman/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        credentials: "include", // สำคัญเพื่อรับ cookie
-        body: JSON.stringify({ user, pass }),
+        body: JSON.stringify({ User, Pass }),
       });
 
       const data = await res.json();
       console.log("Login response:", res.status, data);
-
       alert(data.message);
 
       if (res.status === 200) {
-        navigate("/User/Dashboard"); // ไปหน้า Dashboard
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+
+        if (data.role === "admin") {
+          navigate("/dashboard"); // admin
+        } else {
+          navigate("/user/dashboard"); // user
+        }
       }
     } catch (err) {
       console.error(err);
@@ -47,7 +52,7 @@ export default function Login() {
             <label className="block text-blue-700 mb-2">อีเมล/ชื่อผู้ใช้</label>
             <input
               type="text"
-              value={user}
+              value={User}
               onChange={(e) => setUser(e.target.value)}
               placeholder="กรอกข้อมูล"
               className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -58,7 +63,7 @@ export default function Login() {
             <label className="block text-blue-700 mb-2">รหัสผ่าน</label>
             <input
               type="password"
-              value={pass}
+              value={Pass}
               onChange={(e) => setPass(e.target.value)}
               placeholder="กรอกรหัสผ่าน"
               className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -73,7 +78,7 @@ export default function Login() {
               เข้าสู่ระบบ
             </button>
           </div>
-          <Link to={"Register"}>เทสใว้ก่อน ขก</Link>
+          <Link to={"Register"}>สร้างบัญชีใหม่</Link>
         </div>
       </div>
 
