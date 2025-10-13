@@ -1,8 +1,47 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
-export default function Login () {
+export default function Login() {
+  const [User, setUser] = useState("");
+  const [Pass, setPass] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async () => {
+    if (!User || !Pass) {
+      alert("กรุณากรอกข้อมูลให้ครบ");
+      return;
+    }
+
+    try {
+      const res = await fetch("http://localhost:5000/api/tradesman/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ User, Pass }),
+      });
+
+      const data = await res.json();
+      console.log("Login response:", res.status, data);
+      alert(data.message);
+
+      if (res.status === 200) {
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("role", data.role);
+
+        if (data.role === "admin") {
+          navigate("/dashboard"); // admin
+        } else {
+          navigate("/user/dashboard"); // user
+        }
+      }
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาดในการเข้าสู่ระบบ");
+    }
+  };
+
   return (
-    <div className="flex h-screen ">
+    <div className="flex h-screen">
       <div className="flex-1 flex items-center justify-center bg-white rounded-r-[3rem] shadow-lg">
         <div className="w-full max-w-md p-8 shadow-lg">
           <h2 className="text-2xl font-bold text-center text-blue-600 mb-8">
@@ -13,6 +52,8 @@ export default function Login () {
             <label className="block text-blue-700 mb-2">อีเมล/ชื่อผู้ใช้</label>
             <input
               type="text"
+              value={User}
+              onChange={(e) => setUser(e.target.value)}
               placeholder="กรอกข้อมูล"
               className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
@@ -22,19 +63,22 @@ export default function Login () {
             <label className="block text-blue-700 mb-2">รหัสผ่าน</label>
             <input
               type="password"
+              value={Pass}
+              onChange={(e) => setPass(e.target.value)}
               placeholder="กรอกรหัสผ่าน"
               className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
           </div>
 
           <div className="flex justify-between">
-       
-            <Link to={"/Dashboard"}>
-              <button className="bg-blue-600 px-6 py-2 ml-35 text-white font-semibold rounded-md shadow hover:bg-blue-700">
-                เข้าสู่ระบบ
-              </button>
-            </Link>
+            <button
+              onClick={handleLogin}
+              className="bg-blue-600 px-6 py-2 ml-35 text-white font-semibold rounded-md shadow hover:bg-blue-700"
+            >
+              เข้าสู่ระบบ
+            </button>
           </div>
+          <Link to={"Register"}>สร้างบัญชีใหม่</Link>
         </div>
       </div>
 
