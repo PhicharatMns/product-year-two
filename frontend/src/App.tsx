@@ -28,7 +28,7 @@ import Box from "./User/Box";
 // Auth
 import Login from "./sighup/Login";
 import Register from "./sighup/Register";
-import PrivateRoute from "./sighup/PrivateRoute";
+// import PrivateRoute from "./sighup/PrivateRoute";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -39,10 +39,10 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <PrivateRoute allowedRoles={["admin"]}>
+      // <PrivateRoute allowedRoles={["admin"]}>
         <AdminLayout />
-        //{" "}
-      </PrivateRoute>
+
+    //  {/* </PrivateRoute> */}
     ),
     children: [
       { path: "dashboard", element: <Dashboard /> },
@@ -61,9 +61,9 @@ const router = createBrowserRouter([
   {
     path: "/user",
     element: (
-      <PrivateRoute allowedRoles={["user"]}>
+      // <PrivateRoute allowedRoles={["user"]}>
         <UserLayout />
-      </PrivateRoute>
+      // </PrivateRoute>
     ),
     children: [
       { path: "dashboard", element: <DashboardUser /> },
