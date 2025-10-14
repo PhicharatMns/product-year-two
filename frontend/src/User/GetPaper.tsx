@@ -1,5 +1,5 @@
 import { Search, MoreVertical, Plus } from "lucide-react";
-
+import { useTheme } from "@/components/theme-provider";
 interface User {
   id: number;
   name: string;
@@ -50,11 +50,18 @@ const users: User[] = [
 ];
 
 export default function UserList() {
+  const { theme } = useTheme();
+  const bg = theme === "dark" ? "bg-gray-700  " : "bg-gray-100";
+  const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
+  const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
+  const borderSoft = theme === "dark" ? "border-gray-800" : "border-gray-300  ";
+  const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
+  const accentColor = theme === "dark" ? "text-yellow-300" : "text-blue-500";
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
+    <div className="p-6  min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className={`text-3xl font-bold ${Text} `}>
           Profile users
         </h1>
 
@@ -64,7 +71,7 @@ export default function UserList() {
             <input
               type="text"
               placeholder="Search"
-              className="pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-400 bg-white"
+              className={`pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-400  ${text}`}
             />
           </div>
 
@@ -76,31 +83,31 @@ export default function UserList() {
       </div>
 
       {/* ส่วนหัว */}
-      <div className="bg-white shadow-sm border border-gray-200 rounded-xl">
+      <div className=" shadow-sm   rounded-xl">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b text-gray-500 text-left">
-              <th className="py-3 px-4 font-medium">User name</th>
-              <th className="py-3 px-4 font-medium">หน้าที่</th>
+            <tr className={`border-b  text-left text-white bg-yellow-500 ${bg}`}>
+              <th className="py-3 px-4 font-medium">ชื่อช่าง</th>
+              <th className="py-3 px-4 font-medium">ตำแหน่ง</th>
               <th className="py-3 px-4 font-medium">วันที่เริ่ม</th>
               <th className="py-3 px-4 font-medium">สิ้นสุดงาน</th>
               <th className="py-3 px-4"></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody >
             {users.map((user) => (
               <tr
                 key={user.id}
-                className="border-b last:border-none hover:bg-gray-50 transition"
+                className={`border-b last:border-none  transition ${borderSoft}  ${bg}`}
               >
-                <td className="py-3 px-4 flex items-center gap-3">
+                <td className="py-3 px-2 flex items-center gap-4">
                   <img
                     src={user.avatar}
                     alt={user.name}
                     className="w-8 h-8 rounded-full"
                   />
                   <div>
-                    <p className="font-medium text-gray-900">{user.name}</p>
+                    <p className={`font-medium ${text}`}>{user.name}</p>
                     <p className="text-gray-500 text-sm">{user.email}</p>
                   </div>
                 </td>
@@ -113,7 +120,8 @@ export default function UserList() {
                         className={`px-2 py-1 text-xs rounded-full font-medium ${
                           role === "Admin"
                             ? "bg-green-100 text-green-700"
-                            : "bg-indigo-100 text-indigo-700"
+                            : "bg-blue-600 text-white"
+                            
                         }`}
                       >
                         {role}
@@ -122,8 +130,8 @@ export default function UserList() {
                   </div>
                 </td>
 
-                <td className="py-3 px-4 text-gray-700">{user.lastActive}</td>
-                <td className="py-3 px-4 text-gray-700">{user.dateAdded}</td>
+                <td className={`py-3 px-4  ${text}`}>{user.lastActive}</td>
+                <td className={`py-3 px-4 ${text}`}>{user.dateAdded}</td>
 
                 <td className="py-3 px-4 text-right">
                   <MoreVertical className="text-gray-400 hover:text-gray-600 cursor-pointer" />

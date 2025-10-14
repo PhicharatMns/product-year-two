@@ -6,7 +6,8 @@ import { FaInbox } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose, IoLogOutOutline } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
-
+import { SiGooglemaps } from "react-icons/si";
+import { useTheme } from "@/components/theme-provider"; 
 interface SidebarItem {
   text: string;
   icon: React.ComponentType<{ size?: number }>;
@@ -25,6 +26,8 @@ export default function Sidebar() {
     { text: "Dashboard", icon: MdDashboard, link: "/user/dashboard" },
     { text: "รับใบงาน", icon: RiFilePaper2Line, link: "/user/getpaper" },
     { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
+    { text: "แผนที่", icon: SiGooglemaps, link: "/user/Maps" },
+
     { text: "ออกจากระบบ", icon: IoLogOutOutline, link: "/logins" },
   ];
 
@@ -49,7 +52,14 @@ export default function Sidebar() {
     setslideManage(false);
     setTimeout(() => setManage(false), 500);
   };
-
+const { theme } = useTheme();
+            
+  const bg = theme === "dark" ? "bg-gray-700" : "bg-gray-100";
+  const text = theme === "dark" ? "text-black" : "text-gray-800";
+  const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
+  const borderSoft =
+    theme === "dark" ? "border-yellow-300/10" : "border-blue-200/50";
+  const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
   return (
     <>
       {/* ปุ่มเปิดเมนูมือถือ */}
@@ -98,6 +108,7 @@ export default function Sidebar() {
                 );
               }
 
+
               return (
                 <button
                   key={index}
@@ -142,7 +153,7 @@ export default function Sidebar() {
       {/* กล่องข้อความ */}
       {showManu && (
         <div
-          className={`fixed lg:left-68 left-4 bottom-0 rounded-t-xl h-150 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${slideIn
+          className={` ml-2 fixed lg:left-68 left-4 bottom-0 rounded-t-xl h-150 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${slideIn
               ? "-translate-x-4 scale-100 opacity-100"
               : "-translate-x-10 scale-100 opacity-0"
             }`}
@@ -151,7 +162,7 @@ export default function Sidebar() {
             <h2 className="text-xl font-semibold text-blue-500">กล่องข้อความ</h2>
             <button
               onClick={closeManu}
-              className="text-2xl hover:text-red-500 pr-2 cursor-pointer"
+              className={`text-2xl hover:text-red-500 pr-2 cursor-pointer ${text}`}
             >
               ✕
             </button>
@@ -169,7 +180,7 @@ export default function Sidebar() {
                 alt="พิชรัตน์"
               />
               <div>
-                <p className="font-semibold">พิชรัตน์</p>
+                <p className={`font-semibold ${text}`}>พิชรัตน์</p>
               </div>
             </div>
           </div>
@@ -179,7 +190,7 @@ export default function Sidebar() {
       {/* เมนูย่อย */}
       {openManage && (
         <div
-          className={`fixed lg:left-150 left-4 bottom-0 rounded-t-xl h-100 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${slideManage
+          className={` ml-1 fixed lg:left-150 left-4 bottom-0 rounded-t-xl h-100 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${slideManage
               ? "-translate-x-4 scale-100 opacity-100"
               : "-translate-x-10 scale-100 opacity-0"
             }`}
@@ -191,12 +202,12 @@ export default function Sidebar() {
               alt="พิชรัตน์"
             />
             <div>
-              <p className="font-semibold">พิชรัตน์</p>
+              <p className={`font-semibold ${text}`}>พิชรัตน์</p>
             </div>
             <div className="ml-auto">
               <button
                 onClick={closeManageMenu}
-                className="border text-2xl p-1 cursor-pointer"
+                className={`border text-2xl p-1 cursor-pointer ${text}`}
               >
                 ✕
               </button>

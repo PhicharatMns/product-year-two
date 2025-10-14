@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { useTheme } from "@/components/theme-provider";
 
-const Profile: React.FC = () => {
-  // ข้อมูลติดต่อ
+export default function Profile() {
+
   const [contact] = useState({
     phone: "0812345678",
     email: "somsee@gmail.com",
@@ -9,7 +10,6 @@ const Profile: React.FC = () => {
     social: "somsee",
   });
 
-  // ข้อมูลความเชี่ยวชาญ
   const [skill] = useState({
     position: "ช่างไฟฟ้า",
     experience: "4 ปี",
@@ -19,50 +19,69 @@ const Profile: React.FC = () => {
     startDate: "10/10/2020",
   });
 
+  const { theme } = useTheme();
+
+  const bg = theme === "dark" ? "bg-[#0f0f0f]" : "bg-gray-100";
+  const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
+  const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
+  const borderSoft = theme === "dark" ? "border-yellow-300/10" : "border-blue-200/50";
+  const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
+  const accentColor = theme === "dark" ? "text-yellow-300" : "text-blue-500";
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6 font-sans">
-      <div className="flex flex-wrap bg-white rounded-2xl shadow-lg overflow-hidden max-w-6xl w-full">
-        {/* ขยับโปร */}
-        <div className="flex flex-col items-center justify-start p-8 md:w-1/3  text-center">
-          {/* ตรงหัวข้อโปรไฟล์ */}
-          <h1 className="text-3xl font-extrabold text-gray-900 mb-6">
-            Pro<span className="text-blue-700">file</span>
+    <div className={`min-h-screen flex items-center justify-center p-6 transition-all duration-500 `}>
+      <div
+        className={`flex flex-wrap rounded-3xl shadow-xl overflow-hidden max-w-6xl w-full ${text} ${cardBg} backdrop-blur-md`}
+      >
+        {/* ✅ ด้านซ้าย */}
+        <div className="flex flex-col items-center justify-start p-10 md:w-1/3 text-center border-b md:border-b-0 md:border-r border-blue-100/40">
+          <h1 className="text-4xl font-bold mb-8">
+            Pro<span className={accentColor}>file</span>
           </h1>
 
-          {/* รอใส่รูป */}
-        <div className="w-80 h-80 rounded-full overflow-hidden shadow-md mb-6 shadow-4xl">
-  <img
-    src="https://st2.depositphotos.com/5592054/10810/v/450/depositphotos_108100060-stock-illustration-handyman-running-with-a-toolbox.jpg"
-    alt="Profile"
-    className="w-full h-full object-cover"
-  />
-</div>
-        </div>
-
-        {/* Right side - Info sections */}
-        <div className="flex-1 p-8 space-y-8">
-          {/* ข้อมูล */}
-          <div className="border rounded-2xl p-5 shadow-sm">
-            <h2 className="text-3xl font-semibold text-blue-500  mb-3 border-b pb-1">
-              ข้อมูลติดต่อ
-            </h2>
-            <p>เบอร์โทรศัพท์: <b>{contact.phone}</b></p>
-            <p>Gmail: {contact.email}</p>
-            <p>ที่อยู่ปัจจุบัน: {contact.address}</p>
-            <p>ไลน์/เฟซบุ๊ก: {contact.social}</p>
+          {/* ✅ รูปโปรไฟล์ */}
+          <div className="relative w-64 h-64 rounded-full overflow-hidden shadow-2xl border-4 border-blue-400/40 mb-6">
+            <img
+              src="https://i.pinimg.com/736x/c1/9e/8c/c19e8c264bdb02463f66c04e3bf97204.jpg"
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
           </div>
 
-          {/* ข้อมูล */}
-          <div className="border rounded-2xl p-5 shadow-sm">
-            <h2 className="text-3xl font-semibold text-yellow-500 mb-3 border-b pb-1">
+          <div className="mt-3">
+            <h2 className="text-xl font-semibold text-blue-400">สมศรี ใจดี</h2>
+            <p className="text-sm opacity-80">ช่างมืออาชีพ พร้อมให้บริการ</p>
+          </div>
+        </div>
+
+        {/* ✅ ด้านขวา */}
+        <div className="flex-1 p-10 space-y-8">
+          {/* 🔹 ข้อมูลติดต่อ */}
+          <div className={`rounded-2xl p-6 shadow-md border ${borderSoft} ${cardBg} transition-all duration-300 hover:shadow-lg`}>
+            <h2 className={`text-2xl font-semibold mb-4 border-b-2 pb-2 ${titleColor} border-current`}>
+              ข้อมูลติดต่อ
+            </h2>
+            <div className="space-y-2 leading-relaxed">
+              <p>📞 เบอร์โทรศัพท์: <b>{contact.phone}</b></p>
+              <p>📧 Gmail: {contact.email}</p>
+              <p>🏠 ที่อยู่: {contact.address}</p>
+              <p>💬 ไลน์/เฟซบุ๊ก: {contact.social}</p>
+            </div>
+          </div>
+
+          {/* 🔸 ความเชี่ยวชาญ */}
+          <div className={`rounded-2xl p-6 shadow-md border ${borderSoft} ${cardBg} transition-all duration-300 hover:shadow-lg`}>
+            <h2 className={`text-2xl font-semibold mb-4 border-b-2 pb-2 ${theme === "dark" ? "text-yellow-300" : "text-yellow-500"} border-current`}>
               ความเชี่ยวชาญและคุณสมบัติ
             </h2>
-            <p>ตำแหน่ง: <b>{skill.position}</b></p>
-            <p>ประสบการณ์ทำงาน: {skill.experience}</p>
-            <p>อุปกรณ์/เครื่องมือส่วนตัว: {skill.tools}</p>
-            <p>สัญญาจ้าง: {skill.contract}</p>
-            <p>ประกันอุบัติเหตุ: {skill.insurance}</p>
-            <p>วันที่เริ่มงาน: <b>{skill.startDate}</b></p>
+            <div className="space-y-2 leading-relaxed">
+              <p>🔧 ตำแหน่ง: <b>{skill.position}</b></p>
+              <p>🧰 ประสบการณ์ทำงาน: {skill.experience}</p>
+              <p>🪛 เครื่องมือส่วนตัว: {skill.tools}</p>
+              <p>📑 สัญญาจ้าง: {skill.contract}</p>
+              <p>🩺 ประกันอุบัติเหตุ: {skill.insurance}</p>
+              <p>📅 วันที่เริ่มงาน: <b>{skill.startDate}</b></p>
+            </div>
           </div>
         </div>
       </div>
@@ -70,8 +89,4 @@ const Profile: React.FC = () => {
   );
 };
 
-export default Profile;
 
-
-
- 
