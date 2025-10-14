@@ -24,7 +24,7 @@ import DashboardUser from "./User/DashboardUser";
 import Profile from "./User/Profile";
 import GetPaper from "./User/GetPaper";
 import Box from "./User/Box";
-import Maps from "./User/Maps";
+
 // Auth
 import Login from "./sighup/Login";
 import Register from "./sighup/Register";
@@ -41,7 +41,6 @@ const router = createBrowserRouter([
     element: (
       <PrivateRoute allowedRoles={["admin"]}>
         <AdminLayout />
-
       </PrivateRoute>
     ),
     children: [
@@ -70,7 +69,6 @@ const router = createBrowserRouter([
       { path: "profile", element: <Profile /> },
       { path: "getpaper", element: <GetPaper /> },
       { path: "box", element: <Box /> },
-      { path: "Maps", element: <Maps /> },
     ],
   },
 ]);
