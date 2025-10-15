@@ -20,30 +20,22 @@ import Notification from "./Admin/Notification";
 
 // User Worker
 import UserLayout from "./User/UserLayout";
-import DashboardUser from "./User/DashboardUser";
 import Profile from "./User/Profile";
 import GetPaper from "./User/GetPaper";
 import Box from "./User/Box";
-import Maps from "./User/Maps";
+
 // Auth
 import Login from "./sighup/Login";
-import Register from "./sighup/Register";
-import PrivateRoute from "./sighup/PrivateRoute";
+import DashboardUser from "./User/DashboardUser";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
-  { path: "/logins/Register", element: <Register /> },
 
   // Admin Routes
   {
     path: "/",
-    element: (
-      <PrivateRoute allowedRoles={["admin"]}>
-        <AdminLayout />
-
-      </PrivateRoute>
-    ),
+    element: <AdminLayout />,
     children: [
       { path: "dashboard", element: <Dashboard /> },
       { path: "editacc", element: <Editacc /> },
@@ -60,17 +52,12 @@ const router = createBrowserRouter([
   // User Routes
   {
     path: "/user",
-    element: (
-      <PrivateRoute allowedRoles={["user"]}>
-        <UserLayout />
-      </PrivateRoute>
-    ),
+    element: <UserLayout />,
     children: [
-      { path: "dashboard", element: <DashboardUser /> },
+      { path: "DashboardUser", element: <DashboardUser /> },
       { path: "profile", element: <Profile /> },
       { path: "getpaper", element: <GetPaper /> },
       { path: "box", element: <Box /> },
-      { path: "Maps", element: <Maps /> },
     ],
   },
 ]);

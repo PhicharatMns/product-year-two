@@ -23,7 +23,7 @@ export default function Sidebar() {
   const [slideManage, setslideManage] = useState(false); // animation เมนูย่อย
 
   const items: SidebarItem[] = [
-    { text: "Dashboard", icon: MdDashboard, link: "/user/dashboard" },
+    { text: "Dashboard", icon: MdDashboard, link: "/user/DashboardUser" },
     { text: "รับใบงาน", icon: RiFilePaper2Line, link: "/user/getpaper" },
     { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
     { text: "แผนที่", icon: SiGooglemaps, link: "/user/Maps" },

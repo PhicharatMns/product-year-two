@@ -9,7 +9,7 @@ import {
 } from "recharts";
 import { useTheme } from "@/components/theme-provider";
 
-export default function Dashboard() {
+export default function DashboardUser() {
   const materialData = [
     { name: "งานไม้", quantity: 57 },
     { name: "งานไฟฟ้า", quantity: 54 },
