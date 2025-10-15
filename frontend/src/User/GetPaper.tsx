@@ -45,7 +45,7 @@ const users: User[] = [
   },
 ];
 
-export default function UserList() {
+export default function GetPaper() {
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-700" : "bg-gray-100";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
@@ -98,33 +98,15 @@ export default function UserList() {
                 <td className="py-3 px-4">
                   <p className={`font-medium ${text}`}>{user.name}</p>
                 </td>
-
-                <td className="py-3 px-4">
-                  <div className="flex gap-2 flex-wrap">
-                    {user.access.map((role, index) => (
-                      <span
-                        key={index}
-                        className={`px-2 py-1 text-xs rounded-full font-medium ${
-                          role === "Admin"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-blue-600 text-white"
-                            
-                        }`}
-                      >
-                        {role}
-                      </span>
-                    ))}
-                  </div>
-                </td>
-
-                <td className={`py-3 px-4  ${text}`}>{user.lastActive}</td>
+                <td className={`py-3 px-4 ${text}`}>{user.email}</td>
+                <td className={`py-3 px-4 ${text}`}>{user.phone}</td>
                 <td className={`py-3 px-4 ${text}`}>{user.dateAdded}</td>
                 <td className="py-3 px-4 text-center">
                   <button
                     className={`h-9 w-24 rounded-xl font-semibold tracking-wide shadow-md transition-all duration-300 ease-in-out 
                       ${
                         theme === "dark"
-                          ? "bg-yellow-500 hover:bg-yellow-600  "
+                          ? "bg-yellow-500 hover:bg-yellow-400 text-black hover:shadow-yellow-500/40"
                           : "bg-blue-500 hover:bg-blue-400 text-white hover:shadow-blue-400/40"
                       } 
                       active:scale-95
