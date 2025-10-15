@@ -50,7 +50,7 @@ export default function DashboardUser() {
         <div className="max-w-full mx-auto space-y-10">
           <header>
             <h1 className={`text-4xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-sm ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
-              Dashboard
+              Dashboard <span className={`${theme ==='dark' ?'text-white' : 'text-yellow-500'}`}>User</span>
             </h1>
             <p className={`mt-2 text-lg font-medium ${theme ==='dark' ? 'text-white' : 'text-gray-600'}`}>
               ภาพรวมการทำงานทั้งหมดในระบบ

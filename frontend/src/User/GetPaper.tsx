@@ -1,7 +1,5 @@
-import { Search, MoreVertical, Plus } from "lucide-react";
+import { Search, MoreVertical } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
-import { use } from "react";
-
 interface User {
   id: number;
   name: string;
@@ -45,33 +43,25 @@ export default function Getpaper() {
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-700" : "bg-gray-100";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
   const borderSoft = theme === "dark" ? "border-gray-800" : "border-gray-300  ";
-  const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
-  const accentColor = theme === "dark" ? "text-yellow-300" : "text-blue-500";
   const bgborder = theme === "dark" ? "bg-yellow-500" : "bg-blue-600 ";
   return (
     <div className="p-6 min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className={`text-3xl font-bold ${Text} `}>
-          Profile users
+        <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'} `}>
+          รับใบ <span className={`${theme === 'dark' ? 'text-white' : 'text-yellow-500'}`}>งาน</span>
         </h1>
 
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
+            <Search className="absolute left-3 top-2.5 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search"
-              className={`pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-400  ${text}`}
+              placeholder="ค้นหา"
+              className={`pl-9 pr-3 py-2 border focus:outline-none focus:ring-2 rounded-lg text-sm ${theme === 'dark' ? 'focus:ring-yellow-500 border-gray-700 text-white' : 'focus:ring-blue-500 text-gray-700'}`}
             />
           </div>
-
-          <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
-            <Plus size={16} />
-            เพิ่มใบงาน
-          </button>
         </div>
       </div>
 
@@ -84,7 +74,7 @@ export default function Getpaper() {
               <th className="py-3 px-4 font-medium">ชื่อผู้จ้าง</th>
               <th className="py-3 px-4 font-medium">เบอร์โทรติดต่อ</th>
               <th className="py-3 px-4 font-medium">วันที่เพิ่ม</th>
-              <thas className="py-3 px-4 font-medium text-center">เพิ่มเติม</thas>
+              <th className="py-3 px-4 font-mediumr">เพิ่มเติม</th>
             </tr>
           </thead>
 
