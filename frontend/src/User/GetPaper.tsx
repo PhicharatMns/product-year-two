@@ -45,7 +45,7 @@ const users: User[] = [
   },
 ];
 
-export default function GetPaper() {
+export default function UserList() {
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-700" : "bg-gray-100";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
@@ -98,8 +98,26 @@ export default function GetPaper() {
                 <td className="py-3 px-4">
                   <p className={`font-medium ${text}`}>{user.name}</p>
                 </td>
-                <td className={`py-3 px-4 ${text}`}>{user.email}</td>
-                <td className={`py-3 px-4 ${text}`}>{user.phone}</td>
+
+                <td className="py-3 px-4">
+                  <div className="flex gap-2 flex-wrap">
+                    {user.access.map((role, index) => (
+                      <span
+                        key={index}
+                        className={`px-2 py-1 text-xs rounded-full font-medium ${
+                          role === "Admin"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-blue-600 text-white"
+                            
+                        }`}
+                      >
+                        {role}
+                      </span>
+                    ))}
+                  </div>
+                </td>
+
+                <td className={`py-3 px-4  ${text}`}>{user.lastActive}</td>
                 <td className={`py-3 px-4 ${text}`}>{user.dateAdded}</td>
                 <td className="py-3 px-4 text-center">
                   <button

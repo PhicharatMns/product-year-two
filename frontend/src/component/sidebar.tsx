@@ -57,7 +57,7 @@ export default function Sidebar() {
   };
 const { theme } = useTheme();
             
-  const bg = theme === "dark" ? "bg-gray-700" : "bg-blue-100";
+  const bg = theme === "dark" ? "bg-gray-900" : "bg-blue-100";
   const text = theme === "dark" ? "text-black" : "text-gray-500";
   const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
   const borderSoft =
