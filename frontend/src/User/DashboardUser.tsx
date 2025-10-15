@@ -49,10 +49,10 @@ export default function DashboardUser() {
       <div className={`min-h-screen p-4 sm:p-6 md:p-10 transition-all duration-500`}>
         <div className="max-w-full mx-auto space-y-10">
           <header>
-            <h1 className={`text-4xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-sm `}>
+            <h1 className={`text-4xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-sm ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
               Dashboard
             </h1>
-            <p className="text-gray-500 mt-2 text-lg font-medium">
+            <p className={`mt-2 text-lg font-medium ${theme ==='dark' ? 'text-white' : 'text-gray-600'}`}>
               ภาพรวมการทำงานทั้งหมดในระบบ
             </p>
           </header>
@@ -71,7 +71,7 @@ export default function DashboardUser() {
                     className={`${item.color} text-white p-7 rounded-2xl shadow-lg hover:shadow-2xl transition-transform transform hover:-translate-y-1`}
                   >
                     <h2 className="text-2xl font-bold mb-2">{item.title}</h2>
-                    <p className="my-5 text-6xl font-extrabold tracking-wide">
+                    <p className={`my-5 text-6xl font-extrabold tracking-wide`}>
                       {item.value}{" "}
                       <span className="text-lg font-semibold align-top">{item.unit}</span>
                     </p>

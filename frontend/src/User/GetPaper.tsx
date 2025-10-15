@@ -53,17 +53,14 @@ export default function UserList() {
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-700  " : "bg-gray-100";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
   const borderSoft = theme === "dark" ? "border-gray-800" : "border-gray-300  ";
-  const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
-  const accentColor = theme === "dark" ? "text-yellow-300" : "text-blue-500";
   const bgborder = theme === "dark" ? "bg-yellow-500" : "bg-blue-600 ";
   return (
     <div className="p-6  min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className={`text-3xl font-bold ${Text} `}>
-          Profile users
+        <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'} `}>
+          รับใบ<span className={`${theme === 'dark' ? 'text-white' : 'text-yellow-500'}`}>งาน</span>
         </h1>
 
         <div className="flex items-center gap-3">
@@ -72,11 +69,11 @@ export default function UserList() {
             <input
               type="text"
               placeholder="Search"
-              className={`pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-400  ${text}`}
+              className={`pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-400 ${theme === 'dark' ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white" : ''}  ${text}`}
             />
           </div>
 
-          <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+          <button className={`flex items-center gap-2 px-4 rounded-xl duration-500 cursor-pointer py-2 ${theme === 'dark' ? 'bg-yellow-500 hover:bg-yellow-600' : 'hover:bg-blue-600 text-white bg-blue-500'}`}>
             <Plus size={16} />
             Add user
           </button>
@@ -115,17 +112,12 @@ export default function UserList() {
 
                 <td className="py-3 px-4">
                   <div className="flex gap-2 flex-wrap">
-                    {user.access.map((role, index) => (
+                    {user.access.map((event, index) => (
                       <span
                         key={index}
-                        className={`px-2 py-1 text-xs rounded-full font-medium ${
-                          role === "Admin"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-blue-600 text-white"
-                            
-                        }`}
+                        className={`px-2 py-1 text-xs rounded-full font-medium ${theme === 'dark' ? 'bg-yellow-500' : 'bg-blue-500 text-white'}`}
                       >
-                        {role}
+                        {event}
                       </span>
                     ))}
                   </div>
