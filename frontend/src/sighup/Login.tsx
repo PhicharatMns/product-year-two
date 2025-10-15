@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
+import { useTheme } from "@/components/theme-provider";
 
 export default function Login() {
+  const { theme } = useTheme()
   return (
-    <div className="flex h-screen">
-      <div className="flex-1 flex items-center justify-center bg-white rounded-r-[3rem] shadow-lg">
-        <div className="w-full max-w-md p-8 shadow-lg">
+    <div className={`flex h-screen ${theme === 'dark' ? 'bg-black/10' : ''} `}>
+      <div className="flex-1 flex items-center justify-center shadow-lg ">
+        <div className={`w-full max-w-md p-8 shadow-lg rounded-xl ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100 '}`}>
           <h2 className="text-2xl font-bold text-center text-blue-600 mb-8">
             ยินดีต้อนรับ
           </h2>
@@ -57,6 +59,6 @@ export default function Login() {
           </p>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

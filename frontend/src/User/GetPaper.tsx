@@ -44,27 +44,30 @@ export default function UserList() {
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-700" : "bg-gray-100";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
-  const borderSoft = theme === "dark" ? "border-gray-800" : "border-gray-300";
+  const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
+  const borderSoft = theme === "dark" ? "border-gray-800" : "border-gray-300  ";
   const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
-  const bgborder = theme === "dark" ? "bg-yellow-500" : "bg-blue-600";
-
+  const accentColor = theme === "dark" ? "text-yellow-300" : "text-blue-500";
+  const bgborder = theme === "dark" ? "bg-yellow-500" : "bg-blue-600 ";
   return (
     <div className="p-6 min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className={`text-3xl font-bold ${titleColor}`}>รับใบงาน</h1>
+        <h1 className={`text-3xl font-bold ${Text} `}>
+          Profile users
+        </h1>
 
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
             <input
               type="text"
-              placeholder="ค้นหาโครงการ"
-              className={`pl-9 pr-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-400 ${text} ${bg}`}
+              placeholder="Search"
+              className={`pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-400  ${text}`}
             />
           </div>
 
-          <button className={`flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition ${theme === "dark" ? "bg-yellow-500 hover:bg-yellow-600" : "bg-blue-600 hover:bg-blue-500"}`}>
+          <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
             <Plus size={16} />
             เพิ่มใบงาน
           </button>
@@ -94,19 +97,30 @@ export default function UserList() {
                   <p className={`font-medium ${text}`}>{user.name}</p>
                   <p className="text-gray-500 text-sm">{user.email}</p>
                 </td>
-                <td className="py-3 px-4">นายสมชาย ใจดี</td>
-                <td className="py-3 px-4">081-234-5678</td>
-                <td className="py-3 px-4">{user.dateAdded}</td>
-                <td className="py-3 px-4 text-center">
-                     <button
-                    className={`h-9 px-4 rounded-2xl font-medium transition transform hover:scale-105 ${
-                      theme === "dark"
-                        ? "bg-yellow-500 hover:bg-yellow-600 text-white"
-                        : "bg-blue-500 hover:bg-blue-600 text-white"
-                    }`}
-                  >
-                    รายละเอียด
-                  </button>
+
+                <td className="py-3 px-4">
+                  <div className="flex gap-2 flex-wrap">
+                    {user.access.map((role, index) => (
+                      <span
+                        key={index}
+                        className={`px-2 py-1 text-xs rounded-full font-medium ${
+                          role === "Admin"
+                            ? "bg-green-100 text-green-700"
+                            : "bg-blue-600 text-white"
+                            
+                        }`}
+                      >
+                        {role}
+                      </span>
+                    ))}
+                  </div>
+                </td>
+
+                <td className={`py-3 px-4  ${text}`}>{user.lastActive}</td>
+                <td className={`py-3 px-4 ${text}`}>{user.dateAdded}</td>
+
+                <td className="py-3 px-4 text-right">
+                  <MoreVertical className="text-gray-400 hover:text-gray-600 cursor-pointer" />
                 </td>
               </tr>
             ))}
