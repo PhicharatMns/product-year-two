@@ -57,6 +57,7 @@ export default function UserList() {
   const borderSoft = theme === "dark" ? "border-gray-800" : "border-gray-300  ";
   const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
   const accentColor = theme === "dark" ? "text-yellow-300" : "text-blue-500";
+  const bgborder = theme === "dark" ? "bg-yellow-500" : "bg-blue-600 ";
   return (
     <div className="p-6  min-h-screen">
       {/* Header */}
@@ -83,10 +84,10 @@ export default function UserList() {
       </div>
 
       {/* ส่วนหัว */}
-      <div className=" shadow-sm   rounded-xl">
+      <div className=" shadow-sm rounded-lg overflow-hidden    ">
         <table className="w-full text-sm">
           <thead>
-            <tr className={`border-b  text-left text-white bg-yellow-500 ${bg}`}>
+            <tr className={`border-b  text-left text-white bg-blue-500 ${bgborder}`}>
               <th className="py-3 px-4 font-medium">ชื่อช่าง</th>
               <th className="py-3 px-4 font-medium">ตำแหน่ง</th>
               <th className="py-3 px-4 font-medium">วันที่เริ่ม</th>

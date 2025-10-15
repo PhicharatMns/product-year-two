@@ -54,33 +54,33 @@ export default function Profile() {
           </div>
         </div>
 
-        {/* ✅ ด้านขวา */}
+        
         <div className="flex-1 p-10 space-y-8">
-          {/* 🔹 ข้อมูลติดต่อ */}
+        
           <div className={`rounded-2xl p-6 shadow-md border ${borderSoft} ${cardBg} transition-all duration-300 hover:shadow-lg`}>
             <h2 className={`text-2xl font-semibold mb-4 border-b-2 pb-2 ${titleColor} border-current`}>
               ข้อมูลติดต่อ
             </h2>
             <div className="space-y-2 leading-relaxed">
-              <p>📞 เบอร์โทรศัพท์: <b>{contact.phone}</b></p>
-              <p>📧 Gmail: {contact.email}</p>
-              <p>🏠 ที่อยู่: {contact.address}</p>
-              <p>💬 ไลน์/เฟซบุ๊ก: {contact.social}</p>
+              <p> เบอร์โทรศัพท์: <b>{contact.phone}</b></p>
+              <p>Gmail: {contact.email}</p>
+              <p> ที่อยู่: {contact.address}</p>
+              <p> ไลน์/เฟซบุ๊ก: {contact.social}</p>
             </div>
           </div>
 
-          {/* 🔸 ความเชี่ยวชาญ */}
+ 
           <div className={`rounded-2xl p-6 shadow-md border ${borderSoft} ${cardBg} transition-all duration-300 hover:shadow-lg`}>
             <h2 className={`text-2xl font-semibold mb-4 border-b-2 pb-2 ${theme === "dark" ? "text-yellow-300" : "text-yellow-500"} border-current`}>
               ความเชี่ยวชาญและคุณสมบัติ
             </h2>
             <div className="space-y-2 leading-relaxed">
-              <p>🔧 ตำแหน่ง: <b>{skill.position}</b></p>
-              <p>🧰 ประสบการณ์ทำงาน: {skill.experience}</p>
-              <p>🪛 เครื่องมือส่วนตัว: {skill.tools}</p>
-              <p>📑 สัญญาจ้าง: {skill.contract}</p>
-              <p>🩺 ประกันอุบัติเหตุ: {skill.insurance}</p>
-              <p>📅 วันที่เริ่มงาน: <b>{skill.startDate}</b></p>
+              <p> ตำแหน่ง: <b>{skill.position}</b></p>
+              <p> ประสบการณ์ทำงาน: {skill.experience}</p>
+              <p> เครื่องมือส่วนตัว: {skill.tools}</p>
+              <p>สัญญาจ้าง: {skill.contract}</p>
+              <p> ประกันอุบัติเหตุ: {skill.insurance}</p>
+              <p> วันที่เริ่มงาน: <b>{skill.startDate}</b></p>
             </div>
           </div>
         </div>
