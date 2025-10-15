@@ -23,7 +23,7 @@ import UserLayout from "./User/UserLayout";
 import Profile from "./User/Profile";
 import GetPaper from "./User/GetPaper";
 import Box from "./User/Box";
-
+import Maps from "./User/Maps";
 // Auth
 import Login from "./sighup/Login";
 import DashboardUser from "./User/DashboardUser";
@@ -58,6 +58,7 @@ const router = createBrowserRouter([
       { path: "profile", element: <Profile /> },
       { path: "getpaper", element: <GetPaper /> },
       { path: "box", element: <Box /> },
+      { path: "maps", element: <Maps /> },
     ],
   },
 ]);

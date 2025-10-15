@@ -31,7 +31,7 @@ export default function ProfileModern() {
       </div>
 
       
-      <div className="flex flex-col gap-6 w-full max-w-md">
+      <div className="flex flex-col gap-6 h-screen justify-center max-w-md">
         
         <div className={`${card} shadow-xl rounded-3xl p-6`}>
           <div className="flex justify-between items-center mb-4">
