@@ -8,6 +8,8 @@ import { IoClose, IoLogOutOutline } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { SiGooglemaps } from "react-icons/si";
 import { useTheme } from "@/components/theme-provider"; 
+import { FaTools } from "react-icons/fa";
+
 interface SidebarItem {
   text: string;
   icon: React.ComponentType<{ size?: number }>;
@@ -27,6 +29,7 @@ export default function Sidebar() {
     { text: "รับใบงาน", icon: RiFilePaper2Line, link: "/user/getpaper" },
     { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
     { text: "แผนที่", icon: SiGooglemaps, link: "/user/Maps" },
+    { text: "วัสดุอุปกรณ์", icon: FaTools, link: "/user/Supplies" },
 
     { text: "ออกจากระบบ", icon: IoLogOutOutline, link: "/logins" },
   ];
@@ -54,8 +57,8 @@ export default function Sidebar() {
   };
 const { theme } = useTheme();
             
-  const bg = theme === "dark" ? "bg-gray-700" : "bg-gray-100";
-  const text = theme === "dark" ? "text-black" : "text-gray-800";
+  const bg = theme === "dark" ? "bg-gray-700" : "bg-blue-100";
+  const text = theme === "dark" ? "text-black" : "text-gray-500";
   const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
   const borderSoft =
     theme === "dark" ? "border-yellow-300/10" : "border-blue-200/50";
@@ -72,7 +75,7 @@ const { theme } = useTheme();
 
       {/* Sidebar หลัก */}
       <div
-        className={`fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white font-bold border-r transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
+        className={`  ${text} ${bg}  fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white font-bold border-r transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0`}
       >
         {/* Logo */}
@@ -80,9 +83,9 @@ const { theme } = useTheme();
           <div className="flex items-center py-3 p-4 mt-5">
             <Link
               to="/user/dashboard"
-              className="max-w-380 mx-auto text-3xl font-black"
+              className={`max-w-380 mx-auto text-3xl `}
             >
-              Tech<span className="text-yellow-500">Job</span>
+              Tech<span className= {` ${theme === 'dark' ? 'text-yellow-500' : 'text-yellow-500'}`}>Job</span>
             </Link>
           </div>
 
@@ -116,7 +119,7 @@ const { theme } = useTheme();
                     setOpen(false);
                     item.onClick?.();
                   }}
-                  className="flex items-center gap-2 my-2 pl-5 py-3 w-full text-left cursor-pointer hover:bg-yellow-500 dark:hover:bg-yellow-600 duration-300"
+                  className={`flex items-center gap-2 my-2 pl-5 py-3 w-full text-left cursor-pointer  duration-300 hover `}
                 >
                   <Icon size={24} />
                   <span>{item.text}</span>
@@ -179,7 +182,7 @@ const { theme } = useTheme();
                 src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
                 alt="พิชรัตน์"
               />
-              <div>
+              <div> 
                 <p className={`font-semibold ${text}`}>พิชรัตน์</p>
               </div>
             </div>
@@ -195,7 +198,7 @@ const { theme } = useTheme();
               : "-translate-x-10 scale-100 opacity-0"
             }`}
         >
-          <div className="border-black p-2 rounded-xl flex items-center gap-3">
+          <div className="border-black  p-2 rounded-xl flex items-center gap-3">
             <img
               className="w-12 h-12 rounded-full object-cover"
               src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
@@ -207,7 +210,7 @@ const { theme } = useTheme();
             <div className="ml-auto">
               <button
                 onClick={closeManageMenu}
-                className={`border text-2xl p-1 cursor-pointer ${text}`}
+                className={` hover:text-red-500 text-2xl p-1 cursor-pointer ${text}`}
               >
                 ✕
               </button>

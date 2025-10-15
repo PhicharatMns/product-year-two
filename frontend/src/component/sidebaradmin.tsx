@@ -4,12 +4,14 @@ import { MdDashboard } from "react-icons/md";
 import { IoIosLogOut } from "react-icons/io";
 import { TbBellPlus } from "react-icons/tb";
 import { GoGraph } from "react-icons/go";
-import { MdOutlineCategory } from "react-icons/md";
+import { useTheme } from "@/components/theme-provider"; 
 import { LiaUserEditSolid } from "react-icons/lia";
 import { VscNewFile } from "react-icons/vsc";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
+import { FaTools } from "react-icons/fa";
+import {  NavLink } from "react-router-dom";
 
 interface SidebarItem {
   text: string;
@@ -24,11 +26,22 @@ export default function Sidebaradmin() {
     { text: "Dashboard", icons: MdDashboard, Link: "Dashboard" },
     { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "Searchpastjobs" },
     { text: "ส่งแจ้งการเตือน", icons: TbBellPlus, Link: "Notification" },
-    { text: "สถิติ", icons: GoGraph, Link: "graph" },
-    { text: "กำหนดประเภท/หมวด", icons: MdOutlineCategory, Link: "setwork" },
+    { text: "สถิติ", icons: GoGraph, Link: "graph" }, 
+    { text: "จัดการวัสดุอุปกรณ์", icons: FaTools, Link: "SuppliesAdmin" },
+    
     { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "Editacc" },
+   
     { text: "ออกจากระบบ", icons: IoIosLogOut, Link: "Logins" },
   ];
+
+const { theme } = useTheme();
+            
+  const bg = theme === "dark" ? "bg-gray-700" : "bg-blue-100";
+  const text = theme === "dark" ? "text-black" : "text-gray-500";
+  const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
+  const borderSoft =
+    theme === "dark" ? "border-yellow-300/10" : "border-blue-200/50";
+  const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
 
   return (
     <>
@@ -42,7 +55,7 @@ export default function Sidebaradmin() {
 
       {/* Sidebar */}
       <div
-        className={`fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white dark:text-gray-200 font-bold border-r transition-transform duration-300 ${
+        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white dark:text-gray-200 font-bold border-r transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
@@ -60,25 +73,34 @@ export default function Sidebaradmin() {
           </div>
 
           {/* Sidebar Items */}
-          <div className="mt-4 flex flex-col">
-            {datasizebar.map((event, index) => {
-              const Icons = event.icons;
-              return (
-                <Link
-                  to={`/${event.Link}`}
-                  key={index}
-                  onClick={() => setOpen(false)} // ปิดเมนูเมื่อคลิก
-                >
-                  <div className="flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer hover:bg-yellow-500 dark:hover:bg-yellow-600 duration-300">
-                    <Icons size={24} />
-                    <span className="whitespace-nowrap inline-block transition-all duration-300">
-                      {event.text}
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
+        <div className="mt-4 flex flex-col">
+  {datasizebar.map((event, index) => {
+    const Icons = event.icons;
+
+    if (event.Link) {
+      return (
+        <NavLink
+          to={`/${event.Link}`}
+          key={index}
+          className={({ isActive }) =>
+            `flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer hover:bg-yellow-500 dark:hover:bg-yellow-600 duration-300 ${
+              isActive ? "bg-yellow-500 dark:bg-yellow-600" : ""
+            }`
+          }
+          onClick={() => setOpen(false)}
+        >
+          <Icons size={24} />
+          <span className="whitespace-nowrap inline-block transition-all duration-300">
+            {event.text}
+          </span>
+        </NavLink>
+      );
+    }
+
+    return null;
+  })}
+</div>
+
         </div>
 
         <div>

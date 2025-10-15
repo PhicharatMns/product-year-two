@@ -17,6 +17,7 @@ import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
 import Addwork from "./Admin/Addwork";
 import Notification from "./Admin/Notification";
+import SuppliesAdmin from "./Admin/SuppliesAdmin";
 
 // User Worker
 import UserLayout from "./User/UserLayout";
@@ -24,6 +25,8 @@ import Profile from "./User/Profile";
 import GetPaper from "./User/GetPaper";
 import Box from "./User/Box";
 import Maps from "./User/Maps";
+import Suppiles from "./User/Supplies";
+
 // Auth
 import Login from "./sighup/Login";
 import DashboardUser from "./User/DashboardUser";
@@ -46,6 +49,8 @@ const router = createBrowserRouter([
       { path: "profileadmin", element: <Profileadmin /> },
       { path: "addwork", element: <Addwork /> },
       { path: "notification", element: <Notification /> },
+      { path: "suppliesAdmin", element: <SuppliesAdmin /> },
+
     ],
   },
 
@@ -59,6 +64,8 @@ const router = createBrowserRouter([
       { path: "getpaper", element: <GetPaper /> },
       { path: "box", element: <Box /> },
       { path: "maps", element: <Maps /> },
+      { path: "supplies", element: <Suppiles /> },
+
     ],
   },
 ]);

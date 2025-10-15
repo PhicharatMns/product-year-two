@@ -1,11 +1,10 @@
 import { Search, MoreVertical, Plus } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
+
 interface User {
   id: number;
   name: string;
   email: string;
-  avatar: string;
-  access: string[];
   lastActive: string;
   dateAdded: string;
 }
@@ -13,37 +12,29 @@ interface User {
 const users: User[] = [
   {
     id: 1,
-    name: "นาย สมชาย ใจดี",
+    name: "สร้างสะพานข้างถนน",
     email: "nobody@gmail.com",
-    avatar: "https://png.pngtree.com/png-vector/20250709/ourlarge/pngtree-mechanic-isolated-on-transparent-background-png-image_16620520.webp",
-    access: ["ช่างไฟ"],
     lastActive: "SEP 01, 2024",
     dateAdded: "NOV 01, 2025",
   },
   {
     id: 2,
-    name: "นาย สมศรี ดีใจ",
+    name: "สร้างหมู่บ้านจัดสรร",
     email: "nobody@gmail.com",
-    avatar: "https://png.pngtree.com/png-vector/20250615/ourlarge/pngtree-electrician-isolated-on-transparent-background-png-image_16539103.png",
-    access: ["ช่างไม้"],
     lastActive: "SEP 01, 2024",
     dateAdded: "NOV 01, 2025",
   },
   {
     id: 3,
-    name: "นาย สมปอง มีสุข",
+    name: "โครงการรักบ้านรักโลก",
     email: "nobody@gmail.com",
-    avatar: "https://png.pngtree.com/png-vector/20250610/ourlarge/pngtree-electrician-isolated-on-transparent-background-png-image_16509817.png",
-    access: ["ช่างประปา"],
     lastActive: "SEP 01, 2024",
     dateAdded: "NOV 01, 2025",
   },
   {
     id: 4,
-    name: "นาย สมบูรณ์ แฮปปี้",
+    name: "ทำถนนทางหลวง",
     email: "nobody@gmail.com",
-    avatar: "https://png.pngtree.com/png-vector/20250624/ourlarge/pngtree-electrician-isolated-on-transparent-background-png-image_16585440.png",
-    access: ["ช่างปูน"],
     lastActive: "SEP 01, 2024",
     dateAdded: "NOV 01, 2025",
   },
@@ -51,91 +42,71 @@ const users: User[] = [
 
 export default function UserList() {
   const { theme } = useTheme();
-  const bg = theme === "dark" ? "bg-gray-700  " : "bg-gray-100";
+  const bg = theme === "dark" ? "bg-gray-700" : "bg-gray-100";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
-  const borderSoft = theme === "dark" ? "border-gray-800" : "border-gray-300  ";
+  const borderSoft = theme === "dark" ? "border-gray-800" : "border-gray-300";
   const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
-  const accentColor = theme === "dark" ? "text-yellow-300" : "text-blue-500";
-  const bgborder = theme === "dark" ? "bg-yellow-500" : "bg-blue-600 ";
+  const bgborder = theme === "dark" ? "bg-yellow-500" : "bg-blue-600";
+
   return (
-    <div className="p-6  min-h-screen">
+    <div className="p-6 min-h-screen">
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h1 className={`text-3xl font-bold ${Text} `}>
-          Profile users
-        </h1>
+        <h1 className={`text-3xl font-bold ${titleColor}`}>รับใบงาน</h1>
 
         <div className="flex items-center gap-3">
           <div className="relative">
             <Search className="absolute left-3 top-2.5 text-gray-400 w-4 h-4" />
             <input
               type="text"
-              placeholder="Search"
-              className={`pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-400  ${text}`}
+              placeholder="ค้นหาโครงการ"
+              className={`pl-9 pr-3 py-2 border rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-400 ${text} ${bg}`}
             />
           </div>
 
-          <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">
+          <button className={`flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition ${theme === "dark" ? "bg-yellow-500 hover:bg-yellow-600" : "bg-blue-600 hover:bg-blue-500"}`}>
             <Plus size={16} />
-            Add user
+            เพิ่มใบงาน
           </button>
         </div>
       </div>
 
-      {/* ส่วนหัว */}
-      <div className=" shadow-sm rounded-lg overflow-hidden    ">
+    
+      <div className="shadow-sm rounded-lg overflow-hidden border ">
         <table className="w-full text-sm">
           <thead>
-            <tr className={`border-b  text-left text-white bg-blue-500 ${bgborder}`}>
-              <th className="py-3 px-4 font-medium">ชื่อช่าง</th>
-              <th className="py-3 px-4 font-medium">ตำแหน่ง</th>
-              <th className="py-3 px-4 font-medium">วันที่เริ่ม</th>
-              <th className="py-3 px-4 font-medium">สิ้นสุดงาน</th>
-              <th className="py-3 px-4"></th>
+            <tr className={`text-left text-white ${bgborder}`}>
+              <th className="py-3 px-4 font-medium">ชื่องาน</th>
+              <th className="py-3 px-4 font-medium">ชื่อผู้จ้าง</th>
+              <th className="py-3 px-4 font-medium">เบอร์โทรติดต่อ</th>
+              <th className="py-3 px-4 font-medium">วันที่เพิ่ม</th>
+              <th className="py-3 px-4 font-medium text-center">เพิ่มเติม</th>
             </tr>
           </thead>
-          <tbody >
+
+          <tbody>
             {users.map((user) => (
               <tr
                 key={user.id}
-                className={`border-b last:border-none  transition ${borderSoft}  ${bg}`}
+                className={`border-b last:border-none ${borderSoft} ${bg} transition`}
               >
-                <td className="py-3 px-2 flex items-center gap-4">
-                  <img
-                    src={user.avatar}
-                    alt={user.name}
-                    className="w-8 h-8 rounded-full"
-                  />
-                  <div>
-                    <p className={`font-medium ${text}`}>{user.name}</p>
-                    <p className="text-gray-500 text-sm">{user.email}</p>
-                  </div>
-                </td>
-
                 <td className="py-3 px-4">
-                  <div className="flex gap-2 flex-wrap">
-                    {user.access.map((role, index) => (
-                      <span
-                        key={index}
-                        className={`px-2 py-1 text-xs rounded-full font-medium ${
-                          role === "Admin"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-blue-600 text-white"
-                            
-                        }`}
-                      >
-                        {role}
-                      </span>
-                    ))}
-                  </div>
+                  <p className={`font-medium ${text}`}>{user.name}</p>
+                  <p className="text-gray-500 text-sm">{user.email}</p>
                 </td>
-
-                <td className={`py-3 px-4  ${text}`}>{user.lastActive}</td>
-                <td className={`py-3 px-4 ${text}`}>{user.dateAdded}</td>
-
-                <td className="py-3 px-4 text-right">
-                  <MoreVertical className="text-gray-400 hover:text-gray-600 cursor-pointer" />
+                <td className="py-3 px-4">นายสมชาย ใจดี</td>
+                <td className="py-3 px-4">081-234-5678</td>
+                <td className="py-3 px-4">{user.dateAdded}</td>
+                <td className="py-3 px-4 text-center">
+                     <button
+                    className={`h-9 px-4 rounded-2xl font-medium transition transform hover:scale-105 ${
+                      theme === "dark"
+                        ? "bg-yellow-500 hover:bg-yellow-600 text-white"
+                        : "bg-blue-500 hover:bg-blue-600 text-white"
+                    }`}
+                  >
+                    รายละเอียด
+                  </button>
                 </td>
               </tr>
             ))}
