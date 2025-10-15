@@ -40,7 +40,7 @@ const users: User[] = [
   },
 ];
 
-export default function UserList() {
+export default function Getpaper() {
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-700" : "bg-gray-100";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
@@ -100,17 +100,12 @@ export default function UserList() {
 
                 <td className="py-3 px-4">
                   <div className="flex gap-2 flex-wrap">
-                    {user.access.map((role, index) => (
+                    {users.map((role, index) => (
                       <span
                         key={index}
-                        className={`px-2 py-1 text-xs rounded-full font-medium ${
-                          role === "Admin"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-blue-600 text-white"
-                            
-                        }`}
+                        className={`px-2 py-1 text-xs rounded-full font-medium `}
                       >
-                        {role}
+                        {role.name}
                       </span>
                     ))}
                   </div>

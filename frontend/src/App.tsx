@@ -22,7 +22,7 @@ import SuppliesAdmin from "./Admin/SuppliesAdmin";
 // User Worker
 import UserLayout from "./User/UserLayout";
 import Profile from "./User/Profile";
-import GetPaper from "./User/GetPaper";
+
 import Box from "./User/Box";
 import Maps from "./User/Maps";
 import Suppiles from "./User/Supplies";
@@ -30,6 +30,7 @@ import Suppiles from "./User/Supplies";
 // Auth
 import Login from "./sighup/Login";
 import DashboardUser from "./User/DashboardUser";
+import Getpaper from "./User/GetPaper";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -61,7 +62,7 @@ const router = createBrowserRouter([
     children: [
       { path: "DashboardUser", element: <DashboardUser /> },
       { path: "profile", element: <Profile /> },
-      { path: "getpaper", element: <GetPaper /> },
+      { path: "getpaper", element: <Getpaper/> },
       { path: "box", element: <Box /> },
       { path: "maps", element: <Maps /> },
       { path: "supplies", element: <Suppiles /> },
