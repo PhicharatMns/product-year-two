@@ -1,5 +1,6 @@
 import { Search, MoreVertical, Plus } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
+import { use } from "react";
 
 interface User {
   id: number;
@@ -74,7 +75,7 @@ export default function Getpaper() {
         </div>
       </div>
 
-    
+
       <div className="shadow-sm rounded-lg overflow-hidden border ">
         <table className="w-full text-sm">
           <thead>
@@ -83,7 +84,7 @@ export default function Getpaper() {
               <th className="py-3 px-4 font-medium">ชื่อผู้จ้าง</th>
               <th className="py-3 px-4 font-medium">เบอร์โทรติดต่อ</th>
               <th className="py-3 px-4 font-medium">วันที่เพิ่ม</th>
-              <th className="py-3 px-4 font-medium text-center">เพิ่มเติม</th>
+              <thas className="py-3 px-4 font-medium text-center">เพิ่มเติม</thas>
             </tr>
           </thead>
 
@@ -97,9 +98,8 @@ export default function Getpaper() {
                   <p className={`font-medium ${text}`}>{user.name}</p>
                   <p className="text-gray-500 text-sm">{user.email}</p>
                 </td>
-
                 <td className="py-3 px-4">
-                
+                  {user.email}
                 </td>
 
                 <td className={`py-3 px-4  ${text}`}>{user.lastActive}</td>
