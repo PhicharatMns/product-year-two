@@ -99,16 +99,7 @@ export default function Getpaper() {
                 </td>
 
                 <td className="py-3 px-4">
-                  <div className="flex gap-2 flex-wrap">
-                    {users.map((role, index) => (
-                      <span
-                        key={index}
-                        className={`px-2 py-1 text-xs rounded-full font-medium `}
-                      >
-                        {role.name}
-                      </span>
-                    ))}
-                  </div>
+                
                 </td>
 
                 <td className={`py-3 px-4  ${text}`}>{user.lastActive}</td>
