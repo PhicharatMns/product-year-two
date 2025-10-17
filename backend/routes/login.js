@@ -2,88 +2,75 @@ const express = require("express");
 const router = express.Router();
 const Login = require("../models/Login");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
-const JWT_SECRET = "your_secret_key";
+const JWT_SECRET = process.env.JWT_SECRET || "mysecretkey";
 
-// สมัครสมาชิก
+//JWT Middleware
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
+
+//Register
 router.post("/register", async (req, res) => {
+  const { username, passwork } = req.body;
+  if (!username || !passwork)
+    return res.status(400).json({ message: "Usernama and password required" });
+
   try {
-    const { user, pass } = req.body;
-    if (!user || !pass)
-      return res.status(400).json({ message: "กรุณากรอกข้อมูลให้ครบ" });
+    const user = await Login.findOne({ username });
+    if (user) return res.status(409).json({ message: "User already exists" });
 
-    const existingUser = await Login.findOne({ user });
-    if (existingUser)
-      return res.status(400).json({ message: "มีชื่อผู้ใช้นี้อยู่แล้ว" });
-
-    const newUser = new Login({ user, pass });
+    const hashedPassword = await bcrypt.hash(passwork, 10);
+    const newUser = new Login({ username, passwork: hashedPassword });
     await newUser.save();
 
-    res.json({ message: "สมัครสมาชิกสำเร็จ!" });
+    res.status(201).json({ message: "user registered successfully!" });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการสมัครสมาชิก" });
+    console.log(err);
+    res.status(500).json({ message: "Datadase Error" });
   }
 });
 
-// เข้าสู่ระบบ
+//Login
 router.post("/login", async (req, res) => {
+  const { username, passwork } = req.body;
+  if (!username || !passwork)
+    return res.status(401).json({ message: "User or Passwork required" });
+
   try {
-    const { user, pass } = req.body;
-    if (!user || !pass)
-      return res.status(400).json({ message: "กรุณากรอกข้อมูลให้ครบ" });
+    const user = await Login.findOne({ username });
+    if (!user)
+      return res.status(401).json({ message: "Invalid user or password" });
 
-    const foundUser = await Login.findOne({ user });
-    if (!foundUser)
-      return res
-        .status(401)
-        .json({ message: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" });
+    const isMatch = await bcrypt.compare(passwork, user.passwork);
+    if (!isMatch) return res.status({ message: "error is Match" });
 
-    const isMatch = await foundUser.matchPassword(pass);
-    if (!isMatch)
-      return res
-        .status(401)
-        .json({ message: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" });
-
-    const token = jwt.sign(
-      { id: foundUser._id, user: foundUser.user },
-      JWT_SECRET,
-      { expiresIn: "1d" }
-    );
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 2 * 1000,
+    const token = jwt.sign({ id: user._id, username: username }, JWT_SECRET, {
+      expiresIn: "1h",
     });
 
-    res.json({ message: "เข้าสู่ระบบสำเร็จ", user: foundUser.user });
+    res.json({ message: "Login succesful!", token });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" });
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
-// ตรวจสอบการ login (สำหรับ PrivateRoute)
-
-router.get("/check", (req, res) => {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ message: "ไม่ได้ login" });
-
-  try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    // ส่ง user role หรือ type ได้ถ้าต้องการ
-    res.status(200).json({ message: "Login อยู่", user: decoded.user });
-  } catch (err) {
-    res.status(401).json({ message: "Token ไม่ถูกต้อง" });
-  }
+// path DashboardUser
+router.get("/dashboardUser", verifyToken, (req, res) => {
+  console.log("req.user:", req.user);
+  res.json({ message: ` ${req.user.username}` });
 });
 
-// ออกจากระบบ
-router.post("/logout", (req, res) => {
-  res.clearCookie("token");
-  res.json({ message: "ออกจากระบบสำเร็จ" });
-});
 
 module.exports = router;
