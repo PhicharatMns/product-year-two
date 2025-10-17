@@ -21,10 +21,8 @@ export default function Register() {
       //  เรียก API backend ให้ตรงกับ router ที่ใช้ /api/login/register
       const response = await axios.post(
         "http://localhost:5000/api/login/register",
-        {
-          username,
-          passwork,
-        }
+        { username, passwork },
+        { withCredentials: true }
       );
 
       setMessage(response.data.message || "สมัครสมาชิกสำเร็จ!");

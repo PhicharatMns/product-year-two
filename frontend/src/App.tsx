@@ -70,7 +70,7 @@ const router = createBrowserRouter([
       { path: "getpaper", element: <Getpaper /> },
       { path: "box", element: <Box /> },
       { path: "maps", element: <Maps /> },
-      { path: "supplies", element: <Suppiles /> }, 
+      { path: "supplies", element: <Suppiles /> }, // ตรวจสอบชื่อ component ให้ตรง
     ],
   },
 ]);
