@@ -60,7 +60,7 @@ export default function Sidebar() {
         );
 
         console.log("Sidebar response:", response.data); // <-- เพิ่มบรรทัดนี้
-        setMessage(response.data.message);
+        setMessage(response.data.Name);
       } catch (err) {
         console.error("Fetch sidebar message error:", err); // <-- เพิ่มบรรทัดนี้
       }
@@ -197,7 +197,7 @@ export default function Sidebar() {
       {/* กล่องข้อความ */}
       {showManu && (
         <div
-          className={` ml-2 fixed lg:left-68 left-4 bottom-0 rounded-t-xl h-150 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${
+          className={` ml-2 fixed lg:left-68 left-4 bottom-0 rounded-t-xl  w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${
             slideIn
               ? "-translate-x-4 scale-100 opacity-100"
               : "-translate-x-10 scale-100 opacity-0"
@@ -237,7 +237,7 @@ export default function Sidebar() {
       {/* เมนูย่อย */}
       {openManage && (
         <div
-          className={` ml-1 fixed lg:left-150 left-4 bottom-0 rounded-t-xl h-100 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${
+          className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${
             slideManage
               ? "-translate-x-4 scale-100 opacity-100"
               : "-translate-x-10 scale-100 opacity-0"
@@ -250,7 +250,7 @@ export default function Sidebar() {
               alt="พิชรัตน์"
             />
             <div>
-              <p className={`font-semibold ${text}`}>พิชรัตน์</p>
+              <p className={`font-semibold ${text}`}>{Message}</p>
             </div>
             <div className="ml-auto">
               <button
