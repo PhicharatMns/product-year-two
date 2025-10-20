@@ -3,6 +3,10 @@ import { useParams } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
 
 export default function Details() {
+
+  const [showOpenaddTradesman, setshowOpenaddTradesman] = useState(false)
+
+  const { id } = useParams();
   interface Employees {
     _id: string;
     Worksheet: string;
@@ -18,7 +22,7 @@ export default function Details() {
     image: string;
   }
 
-  interface Tradsman {
+  interface Tradesman {
     _id: string;
     Name: string;
     Nickname: string;
@@ -34,8 +38,8 @@ export default function Details() {
 
   const [dataEmployees, setDataEmployees] = useState<Employees[]>([]);
   const [Mobiles, setMobled] = useState(false);
-  const [dataTradesman, setdataTradesman] = useState<Tradsman[]>([]);
-  const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradsman[]>([]);
+  const [dataTradesman, setDataTradesman] = useState<Tradesman[]>([]);
+  const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradesman[]>([]);
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
 
@@ -65,30 +69,42 @@ export default function Details() {
   // ดึงข้อมูลช่างทั้งหมด (Tradesman)
   const fetchTradesman = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/tradesman");
-      const data: Tradsman[] = await res.json();
-      setdataTradesman(data);
+      const res = await fetch("http://localhost:5000/api/login/all-tradesman", {
+        credentials: "include",
+      });
+      const data: Tradesman[] = await res.json();
+      setDataTradesman(data);
     } catch (err) {
-      console.error(err);
+      console.error("โหลดข้อมูลช่างล้มเหลว:", err);
     }
   };
 
-  // ✅ เพิ่มช่างไปยัง otherTradesman
-  // ✅ ดึงข้อมูล otherTradesman เฉพาะของงานนี้
+  //  ดึงข้อมูล otherTradesman เฉพาะของงานนี้
+
   const fetchOtherTradesman = async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/otherTradesman/${id}`);
-      if (!res.ok) throw new Error("โหลด otherTradesman ไม่สำเร็จ");
-      const data: Tradsman[] = await res.json();
+      const data: Tradesman[] = await res.json();
       setSelectedTradesmen(data);
     } catch (err) {
-      console.error(err);
+      console.error("โหลด otherTradesman ล้มเหลว:", err);
     }
   };
 
-  // ✅ เพิ่มช่างไปยัง otherTradesman พร้อม employeeId
-  const handleAddTradesman = async (tradesman: Tradsman) => {
+  //  เพิ่มช่างไปยัง otherTradesman พร้อม employeeId
+  const handleAddTradesman = async (tradesman: Tradesman) => {
     try {
+      //  ตรวจสอบว่าช่างคนนี้ถูกเพิ่มไปแล้วหรือยัง
+      const isDuplicate = SelectedTradesmen.some(
+        (t) => t.Name === tradesman.Name
+      );
+
+      if (isDuplicate) {
+        setshowOpenaddTradesman(true);
+        setMobled(false)
+        return;
+      }
+
       const payload = {
         Name: tradesman.Name,
         Position: tradesman.Position,
@@ -114,6 +130,7 @@ export default function Details() {
     }
   };
 
+
   const handeDelete = async (id: string) => {
     try {
       const res = await fetch(
@@ -135,10 +152,9 @@ export default function Details() {
   useEffect(() => {
     fetchEmployees();
     fetchTradesman();
-    fetchOtherTradesman(); // ✅ โหลดข้อมูล otherTradesman ตอนเปิดหน้า
-  }, []);
+    if (id) fetchOtherTradesman(); //  ตรวจว่ามี id ก่อน
+  }, [id]);
 
-  const { id } = useParams();
 
   const { theme } = useTheme();
 
@@ -203,7 +219,7 @@ export default function Details() {
 
               {/* ---------- รายชื่อช่าง ---------- */}
               <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
-                <div className= {`border lg:col-span-4 rounded-2xl  shadow-lg p-5 ${bg_border}`}>
+                <div className={`border lg:col-span-4 rounded-2xl  shadow-lg p-5 ${bg_border}`}>
                   <div className={`flex justify-between items-center border-b  pb-3 p-2 ${bg_border}`}>
                     <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>รายชื่อช่าง</h3>
                     <button
@@ -290,9 +306,22 @@ export default function Details() {
           );
       })}
 
+
+      {showOpenaddTradesman && (
+        <div className='fixed inset-0 flex justify-center items-center bg-black/40 backdrop:blur-sm z-50'>
+          <div className={`rounded-2xl shadow-2xl p-8 w-[400px] border bg-black text-white`}>
+            <p>ช่าง</p>
+            <div>
+              <img src="" alt="" />
+              <p></p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ---------- Modal เพิ่มช่าง ---------- */}
       {Mobiles && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
+        <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-10">
           <div className="bg-white rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border border-blue-200 max-h-[95vh] overflow-y-auto">
             <div className="mb-6 border-b border-blue-200 pb-3 flex justify-between items-center">
               <h2 className="text-2xl font-bold text-blue-700">เพิ่มช่าง</h2>
@@ -351,3 +380,5 @@ export default function Details() {
     </div>
   );
 }
+
+
