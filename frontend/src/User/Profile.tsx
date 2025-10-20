@@ -10,6 +10,7 @@ export default function Profile() {
   const [phones, setphones] = useState("");
   const [position, setposition] = useState("");
   const [profile, setprofile] = useState("");
+  
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +55,7 @@ export default function Profile() {
             Pro<span className={accentColor}>file</span>
           </h1>
 
-          <div className="relative w-64 h-64 rounded-full overflow-hidden shadow-2xl border-4 border-blue-400/40 mb-6">
+          <div className="relative w-64 h-64 rounded-full overflow-hidden border-4 border-blue-400/40 mb-4">
             <img
               src={`http://localhost:5000/uploads/Profile/${Profile}`}
               alt="Profile"
@@ -62,7 +63,7 @@ export default function Profile() {
             />
           </div>
 
-          <div className="mt-3">
+          <div className="space-y-2">
             <h2 className="text-xl font-semibold text-blue-400">{Message}</h2>
             <p className="text-sm opacity-80">ช่างมืออาชีพ พร้อมให้บริการ</p>
           </div>
@@ -80,10 +81,15 @@ export default function Profile() {
             <div className="space-y-2 leading-relaxed">
               <p>
                 {" "}
-                เบอร์โทรศัพท์: <b>{phones}</b>
+                เบอร์โทรศัพท์ : <b>{phones}</b>
               </p>
-              <p>Gmail: {email}</p>
-              <p> ที่อยู่: {email}</p>
+              <p>ชื่อเล่น :</p>
+              <p>อีเมล : {email}</p>
+              <p>วันที่เริ่มงาน : </p>
+              <p>วันเดือนปีเกิด :</p>
+              <p>ตำแหน่ง :</p>
+              <p>เบอร์โทรติดต่อ :</p>
+              <p></p>
             </div>
           </div>
 
@@ -95,7 +101,7 @@ export default function Profile() {
                 theme === "dark" ? "text-yellow-300" : "text-yellow-500"
               } border-current`}
             >
-              ความเชี่ยวชาญและคุณสมบัติ
+              ที่อยู่
             </h2>
             <div className="space-y-2 leading-relaxed">
               {/* <p> ตำแหน่ง: <b>{skill.position}</b></p>
