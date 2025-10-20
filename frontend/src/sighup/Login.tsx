@@ -1,46 +1,100 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
+import axios from "axios";
+import { useState } from "react";
 
 export default function Login() {
-  const { theme } = useTheme()
+  const { theme } = useTheme();
+  const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [passwork, setPasswork] = useState("");
+  const [message, setMessage] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // ป้องกัน refresh
+
+    try {
+      // เรียก API backend ให้ตรงกับ router
+      const response = await axios.post(
+        "http://localhost:5000/api/login/login",
+        {
+          username,
+          passwork,
+        }
+      );
+
+      setMessage(response.data.message || "เข้าสู่ระบบสำเร็จ");
+
+      //  บันทึก token
+      localStorage.setItem("token", response.data.token);
+
+      // ไปหน้า /user/dashboardUser
+      navigate("/user/DashboardUser");
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   return (
-    <div className={`flex h-screen ${theme === 'dark' ? 'bg-black/10' : ''} `}>
-      <div className="flex-1 flex items-center justify-center shadow-lg ">
-        <div className={`w-full max-w-md p-8 shadow-lg rounded-xl ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100 '}`}>
+    <div className={`flex h-screen ${theme === "dark" ? "bg-black/10" : ""}`}>
+      <div className="flex-1 flex items-center justify-center shadow-lg">
+        <div
+          className={`w-full max-w-md p-8 shadow-lg rounded-xl ${
+            theme === "dark" ? "bg-gray-800" : "bg-gray-100"
+          }`}
+        >
           <h2 className="text-2xl font-bold text-center text-blue-600 mb-8">
             ยินดีต้อนรับ
           </h2>
 
-          <div className="mb-6">
-            <label className="block text-blue-700 mb-2">อีเมล/ชื่อผู้ใช้</label>
-            <input
-              type="text"
-              // value={User}
-              // onChange={(e) => setUser(e.target.value)}
-              placeholder="กรอกข้อมูล"
-              className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-6">
+              <label className="block text-blue-700 mb-2">
+                อีเมล/ชื่อผู้ใช้
+              </label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="กรอกข้อมูล"
+                className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required
+              />
+            </div>
 
-          <div className="mb-6">
-            <label className="block text-blue-700 mb-2">รหัสผ่าน</label>
-            <input
-              type="password"
-              // value={Pass}
-              // onChange={(e) => setPass(e.target.value)}
-              placeholder="กรอกรหัสผ่าน"
-              className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
-            />
-          </div>
+            <div className="mb-6">
+              <label className="block text-blue-700 mb-2">รหัสผ่าน</label>
+              <input
+                type="password"
+                value={passwork}
+                onChange={(e) => setPasswork(e.target.value)}
+                placeholder="กรอกรหัสผ่าน"
+                className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
+                required
+              />
+            </div>
 
-          <div className="flex justify-between">
-            <Link to={'/user/DashboardUser'}>
-              <button className="bg-blue-600 px-6 py-2 ml-35 text-white font-semibold rounded-md shadow hover:bg-blue-700">
-                เข้าสู่ระบบ
-              </button>
+            <button
+              type="submit"
+              className="bg-blue-600 w-full py-2 text-white font-semibold rounded-md shadow hover:bg-blue-700"
+            >
+              เข้าสู่ระบบ
+            </button>
+
+            {message && (
+              <p className="text-center text-red-500 mt-4">{message}</p>
+            )}
+          </form>
+
+          <p className="text-center mt-4 text-sm">
+            ยังไม่มีบัญชี?{" "}
+            <Link
+              to="/register"
+              className="text-blue-500 hover:underline font-semibold"
+            >
+              สมัครสมาชิก
             </Link>
-          </div>
-          <Link to={"Register"}>สร้างบัญชีใหม่</Link>
+          </p>
         </div>
       </div>
 
@@ -59,6 +113,6 @@ export default function Login() {
           </p>
         </div>
       </div>
-    </div >
+    </div>
   );
 }

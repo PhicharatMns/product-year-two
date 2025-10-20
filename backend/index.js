@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 const tradesmanRouter = require("./routes/tradesman");
 const employeeRouter = require("./routes/employee");
 const otherTradesmanRouter = require("./routes/otherTradesman");
-const loginRouter = require("./routes/Login");
+const loginRouter = require("./routes/login");
 
 const app = express();
 
@@ -26,7 +26,7 @@ app.use(cookieParser());
 
 mongoose
   .connect("mongodb://127.0.0.1:27017/Project_Y_TWO")
-  .then(() => console.log("✅ MongoDB connected"))
+  .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
 app.use("/api/tradesman", tradesmanRouter);

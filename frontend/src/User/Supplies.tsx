@@ -7,14 +7,12 @@ export default function Supplies() {
   const bg = theme === "dark" ? "bg-yellow-500" : "bg-blue-500";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
   const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
-  const borderSoft = theme === "dark" ? "border-yellow-300/10" : "border-blue-200/50";
-  const titleColor = theme === "dark" ? "text-yellow-500" : "text-blue-600";
-  const accentColor = theme === "dark" ? "text-yellow-300" : "text-blue-500";
+  const titleColor = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const bgdrop = theme === "dark" ? "bg-gray-800 border-white/20" : "bg-gray-100 border-gray-300";
 
   return (
     <div className={`p-4 sm:p-6  rounded-2xl `}>
-      <p className={`text-5xl font-bold mb-4 ${titleColor}`}>วัสดุอุปกรณ์</p>
+      <p className={`text-5xl font-bold mb-4 ${titleColor}`}>วัสดุอุปกรณ์ <span className={`${theme === 'dark' ?'text-white' : 'text-yellow-500'}`} >ช่าง</span></p>
 
       <div className="flex flex-col sm:flex-row justify-end sm:items-center gap-3 p-2">
         <div className="flex items-center w-full sm:w-auto gap-2">
@@ -23,11 +21,6 @@ export default function Supplies() {
             className={`border rounded-2xl w-full sm:w-56 p-2 ${text} ${bgdrop}`}
             placeholder="ค้นหาวัสดุอุปกรณ์"
           />
-          <button
-            className={`p-2 rounded-2xl transition border  hover:opacity-80`}
-          >
-            <Search size={20} />
-          </button>
         </div>
 
         <select

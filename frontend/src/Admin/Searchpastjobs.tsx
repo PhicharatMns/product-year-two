@@ -127,9 +127,9 @@ const Searchpastjobs: React.FC = () => {
   const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
   return (
-    <div className="max-w-380 mx-auto py-10 ">
+    <div className=" w-max-380 p-6 mx-auto container pt-10">
       <div
-        className={`container mx-auto rounded-xl min-h-screen shadow-lg p-6 transition-colors duration-600 ${
+        className={`container  mx-auto rounded-xl min-h-screen shadow-lg p-5 transition-colors duration-600 ${
           theme === "dark" ? "bg-gray-800 text-white" : "bg-white text-gray-900"
         }`}
       >
