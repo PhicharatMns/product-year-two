@@ -46,13 +46,13 @@ export default function DashboardUser() {
 
   return (
     <div>
-      <div className={`min-h-screen p-4 sm:p-6 md:p-10 transition-all duration-500`}>
-        <div className="max-w-full mx-auto space-y-10">
-          <header>
-            <h1 className={`text-4xl sm:text-5xl md:text-6xl font-extrabold drop-shadow-sm ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
-              Dashboard <span className={`${theme ==='dark' ?'text-white' : 'text-yellow-500'}`}>User</span>
+      <div className={`w-max-380 p-6 mx-auto container pt-4`}>
+        <div>
+          <header className="p-5">
+            <h1 className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
+              Dashboard <span className={`${theme === 'dark' ? 'text-white' : 'text-yellow-500'}`}>User</span>
             </h1>
-            <p className={`mt-2 text-lg font-medium ${theme ==='dark' ? 'text-white' : 'text-gray-600'}`}>
+            <p className={`mt-2 text-lg font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-600'}`}>
               ภาพรวมการทำงานทั้งหมดในระบบ
             </p>
           </header>

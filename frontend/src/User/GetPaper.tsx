@@ -46,9 +46,9 @@ export default function Getpaper() {
   const borderSoft = theme === "dark" ? "border-gray-800" : "border-gray-300  ";
   const bgborder = theme === "dark" ? "bg-yellow-500" : "bg-blue-600 ";
   return (
-    <div className="p-6 min-h-screen">
+    <div className="w-max-380 p-8 mx-auto container pt-10">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 ">
         <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'} `}>
           รับใบ <span className={`${theme === 'dark' ? 'text-white' : 'text-yellow-500'}`}>งาน</span>
         </h1>

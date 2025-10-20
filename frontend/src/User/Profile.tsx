@@ -56,7 +56,7 @@ export default function Profile() {
 
           <div className="relative w-64 h-64 rounded-full overflow-hidden shadow-2xl border-4 border-blue-400/40 mb-6">
             <img
-              src={`http://localhost:5000/uploads/Profile/${Profile}`}
+              src={`http://localhost:5000/uploads/Profile/${profile}`}
               alt="Profile"
               className="w-full h-full object-cover"
             />
@@ -91,9 +91,8 @@ export default function Profile() {
             className={`rounded-2xl p-6 shadow-md border ${borderSoft} ${cardBg} transition-all duration-300 hover:shadow-lg`}
           >
             <h2
-              className={`text-2xl font-semibold mb-4 border-b-2 pb-2 ${
-                theme === "dark" ? "text-yellow-300" : "text-yellow-500"
-              } border-current`}
+              className={`text-2xl font-semibold mb-4 border-b-2 pb-2 ${theme === "dark" ? "text-yellow-300" : "text-yellow-500"
+                } border-current`}
             >
               ความเชี่ยวชาญและคุณสมบัติ
             </h2>

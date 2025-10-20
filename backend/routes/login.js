@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs")
 
 //รับรูปมาเก็บในไฟล์ ../uploads/Profile
 const storage = multer.diskStorage({
@@ -103,8 +104,31 @@ router.post("/login", async (req, res) => {
   }
 });
 
+//ลบข้อมูล
+router.delete('/:id', async (req, res) => {
+  try {
+    const deleted = await Login.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: 'ไม่พบช่างนี้' });
+    }
+
+    // ลบไฟล์รูปถ้ามี
+    if (deleted.Profile) {
+      const filepath = path.join(__dirname, '../uploads/Profile', deleted.Profile);
+      fs.unlink(filepath, (err) => {
+        if (err) console.error("ลบรูปไม่สำเร็จ:", err);
+      });
+    }
+
+    // ส่ง status 200 แทน 500
+    res.status(200).json({ message: 'ลบข้อมูลสำเร็จ' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'ลบไม่สำเร็จ' });
+  }
+});
+
 // path DashboardUser
-// login.js
 router.get("/dashboardUser", verifyToken, async (req, res) => {
   try {
     const user = await Login.findById(req.user.id); // req.user.id จาก token

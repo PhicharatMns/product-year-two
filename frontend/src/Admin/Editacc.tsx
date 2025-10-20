@@ -14,8 +14,10 @@ interface Tradesman {
 
 export default function Editacc() {
   const [showModal, setshowModal] = useState(false);
+  const [showdeleted, setshowdeleted] = useState(false)
   const { theme } = useTheme();
   const [dataTradesman, setDataTradesman] = useState<Tradesman[]>([]);
+  const [selectedTradesman, setSelectedTradesman] = useState<Tradesman | null>(null);
 
   // แยก state สำหรับแต่ละ input
   const [Name, setName] = useState("");
@@ -33,8 +35,7 @@ export default function Editacc() {
 
   // ส่งข้อมูลไป backend
   const handleSubmit = async () => {
- console.log("Form submitted"); // ตรวจว่า form ทำงานจริง
-
+    console.log("Form submitted"); // ตรวจว่า form ทำงานจริง
     try {
       const data = new FormData();
       data.append("Name", Name);
@@ -82,6 +83,28 @@ export default function Editacc() {
     }
   };
 
+  const openDeleteModal = (tradesman: Tradesman) => {
+    setSelectedTradesman(tradesman);
+    setshowdeleted(true);
+  };
+
+  //ลบข้อมูล
+  const confirmDelete = async () => {
+    if (!selectedTradesman) return;
+
+    try {
+      await axios.delete(`http://localhost:5000/api/login/${selectedTradesman._id}`, {
+        withCredentials: true,
+      });
+      setDataTradesman(dataTradesman.filter(item => item._id !== selectedTradesman._id));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setshowdeleted(false);
+      setSelectedTradesman(null);
+    }
+  };
+
   // useEffect(() => {
   //   const fetchTradesman = async () => {
   //     try {
@@ -115,7 +138,7 @@ export default function Editacc() {
   const texthead = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
   return (
-    <div className="min-h-screen py-10 flex justify-center">
+    <div className="w-max-380 p-4 mx-auto container pt-10">
       <div className={`mx-auto container rounded-2xl shadow-xl p-6 ${bg}`}>
         {/* Title */}
         <div className="flex items-center justify-between mb-6">
@@ -161,9 +184,8 @@ export default function Editacc() {
                 className="w-10 h-10 object-cover rounded-full mx-auto border-2 border-blue-300 shadow-sm"
               />
               <p
-                className={`text-center font-medium ${
-                  theme === "dark" ? "text-yellow-500" : "text-gray-800"
-                }`}
+                className={`text-center font-medium ${theme === "dark" ? "text-yellow-500" : "text-gray-800"
+                  }`}
               >
                 {event.Name}
               </p>
@@ -171,15 +193,15 @@ export default function Editacc() {
               <p className={`text-center `}>{event.Phone_Number}</p>
               <p className={`text-center`}>{event.Email}</p>
               <p
-                className={`text-center font-medium ${
-                  theme === "dark" ? "text-yellow-500" : "text-gray-800"
-                }`}
+                className={`text-center font-medium ${theme === "dark" ? "text-yellow-500" : "text-gray-800"
+                  }`}
               >
                 {new Date(event.Start_data).toLocaleDateString("th-TH")}
               </p>
               <div className="flex justify-center gap-2">
                 <button
-                  // onClick={() => handleDelete(event._id)}
+                  //   onClick={() => handleDelete(event._id)}
+                  onClick={() => openDeleteModal(event)}
                   className="bg-red-600 text-white px-5 py-2 rounded-full hover:bg-red-700 transition-all shadow-md"
                 >
                   ลบ
@@ -200,11 +222,10 @@ export default function Editacc() {
         <form onSubmit={handleSubmit}>
           <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
             <div
-              className={`rounded-2xl shadow-2xl p-8 w-[900px] border transition-colors duration-500 ${
-                theme === "dark"
-                  ? "bg-gray-800 border-gray-700 text-yellow-500"
-                  : "bg-white border-blue-200 text-blue-500"
-              }`}
+              className={`rounded-2xl shadow-2xl p-8 w-[900px] border transition-colors duration-500 ${theme === "dark"
+                ? "bg-gray-800 border-gray-700 text-yellow-500"
+                : "bg-white border-blue-200 text-blue-500"
+                }`}
             >
               <div className="mb-6 border-b pb-3">
                 <h2 className={`text-2xl font-bold ${texthead}`}>
@@ -219,9 +240,8 @@ export default function Editacc() {
                     type="text"
                     value={Name}
                     onChange={(e) => setName(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -230,9 +250,8 @@ export default function Editacc() {
                     type="text"
                     value={Nickname}
                     onChange={(e) => setNickname(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -241,9 +260,8 @@ export default function Editacc() {
                     type="text"
                     value={ID}
                     onChange={(e) => setID(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -252,9 +270,8 @@ export default function Editacc() {
                     type="text"
                     value={Phone_Number}
                     onChange={(e) => setPhone_Number(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -263,9 +280,8 @@ export default function Editacc() {
                     type="text"
                     value={Email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -274,9 +290,8 @@ export default function Editacc() {
                     type="text"
                     value={Position}
                     onChange={(e) => setPosition(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -285,9 +300,8 @@ export default function Editacc() {
                     type="date"
                     value={Birthday}
                     onChange={(e) => setBirthday(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -296,9 +310,8 @@ export default function Editacc() {
                     type="date"
                     value={Start_data}
                     onChange={(e) => setStart_data(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -307,9 +320,8 @@ export default function Editacc() {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -318,9 +330,8 @@ export default function Editacc() {
                     type="text"
                     value={passwork}
                     onChange={(e) => setpasswork(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div className="col-span-2">
@@ -329,9 +340,8 @@ export default function Editacc() {
                     value={Address}
                     onChange={(e) => setAddress(e.target.value)}
                     rows={3}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div className="col-span-2">
@@ -339,9 +349,8 @@ export default function Editacc() {
                   <input
                     type="file"
                     onChange={(e) => setProfile(e.target.files?.[0] || null)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
               </div>
@@ -364,6 +373,37 @@ export default function Editacc() {
           </div>
         </form>
       )}
-    </div>
+
+      {showdeleted && selectedTradesman && (
+        <div className='fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50'>
+          <div className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'}`}>
+            <p className="text-lg mb-4">
+              คุณต้องการลบช่าง <span className={`font-bold ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>{selectedTradesman.Name}</span> ใช่หรือไม่
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setshowdeleted(false)}
+                className="border px-4 py-2 cursor-pointer rounded-lg"
+              >
+                ยกเลิก
+              </button>
+              <form onSubmit={(e) => {
+                e.preventDefault(); // ป้องกันรีเฟรช
+                confirmDelete();    // เรียกฟังก์ชันลบ
+              }} >
+                <button
+                  type='submit'
+                  className="bg-red-600 cursor-pointer text-white px-4 py-2 rounded-lg hover:bg-red-700"
+                >
+                  ลบ
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      )
+      }
+
+    </div >
   );
 }

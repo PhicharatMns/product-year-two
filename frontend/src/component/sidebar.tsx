@@ -112,7 +112,7 @@ export default function Sidebar() {
       >
         {/* Logo */}
         <div className="flex flex-col">
-          <div className="flex items-center py-3 p-4 mt-5">
+          <div className="flex items-center  py-3 p-4 mt-5">
             <Link
               to="/user/dashboard"
               className={`max-w-380 mx-auto text-3xl `}
@@ -216,7 +216,7 @@ export default function Sidebar() {
           </div>
 
           {/* ผู้ใช้ในกล่องข้อความ */}
-          <div>
+          <div className="h-100">
             <div
               onClick={openManageMenu}
               className="border-black p-2 shadow-xl rounded-xl flex items-center gap-3 cursor-pointer hover:bg-gray-100"
@@ -237,13 +237,13 @@ export default function Sidebar() {
       {/* เมนูย่อย */}
       {openManage && (
         <div
-          className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${
+          className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl h-100 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${
             slideManage
               ? "-translate-x-4 scale-100 opacity-100"
               : "-translate-x-10 scale-100 opacity-0"
           }`}
         >
-          <div className="border-black  p-2 rounded-xl flex items-center gap-3">
+          <div className="border-black p-2 rounded-xl flex items-center gap-3">
             <img
               className="w-12 h-12 rounded-full object-cover"
               src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
