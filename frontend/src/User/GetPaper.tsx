@@ -98,8 +98,12 @@ export default function GetPaper() {
                 <td className="py-3 px-4">
                   <p className={`font-medium ${text}`}>{user.name}</p>
                 </td>
-                <td className={`py-3 px-4 ${text}`}>{user.email}</td>
-                <td className={`py-3 px-4 ${text}`}>{user.phone}</td>
+
+                <td className="py-3 px-4">
+                
+                </td>
+
+                <td className={`py-3 px-4  ${text}`}>{user.lastActive}</td>
                 <td className={`py-3 px-4 ${text}`}>{user.dateAdded}</td>
                 <td className="py-3 px-4 text-center">
                   <button

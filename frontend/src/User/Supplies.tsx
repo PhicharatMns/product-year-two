@@ -42,7 +42,7 @@ export default function Supplies() {
       </div>
 
 
-      <div className="overflow-x-auto mt-5 rounded-2xl border border-gray-300">
+      <div className="overflow-x-auto mt-5 rounded-2xl border-gray-300">
         <table className={`min-w-full text-left border-collapse ${text}`}>
           <thead >
             <tr className={`${bg} text-white ${text}`}>
