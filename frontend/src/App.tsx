@@ -17,32 +17,31 @@ import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
 import Addwork from "./Admin/Addwork";
 import Notification from "./Admin/Notification";
+import SuppliesAdmin from "./Admin/SuppliesAdmin";
 
 // User Worker
 import UserLayout from "./User/UserLayout";
-import DashboardUser from "./User/DashboardUser";
 import Profile from "./User/Profile";
-import GetPaper from "./User/GetPaper";
 import Box from "./User/Box";
+import Maps from "./User/Maps";
+import Suppiles from "./User/Supplies";
+import DashboardUser from "./User/DashboardUser";
+import Getpaper from "./User/GetPaper";
 
 // Auth
 import Login from "./sighup/Login";
 import Register from "./sighup/Register";
-import PrivateRoute from "./sighup/PrivateRoute";
+import ProtectedRoute from "./sighup/ProtectedRoute";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
-  { path: "/logins/Register", element: <Register /> },
+  { path: "/Register", element: <Register /> },
 
   // Admin Routes
   {
     path: "/",
-    element: (
-      <PrivateRoute allowedRoles={["admin"]}>
-        <AdminLayout />
-      </PrivateRoute>
-    ),
+    element: <AdminLayout />,
     children: [
       { path: "dashboard", element: <Dashboard /> },
       { path: "editacc", element: <Editacc /> },
@@ -53,6 +52,7 @@ const router = createBrowserRouter([
       { path: "profileadmin", element: <Profileadmin /> },
       { path: "addwork", element: <Addwork /> },
       { path: "notification", element: <Notification /> },
+      { path: "suppliesAdmin", element: <SuppliesAdmin /> },
     ],
   },
 
@@ -60,15 +60,17 @@ const router = createBrowserRouter([
   {
     path: "/user",
     element: (
-      <PrivateRoute allowedRoles={["user"]}>
+      <ProtectedRoute>
         <UserLayout />
-      </PrivateRoute>
+      </ProtectedRoute>
     ),
     children: [
-      { path: "dashboard", element: <DashboardUser /> },
+      { path: "DashboardUser", element: <DashboardUser /> },
       { path: "profile", element: <Profile /> },
-      { path: "getpaper", element: <GetPaper /> },
+      { path: "getpaper", element: <Getpaper /> },
       { path: "box", element: <Box /> },
+      { path: "maps", element: <Maps /> },
+      { path: "supplies", element: <Suppiles /> }, // ตรวจสอบชื่อ component ให้ตรง
     ],
   },
 ]);

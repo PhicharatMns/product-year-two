@@ -143,6 +143,7 @@ export default function Details() {
   const { theme } = useTheme();
 
   const text = theme === "dark" ? "text-white" : "text-gray-800";
+  const bg_border = theme === 'dark' ? 'border-yellow-200' : 'border-bule-200'
 
   return (
     <div className="  min-h-screen p-2 py-10 ">
@@ -151,51 +152,49 @@ export default function Details() {
           return (
             <div className="max-w-380 mx-auto" key={index}>
               {/* ---------- ข้อมูลงาน ---------- */}
-              <div className="mx-auto  rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
-                <p className={`text-3xl font-extrabold  mb-3 ${text}`}>
+              <div className={`mx-auto  rounded-2xl shadow-lg p-6 mb-6 border ${theme === 'dark' ? 'border-yellow-200' : 'border-blue-200'}`}>
+                <p className={`text-3xl font-extrabold  mb-3 ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
                   ชื่องาน
                 </p>
                 <p
-                  className={` mb-5 text-lg ${
-                    theme === "dark" ? "text-blue-500" : "text-blue-700"
-                  }`}
+                  className={` mb-5 text-lg ${theme === "dark" ? "text-white" : "text-black"
+                    }`}
                 >
                   {event.Worksheet}
                 </p>
 
-                <p className={`text-2xl font-bold  mb-2 ${text}`}>
+                <p className={`text-2xl font-bold  mb-2  ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
                   รายละเอียดงาน
                 </p>
                 <p
-                  className={`leading-relaxed text-lg ${
-                    theme === "dark" ? "text-blue-500" : "text-blue-700"
-                  }`}
+                  className={`leading-relaxed text-lg ${theme === "dark" ? "text-white" : "text-black"
+                    }`}
                 >
                   {event.description}
                 </p>
               </div>
 
               {/* ---------- ผู้ว่าจ้าง ---------- */}
-              <div className="mx-auto   rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
+              <div className={`mx-auto rounded-2xl shadow-lg border  p-6 mb-8 ${bg_border}`}>
                 <div
                   className={`flex flex-col md:flex-row md:justify-between gap-4 text-lg ${text}`}
                 >
-                  <p className="font-semibold">
+                  <p className={`font-semibold ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
                     ชื่อผู้จ้าง:{" "}
-                    <span className="text-blue-600 font-bold">
+                    <span className={` ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
                       {event.Employer}
                     </span>
                   </p>
 
-                  <p className="font-semibold">
+                  <p className={`${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'} font-semibold`}>
                     เบอร์ติดต่อ:{" "}
-                    <span className="text-blue-600 font-bold">
+                    <span className={` ${theme === 'dark' ? 'text-white' : 'text-black'} `}>
                       {event.Contact_number}
                     </span>
                   </p>
-                  <p className="font-semibold">
+                  <p className={`${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'} font-semibold`}>
                     ที่อยู่:{" "}
-                    <span className="text-blue-600 font-bold">
+                    <span className={`${theme === 'dark' ? 'text-white' : 'text-black'}`}>
                       {event.address}
                     </span>
                   </p>
@@ -204,23 +203,23 @@ export default function Details() {
 
               {/* ---------- รายชื่อช่าง ---------- */}
               <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
-                <div className="border lg:col-span-4 rounded-2xl border-blue-200  shadow-lg p-5">
-                  <div className="flex justify-between items-center border-b border-blue-200 pb-3 p-2">
-                    <h3 className={`text-xl font-bold ${text}`}>รายชื่อช่าง</h3>
+                <div className= {`border lg:col-span-4 rounded-2xl  shadow-lg p-5 ${bg_border}`}>
+                  <div className={`flex justify-between items-center border-b  pb-3 p-2 ${bg_border}`}>
+                    <h3 className={`text-xl font-bold ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>รายชื่อช่าง</h3>
                     <button
                       onClick={() => setMobled(true)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl shadow"
+                      className={`text-white font-semibold px-4 py-2 rounded-xl cursor-pointer duration-500 shadow ${theme === 'dark' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-blue-500 hover:bg-blue-600'}`}
                     >
                       + เพิ่มช่าง
                     </button>
                   </div>
 
-                  {/* ✅ แสดงรายชื่อช่างที่เพิ่มแล้ว */}
-                  <div className="text-gray-700 font-semibold  text-lg p-2">
+                  {/* แสดงรายชื่อช่างที่เพิ่มแล้ว */}
+                  <div className={`font-semibold  text-lg p-2 ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
                     {SelectedTradesmen.map((t, index) => (
                       <div
                         key={index}
-                        className="flex items-center border my-2 rounded-xl hover:shadow-lg hover:scale-101 duration-300 h-fit justify-between p-2 border-b border-gray-100"
+                        className={`flex items-center border my-2 rounded-xl hover:shadow-lg hover:scale-101 duration-300 h-fit justify-between p-2 border-b ${bg_border}`}
                       >
                         <div className="flex items-center gap-5">
                           <img
@@ -230,10 +229,10 @@ export default function Details() {
                           />
                           <div>
                             <p>{t.Name}</p>
-                            <p className="text-sm text-gray-500">
+                            <p className={`text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-500'}`}>
                               {t.Position}
                             </p>
-                            <p className="text-sm text-blue-600">
+                            <p className={`text-sm ${theme === 'dark' ? 'text-white' : 'text-gray-500'}`}>
                               {t.Phone_Number}
                             </p>
                           </div>
@@ -241,7 +240,7 @@ export default function Details() {
 
                         <button
                           onClick={() => handeDelete(t._id)}
-                          className="border p-2 rounded-xl bg-orange-500 text-white cursor-pointer hover:shadow-lg duration-300 hover:scale-101"
+                          className={`${theme === 'dark' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-blue-500 hover:bg-yellow-600'} border px-5 p-1 rounded-xl  text-white cursor-pointer hover:shadow-lg duration-300 hover:scale-100`}
                         >
                           ลบ
                         </button>
@@ -251,13 +250,13 @@ export default function Details() {
                 </div>
 
                 {/* ---------- รายละเอียดการดำเนินงาน ---------- */}
-                <div className="lg:col-span-6 h-fit  rounded-2xl shadow-lg border border-blue-200 p-6">
-                  <p className={`text-xl font-bold text-blue-700 mb-4 ${text}`}>
+                <div className={`lg:col-span-6 h-fit  rounded-2xl shadow-lg border p-6 ${bg_border}`}>
+                  <p className={`text-xl font-bold mb-4 ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
                     รายละเอียดการดำเนินงาน
                   </p>
 
                   <div
-                    className={`grid grid-cols-6 gap-5 shadowp-lg border border-blue-200 p-3 rounded-lg font-bold text-center text-lg ${text}`}
+                    className={`grid grid-cols-6 gap-5 shadowp-lg border p-3 rounded-lg font-bold text-center text-lg ${bg_border} ${text}`}
                   >
                     {data.map((event, index) => (
                       <p key={index}>{event}</p>
@@ -267,7 +266,7 @@ export default function Details() {
                   {polic.map((event, index) => (
                     <div
                       key={index}
-                      className={`grid grid-cols-6 gap-5 text-center  mt-4 items-center hover:bg-blue-50 rounded-lg p-3 transition font-medium ${text}`}
+                      className={`grid grid-cols-6 gap-5 text-center  mt-4 items-center rounded-lg p-3 transition font-medium ${text}`}
                     >
                       <img
                         src={event.image}
@@ -275,12 +274,12 @@ export default function Details() {
                         className="w-12 h-12 object-cover rounded-full mx-auto"
                       />
                       <p>{event.name}</p>
-                      <p className="text-blue-600">{event.position}</p>
+                      <p className={`${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>{event.position}</p>
                       <p>{event.report}</p>
                       <p className="text-yellow-600 font-bold">
                         {event.status}
                       </p>
-                      <button className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow">
+                      <button className={`px-3 py-1 text-white rounded-lg duration-500 cursor-pointer shadow ${theme === 'dark' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-blue-500 hover:bg-blue-600'}`}>
                         {event.reply}
                       </button>
                     </div>

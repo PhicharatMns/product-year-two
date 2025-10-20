@@ -2,88 +2,161 @@ const express = require("express");
 const router = express.Router();
 const Login = require("../models/Login");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs")
 
-const JWT_SECRET = "your_secret_key";
-
-// สมัครสมาชิก
-router.post("/register", async (req, res) => {
-  try {
-    const { user, pass } = req.body;
-    if (!user || !pass)
-      return res.status(400).json({ message: "กรุณากรอกข้อมูลให้ครบ" });
-
-    const existingUser = await Login.findOne({ user });
-    if (existingUser)
-      return res.status(400).json({ message: "มีชื่อผู้ใช้นี้อยู่แล้ว" });
-
-    const newUser = new Login({ user, pass });
-    await newUser.save();
-
-    res.json({ message: "สมัครสมาชิกสำเร็จ!" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการสมัครสมาชิก" });
-  }
+//รับรูปมาเก็บในไฟล์ ../uploads/Profile
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, path.join(__dirname, "../uploads/Profile"));
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
 });
+const upload = multer({ storage });
 
-// เข้าสู่ระบบ
-router.post("/login", async (req, res) => {
+const JWT_SECRET = process.env.JWT_SECRET || "mysecretkey";
+
+//JWT Middleware
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+
+  if (!token) return res.sendStatus(401);
+
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) return res.sendStatus(403);
+    req.user = user;
+    next();
+  });
+};
+
+//Register
+router.post("/register", upload.single("Profile"), async (req, res) => {
   try {
-    const { user, pass } = req.body;
-    if (!user || !pass)
-      return res.status(400).json({ message: "กรุณากรอกข้อมูลให้ครบ" });
-
-    const foundUser = await Login.findOne({ user });
-    if (!foundUser)
+    // เช็คค่าพื้นฐานก่อน
+    if (!req.body.username || !req.body.passwork) {
       return res
-        .status(401)
-        .json({ message: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" });
+        .status(400)
+        .json({ message: "Username and password required" });
+    }
 
-    const isMatch = await foundUser.matchPassword(pass);
-    if (!isMatch)
-      return res
-        .status(401)
-        .json({ message: "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง" });
+    // ตรวจสอบว่ามี username ซ้ำหรือไม่
+    const user = await Login.findOne({ username: req.body.username });
+    if (user) {
+      return res.status(409).json({ message: "User already exists" });
+    }
 
-    const token = jwt.sign(
-      { id: foundUser._id, user: foundUser.user },
-      JWT_SECRET,
-      { expiresIn: "1d" }
-    );
+    // เข้ารหัสรหัสผ่าน
+    const hashedPassword = await bcrypt.hash(req.body.passwork, 10);
 
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 2 * 1000,
+    // สร้าง user ใหม่ โดยใช้ req.body ทั้งหมด
+    const newUser = new Login({
+      username: req.body.username,
+      passwork: hashedPassword, // เข้ารหัสแล้ว
+      Name: req.body.Name,
+      Nickname: req.body.Nickname,
+      ID: req.body.ID,
+      Birthday: req.body.Birthday,
+      Address: req.body.Address,
+      Phone_Number: req.body.Phone_Number,
+      Email: req.body.Email,
+      Profile: req.file ? req.file.filename : "", // ถ้ามีรูปให้บันทึกชื่อไฟล์
+      Position: req.body.Position,
+      Start_data: req.body.Start_data,
     });
 
-    res.json({ message: "เข้าสู่ระบบสำเร็จ", user: foundUser.user });
+    await newUser.save();
+    res
+      .status(201)
+      .json({ message: "User registered successfully!", user: newUser });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "เกิดข้อผิดพลาดในการเข้าสู่ระบบ" });
+    res.status(500).json({ message: "Database Error" });
   }
 });
 
-// ตรวจสอบการ login (สำหรับ PrivateRoute)
-
-router.get("/check", (req, res) => {
-  const token = req.cookies.token;
-  if (!token) return res.status(401).json({ message: "ไม่ได้ login" });
+//Login
+router.post("/login", async (req, res) => {
+  const { username, passwork } = req.body;
+  if (!username || !passwork)
+    return res.status(401).json({ message: "User or Passwork required" });
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    // ส่ง user role หรือ type ได้ถ้าต้องการ
-    res.status(200).json({ message: "Login อยู่", user: decoded.user });
+    const user = await Login.findOne({ username });
+    if (!user)
+      return res.status(401).json({ message: "Invalid user or password" });
+
+    const isMatch = await bcrypt.compare(passwork, user.passwork);
+    if (!isMatch) return res.status({ message: "error is Match" });
+
+    const token = jwt.sign({ id: user._id, username: username }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.json({ message: "Login succesful!", token });
   } catch (err) {
-    res.status(401).json({ message: "Token ไม่ถูกต้อง" });
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
   }
 });
 
-// ออกจากระบบ
-router.post("/logout", (req, res) => {
-  res.clearCookie("token");
-  res.json({ message: "ออกจากระบบสำเร็จ" });
+//ลบข้อมูล
+router.delete('/:id', async (req, res) => {
+  try {
+    const deleted = await Login.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: 'ไม่พบช่างนี้' });
+    }
+
+    // ลบไฟล์รูปถ้ามี
+    if (deleted.Profile) {
+      const filepath = path.join(__dirname, '../uploads/Profile', deleted.Profile);
+      fs.unlink(filepath, (err) => {
+        if (err) console.error("ลบรูปไม่สำเร็จ:", err);
+      });
+    }
+
+    // ส่ง status 200 แทน 500
+    res.status(200).json({ message: 'ลบข้อมูลสำเร็จ' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'ลบไม่สำเร็จ' });
+  }
+});
+
+// path DashboardUser
+router.get("/dashboardUser", verifyToken, async (req, res) => {
+  try {
+    const user = await Login.findById(req.user.id); // req.user.id จาก token
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json({
+      Name: user.Name, // หรือ user.Username, user.Email
+      Email: user.Email,
+      Phone_Number: user.Phone_Number,
+      Position: user.Position,
+      Profile: user.Profile,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
+// ดึงข้อมูลช่างมาเเสดง ในหน้า Editacc
+router.get("/all-tradesman", async (req, res) => {
+  try {
+    // ดึงเฉพาะ role = "user" (สมมติช่างคือ user)
+    const tradesman = await Login.find({ role: "user" });
+    res.json(tradesman);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Database Error" });
+  }
 });
 
 module.exports = router;

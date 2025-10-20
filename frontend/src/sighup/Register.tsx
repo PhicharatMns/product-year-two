@@ -1,113 +1,108 @@
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function Register() {
-  const [User, setUser] = useState("");
-  const [Pass, setPass] = useState("");
   const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [passwork, setPasswork] = useState("");
+  const [confirmPasswork, setConfirmPasswork] = useState("");
+  const [message, setMessage] = useState("");
 
-  const handleRegister = async () => {
-    if (!User || !Pass) {
-      alert("กรุณากรอกข้อมูลให้ครบ");
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (passwork !== confirmPasswork) {
+      setMessage("รหัสผ่านไม่ตรงกัน");
       return;
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/tradesman", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          User,
-          Pass,
-          role: "user", // default เป็น user
-        }),
-      });
+      const response = await axios.post(
+        "http://localhost:5000/api/login/register",
+        { username, passwork },
+        { withCredentials: true }
+      );
 
-      const data = await res.json();
-      console.log("Register response:", res.status, data);
-      alert(data.message || "สมัครสมาชิกสำเร็จ");
-
-      if (res.status === 201) {
-        // สมัครสำเร็จแล้ว login ต่อเลย
-        const loginRes = await fetch(
-          "http://localhost:5000/api/tradesman/login",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ User, Pass }),
-          }
-        );
-        const loginData = await loginRes.json();
-
-        if (loginRes.status === 200) {
-          localStorage.setItem("token", loginData.token);
-          localStorage.setItem("role", loginData.role);
-          navigate("/user/dashboard"); // redirect user
-        } else {
-          alert(loginData.message);
-        }
-      }
+      setMessage(response.data.message || "สมัครสมาชิกสำเร็จ!");
+      setTimeout(() => navigate("/logins"), 1500);
     } catch (err) {
       console.error(err);
-      alert("เกิดข้อผิดพลาดในการสมัครสมาชิก");
     }
   };
 
   return (
-    <div className="flex h-screen">
-      <div className="flex-1 flex items-center justify-center bg-white rounded-r-[3rem] shadow-lg">
-        <div className="w-full max-w-md p-8 shadow-lg">
-          <h2 className="text-2xl font-bold text-center text-blue-600 mb-8">
-            สมัครสมาชิก
-          </h2>
+    <div
+      className="flex justify-center items-center h-screen bg-cover bg-blue-400 bg-center">
+      <img
+        src="https://img.freepik.com/free-photo/beautiful-cityscape-bangkok-highway-bridge-thailand_335224-998.jpg?semt=ais_hybrid&w=1920&q=100"
+        className="absolute inset-0 w-full h-full object-cover"
+        alt="Bangkok city"
+      />
 
+
+
+      <div className="bg-white/80 backdrop-blur-md shadow-xl rounded-xl p-8 w-96">
+        <h2 className="text-4xl font-bold mb-6 text-center">สมัครสมาชิก</h2>
+
+        <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-blue-700 mb-2">ชื่อผู้ใช้</label>
+            <label className="block mb-2">ชื่อผู้ใช้</label>
             <input
               type="text"
-              value={User}
-              onChange={(e) => setUser(e.target.value)}
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               placeholder="กรอกชื่อผู้ใช้"
               className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="block mb-2">รหัสผ่าน</label>
+            <input
+              type="password"
+              value={passwork}
+              onChange={(e) => setPasswork(e.target.value)}
+              placeholder="กรอกรหัสผ่าน"
+              className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
             />
           </div>
 
           <div className="mb-6">
-            <label className="block text-blue-700 mb-2">รหัสผ่าน</label>
+            <label className="block mb-2">ยืนยันรหัสผ่าน</label>
             <input
               type="password"
-              value={Pass}
-              onChange={(e) => setPass(e.target.value)}
-              placeholder="กรอกรหัสผ่าน"
+              value={confirmPasswork}
+              onChange={(e) => setConfirmPasswork(e.target.value)}
+              placeholder="กรอกรหัสอีกครั้ง"
               className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
+              required
             />
           </div>
 
-          <div className="mx-auto w-fit">
-            <button
-              onClick={handleRegister}
-              className="bg-blue-600 px-6 py-2 my-5 text-white font-semibold rounded-md shadow hover:bg-blue-700"
-            >
-              สมัครสมาชิก
-            </button>
-          </div>
-        </div>
-      </div>
+          <button
+            type="submit"
+            className="bg-blue-600 w-full py-2 text-white font-semibold rounded-md shadow hover:bg-blue-700"
+          >
+            สมัครสมาชิก
+          </button>
 
-      <div className="hidden md:flex flex-1 bg-blue-700 relative items-center justify-center">
-        <img
-          src="https://i.pinimg.com/1200x/57/e6/c7/57e6c76add74f7163c6057159d953440.jpg"
-          alt="background"
-          className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-90"
-        />
-        <div className="relative z-10 text-center">
-          <h1 className="text-[8rem] font-extrabold text-white leading-none">
-            T<span className="text-yellow-400">J</span>
-          </h1>
-          <p className="text-white text-lg font-semibold mt-4">
-            จ้าง ซ่อม สร้าง เสร็จ
+          {message && (
+            <p className="text-center text-red-500 mt-4">{message}</p>
+          )}
+
+          <p className="text-center mt-4 text-sm">
+            มีบัญชีอยู่แล้ว?{" "}
+            <Link
+              to="/logins"
+              className="text-blue-500 hover:underline font-semibold"
+            >
+              เข้าสู่ระบบ
+            </Link>
           </p>
-        </div>
+        </form>
       </div>
     </div>
   );
