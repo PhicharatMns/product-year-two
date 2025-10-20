@@ -217,11 +217,6 @@ const Searchpastjobs: React.FC = () => {
 
               {/* Desktop view */}
               <p className="hidden lg:block truncate">{event.Worksheet}</p>
-              {/* <img
-                src={`http://localhost:5000/uploads/${event.image}`}
-                alt="employee"
-                className="h-20 w-20 object-cover rounded"
-              /> */}
               <p className="hidden lg:block truncate">{event.Employer}</p>
               <p className="hidden lg:block truncate">{event.Contact_number}</p>
               <p className="hidden lg:block truncate text-orange-400">
@@ -238,12 +233,12 @@ const Searchpastjobs: React.FC = () => {
               <div className="flex gap-2 justify-center">
                 <button
                   onClick={() => handleDelete(event._id)}
-                  className="bg-red-500 text-white px-2 rounded-lg hover:bg-red-600 transition"
+                  className="bg-red-500 cursor-pointer text-white px-2 rounded-lg hover:bg-red-600 transition"
                 >
                   ลบ
                 </button>
                 <Link to={`/Details/${event._id}`}>
-                  <button className="bg-green-500 text-white px-3 py-1  rounded-lg hover:bg-green-600 transition">
+                  <button className="bg-green-500 cursor-pointer text-white px-3 py-1  rounded-lg hover:bg-green-600 transition">
                     รายละเอียด
                   </button>
                 </Link>
