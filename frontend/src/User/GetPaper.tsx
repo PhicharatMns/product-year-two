@@ -1,5 +1,6 @@
 import { Search, MoreVertical } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
+import type { Link } from "react-router-dom";
 interface User {
   id: number;
   name: string;
@@ -73,7 +74,7 @@ export default function GetPaper() {
         </div>
       </div>
 
-    
+
       <div className="shadow-sm rounded-lg overflow-hidden border ">
         <table className="w-full text-sm">
           <thead>
@@ -102,18 +103,20 @@ export default function GetPaper() {
                 <td className={`py-3 px-4  ${text}`}>{user.lastActive}</td>
                 <td className={`py-3 px-4 ${text}`}>{user.dateAdded}</td>
                 <td className="py-3 px-4 text-center">
-                  <button
-                    className={`h-9 w-24 rounded-xl font-semibold tracking-wide shadow-md transition-all duration-300 ease-in-out 
-                      ${
-                        theme === "dark"
+                  <a href="Detailwork" target="_blank" rel="noopener noreferrer">
+                    <button
+                      className={`h-9 w-24 rounded-xl font-semibold tracking-wide shadow-md transition-all duration-300 ease-in-out 
+      ${theme === "dark"
                           ? "bg-yellow-500 hover:bg-yellow-400 text-black hover:shadow-yellow-500/40"
                           : "bg-blue-500 hover:bg-blue-400 text-white hover:shadow-blue-400/40"
-                      } 
-                      active:scale-95
-                    `}
-                  >
-                    รายละเอียด
-                  </button>
+                        } 
+      active:scale-95
+    `}
+                    >
+                      รายละเอียด
+                    </button>
+                  </a>
+
                 </td>
               </tr>
             ))}
