@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
 import { IoIosLogOut } from "react-icons/io";
 import { TbBellPlus } from "react-icons/tb";
-import { GoGraph } from "react-icons/go";
 import { useTheme } from "@/components/theme-provider";
 import { LiaUserEditSolid } from "react-icons/lia";
 import { VscNewFile } from "react-icons/vsc";
@@ -26,7 +25,6 @@ export default function Sidebaradmin() {
     { text: "Dashboard", icons: MdDashboard, Link: "Dashboard" },
     { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "Searchpastjobs" },
     { text: "ส่งแจ้งการเตือน", icons: TbBellPlus, Link: "Notification" },
-    { text: "สถิติ", icons: GoGraph, Link: "graph" },
     { text: "จัดการวัสดุอุปกรณ์", icons: FaTools, Link: "SuppliesAdmin" },
 
     { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "Editacc" },
