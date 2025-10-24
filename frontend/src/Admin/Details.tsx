@@ -448,7 +448,7 @@ export default function Details() {
                 ✕
               </button>
             </div>
-
+          
             <div className="my-6">
               {dataTradesman.map((event, index) => (
                 <div

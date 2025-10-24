@@ -10,25 +10,7 @@ export default function Detailwork() {
 
     const items = [
         { name: "ตะปู", qty: 1, used: 1, remain: 1 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "ตะปู", qty: 1, used: 1, remain: 1 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "ตะปู", qty: 1, used: 1, remain: 1 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "ตะปู", qty: 1, used: 1, remain: 1 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
-        { name: "สกรู", qty: 250, used: 150, remain: 50 },
+       
 
     ];
 
@@ -45,7 +27,7 @@ export default function Detailwork() {
                         {["ชื่องาน :", "ชื่อหัวหน้างาน :", "เบอร์โทรศัพท์ :", "Email :"].map((title, idx) => (
                             <div
                                 key={idx}
-                                className={`border ${borderSoft} rounded-2xl p-4 sm:p-6 font-semibold hover:scale-105 transition duration-300`}
+                                className={`border ${borderSoft} rounded-2xl p-4 sm:p-6 font-semibold `}
                             >
                                 {title}
                             </div>
