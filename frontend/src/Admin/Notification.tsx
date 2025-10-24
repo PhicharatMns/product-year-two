@@ -1,4 +1,19 @@
 import { useTheme } from "@/components/theme-provider";
+import { useOutletContext } from "react-router-dom";
+
+// type ของฟังก์ชัน
+export type NotificationItem = {
+  time: string;
+  job: string;
+  name: string;
+  Lname: string;
+  Description: string;
+  title: string;
+};
+
+type OutletContextType = {
+  openMessAdmin: (item: NotificationItem) => void; // type ของฟังก์ชัน
+};
 
 const object = [
   {
@@ -148,6 +163,7 @@ const technicianReports = [
 
 export default function Notification() {
   const { theme } = useTheme();
+  const { openMessAdmin } = useOutletContext() as OutletContextType;
 
   const text = theme === "dark" ? "text-white" : "text-gray-800";
 
@@ -188,8 +204,9 @@ export default function Notification() {
             {object.map((event, index) => {
               return (
                 <div
+                  onClick={() => openMessAdmin(event)}
                   key={index}
-                  className="grid grid-cols-5 gap-5 my-5 border-b"
+                  className="grid grid-cols-5 gap-5 my-5 border-b hover:bg-gray-500 duration-500 hover:rounded-lg p-1 "
                 >
                   <p>{event.time}</p>
                   <p>{event.job}</p>
@@ -203,7 +220,7 @@ export default function Notification() {
             })}
           </div>
           {/* รายการ2 */}
-          <div className="border bg-gray-900 col-span-2 p-5 rounded-lg ">
+          <div className="border bg-gray-900 col-span-2 p-5 rounded-lg  ">
             <p
               className={`text-lg font-semibold ${
                 theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -219,7 +236,10 @@ export default function Notification() {
             </div>
             {technicianReports.map((event, index) => {
               return (
-                <div className="grid grid-cols-4 gap-5 my-5 border-b ">
+                <div
+                  key={index}
+                  className="grid grid-cols-4 gap-5 my-5 border-b hover:bg-gray-500 duration-500 hover:rounded-lg p-1 "
+                >
                   <p>{event.date}</p>
                   <p>{event.name}</p>
                   <p className="truncate">{event.report}</p>

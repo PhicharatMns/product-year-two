@@ -31,6 +31,7 @@ import Getpaper from "./User/GetPaper";
 import Login from "./sighup/Login";
 import Register from "./sighup/Register";
 import ProtectedRoute from "./sighup/ProtectedRoute";
+import Detailwork from "./User/Detailwork";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -68,7 +69,8 @@ const router = createBrowserRouter([
       { path: "profile", element: <Profile /> },
       { path: "getpaper", element: <Getpaper /> },
       { path: "maps", element: <Maps /> },
-      { path: "supplies", element: <Suppiles /> }, // ตรวจสอบชื่อ component ให้ตรง
+      { path: "supplies", element: <Suppiles /> },
+      { path: "Detailwork", element: <Detailwork /> }, // ตรวจสอบชื่อ component ให้ตรง
     ],
   },
 ]);
