@@ -1,43 +1,48 @@
-// src/App.js
+// src/App.tsx
 import {
   createBrowserRouter,
   RouterProvider,
   Navigate,
 } from "react-router-dom";
+import { ThemeProvider } from "@/components/theme-provider";
 
-// Admin 
-import Searchpastjobs from "./Admin/Searchpastjobs";
-import Editacc from "./Admin/Editacc";
+// Admin
 import AdminLayout from "./Admin/AdminLayout";
-import Login from "./sighup/Login";
+import Dashboard from "./Admin/Dashboard";
+import Editacc from "./Admin/Editacc";
+import Searchpastjobs from "./Admin/Searchpastjobs";
 import Details from "./Admin/Details";
 import EmployeeList from "./EmployeeList";
 import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
 import Addwork from "./Admin/Addwork";
-import Dashboard from "./Admin/Dashboard";
 import Notification from "./Admin/Notification";
+import SuppliesAdmin from "./Admin/SuppliesAdmin";
 
 // User Worker
-import Sidebar from "./component/sidebar";
-import DashboardUser from "./User/DashboardUser";
-import Profile from "./User/Profile";
 import UserLayout from "./User/UserLayout";
-import GetPaper from "./User/GetPaper";
-import Box from "./User/Box";
+import Profile from "./User/Profile";
+import Maps from "./User/Maps";
+import Suppiles from "./User/Supplies";
+import DashboardUser from "./User/DashboardUser";
+import Getpaper from "./User/GetPaper";
+import Calendars from "./User/Calendar";
 
-// color theme web A
-import { ThemeProvider } from "@/components/theme-provider";
-import { ImportIcon } from "lucide-react";
-
-
+// Auth
+import Login from "./sighup/Login";
+import Register from "./sighup/Register";
+import ProtectedRoute from "./sighup/ProtectedRoute";
+import Detailwork from "./User/Detailwork";
+import Withdraw from "./User/withdraw";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
+  { path: "/Register", element: <Register /> },
 
-  // Admin RT
+  // Admin Routes
   {
+    path: "/",
     element: <AdminLayout />,
     children: [
       { path: "dashboard", element: <Dashboard /> },
@@ -49,20 +54,29 @@ const router = createBrowserRouter([
       { path: "profileadmin", element: <Profileadmin /> },
       { path: "addwork", element: <Addwork /> },
       { path: "notification", element: <Notification /> },
+      { path: "suppliesAdmin", element: <SuppliesAdmin /> },
     ],
   },
 
-// User RT
-{
-  path: "/User",
-  element: <UserLayout />,
-  children: [
-    { path: "Dashboard", element: <DashboardUser /> }, // /user/dashboard
-    { path: "Profile", element: <Profile /> },         // /user/profile
-    { path: "Getpaper", element: <GetPaper /> },       // /user/getpaper}
-    { path: "Box", element: <Box /> },                 // /user/box}
-  ],
-},
+  // User Routes
+  {
+    path: "/user",
+    element: (
+      <ProtectedRoute>
+        <UserLayout />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: "DashboardUser", element: <DashboardUser /> },
+      { path: "profile", element: <Profile /> },
+      { path: "getpaper", element: <Getpaper /> },
+      { path: "maps", element: <Maps /> },
+      { path: "supplies", element: <Suppiles /> },
+      { path: "Detailwork", element: <Detailwork /> }, // ตรวจสอบชื่อ component ให้ตรง
+      { path: "Calendar", element: <Calendars /> },
+      { path: "withdraw", element: <Withdraw /> },
+    ],
+  },
 ]);
 
 export default function App() {

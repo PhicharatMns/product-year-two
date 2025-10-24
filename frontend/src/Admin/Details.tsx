@@ -3,6 +3,9 @@ import { useParams } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
 
 export default function Details() {
+  const [showOpenaddTradesman, setshowOpenaddTradesman] = useState(false);
+
+  const { id } = useParams();
   interface Employees {
     _id: string;
     Worksheet: string;
@@ -18,7 +21,7 @@ export default function Details() {
     image: string;
   }
 
-  interface Tradsman {
+  interface Tradesman {
     _id: string;
     Name: string;
     Nickname: string;
@@ -32,14 +35,13 @@ export default function Details() {
     Start_data: string;
   }
 
-
   const [dataEmployees, setDataEmployees] = useState<Employees[]>([]);
   const [Mobiles, setMobled] = useState(false);
-  const [dataTradesman, setdataTradesman] = useState<Tradsman[]>([]);
-  const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradsman[]>([]);
+  const [dataTradesman, setDataTradesman] = useState<Tradesman[]>([]);
+  const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradesman[]>([]);
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
-  
+
   const polic = [
     {
       image:
@@ -66,30 +68,42 @@ export default function Details() {
   // ดึงข้อมูลช่างทั้งหมด (Tradesman)
   const fetchTradesman = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/tradesman");
-      const data: Tradsman[] = await res.json();
-      setdataTradesman(data);
+      const res = await fetch("http://localhost:5000/api/login/all-tradesman", {
+        credentials: "include",
+      });
+      const data: Tradesman[] = await res.json();
+      setDataTradesman(data);
     } catch (err) {
-      console.error(err);
+      console.error("โหลดข้อมูลช่างล้มเหลว:", err);
     }
   };
 
-  // ✅ เพิ่มช่างไปยัง otherTradesman
-  // ✅ ดึงข้อมูล otherTradesman เฉพาะของงานนี้
+  //  ดึงข้อมูล otherTradesman เฉพาะของงานนี้
+
   const fetchOtherTradesman = async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/otherTradesman/${id}`);
-      if (!res.ok) throw new Error("โหลด otherTradesman ไม่สำเร็จ");
-      const data: Tradsman[] = await res.json();
+      const data: Tradesman[] = await res.json();
       setSelectedTradesmen(data);
     } catch (err) {
-      console.error(err);
+      console.error("โหลด otherTradesman ล้มเหลว:", err);
     }
   };
 
-  // ✅ เพิ่มช่างไปยัง otherTradesman พร้อม employeeId
-  const handleAddTradesman = async (tradesman: Tradsman) => {
+  //  เพิ่มช่างไปยัง otherTradesman พร้อม employeeId
+  const handleAddTradesman = async (tradesman: Tradesman) => {
     try {
+      //  ตรวจสอบว่าช่างคนนี้ถูกเพิ่มไปแล้วหรือยัง
+      const isDuplicate = SelectedTradesmen.some(
+        (t) => t.Name === tradesman.Name
+      );
+
+      if (isDuplicate) {
+        setshowOpenaddTradesman(true);
+        setMobled(false);
+        return;
+      }
+
       const payload = {
         Name: tradesman.Name,
         Position: tradesman.Position,
@@ -117,9 +131,12 @@ export default function Details() {
 
   const handeDelete = async (id: string) => {
     try {
-      const res = await fetch(`http://localhost:5000/api/otherTradesman/${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `http://localhost:5000/api/otherTradesman/${id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!res.ok) throw new Error("ลบไม่สำเร็จ");
 
@@ -129,24 +146,17 @@ export default function Details() {
     }
   };
 
-
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
     fetchEmployees();
     fetchTradesman();
-    fetchOtherTradesman(); // ✅ โหลดข้อมูล otherTradesman ตอนเปิดหน้า
-  }, []);
+    if (id) fetchOtherTradesman(); //  ตรวจว่ามี id ก่อน
+  }, [id]);
 
+  const { theme } = useTheme();
 
-  const { id } = useParams();
-
-    const { theme } = useTheme();
-
-    const bg = theme === "dark" ? "bg-gray-900" : "bg-white";
   const text = theme === "dark" ? "text-white" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-600" : "bg-blue-50/40";
-  const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
-  const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
+  const bg_border = theme === "dark" ? "border-yellow-200 bg-gray-900" : "border-bule-200";
 
   return (
     <div className="  min-h-screen p-2 py-10 ">
@@ -155,39 +165,89 @@ export default function Details() {
           return (
             <div className="max-w-380 mx-auto" key={index}>
               {/* ---------- ข้อมูลงาน ---------- */}
-              <div className="mx-auto  rounded-2xl shadow-lg p-6 mb-6 border border-blue-200">
-                <p className={`text-3xl font-extrabold  mb-3 ${text}`}>
+              <div
+                className={`mx-auto  rounded-2xl shadow-lg p-6 mb-6 border ${
+                  theme === "dark" ? "order-yellow-200 bg-gray-900" : ""
+                }`}
+              >
+                <p
+                  className={`text-3xl font-extrabold  mb-3 ${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
+                >
                   ชื่องาน
                 </p>
-                <p className={` mb-5 text-lg ${theme === "dark" ? "text-blue-500" : "text-blue-700" }`}>{event.Worksheet}</p>
+                <p
+                  className={` mb-5 text-lg ${
+                    theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                >
+                  {event.Worksheet}
+                </p>
 
-                <p className={`text-2xl font-bold  mb-2 ${text}`}>
+                <p
+                  className={`text-2xl font-bold  mb-2  ${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
+                >
                   รายละเอียดงาน
                 </p>
-                <p className={`leading-relaxed text-lg ${theme === "dark" ? "text-blue-500" : "text-blue-700" }`}>
+                <p
+                  className={`leading-relaxed text-lg ${
+                    theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                >
                   {event.description}
                 </p>
               </div>
 
               {/* ---------- ผู้ว่าจ้าง ---------- */}
-              <div className="mx-auto   rounded-2xl shadow-lg border border-blue-200 p-6 mb-8">
-                <div className={`flex flex-col md:flex-row md:justify-between gap-4 text-lg ${text}`}>
-                  <p className="font-semibold">
+              <div
+                className={`mx-auto rounded-2xl shadow-lg border  p-6 mb-8 ${bg_border}`}
+              >
+                <div
+                  className={`flex flex-col md:flex-row md:justify-between gap-4 text-lg ${text}`}
+                >
+                  <p
+                    className={`font-semibold ${
+                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
+                  >
                     ชื่อผู้จ้าง:{" "}
-                    <span className="text-blue-600 font-bold">
+                    <span
+                      className={` ${
+                        theme === "dark" ? "text-white" : "text-black"
+                      }`}
+                    >
                       {event.Employer}
                     </span>
                   </p>
 
-                  <p className="font-semibold">
+                  <p
+                    className={`${
+                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    } font-semibold`}
+                  >
                     เบอร์ติดต่อ:{" "}
-                    <span className="text-blue-600 font-bold">
+                    <span
+                      className={` ${
+                        theme === "dark" ? "text-white" : "text-black"
+                      } `}
+                    >
                       {event.Contact_number}
                     </span>
                   </p>
-                  <p className="font-semibold">
+                  <p
+                    className={`${
+                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    } font-semibold`}
+                  >
                     ที่อยู่:{" "}
-                    <span className="text-blue-600 font-bold">
+                    <span
+                      className={`${
+                        theme === "dark" ? "text-white" : "text-black"
+                      }`}
+                    >
                       {event.address}
                     </span>
                   </p>
@@ -196,58 +256,101 @@ export default function Details() {
 
               {/* ---------- รายชื่อช่าง ---------- */}
               <div className="grid lg:grid-cols-10 grid-cols-1 gap-6  mx-auto">
-                <div className="border lg:col-span-4 rounded-2xl border-blue-200  shadow-lg p-5">
-                  <div className="flex justify-between items-center border-b border-blue-200 pb-3 p-2">
-                    <h3 className={`text-xl font-bold ${text}`}>
+                <div
+                  className={`border lg:col-span-4 rounded-2xl  shadow-lg p-5 ${bg_border}`}
+                >
+                  <div
+                    className={`flex justify-between items-center border-b  pb-3 p-2 ${bg_border}`}
+                  >
+                    <h3
+                      className={`text-xl font-bold ${
+                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      }`}
+                    >
                       รายชื่อช่าง
                     </h3>
                     <button
                       onClick={() => setMobled(true)}
-                      className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-xl shadow"
+                      className={`text-white font-semibold px-4 py-2 rounded-xl cursor-pointer duration-500 shadow ${
+                        theme === "dark"
+                          ? "bg-yellow-500 hover:bg-yellow-600"
+                          : "bg-blue-500 hover:bg-blue-600"
+                      }`}
                     >
                       + เพิ่มช่าง
                     </button>
                   </div>
 
-                  {/* ✅ แสดงรายชื่อช่างที่เพิ่มแล้ว */}
-                  <div className="text-gray-700 font-semibold  text-lg p-2">
+                  {/* แสดงรายชื่อช่างที่เพิ่มแล้ว */}
+                  <div
+                    className={`font-semibold  text-lg p-2 ${
+                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
+                  >
                     {SelectedTradesmen.map((t, index) => (
                       <div
                         key={index}
-                        className="flex items-center border my-2 rounded-xl hover:shadow-lg hover:scale-101 duration-300 h-fit justify-between p-2 border-b border-gray-100"
+                        className={`flex items-center border my-2 rounded-xl hover:shadow-lg hover:scale-101 duration-300 h-fit justify-between p-2 border-b ${bg_border}`}
                       >
                         <div className="flex items-center gap-5">
                           <img
-                            src={`http://localhost:5000/uploads/Tradesman/${t.Profile}`}
+                            src={`http://localhost:5000/uploads/Profile/${t.Profile}`}
                             alt={t.Name}
                             className="w-12 h-12 rounded-full object-cover"
                           />
                           <div>
                             <p>{t.Name}</p>
-                            <p className="text-sm text-gray-500">{t.Position}</p>
-                            <p className="text-sm text-blue-600">{t.Phone_Number}</p>
+                            <p
+                              className={`text-sm ${
+                                theme === "dark"
+                                  ? "text-white"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              {t.Position}
+                            </p>
+                            <p
+                              className={`text-sm ${
+                                theme === "dark"
+                                  ? "text-white"
+                                  : "text-gray-500"
+                              }`}
+                            >
+                              {t.Phone_Number}
+                            </p>
                           </div>
                         </div>
 
                         <button
                           onClick={() => handeDelete(t._id)}
-                          className="border p-2 rounded-xl bg-orange-500 text-white cursor-pointer hover:shadow-lg duration-300 hover:scale-101"
+                          className={`${
+                            theme === "dark"
+                              ? "bg-yellow-500 hover:bg-yellow-600"
+                              : "bg-blue-500 hover:bg-yellow-600"
+                          } border px-5 p-1 rounded-xl  text-white cursor-pointer hover:shadow-lg duration-300 hover:scale-100`}
                         >
                           ลบ
                         </button>
                       </div>
                     ))}
-
                   </div>
                 </div>
 
                 {/* ---------- รายละเอียดการดำเนินงาน ---------- */}
-                <div className="lg:col-span-6 h-fit  rounded-2xl shadow-lg border border-blue-200 p-6">
-                  <p className={`text-xl font-bold text-blue-700 mb-4 ${text}`}>
+                <div
+                  className={`lg:col-span-6 h-fit  rounded-2xl shadow-lg border p-6 ${bg_border}`}
+                >
+                  <p
+                    className={`text-xl font-bold mb-4 ${
+                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
+                  >
                     รายละเอียดการดำเนินงาน
                   </p>
 
-                  <div className={`grid grid-cols-6 gap-5 shadowp-lg border border-blue-200 p-3 rounded-lg font-bold text-center text-lg ${text}`}>
+                  <div
+                    className={`grid grid-cols-6 gap-5 shadowp-lg border p-3 rounded-lg font-bold text-center text-lg ${bg_border} ${text}`}
+                  >
                     {data.map((event, index) => (
                       <p key={index}>{event}</p>
                     ))}
@@ -256,7 +359,7 @@ export default function Details() {
                   {polic.map((event, index) => (
                     <div
                       key={index}
-                      className={`grid grid-cols-6 gap-5 text-center  mt-4 items-center hover:bg-blue-50 rounded-lg p-3 transition font-medium ${text}`}
+                      className={`grid grid-cols-6 gap-5 text-center  mt-4 items-center rounded-lg p-3 transition font-medium ${text}`}
                     >
                       <img
                         src={event.image}
@@ -264,12 +367,24 @@ export default function Details() {
                         className="w-12 h-12 object-cover rounded-full mx-auto"
                       />
                       <p>{event.name}</p>
-                      <p className="text-blue-600">{event.position}</p>
+                      <p
+                        className={`${
+                          theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                        }`}
+                      >
+                        {event.position}
+                      </p>
                       <p>{event.report}</p>
                       <p className="text-yellow-600 font-bold">
                         {event.status}
                       </p>
-                      <button className="px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow">
+                      <button
+                        className={`px-3 py-1 text-white rounded-lg duration-500 cursor-pointer shadow ${
+                          theme === "dark"
+                            ? "bg-yellow-500 hover:bg-yellow-600"
+                            : "bg-blue-500 hover:bg-blue-600"
+                        }`}
+                      >
                         {event.reply}
                       </button>
                     </div>
@@ -280,9 +395,49 @@ export default function Details() {
           );
       })}
 
+      {/* เตือนว่า เคยเเอดช่างใว้เเล้ว */}
+      {showOpenaddTradesman && (
+        <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop:blur-sm z-50">
+          <div
+            className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            }`}
+          >
+            {SelectedTradesmen.map((event, index) => {
+              return (
+                <div className="flex items-center" key={index}>
+                  <p className="flex gap-1">
+                    ช่าง{" "}
+                    <span
+                      className={`${
+                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      }`}
+                    >
+                      {event.Name}
+                    </span>
+                    <p>อยุ่ในระบบเเล้ว</p>
+                  </p>
+
+                  <button
+                    className="cursor-pointer border bg-red-500 w-fit p-1 rounded-lg ml-auto"
+                    onClick={() => setshowOpenaddTradesman(false)}
+                  >
+                    ออก{" "}
+                  </button>
+                </div>
+              );
+            })}
+            <div>
+              <img src="" alt="" />
+              <p></p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ---------- Modal เพิ่มช่าง ---------- */}
       {Mobiles && (
-        <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
+        <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-10">
           <div className="bg-white rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border border-blue-200 max-h-[95vh] overflow-y-auto">
             <div className="mb-6 border-b border-blue-200 pb-3 flex justify-between items-center">
               <h2 className="text-2xl font-bold text-blue-700">เพิ่มช่าง</h2>
@@ -293,7 +448,7 @@ export default function Details() {
                 ✕
               </button>
             </div>
-
+          
             <div className="my-6">
               {dataTradesman.map((event, index) => (
                 <div
@@ -302,9 +457,9 @@ export default function Details() {
                 >
                   <div className="flex gap-5">
                     <img
-                      src={`http://localhost:5000/uploads/Tradesman/${event.Profile}`}
+                      src={`http://localhost:5000/uploads/Profile/${event.Profile}`}
                       alt=""
-                      className="w-20 h-20 rounded-full bg-blue-700 shadow-md"
+                      className="w-20 h-20 object-cover rounded-full bg-blue-700 shadow-md"
                     />
                     <div className="flex-col">
                       <h2 className="text-xl font-normal text-black">

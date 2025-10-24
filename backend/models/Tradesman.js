@@ -11,6 +11,9 @@ const tradesmanSchema = new mongoose.Schema({
   Profile: String,
   Position: String,
   Start_data: String,
+  User: String,
+  Pass: String,
+  role: { type: String, enum: ["admin", "user"], default: "user" },
 });
 
 module.exports = mongoose.model("Tradesman", tradesmanSchema);
