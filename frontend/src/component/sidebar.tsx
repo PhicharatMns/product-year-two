@@ -197,10 +197,10 @@ export default function Sidebar() {
       {/* กล่องข้อความ */}
       {showManu && (
         <div
-          className={` ml-2 fixed lg:left-68 left-4 bottom-0 rounded-t-xl  w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${
+          className={` ml-2 fixed lg:left-64 left-4 bottom-0 rounded-t-xl h-120 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${
             slideIn
-              ? "-translate-x-4 scale-100 opacity-100"
-              : "-translate-x-10 scale-100 opacity-0"
+              ? "-translate-y-0 scale-100 opacity-100"
+              : "translate-y-full opacity-0"
           }`}
         >
           <div className="flex justify-between items-center mb-4 border-b-2 border-blue-100 pb-2">

@@ -22,7 +22,6 @@ import SuppliesAdmin from "./Admin/SuppliesAdmin";
 // User Worker
 import UserLayout from "./User/UserLayout";
 import Profile from "./User/Profile";
-import Detailwork from "./User/detailwork";
 import Maps from "./User/Maps";
 import Suppiles from "./User/Supplies";
 import DashboardUser from "./User/DashboardUser";
@@ -32,6 +31,7 @@ import Getpaper from "./User/GetPaper";
 import Login from "./sighup/Login";
 import Register from "./sighup/Register";
 import ProtectedRoute from "./sighup/ProtectedRoute";
+import Detailwork from "./User/Detailwork";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -68,9 +68,9 @@ const router = createBrowserRouter([
       { path: "DashboardUser", element: <DashboardUser /> },
       { path: "profile", element: <Profile /> },
       { path: "getpaper", element: <Getpaper /> },
-       { path: "Detailwork", element: <Detailwork /> },
       { path: "maps", element: <Maps /> },
-      { path: "supplies", element: <Suppiles /> }, // ตรวจสอบชื่อ component ให้ตรง
+      { path: "supplies", element: <Suppiles /> },
+      { path: "Detailwork", element: <Detailwork /> }, // ตรวจสอบชื่อ component ให้ตรง
     ],
   },
 ]);

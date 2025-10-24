@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import axios from "axios";
+import { UserStar } from "lucide-react";
 
 export default function Profile() {
   const { theme } = useTheme();
@@ -8,9 +9,12 @@ export default function Profile() {
   const [Message, setMessage] = useState("");
   const [email, setemail] = useState("");
   const [phones, setphones] = useState("");
-  const [position, setposition] = useState("");
+  const [Position, setposition] = useState("");
   const [profile, setprofile] = useState("");
-  
+  const [ID, setID] = useState("")
+  const [Address, setAddress] = useState('')
+  const [Start_data, setStart_data] = useState('')
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -27,6 +31,11 @@ export default function Profile() {
         setphones(response.data.Phone_Number);
         setposition(response.data.Position);
         setprofile(response.data.Profile);
+        setAddress(response.data.position);
+        setID(response.data.ID)
+        setAddress(response.data.Address)
+        setStart_data(response.data.Start_data || new Date().toISOString().split('T')[0]);
+
       } catch (err) {
         console.error("Fetch sidebar message error:", err);
       }
@@ -103,11 +112,11 @@ export default function Profile() {
               ที่อยู่
             </h2>
             <div className="space-y-2 leading-relaxed">
-              {/* <p> ตำแหน่ง: <b>{skill.position}</b></p>
-              <p> ประสบการณ์ทำงาน: {skill.experience}</p>
-              <p> เครื่องมือส่วนตัว: {skill.tools}</p>
-              <p>สัญญาจ้าง: {skill.contract}</p>
-              <p> ประกันอุบัติเหตุ: {skill.insurance}</p>
+              <p> ตำแหน่ง: <b>{Position}</b></p>
+              <p> ประสบการณ์ทำงาน: {Start_data}</p>
+              {/* <p> เครื่องมือส่วนตัว: {skill.tools}</p>
+              <p>สัญญาจ้าง: {skill.contract}</p> */}
+              {/* <p> ประกันอุบัติเหตุ: {skill.insurance}</p>
               <p> วันที่เริ่มงาน: <b>{skill.startDate}</b></p> */}
             </div>
           </div>

@@ -156,7 +156,7 @@ export default function Details() {
   const { theme } = useTheme();
 
   const text = theme === "dark" ? "text-white" : "text-gray-800";
-  const bg_border = theme === "dark" ? "border-yellow-200" : "border-bule-200";
+  const bg_border = theme === "dark" ? "border-yellow-200 bg-gray-900" : "border-bule-200";
 
   return (
     <div className="  min-h-screen p-2 py-10 ">
@@ -448,7 +448,7 @@ export default function Details() {
                 ✕
               </button>
             </div>
-
+          
             <div className="my-6">
               {dataTradesman.map((event, index) => (
                 <div
