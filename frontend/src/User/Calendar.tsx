@@ -1,165 +1,33 @@
-// import React, { useState, useEffect } from "react";
+
 
 import { useEffect, useState } from "react";
 
-// type Event = { date: string; title: string };
-
-// export default function Calendar() {
-
-//   const today = new Date();
-
-//   // โหลดจาก localStorage
-//   useEffect(() => {
-//     const stored = localStorage.getItem("calendarEvents");
-//     if (stored) setEvents(JSON.parse(stored));
-//   }, []);
-
-//   // บันทึกลง localStorage
-//   const saveEvents = (updated: Event[]) => {
-//     setEvents(updated);
-//     localStorage.setItem("calendarEvents", JSON.stringify(updated));
-//   };
-
-//   // สร้าง array วัน
-//   const start = new Date(month.getFullYear(), month.getMonth(), 0);
-//   const end = new Date(month.getDate(), month.getMonth() + 1, 0);
-//   const days: (Date | null)[] = [
-//     ...Array(start.getDay()).fill(null),
-//     ...Array.from(
-//       { length: end.getDate() },
-//       (_, i) => new Date(month.getFullYear(), month.getMonth(), i + 1)
-//     ),
-//   ];
-
-//   const addEvent = () => {
-//     if (!selectedDate || !newEvent) return;
-//     saveEvents([...events, { date: selectedDate, title: newEvent }]);
-//     setNewEvent("");
-//     setSelectedDate(null);
-//   };
-
-//   return (
-//     <div className="h-full mx-auto p-6 bg-white rounded-2xl shadow-lg">
-//       {/* Header */}
-//       <div className="flex justify-between items-center mb-4">
-//         <button
-//           onClick={() =>
-//             setMonth(new Date(month.getFullYear(), month.getMonth() - 1, 1))
-//           }
-//           className="px-3 py-1 bg-gray-300 rounded-full hover:bg-gray-400"
-//         >
-//           Prev
-//         </button>
-//         <h2 className="font-bold text-xl">
-//           {month.toLocaleDateString("TH", { month: "long" })}
-//           {month.getFullYear()}
-//         </h2>
-//         <button
-//           onClick={() =>
-//             setMonth(new Date(month.getFullYear(), month.getMonth() + 1, 1))
-//           }
-//           className="px-3 py-1 bg-gray-300 rounded-full hover:bg-gray-400"
-//         >
-//           Next
-//         </button>
-//       </div>
-
-//       {/* Days of Week */}
-//       <div className="grid grid-cols-7 text-center font-semibold mb-2">
-//         {daysOfWeek.map((d, i) => (
-//           <div
-//             key={d}
-//             className={
-//               i === 0 ? "text-red-500" : i === 6 ? "text-blue-500" : ""
-//             }
-//           >
-//             {d}
-//           </div>
-//         ))}
-//       </div>
-
-//       {/* Calendar */}
-//       <div className="grid grid-cols-7 gap-2 items-center p-2 text-center">
-//         {days.map((d, i) => {
-//           if (!d) return <div key={i} className="p-1"></div>;
-//           const dayStr = d.toISOString().split("T")[0];
-//           const dayEvents = events.filter((e) => e.date === dayStr);
-//           const isToday = d.toDateString() === today.toDateString();
-
-//           return (
-//             <div
-//               key={i}
-//               className={`p-2 border rounded-lg h-35 flex flex-col items-center justify-start cursor-pointer ${
-//                 isToday ? "border-blue-500 shadow-md" : "border-gray-200"
-//               } bg-gray-50 hover:bg-gray-100`}
-//               onClick={() => setSelectedDate(dayStr)}
-//             >
-//               <span className={`font-bold ${isToday ? "text-blue-600" : ""}`}>
-//                 {d.getDate()}
-//               </span>
-//               {dayEvents.map((e, idx) => (
-//                 <span
-//                   key={idx}
-//                   className="text-xs mt-1 bg-blue-200 text-blue-800 px-1 rounded-full"
-//                 >
-//                   {e.title}
-//                 </span>
-//               ))}
-//             </div>
-//           );
-//         })}
-//       </div>
-
-//       {/* เพิ่มงาน */}
-//       {selectedDate && (
-//         <div className="mt-4 p-4 border rounded-lg bg-gray-50">
-//           <h3 className="font-semibold mb-2">เพิ่มงาน: {selectedDate}</h3>
-//           <input
-//             type="text"
-//             value={newEvent}
-//             onChange={(e) => setNewEvent(e.target.value)}
-//             placeholder="ชื่องาน"
-//             className="w-full p-2 border rounded mb-2"
-//           />
-//           <button
-//             onClick={addEvent}
-//             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 mr-2"
-//           >
-//             บันทึก
-//           </button>
-//           <button
-//             onClick={() => setSelectedDate(null)}
-//             className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
-//           >
-//             ยกเลิก
-//           </button>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
+type Event = {
+  date: string;
+  title: string;
+};
 
 export default function Calendar() {
-  type Event = { data: string; title: string };
-
-  //   const [events, setEvents] = useState<Event[]>([]);
-  //   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-
   const [month, setMonth] = useState(new Date());
   const [events, setEvents] = useState<Event[]>([]);
-  const [delectedDate, setdelectedDate] = useState<string | null>(null);
-  const [newEvent, setnewEvent] = useState("");
-  const [selectedDate, setselectedDate] = useState("");
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [newEvent, setNewEvent] = useState("");
 
-  const data = new Date();
+  // โหลด event จาก localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("calendarEvent");
+    if (saved) setEvents(JSON.parse(saved));
+  }, []);
 
+  //เก็บลง local
   const saveEvents = (updated: Event[]) => {
     setEvents(updated);
-    localStorage.setItem("calendarEnevt", JSON.stringify(updated));
+    localStorage.setItem("calendarEvent", JSON.stringify(updated));
   };
 
-  const start = new Date(month.getFullYear(), month.getMonth(), 0);
-  const end = new Date(month.getDate(), month.getMonth() + 1, 0);
+  // หาวันเริ่มต้นและสิ้นสุดของเดือน
+  const start = new Date(month.getFullYear(), month.getMonth(), 1);
+  const end = new Date(month.getFullYear(), month.getMonth() + 1, 0);
   const days: (Date | null)[] = [
     ...Array(start.getDay()).fill(null),
     ...Array.from(
@@ -168,26 +36,123 @@ export default function Calendar() {
     ),
   ];
 
+  // สร้าง array ของวันที่ทั้งหมดในเดือน
   const addEvent = () => {
-    if (!selectedDate || !newEvent) return;
-    saveE;
+    if (!selectedDate || !newEvent.trim()) return;
+    const updated = [...events, { date: selectedDate, title: newEvent }];
+    saveEvents(updated);
+    setNewEvent("");
+    setSelectedDate(null);
   };
 
-  const daysOfWeek = ["จ", "อ", "พ", "พฤ", "ศ", "ส", "อาทิต"];
+  // เปลี่ยนเดือน
+  const changeMonth = (offset: number) => {
+    const newMonth = new Date(month);
+    newMonth.setMonth(month.getMonth() + offset);
+    setMonth(newMonth);
+  };
+
+  const daysOfWeek = ["จ", "อ", "พ", "พฤ", "ศ", "ส", "อา"];
   return (
-    <div className="w-max-380 p-7 mx-auto container pt-10">
-      <p className="text-3xl font-extrabold">
-        ปฏิทิน <span>งาน</span>
-      </p>
-      <div className="border h-full my-5">
-        <div className="grid grid-cols-7 gap-5 text-center">
+    <div className="w-max-380 p-9 mx-auto container">
+      <div className="flex justify-between mb-5 items-centeritems-center">
+        <p className="text-3xl font-extrabold">
+          ปฏิทิน <span>งาน</span>
+        </p>
+
+        {/* เปลี่ยนเดือน */}
+        <div className="flex gap-5 items-center">
+          <div>
+            <button onClick={() => changeMonth(-1)}> กลับ </button>
+          </div>
+          {/* //เดือน */}
+          <h2 className="text-xl font-semibold  flex gap-2 ">
+            {month.toLocaleString("th-TH", { month: "long" })}
+
+            <p> {month.toLocaleString("th-TH", { year: "numeric" })}</p>
+          </h2>
+          <div>
+            <button onClick={() => changeMonth(1)}> ไป </button>
+          </div>
+        </div>
+      </div>
+
+      {/* วันที่ */}
+      <div className="border rounded-4xl h-full p-3 bg-gray-900">
+        <div className="grid grid-cols-7 text-lg font-extrabold gap-2 my-2 ">
           {daysOfWeek.map((event, index) => (
-            <div key={index}>
+            <div className="pl-2" key={index}>
               <p>{event}</p>
             </div>
           ))}
         </div>
+
+        {/* //ตาตราง วันที่ */}
+        <div className="grid grid-cols-7 gap-2 h-175">
+          {days.map((day, i) => {
+            return (
+              <div
+                key={i}
+                onClick={() =>
+                  day && setSelectedDate(day.toISOString().split("T")[0])
+                }
+                className={`relative border-t bg-gray-800 rounded-lg border pl-2 cursor-pointer transition-all duration-200 ${
+                  selectedDate === day?.toISOString().split("T")[0]
+                    ? "bg-blue-600 text-white scale-105"
+                    : "hover:bg-blue-800"
+                }`}
+              >
+                <p>{day?.getDate()}</p>
+                {/* เเสดงข้อมูล */}
+                {day &&
+                  events.some(
+                    (e) => e.date === day.toISOString().split("T")[0]
+                  ) && (
+                    <div className="mt-1 text-xs bg-blue-500 text-white rounded px-1">
+                      {events
+                        .filter(
+                          (e) => e.date === day.toISOString().split("T")[0]
+                        )
+                        .map((e, idx) => (
+                          <p key={idx}>{e.title}</p>
+                        ))}
+                    </div>
+                  )}
+              </div>
+            );
+          })}
+        </div>
       </div>
+      {selectedDate && (
+        <div className="mt-6 border-t border-gray-600 pt-4">
+          <p className="text-lg font-semibold mb-2">
+            เพิ่มงานวันที่{" "}
+            <span className="text-blue-400">
+              {new Date(selectedDate).toLocaleDateString("th-TH", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+          </p>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={newEvent}
+              onChange={(e) => setNewEvent(e.target.value)}
+              placeholder="พิมพ์ชื่องานที่นี่..."
+              className="flex-1 p-2 rounded-lg border border-gray-600 text-black"
+            />
+            <button
+              onClick={addEvent}
+              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white"
+            >
+              บันทึก
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
