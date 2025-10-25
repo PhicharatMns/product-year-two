@@ -13,8 +13,9 @@ export default function Maps() {
   const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
 
   return (
-    <div className={`min-h-screen  flex flex-col lg:flex-row justify-center items-start lg:items-stretch gap-8 p-6 transition-all duration-500`}>
-      
+    <div
+      className={`min-h-screen  flex flex-col lg:flex-row justify-center items-start lg:items-stretch gap-8 p-6 transition-all duration-500`}
+    >
       {/* กล่องกรอกข้อมูล (ซ้าย) */}
       <div
         className={`w-full lg:max-w-150 ${cardBg} ${borderSoft} border rounded-2xl shadow-lg p-6 text-left ${text}`}
@@ -25,32 +26,45 @@ export default function Maps() {
           <input
             type="text"
             placeholder="ชื่อของคุณ"
-            className={`w-full p-3 border rounded-lg ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-gray-100 border-gray-300"} focus:outline-none focus:ring-2 focus:ring-blue-400`}
+            className={`w-full p-3 border rounded-lg ${
+              theme === "dark"
+                ? "bg-gray-800 border-gray-700"
+                : "bg-gray-100 border-gray-300"
+            } focus:outline-none focus:ring-2 focus:ring-blue-400`}
           />
           <input
             type="number"
             placeholder="เบอร์โทรศัพท์"
-            className={`w-full p-3 border rounded-lg ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-gray-100 border-gray-300"} focus:outline-none focus:ring-2 focus:ring-blue-400`}
+            className={`w-full p-3 border rounded-lg ${
+              theme === "dark"
+                ? "bg-gray-800 border-gray-700"
+                : "bg-gray-100 border-gray-300"
+            } focus:outline-none focus:ring-2 focus:ring-blue-400`}
           />
-           <input
+          <input
             type="text"
             placeholder="ตำแหน่งที่ตั้ง"
-            className={`w-full p-3 border rounded-lg ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-gray-100 border-gray-300"} focus:outline-none focus:ring-2 focus:ring-blue-400`}
+            className={`w-full p-3 border rounded-lg ${
+              theme === "dark"
+                ? "bg-gray-800 border-gray-700"
+                : "bg-gray-100 border-gray-300"
+            } focus:outline-none focus:ring-2 focus:ring-blue-400`}
           />
           <textarea
             placeholder="รายละเอียดงาน"
             rows={4}
-            className={`w-full p-3 border rounded-lg ${theme === "dark" ? "bg-gray-800 border-gray-700" : "bg-gray-100 border-gray-300"} focus:outline-none focus:ring-2 focus:ring-blue-400`}
+            className={`w-full p-3 border rounded-lg ${
+              theme === "dark"
+                ? "bg-gray-800 border-gray-700"
+                : "bg-gray-100 border-gray-300"
+            } focus:outline-none focus:ring-2 focus:ring-blue-400`}
           ></textarea>
 
-          <button
-            className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all"
-          >
+          <button className="mt-4 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-all">
             ยืนยัน
           </button>
         </div>
       </div>
-
 
       <div
         className={`w-full lg:max-w-150  ${cardBg} ${borderSoft} border rounded-2xl shadow-lg p-6 text-left ${text}`}
@@ -60,16 +74,12 @@ export default function Maps() {
           <h1 className={`text-2xl font-bold ${titleColor}`}>แผนที่ช่าง</h1>
         </div>
 
-        <p className="text-sm mb-6">
-          ตำแหน่งงาน / ช่าง 
-          ในแผนที่
-          
-        </p>
+        <p className="text-sm mb-6">ตำแหน่งงาน / ช่าง ในแผนที่</p>
 
         <div className="w-full lg:h-screen overflow-hidden rounded-xl shadow-md border border-gray-300 dark:border-yellow-300/20">
           <iframe
             title="แผนที่ช่าง"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.682065915509!2d100.5295070747471!3d13.74584419784467!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29f2e5d5cbd27%3A0xf83b257c72acb3bb!2z4LiB4Lij4LmI4LiH4Lih4Li04LiU4LmMIOC4p-C4tOC4meC4teC4quC4suC4o-C5jOC4lOC4hOC4lOC5gOC4nQ!5e0!3m2!1sth!2sth!4v1728841800000!5m2!1sth!2sth"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d64178.193675471965!2d100.46096712319256!3d13.68021303560223!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29860a45abbaf%3A0xfd31102a18e45fab!2z4LmA4LiU4Lit4Liw4Lih4Lit4Lil4Lil4LmM4LmE4Lil4Lif4LmM4Liq4LmC4LiV4Lij4LmMIOC4l-C5iOC4suC4nuC4o-C4sA!5e1!3m2!1sth!2sth!4v1761291196092!5m2!1sth!2sth"
             width="100%"
             height="100%"
             style={{ border: 0 }}

@@ -26,12 +26,14 @@ import Maps from "./User/Maps";
 import Suppiles from "./User/Supplies";
 import DashboardUser from "./User/DashboardUser";
 import Getpaper from "./User/GetPaper";
+import Calendars from "./User/Calendar";
 
 // Auth
 import Login from "./sighup/Login";
 import Register from "./sighup/Register";
 import ProtectedRoute from "./sighup/ProtectedRoute";
 import Detailwork from "./User/Detailwork";
+import Withdraw from "./User/withdraw";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -71,6 +73,8 @@ const router = createBrowserRouter([
       { path: "maps", element: <Maps /> },
       { path: "supplies", element: <Suppiles /> },
       { path: "Detailwork", element: <Detailwork /> }, // ตรวจสอบชื่อ component ให้ตรง
+      { path: "Calendar", element: <Calendars /> },
+      { path: "withdraw", element: <Withdraw /> },
     ],
   },
 ]);
