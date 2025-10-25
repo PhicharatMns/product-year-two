@@ -10,6 +10,7 @@ import { SiGooglemaps } from "react-icons/si";
 import { useTheme } from "@/components/theme-provider";
 import { FaTools } from "react-icons/fa";
 import axios from "axios";
+import { AiTwotoneCalendar } from "react-icons/ai";
 
 interface SidebarItem {
   text: string;
@@ -37,6 +38,7 @@ export default function Sidebar() {
   const items: SidebarItem[] = [
     { text: "Dashboard", icon: MdDashboard, link: "/user/DashboardUser" },
     { text: "รับใบงาน", icon: RiFilePaper2Line, link: "/user/getpaper" },
+    { text: "ปฏิทินงาน", icon: AiTwotoneCalendar, link: "/user/Calendar" },
     { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
     { text: "แผนที่", icon: SiGooglemaps, link: "/user/Maps" },
     { text: "วัสดุอุปกรณ์", icon: FaTools, link: "/user/Supplies" },

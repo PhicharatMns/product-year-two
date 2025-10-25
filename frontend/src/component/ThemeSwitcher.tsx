@@ -10,7 +10,7 @@ export default function ThemeSwitcher() {
     else if (theme === "light") setTheme("dark");
     else setTheme("dark"); // ถ้าเป็น system ให้เริ่มจาก dark
   };
-const buttonColor =
+  const buttonColor =
     theme === "dark"
       ? "bg-blue-600 hover:bg-blue-700 active:bg-blue-800"
       : theme === "light"
@@ -23,10 +23,10 @@ const buttonColor =
       className={`px-3 py-2 m-4 rounded-lg ${buttonColor} text-white font-semibold transition`}
     >
       {theme === "dark"
-        ? "🌙 โหมดมืด"
+        ? " โหมดมืด"
         : theme === "light"
-        ? "☀️ โหมดสว่าง"
-        : "💻 System"}
+        ? " โหมดสว่าง"
+        : " System"}
     </button>
   );
 }

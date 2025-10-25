@@ -64,7 +64,5 @@ export default function Withdraw() {
   </div>
 </div>
 
-
-
   )
 }
