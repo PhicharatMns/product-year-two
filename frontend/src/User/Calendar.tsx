@@ -1,7 +1,10 @@
-
-
 import { useEffect, useState } from "react";
+import { useTheme } from "@/components/theme-provider";
+import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
+import { BsXLg } from "react-icons/bs";
+import { BsTrash } from "react-icons/bs";
 
+// กําหนด type
 type Event = {
   date: string;
   title: string;
@@ -45,6 +48,13 @@ export default function Calendar() {
     setSelectedDate(null);
   };
 
+  // ฟังก์ชันลบงาน
+  const deleteEvent = (index: number) => {
+    const updated = [...events];
+    updated.splice(index, 1); // ลบแค่ตัวที่เลือก
+    saveEvents(updated);
+  };
+
   // เปลี่ยนเดือน
   const changeMonth = (offset: number) => {
     const newMonth = new Date(month);
@@ -52,33 +62,49 @@ export default function Calendar() {
     setMonth(newMonth);
   };
 
+  const { theme } = useTheme();
+
   const daysOfWeek = ["จ", "อ", "พ", "พฤ", "ศ", "ส", "อา"];
   return (
     <div className="w-max-380 p-9 mx-auto container">
       <div className="flex justify-between mb-5 items-centeritems-center">
-        <p className="text-3xl font-extrabold">
-          ปฏิทิน <span>งาน</span>
+        <p className={`text-3xl font-extrabold ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
+          ปฏิทิน <span className={`${theme === 'dark' ? 'text-white' : 'text-yellow-500'}`}>งาน</span>
         </p>
 
         {/* เปลี่ยนเดือน */}
-        <div className="flex gap-5 items-center">
-          <div>
-            <button onClick={() => changeMonth(-1)}> กลับ </button>
-          </div>
-          {/* //เดือน */}
-          <h2 className="text-xl font-semibold  flex gap-2 ">
-            {month.toLocaleString("th-TH", { month: "long" })}
 
-            <p> {month.toLocaleString("th-TH", { year: "numeric" })}</p>
+        <div className="flex gap-5 items-center text-xl font-semibold">
+          <button
+            className={`text-2xl cursor-pointer  duration-200 ${
+              theme === "dark" ? "hover:bg-gray-500" : "hover:bg-blue-100"
+            }`}
+            onClick={() => changeMonth(-1)}
+          >
+            <AiOutlineLeft className="text-2xl cursor-pointer" />
+          </button>
+
+          <h2 className="flex gap-2 items-center ">
+            {month.toLocaleString("th-TH", { month: "long" })}
+            <p>{month.toLocaleString("th-TH", { year: "numeric" })}</p>
           </h2>
-          <div>
-            <button onClick={() => changeMonth(1)}> ไป </button>
-          </div>
+
+          <button onClick={() => changeMonth(1)}>
+            <AiOutlineRight
+              className={`text-2xl cursor-pointer  duration-200 ${
+                theme === "dark" ? "hover:bg-gray-500" : "hover:bg-blue-100"
+              }`}
+            />
+          </button>
         </div>
       </div>
 
       {/* วันที่ */}
-      <div className="border rounded-4xl h-full p-3 bg-gray-900">
+      <div
+        className={`border rounded-4xl h-192 p-3 ${
+          theme === "dark" ? "bg-gray-900" : "shadow-xl"
+        }`}
+      >
         <div className="grid grid-cols-7 text-lg font-extrabold gap-2 my-2 ">
           {daysOfWeek.map((event, index) => (
             <div className="pl-2" key={index}>
@@ -88,7 +114,7 @@ export default function Calendar() {
         </div>
 
         {/* //ตาตราง วันที่ */}
-        <div className="grid grid-cols-7 gap-2 h-175">
+        <div className="grid grid-cols-7 gap-2">
           {days.map((day, i) => {
             return (
               <div
@@ -96,11 +122,12 @@ export default function Calendar() {
                 onClick={() =>
                   day && setSelectedDate(day.toISOString().split("T")[0])
                 }
-                className={`relative border-t bg-gray-800 rounded-lg border pl-2 cursor-pointer transition-all duration-200 ${
-                  selectedDate === day?.toISOString().split("T")[0]
-                    ? "bg-blue-600 text-white scale-105"
-                    : "hover:bg-blue-800"
-                }`}
+                className={`relative border-t h-27 rounded-lg border pl-2 cursor-pointer transition-all duration-200 ${
+                  theme === "dark"
+                    ? "hover:bg-gray-700 bg-gray-800"
+                    : "hover:bg-blue-50 shadow-4xl"
+                }
+               `}
               >
                 <p>{day?.getDate()}</p>
                 {/* เเสดงข้อมูล */}
@@ -108,13 +135,23 @@ export default function Calendar() {
                   events.some(
                     (e) => e.date === day.toISOString().split("T")[0]
                   ) && (
-                    <div className="mt-1 text-xs bg-blue-500 text-white rounded px-1">
+                    <div
+                      className={` text-xs max-h-20 overflow-y-auto scrollbar-hide text-white rounded px-1
+                      }`}
+                    >
                       {events
                         .filter(
                           (e) => e.date === day.toISOString().split("T")[0]
                         )
                         .map((e, idx) => (
-                          <p key={idx}>{e.title}</p>
+                          <p
+                            className={` rounded-sm h-5  mt-1 pl-2 ${
+                              theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                            }`}
+                            key={idx}
+                          >
+                            {e.title}
+                          </p>
                         ))}
                     </div>
                   )}
@@ -123,33 +160,79 @@ export default function Calendar() {
           })}
         </div>
       </div>
-      {selectedDate && (
-        <div className="mt-6 border-t border-gray-600 pt-4">
-          <p className="text-lg font-semibold mb-2">
-            เพิ่มงานวันที่{" "}
-            <span className="text-blue-400">
-              {new Date(selectedDate).toLocaleDateString("th-TH", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </span>
-          </p>
 
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={newEvent}
-              onChange={(e) => setNewEvent(e.target.value)}
-              placeholder="พิมพ์ชื่องานที่นี่..."
-              className="flex-1 p-2 rounded-lg border border-gray-600 text-black"
-            />
-            <button
-              onClick={addEvent}
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white"
-            >
-              บันทึก
-            </button>
+      {selectedDate && (
+        <div
+          className={`fixed inset-0 z-50  flex items-center justify-center bg-black/20 backdrop-blur-sm`}
+        >
+          <div
+            className={`p-5 rounded-4xl  h-fit ${
+              theme === "dark" ? "bg-gray-900" : "bg-white"
+            }`}
+          >
+            <p className="text-lg font-semibold mb-2 flex items-center">
+              งานวันที่{" "}
+              <span className="text-blue-400">
+                {new Date(selectedDate).toLocaleDateString("th-TH", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
+              </span>
+              <div className="ml-auto ">
+                <button
+                  className="cursor-pointer"
+                  onClick={() => setSelectedDate(null)}
+                >
+                  {" "}
+                  <BsXLg />
+                </button>
+              </div>
+            </p>
+
+            {/* รายการงาน */}
+            <div className="flex flex-col w-100v gap-2 mb-3 max-h-40 scrollbar-hide overflow-y-auto">
+              {events
+                .filter((e) => e.date === selectedDate)
+                .map((e, idx) => (
+                  <div
+                    key={idx}
+                    className={`flex  justify-between  p-1 rounded ${
+                      theme === "dark"
+                        ? "bg-yellow-500 text-white"
+                        : "bg-blue-500 text-white"
+                    }`}
+                  >
+                    <span className="px-2">{e.title}</span>
+                    <button
+                      onClick={() =>
+                        deleteEvent(events.findIndex((ev) => ev === e))
+                      }
+                      className="ml-2  cursor-pointer px-2 py-0.5 rounded text-xs "
+                    >
+                      <BsTrash size={18} className="" />
+                    </button>
+                  </div>
+                ))}
+            </div>
+
+            {/* เพิ่มงานใหม่ */}
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={newEvent}
+                onChange={(e) => setNewEvent(e.target.value)}
+                className={`flex-1 p-2 rounded-lg border border-gray-600 ${
+                  theme === "dark" ? "text-white" : "text-black"
+                }`}
+              />
+              <button
+                onClick={addEvent}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white cursor-pointer"
+              >
+                บันทึก
+              </button>
+            </div>
           </div>
         </div>
       )}
