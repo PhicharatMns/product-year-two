@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
 import { IoIosLogOut } from "react-icons/io";
 import { TbBellPlus } from "react-icons/tb";
@@ -15,21 +15,27 @@ import { NavLink } from "react-router-dom";
 interface SidebarItem {
   text: string;
   icons: React.ComponentType<{ size?: number }>;
-  Link: string;
+  Link?: string; // ทำให้เป็น optional
+  onClick?: () => void; // optional
 }
 
 export default function Sidebaradmin() {
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  //ออกระบบ
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("logins");
+  };
 
   const datasizebar: SidebarItem[] = [
     { text: "Dashboard", icons: MdDashboard, Link: "Dashboard" },
     { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "Searchpastjobs" },
     { text: "ส่งแจ้งการเตือน", icons: TbBellPlus, Link: "Notification" },
     { text: "จัดการวัสดุอุปกรณ์", icons: FaTools, Link: "SuppliesAdmin" },
-
     { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "Editacc" },
-
-    { text: "ออกจากระบบ", icons: IoIosLogOut, Link: "Logins" },
+    { text: "ออกจากระบบ", icons: IoIosLogOut, onClick: handleLogout },
   ];
 
   const { theme } = useTheme();
@@ -72,8 +78,9 @@ export default function Sidebaradmin() {
 
               if (event.Link) {
                 return (
+                  // เพื่อให้ลิงก์ที่กำลังใช้งานอยู่มีสไตล์พิเศษ
                   <NavLink
-                    to={`/${event.Link}`}
+                    to={event.Link}
                     key={index}
                     className={({ isActive }) =>
                       `flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer hover:bg-yellow-500 dark:hover:bg-yellow-600 duration-300 ${
@@ -90,7 +97,19 @@ export default function Sidebaradmin() {
                 );
               }
 
-              return null;
+              return (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setOpen(false);
+                    event.onClick?.();
+                  }}
+                  className={`flex items-center gap-2 my-2 pl-5 py-3 w-full text-left cursor-pointer  duration-300 hover `}
+                >
+                  <Icons size={24} />
+                  <span>{event.text}</span>
+                </button>
+              );
             })}
           </div>
         </div>
