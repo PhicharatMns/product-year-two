@@ -31,8 +31,10 @@ export default function Login() {
       // ไปหน้า /user/dashboardUser
       if (response.data.role === "admin") {
         navigate("/dashboard"); // หน้า admin
-      } else {
+      } else if (response.data.role === "user") {
         navigate("/user/DashboardUser"); // หน้า user
+      } else {
+        navigate("/executive/Dashboard");
       }
     } catch (err) {
       console.error(err);

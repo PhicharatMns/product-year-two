@@ -13,7 +13,11 @@ const login = new mongoose.Schema({
   Profile: String,
   Position: String,
   Start_data: String,
-  role: { type: String, enum: ["admin", "user"], default: "user" },
+  role: {
+    type: String,
+    enum: ["user", "admin", "chief", "executive"],
+    default: "user",
+  },
 });
 
 const Login = mongoose.model("Login", login);

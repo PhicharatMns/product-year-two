@@ -35,6 +35,10 @@ import Register from "./sighup/Register";
 import ProtectedRoute from "./sighup/ProtectedRoute";
 import Detailwork from "./User/Detailwork";
 
+// Xexcutive
+import DashboardExecutive from "./executive/DashboardExecutive";
+import Executive from "./executive/Executive";
+
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
@@ -80,6 +84,17 @@ const router = createBrowserRouter([
       { path: "Calendar", element: <Calendars /> },
       { path: "withdraw", element: <Withdraw /> },
     ],
+  },
+
+  // xexcutive Router
+  {
+    path: "/executive",
+    element: (
+      <ProtectedRoute>
+        <Executive />
+      </ProtectedRoute>
+    ),
+    children: [{ path: "Dashboard", element: <DashboardExecutive /> }],
   },
 ]);
 
