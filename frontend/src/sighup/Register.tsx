@@ -7,8 +7,9 @@ export default function Register() {
   const [username, setUsername] = useState("");
   const [passwork, setPasswork] = useState("");
   const [confirmPasswork, setConfirmPasswork] = useState("");
-  const [role, setRole] = useState("user"); // 👈 ค่าเริ่มต้นเป็น user
+  const [role, setRole] = useState("user"); //  ค่าเริ่มต้นเป็น user
   const [message, setMessage] = useState("");
+  
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -21,7 +22,7 @@ export default function Register() {
     try {
       const response = await axios.post(
         "http://localhost:5000/api/login/register",
-        { username, passwork, role }, // 👈 ส่ง role ไปด้วย
+        { username, passwork, role }, // ส่ง role ไปด้วย
         { withCredentials: true }
       );
 
@@ -84,7 +85,7 @@ export default function Register() {
             />
           </div>
 
-          {/* ✅ ปุ่มสมัครเป็นแอดมิน */}
+          {/*  ปุ่มสมัครเป็นแอดมิน */}
           <div className="mb-6 flex items-center space-x-2">
             <input
               type="checkbox"

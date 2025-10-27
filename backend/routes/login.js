@@ -67,6 +67,7 @@ router.post("/register", upload.single("Profile"), async (req, res) => {
       Profile: req.file ? req.file.filename : "", // ถ้ามีรูปให้บันทึกชื่อไฟล์
       Position: req.body.Position,
       Start_data: req.body.Start_data,
+      role: req.body.role || "user",
     });
 
     await newUser.save();

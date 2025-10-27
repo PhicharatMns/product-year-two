@@ -94,7 +94,7 @@ const router = createBrowserRouter([
         <Executive />
       </ProtectedRoute>
     ),
-    children: [{ path: "Dashboard", element: <DashboardExecutive /> }],
+    children: [{ path: "DashboardExecutive", element: <DashboardExecutive /> }],
   },
 ]);
 
