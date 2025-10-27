@@ -34,7 +34,7 @@ export default function Login() {
       } else if (response.data.role === "user") {
         navigate("/user/DashboardUser"); // หน้า user
       } else {
-        navigate("/executive/Dashboard");
+        navigate("/executive/DashboardExecutive");
       }
     } catch (err) {
       console.error(err);
