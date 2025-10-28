@@ -51,12 +51,6 @@ const data = [
   },
 ];
 
-const text = {
-  fontSize: 250,
-  color: "#8df0cc",
-}
-
-
 // #endregion
 const DashboardExecutive = () => {
   const count = useMotionValue(0)

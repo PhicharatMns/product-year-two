@@ -18,6 +18,7 @@ const login = new mongoose.Schema({
     enum: ["user", "admin", "chief", "executive"],
     default: "user",
   },
+
 });
 
 const Login = mongoose.model("Login", login);
