@@ -11,7 +11,10 @@ import {
   Scatter,
   ResponsiveContainer,
   LineChart,
+  BarChart,
 } from "recharts";
+
+
 
 // #region Sample data
 const data = [
@@ -62,19 +65,39 @@ const data = [
 // #endregion
 const DashboardExecutive = () => {
   return (
-    <div>
-      <div>
-        <ResponsiveContainer width={400} height={500}>
-          <ComposedChart data={data}>
-            <CartesianGrid stroke="#f5f5f5" />
-            <XAxis dataKey="name" scale="band" />
-            <YAxis width="auto" />
-            <Tooltip />
-            <Legend />
-            <Bar dataKey="uv" barSize={20} fill="#413ea0" />
-            <Line type="monotone" dataKey="uv" stroke="#ff7300" />
-          </ComposedChart>
-        </ResponsiveContainer>
+    <div className="w-max-380 p-6 mx-auto container pt-10">
+      <div className="p-5 ">
+        <p className="text-3xl  font-extrabold mb-8 ">Dashboard <span>ผู้บริหาร</span></p>
+        <div className="grid grid-cols-2 gap-5">
+          <div>
+            <ResponsiveContainer width='100%' height={400}>
+              <ComposedChart data={data}>
+                <CartesianGrid stroke="#f5f5f5" />
+                <XAxis dataKey="name" scale="band" />
+                <YAxis width="auto" />
+                <Tooltip />
+                <Legend />
+                <Bar dataKey="uv" barSize={20} fill="#413ea0" />
+                <Line type="monotone" dataKey="uv" stroke="#ff7300" />
+              </ComposedChart>
+            </ResponsiveContainer>
+          </div>
+
+          <div>
+            <BarChart
+              data={data}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis yAxisId="left" orientation="left" stroke="#8884d8" width="auto" />
+              <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" width="auto" />
+              <Tooltip />
+              <Legend />
+              <Bar yAxisId="left" dataKey="pv" fill="#8884d8" />
+              <Bar yAxisId="right" dataKey="uv" fill="#82ca9d" />
+            </BarChart>
+          </div>
+        </div >
       </div>
     </div>
   );
