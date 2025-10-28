@@ -89,7 +89,7 @@ export default function GetPaper() {
                   <td className="py-3 px-4 text-center">
                     <a href="Detailwork" target="_blank" rel="noopener noreferrer">
                       <button
-                        className={`h-9 w-24 rounded-xl font-semibold tracking-wide shadow-md transition-all duration-300 ease-in-out 
+                        className={` cursor-pointer h-9 w-24 rounded-xl font-semibold tracking-wide shadow-md transition-all duration-300 ease-in-out 
                           ${theme === "dark"
                             ? "bg-yellow-500 hover:bg-yellow-400 text-black hover:shadow-yellow-500/40"
                             : "bg-blue-500 hover:bg-blue-400 text-white hover:shadow-blue-400/40"

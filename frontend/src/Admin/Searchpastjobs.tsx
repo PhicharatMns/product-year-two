@@ -148,16 +148,13 @@ const Searchpastjobs: React.FC = () => {
             </span>
           </h2>
           <div className="flex flex-wrap gap-4 items-center">
-            <button
-              onClick={openModal}
-              className={`text-white px-4 py-2 rounded-xl shadow transition   ${
-                theme === "dark"
-                  ? "bg-yellow-500 hover:bg-yellow-400"
-                  : "bg-blue-500 hover:bg-blue-400"
-              }`}
-            >
-              + เพิ่มใบงาน
-            </button>
+           
+            <button 
+            onClick={openModal}
+            className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-blue-500 px-6 font-medium text-neutral-200 transition hover:scale-104 cursor-pointer">
+              <span>+ เพิ่มใบงาน</span>
+              <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
+              <div className="relative h-full w-8 bg-yellow-400"></div></div></button>
             <div className={`relative w-full sm:w-auto ${text}`}>
               <CiSearch
                 className={`absolute left-3 top-1/2 -translate-y-1/2 ${labelText}`}
@@ -233,14 +230,16 @@ const Searchpastjobs: React.FC = () => {
               <div className="flex gap-2 justify-center">
                 <button
                   onClick={() => handleDelete(event._id)}
-                  className="bg-red-500 cursor-pointer text-white px-2 rounded-lg hover:bg-red-600 transition"
+                  className="bg-red-500 cursor-pointer text-white px-2 rounded-lg hover:bg-red-600 relative overflow-hidden   py-2.5  transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110"
                 >
                   ลบ
                 </button>
+             
                 <Link to={`/Details/${event._id}`}>
-                  <button className="bg-green-500 cursor-pointer text-white px-3 py-1  rounded-lg hover:bg-green-600 transition">
+                  <button className="bg-green-500 cursor-pointer text-white px-3 py-1  rounded-lg hover:bg-green-600 transition relative overflow-hidden  duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110">
                     รายละเอียด
                   </button>
+  
                 </Link>
               </div>
             </div>

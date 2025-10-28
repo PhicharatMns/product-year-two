@@ -14,7 +14,7 @@ export default function Calendar() {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [newEvent, setNewEvent] = useState("");
   const [fadeModal, setFadeModal] = useState(false);
-  const [fade, setFade] = useState(true);
+  const [fade, setFade] = useState(false);
   const [slideDir, setSlideDir] = useState<"left" | "right" | "">("");
 
   const { theme } = useTheme();
@@ -53,8 +53,7 @@ export default function Calendar() {
 
   // ✅ เปลี่ยนเดือนพร้อม fade + slide
   const changeMonth = (offset: number) => {
-    setSlideDir(offset > 0 ? "right" : "left");
-    setFade(false);
+      setFade(false);
     setTimeout(() => {
       const newMonth = new Date(month);
       newMonth.setMonth(month.getMonth() + offset);
@@ -79,6 +78,9 @@ export default function Calendar() {
   }, [selectedDate]);
 
   return (
+        <div className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"}`}>
+
+    
     <div
       className={`transition-all duration-700 transform ${
         fade
@@ -99,6 +101,7 @@ export default function Calendar() {
           </p>
 
           {/* ปุ่มเปลี่ยนเดือน */}
+          
           <div className="flex gap-5 items-center text-xl font-semibold">
             <button
               className={`text-2xl cursor-pointer duration-200 rounded-full p-1 ${
@@ -126,49 +129,49 @@ export default function Calendar() {
         </div>
 
         {/* ตารางวันที่ */}
-        <div className={`border rounded-4xl h-192 p-3 ${theme === "dark" ? "bg-gray-900" : "shadow-xl"}`}>
-          <div className="grid grid-cols-7 text-lg font-extrabold gap-2 my-2">
-            {daysOfWeek.map((day, index) => (
-              <div key={index} className="pl-2">
-                {day}
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-7 gap-2">
-            {days.map((day, i) => {
-              const dayStr = day?.toISOString().split("T")[0];
-              const hasEvent = day && events.some((e) => e.date === dayStr);
-              return (
-                <div
-                  key={i}
-                  onClick={() => day && setSelectedDate(dayStr)}
-                  className={`relative border-t h-27 rounded-lg border pl-2 cursor-pointer transition-all duration-200 ${
-                    theme === "dark" ? "hover:bg-gray-700 bg-gray-800" : "hover:bg-blue-50 shadow-4xl"
-                  }`}
-                >
-                  <p>{day?.getDate()}</p>
-                  {hasEvent && (
-                    <div className="text-xs max-h-20 overflow-y-auto scrollbar-hide text-white rounded px-1">
-                      {events
-                        .filter((e) => e.date === dayStr)
-                        .map((e, idx) => (
-                          <p
-                            key={idx}
-                            className={`rounded-sm h-5 mt-1 pl-2 ${
-                              theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                            }`}
-                          >
-                            {e.title}
-                          </p>
-                        ))}
-                    </div>
-                  )}
+          <div className={`border rounded-4xl h-192 p-3 ${theme === "dark" ? "bg-gray-900" : "shadow-xl"}`}>
+            <div className="grid grid-cols-7 text-lg font-extrabold gap-2 my-2">
+              {daysOfWeek.map((day, index) => (
+                <div key={index} className="pl-2">
+                  {day}
                 </div>
-              );
-            })}
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-2">
+              {days.map((day, i) => {
+                const dayStr = day?.toISOString().split("T")[0];
+                const hasEvent = day && events.some((e) => e.date === dayStr);
+                return (
+                  <div
+                    key={i}
+                    onClick={() => day && setSelectedDate(dayStr)}
+                    className={`relative border-t h-27 rounded-lg border pl-2 cursor-pointer transition-all duration-200 ${
+                      theme === "dark" ? "hover:bg-gray-700 bg-gray-800" : "hover:bg-blue-50 shadow-4xl"
+                    }`}
+                  >
+                    <p>{day?.getDate()}</p>
+                    {hasEvent && (
+                      <div className="text-xs max-h-20 overflow-y-auto scrollbar-hide text-white rounded px-1">
+                        {events
+                          .filter((e) => e.date === dayStr)
+                          .map((e, idx) => (
+                            <p
+                              key={idx}
+                              className={`rounded-sm h-5 mt-1 pl-2 ${
+                                theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                              }`}
+                            >
+                              {e.title}
+                            </p>
+                          ))}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </div>
 
         {/* Modal */}
         {selectedDate && (
@@ -242,6 +245,7 @@ export default function Calendar() {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 }

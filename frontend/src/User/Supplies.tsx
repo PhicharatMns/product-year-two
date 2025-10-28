@@ -1,8 +1,16 @@
 import { useTheme } from "@/components/theme-provider";
 import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Supplies() {
   const { theme } = useTheme();
+  const [fade, setFade] = useState(false);
+  const [fadeModal, setFadeModal] = useState(false);
+  
+    useEffect(() => {
+      const timer = setTimeout(() => setFade(true), 50);
+      return () => clearTimeout(timer);
+    }, []);
 
   const bg = theme === "dark" ? "bg-yellow-500" : "bg-blue-500";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
@@ -14,6 +22,8 @@ export default function Supplies() {
       : "bg-gray-100 border-gray-300";
 
   return (
+     <div className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"}`}>
+
     <div className={`p-4 sm:p-6  rounded-2xl `}>
       <p className={`text-5xl font-bold mb-4 ${titleColor}`}>
         วัสดุอุปกรณ์{" "}
@@ -79,6 +89,7 @@ export default function Supplies() {
           </tbody>
         </table>
       </div>
+    </div>
     </div>
   );
 }

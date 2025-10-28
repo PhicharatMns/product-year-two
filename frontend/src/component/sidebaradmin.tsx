@@ -12,6 +12,7 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import { FaTools } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
+
 interface SidebarItem {
   text: string;
   icons: React.ComponentType<{ size?: number }>;
@@ -43,6 +44,7 @@ export default function Sidebaradmin() {
   const bg = theme === "dark" ? "bg-gray-900" : "bg-blue-100";
 
   return (
+    
     <>
       {/* ปุ่มเปิดเมนูบนมือถือ */}
       <button
@@ -54,9 +56,8 @@ export default function Sidebaradmin() {
 
       {/* Sidebar */}
       <div
-        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white dark:text-gray-200 font-bold border-r transition-transform duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white dark:text-gray-200 font-bold border-r transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
       >
         {/* Logo */}
         <div className="flex flex-col">
@@ -83,8 +84,7 @@ export default function Sidebaradmin() {
                     to={event.Link}
                     key={index}
                     className={({ isActive }) =>
-                      `flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer hover:bg-yellow-500 dark:hover:bg-yellow-600 duration-300 ${
-                        isActive ? "bg-yellow-500 dark:bg-yellow-600" : ""
+                      `flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer hover:bg-yellow-500 dark:hover:bg-yellow-600 duration-300 ${isActive ? "bg-yellow-500 dark:bg-yellow-600" : ""
                       }`
                     }
                     onClick={() => setOpen(false)}
@@ -141,5 +141,6 @@ export default function Sidebaradmin() {
         ></div>
       )}
     </>
+    
   );
 }
