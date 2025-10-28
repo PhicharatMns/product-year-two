@@ -1,6 +1,6 @@
 import { useTheme } from "@/components/theme-provider";
 import { useOutletContext } from "react-router-dom";
-
+import { useEffect, useState } from "react";
 // type ของฟังก์ชัน
 export type NotificationItem = {
   time: string;
@@ -164,89 +164,107 @@ const technicianReports = [
 export default function Notification() {
   const { theme } = useTheme();
   const { openMessAdmin } = useOutletContext() as OutletContextType;
-const bg = theme === "dark" ? "bg-gray-900" : "bg-gray-100";
+  const bg = theme === "dark" ? "bg-gray-900" : "bg-gray-100";
   const text = theme === "dark" ? "text-white" : "text-gray-800";
+  const [fade, setFade] = useState(false);
 
+
+  useEffect(() => {
+    // เปิด fade หลัง render
+    const timer = setTimeout(() => setFade(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
   return (
-    <div className={`w-max-380 p-4 mx-auto container pt-10 ${text}`}>
-      <div className="p-5">
-        <p
-          className={`text-3xl font-extrabold ${
-            theme === "dark" ? "text-yellow-500" : "text-blue-500"
-          }`}
-        >
-          การแจ้ง
-          <span
-            className={` ${
-              theme === "dark" ? "text-white" : "text-yellow-500"
-            }`}
+    <div
+      className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"
+        }`}
+    >
+      <div className={`w-max-380 p-4 mx-auto container pt-10 ${text}`}>
+        <div className="p-5">
+          <p
+            className={`text-3xl font-extrabold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+              }`}
           >
-            เตือน
-          </span>
-        </p>
+            การแจ้ง
+            <span
+              className={` ${theme === "dark" ? "text-white" : "text-yellow-500"
+                }`}
+            >
+              เตือน
+            </span>
+          </p>
 
-        <div className="grid grid-cols-5 gap-5 my-5  ">
-          <div className={`border  col-span-3  p-5 rounded-lg ${bg}`}>
-            <p
-              className={` text-2xl font-semibold ${
-                theme === "dark" ? "text-yellow-500" : "text-blue-500"
-              }`}
-            >
-              รายการขอเบิก อุปกรณ์
-            </p>
-            <div className="grid grid-cols-5 gap-5 my-5 border-b pb-2">
-              <p>วันที่</p>
-              <p>งาน</p>
-              <p>ชื่อนามสกุล</p>
-              <p>รายการ</p>
-              <p>รายละเอียดงาน</p>
+          <div className="grid grid-cols-5 gap-5 my-5  ">
+            <div className={`border  col-span-3  p-5 rounded-lg ${bg}`}>
+              <p
+                className={` text-2xl font-semibold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
+              >
+                รายการขอเบิก อุปกรณ์
+              </p>
+              <div className="grid grid-cols-5 gap-5 my-5 border-b pb-2">
+                <p>วันที่</p>
+                <p>งาน</p>
+                <p>ชื่อนามสกุล</p>
+                <p>รายการ</p>
+                <p>รายละเอียดงาน</p>
+              </div>
+              {object.map((event, index) => {
+                return (
+                  <div
+                    onClick={() => openMessAdmin(event)}
+                    key={index}
+                    className="grid grid-cols-5 gap-5 my-5 border-b duration-500 hover:rounded-lg p-1"
+                  >
+                    <p>{event.time}</p>
+                    <p>{event.job}</p>
+                    <p>
+                      {event.name} <span>{event.Lname}</span>
+                    </p>
+                    <p className="truncate">{event.Description}</p>
+
+                    {/* ใส่ปุ่ม Hover */}
+                    <p>
+                      <button
+                        role="link"
+                        className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:origin-bottom-right after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom-left hover:after:scale-x-100"
+                      >
+                        {event.title}
+                      </button>
+                    </p>
+                  </div>
+
+                );
+              })}
             </div>
-            {object.map((event, index) => {
-              return (
-                <div
-                  onClick={() => openMessAdmin(event)}
-                  key={index}
-                  className="grid grid-cols-5  gap-5 my-5 border-b hover:bg-gray-300 duration-500 hover:rounded-lg p-1 "
-                >
-                  <p>{event.time}</p>
-                  <p>{event.job}</p>
-                  <p>
-                    {event.name} <span>{event.Lname}</span>
-                  </p>
-                  <p className="truncate ">{event.Description}</p>
-                  <p>{event.title}</p>
-                </div>
-              );
-            })}
-          </div>
-          {/* รายการ2 */}
-          <div className={`border col-span-2 p-5 rounded-lg  ${bg}`}>
-            <p
-              className={`text-2xl font-semibold ${
-                theme === "dark" ? "text-yellow-500" : "text-blue-500"
-              }`}
-            >
-              รายงานจากช่าง
-            </p>
-            <div className="grid grid-cols-4 gap-5 my-5 border-b pb-2">
-              <p>วันที่</p>
-              <p>งาน</p>
-              <p>ชื่อนามสกุล</p>
-              <p>รายการ</p>
+            {/* รายการ2 */}
+            <div className={`border col-span-2 p-5 rounded-lg  ${bg}`}>
+              <p
+                className={`text-2xl font-semibold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
+              >
+                รายงานจากช่าง
+              </p>
+              <div className="grid grid-cols-4 gap-5 my-5 border-b pb-2">
+                <p>วันที่</p>
+                <p>งาน</p>
+                <p>ชื่อนามสกุล</p>
+                <p>รายการ</p>
+              </div>
+              {technicianReports.map((event, index) => {
+                return (
+                  <div
+                    key={index}
+                    className="grid grid-cols-4 gap-5 my-5 border-b hover:bg-gray-300 duration-500 hover:rounded-lg p-1 "
+                  >
+                    <p>{event.date}</p>
+                    <p>{event.name}</p>
+                    <p className="truncate">{event.report}</p>
+                    <p className="truncate">{event.detail}</p>
+                  </div>
+                );
+              })}
             </div>
-            {technicianReports.map((event, index) => {
-              return (
-                <div
-                  key={index}
-                  className="grid grid-cols-4 gap-5 my-5 border-b hover:bg-gray-300 duration-500 hover:rounded-lg p-1 "
-                >
-                  <p>{event.date}</p>
-                  <p>{event.name}</p>
-                  <p className="truncate">{event.report}</p>
-                  <p className="truncate">{event.detail}</p>
-                </div>
-              );
-            })}
           </div>
         </div>
       </div>

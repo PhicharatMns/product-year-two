@@ -125,8 +125,21 @@ const Searchpastjobs: React.FC = () => {
   const cardBg = theme === "dark" ? "bg-gray-900/80" : "bg-blue-50/50";
   const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
   const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
+ const [fade, setFade] = useState(false);
+  
+
+  useEffect(() => {
+    // เปิด fade หลัง render
+    const timer = setTimeout(() => setFade(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
 
   return (
+     <div
+      className={`transition-opacity duration-700 ${
+        fade ? "opacity-100" : "opacity-0"
+      }`}
+    >
     <div className=" w-max-380 p-6 mx-auto container pt-10">
       <div
         className={`container  mx-auto rounded-xl min-h-screen shadow-lg p-5 transition-colors duration-600 ${
@@ -151,7 +164,7 @@ const Searchpastjobs: React.FC = () => {
            
             <button 
             onClick={openModal}
-            className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-blue-500 px-6 font-medium text-neutral-200 transition hover:scale-104 cursor-pointer">
+            className="group relative inline-flex p-2 items-center justify-center overflow-hidden rounded-md bg-blue-500 px-5  font-medium text-neutral-200 transition hover:scale-104 cursor-pointer">
               <span>+ เพิ่มใบงาน</span>
               <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
               <div className="relative h-full w-8 bg-yellow-400"></div></div></button>
@@ -230,13 +243,13 @@ const Searchpastjobs: React.FC = () => {
               <div className="flex gap-2 justify-center">
                 <button
                   onClick={() => handleDelete(event._id)}
-                  className="bg-red-500 cursor-pointer text-white px-2 rounded-lg hover:bg-red-600 relative overflow-hidden   py-2.5  transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110"
+                  className="bg-red-500 cursor-pointer text-white px-3  rounded-lg hover:bg-red-600 relative overflow-hidden   py-2  transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110"
                 >
                   ลบ
                 </button>
              
                 <Link to={`/Details/${event._id}`}>
-                  <button className="bg-green-500 cursor-pointer text-white px-3 py-1  rounded-lg hover:bg-green-600 transition relative overflow-hidden  duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110">
+                  <button className="bg-green-500 cursor-pointer text-white px-3 py-2  rounded-lg hover:bg-green-600 transition relative overflow-hidden  duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110">
                     รายละเอียด
                   </button>
   
@@ -463,6 +476,7 @@ const Searchpastjobs: React.FC = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

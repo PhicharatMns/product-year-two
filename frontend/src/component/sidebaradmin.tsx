@@ -65,7 +65,7 @@ export default function Sidebaradmin() {
             <Link to="/Dashboard" className="mx-auto">
               <div className="uppercase text-2xl font-black text-white dark:text-white whitespace-nowrap mt-5 transition-all duration-300">
                 Tech<span className="text-yellow-500">Job</span>
-                <div className="text-xs text-white dark:text-gray-300 mt-1 transition-all duration-300">
+                <div className="text-xs text-white dark:text-white mt-1 transition-all duration-300">
                   Admin
                 </div>
               </div>
@@ -80,20 +80,24 @@ export default function Sidebaradmin() {
               if (event.Link) {
                 return (
                   // เพื่อให้ลิงก์ที่กำลังใช้งานอยู่มีสไตล์พิเศษ
-                  <NavLink
-                    to={event.Link}
-                    key={index}
-                    className={({ isActive }) =>
-                      `flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer hover:bg-yellow-500 dark:hover:bg-yellow-600 duration-300 ${isActive ? "bg-yellow-500 dark:bg-yellow-600" : ""
-                      }`
-                    }
-                    onClick={() => setOpen(false)}
-                  >
-                    <Icons size={24} />
-                    <span className="whitespace-nowrap inline-block transition-all duration-300">
-                      {event.text}
-                    </span>
-                  </NavLink>
+                <NavLink
+                      to={event.Link}
+                      key={index}
+                      className={({ isActive }) =>
+                        `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium text-neutral-0 transition duration-300 ${isActive ? "bg-yellow-500" : ""
+                        }`
+                      }
+                      onClick={() => setOpen(false)}
+                    >
+                      {/* แถบ animation */}
+                      <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
+                        <div className="relative h-full w-8 bg-white/50"></div>
+                      </div>
+
+                      {/* เนื้อหาภายใน NavLink */}
+                      <Icons size={24} className="relative z-10" />
+                      <span className="relative z-10">{event.text}</span>
+                    </NavLink>
                 );
               }
 

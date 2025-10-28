@@ -8,8 +8,18 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { useTheme } from "@/components/theme-provider";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+   const [fade, setFade] = useState(false);
+
+
+  useEffect(() => {
+    // เปิด fade หลัง render
+    const timer = setTimeout(() => setFade(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
   const materialData = [
     { name: "งานไม้", quantity: 57 },
     { name: "งานไฟฟ้า", quantity: 54 },
@@ -46,6 +56,11 @@ export default function Dashboard() {
   const tooltipText = theme === "dark" ? "#f9fafb" : "#111827";
 
   return (
+      <div
+      className={`transition-opacity duration-700 ${
+        fade ? "opacity-100" : "opacity-0"
+      }`}
+    >
     <div className="w-max-380 p-6 mx-auto container pt-10">
       <div className="">
         <header className="p-5">
@@ -134,6 +149,7 @@ export default function Dashboard() {
           </div>
         </section>
       </div>
+    </div>
     </div>
   );
 }
