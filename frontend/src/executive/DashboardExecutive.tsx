@@ -13,91 +13,120 @@ import {
   LineChart,
   BarChart,
 } from "recharts";
-
+import { animate, motion, useMotionValue, useTransform } from "motion/react"
+import { useEffect } from "react"
 
 
 // #region Sample data
 const data = [
   {
-    name: "Page A",
-    uv: 590,
-    pv: 800,
-    amt: 1400,
-    cnt: 490,
+    name: "มกราคม",
+    งาน: 120,
+    เหลือ: 15,
   },
   {
-    name: "Page B",
-    uv: 868,
-    pv: 967,
-    amt: 1506,
-    cnt: 590,
+    name: "กุมภาพันธ์",
+    งาน: 95,
+    เหลือ: 8,
   },
   {
-    name: "Page C",
-    uv: 1397,
-    pv: 1098,
-    amt: 989,
-    cnt: 350,
+    name: "มีนาคม",
+    งาน: 110,
+    เหลือ: 12,
   },
   {
-    name: "Page D",
-    uv: 1480,
-    pv: 1200,
-    amt: 1228,
-    cnt: 480,
+    name: "เมษายน",
+    งาน: 130,
+    เหลือ: 20,
   },
   {
-    name: "Page E",
-    uv: 1520,
-    pv: 1108,
-    amt: 1100,
-    cnt: 460,
+    name: "พฤษภาคม",
+    งาน: 125,
+    เหลือ: 10,
   },
   {
-    name: "Page F",
-    uv: 1400,
-    pv: 680,
-    amt: 1700,
-    cnt: 380,
+    name: "มิถุนายน",
+    งาน: 140,
+    เหลือ: 18,
   },
 ];
 
+const text = {
+  fontSize: 250,
+  color: "#8df0cc",
+}
+
+
 // #endregion
 const DashboardExecutive = () => {
+  const count = useMotionValue(0)
+  const rounded = useTransform(() => Math.round(count.get()))
+
+  useEffect(() => {
+    const controls = animate(count, 100, { duration: 5 })
+    return () => controls.stop()
+  }, [])
+
   return (
     <div className="w-max-380 p-6 mx-auto container pt-10">
       <div className="p-5 ">
-        <p className="text-3xl  font-extrabold mb-8 ">Dashboard <span>ผู้บริหาร</span></p>
+        <p className="text-3xl  font-extrabold mb-5 ">Dashboard <span>ผู้บริหาร</span></p>
+        {/* ข้อมูล */}
+        <div className='grid grid-cols-4 gap-5 my-5'>
+          <div className="border rounded-xl h-35 text-white bg-blue-300 p-4 text-xl">
+            <p>งานทั้งหมดในเดือน ตุลา</p>
+            <p className="mt-5 text-2xl text-le flex gap-2 font-extrabold"> <motion.pre >{rounded}</motion.pre>งาน</p>
+          </div>
+          <div className="border rounded-xl h-35 text-white bg-blue-500 p-4 text-xl">
+            <p>งานที่กําลังดําเนินการ</p>
+            <p className="mt-5 text-2xl text-le flex gap-2 font-extrabold"> <motion.pre >{rounded}</motion.pre>งาน</p>
+          </div>
+          <div className="border rounded-xl h-35 text-white bg-blue-600 p-4 text-xl">
+            <p>งานที่ล่าช้า</p>
+            <p className="mt-5 text-2xl text-le flex gap-2 font-extrabold"> <motion.pre >{rounded}</motion.pre>งาน</p>
+          </div>
+          <div className="border rounded-xl h-35 text-white bg-blue-700 p-4 text-xl">
+            <p>รายการขอเบิกวัสดุ</p>
+            <p className="mt-5 text-2xl text-le flex gap-2 font-extrabold"> <motion.pre >{rounded}</motion.pre>งาน</p>
+          </div>
+        </div>
+        {/* กราฟ */}
         <div className="grid grid-cols-2 gap-5">
           <div>
+            <p className="my-2 text-xl font-extrabold">งานทั้งหมด</p>
             <ResponsiveContainer width='100%' height={400}>
               <ComposedChart data={data}>
                 <CartesianGrid stroke="#f5f5f5" />
                 <XAxis dataKey="name" scale="band" />
-                <YAxis width="auto" />
+                <YAxis width={40} />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="uv" barSize={20} fill="#413ea0" />
-                <Line type="monotone" dataKey="uv" stroke="#ff7300" />
+                <Bar dataKey="งาน" barSize={20} fill="#413ea0" />
+                <Line type="monotone" dataKey="งาน" stroke="#ff7300" />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
 
           <div>
-            <BarChart
-              data={data}
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis yAxisId="left" orientation="left" stroke="#8884d8" width="auto" />
-              <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" width="auto" />
-              <Tooltip />
-              <Legend />
-              <Bar yAxisId="left" dataKey="pv" fill="#8884d8" />
-              <Bar yAxisId="right" dataKey="uv" fill="#82ca9d" />
-            </BarChart>
+            <p className="my-2 text-xl font-extrabold">งานทั้งหมด</p>
+            <ResponsiveContainer width='100%' height={400}>
+              <BarChart
+                data={data}
+              >
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="name" />
+                <YAxis yAxisId="left" orientation="left" stroke="#05339C" width={40} />
+                <YAxis yAxisId="right" orientation="right" stroke="#FCB53B" width={40} />
+                <Tooltip />
+                <Legend />
+                <Bar yAxisId="left" dataKey="งาน" fill="#05339C" />
+                <Bar yAxisId="right" dataKey="เหลือ" fill="#FCB53B" />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         </div >
+
+
       </div>
     </div>
   );
