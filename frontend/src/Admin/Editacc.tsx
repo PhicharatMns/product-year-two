@@ -178,16 +178,8 @@ export default function Editacc() {
       setSelectedTradesman(null);
     }
   };
-  const [fade, setFade] = useState(false);
 
-
-  useEffect(() => {
-    // เปิด fade หลัง render
-    const timer = setTimeout(() => setFade(true), 50);
-    return () => clearTimeout(timer);
-  }, []);
   const Bg_border = theme === "dark" ? "bg-yellow-500" : "";
-   const bgbtn = theme === "dark" ? "bg-yellow-500" : "bg-blue-500";
   const texthaeder =
     theme === "dark"
       ? "text-yellow-500 border-b-4 border-yellow-500"
@@ -196,46 +188,37 @@ export default function Editacc() {
   const texthead = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
   return (
-    <div
-      className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"
-        }`}
-    >
-      <div className="w-max-380 p-4 mx-auto container pt-10">
-        <div className={`mx-auto container rounded-2xl shadow-xl p-6 ${bg}`}>
-          <div className="flex items-center justify-between mb-6">
-            <p className={`text-3xl font-bold ${texthead}`}>
-              จัดการบัญชี{" "}
-              <span
-                className={theme === "dark" ? "text-white" : "text-yellow-500"}
-              >
-                ช่าง
-              </span>
-            </p>
-            <button
-              onClick={() => setshowModal(true)}
-              className={`group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-xl bg-blue-500 px-6 font-medium text-white border hover:scale-105 ${bgbtn}`}
+    <div className="w-max-380 p-4 mx-auto container pt-10">
+      <div className={`mx-auto container rounded-2xl shadow-xl p-6 ${bg}`}>
+        <div className="flex items-center justify-between mb-6">
+          <p className={`text-3xl font-bold ${texthead}`}>
+            จัดการบัญชี{" "}
+            <span
+              className={theme === "dark" ? "text-white" : "text-yellow-500"}
             >
-              <span>เพิ่มช่าง</span>
-              <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
-                <div className="relative h-full w-8 bg-white/20"></div>
-              </div>
-            </button>
-
-
-          </div>
-
-          {/* Table Header */}
-          <div
-            className={`grid grid-cols-7 gap-5 text-center font-semibold text-lg text-blue-500 mb-3 ${texthaeder}`}
+              ช่าง
+            </span>
+          </p>
+          <button
+            onClick={() => setshowModal(true)}
+            className={`border p-2 rounded-xl bg-blue-500 text-white cursor-pointer ${Bg_border}`}
           >
-            <p>รูป</p>
-            <p>ชื่อ</p>
-            <p>ตำแหน่ง</p>
-            <p>เบอร์โทรศัพท์</p>
-            <p>เมล</p>
-            <p>วันที่สมัคร</p>
-            <p>การจัดการ</p>
-          </div>
+            เพิ่มช่าง
+          </button>
+        </div>
+
+        {/* Table Header */}
+        <div
+          className={`grid grid-cols-7 gap-5 text-center font-semibold text-lg text-blue-500 mb-3 ${texthaeder}`}
+        >
+          <p>รูป</p>
+          <p>ชื่อ</p>
+          <p>ตำแหน่ง</p>
+          <p>เบอร์โทรศัพท์</p>
+          <p>เมล</p>
+          <p>วันที่สมัคร</p>
+          <p>การจัดการ</p>
+        </div>
 
         {/* Table Rows */}
         {loading ? (
@@ -252,16 +235,14 @@ export default function Editacc() {
                 className="grid grid-cols-7 gap-5 items-center border rounded-xl bg transition-all duration-200 shadow-sm py-2"
               >
                 <img
-                  src={`http://localhost:5000/uploads/Profile/${
-                    event.Profile || "default.png"
-                  }`}
+                  src={`http://localhost:5000/uploads/Profile/${event.Profile || "default.png"
+                    }`}
                   alt="profile"
                   className="w-10 h-10 object-cover rounded-full mx-auto border-2 border-blue-300 shadow-sm"
                 />
                 <p
-                  className={`text-center font-medium ${
-                    theme === "dark" ? "text-yellow-500" : "text-gray-800"
-                  }`}
+                  className={`text-center font-medium ${theme === "dark" ? "text-yellow-500" : "text-gray-800"
+                    }`}
                 >
                   {event.Name}
                 </p>
@@ -269,9 +250,8 @@ export default function Editacc() {
                 <p className="text-center">{event.Phone_Number}</p>
                 <p className="text-center">{event.Email}</p>
                 <p
-                  className={`text-center font-medium ${
-                    theme === "dark" ? "text-yellow-500" : "text-gray-800"
-                  }`}
+                  className={`text-center font-medium ${theme === "dark" ? "text-yellow-500" : "text-gray-800"
+                    }`}
                 >
                   {new Date(event.Start_data).toLocaleDateString("th-TH")}
                 </p>
@@ -300,11 +280,10 @@ export default function Editacc() {
         <form onSubmit={handleSubmit}>
           <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
             <div
-              className={`rounded-2xl shadow-2xl p-8 w-[900px] border transition-colors duration-500 ${
-                theme === "dark"
-                  ? "bg-gray-800 border-gray-700 text-yellow-500"
-                  : "bg-white border-blue-200 text-blue-500"
-              }`}
+              className={`rounded-2xl shadow-2xl p-8 w-[900px] border transition-colors duration-500 ${theme === "dark"
+                ? "bg-gray-800 border-gray-700 text-yellow-500"
+                : "bg-white border-blue-200 text-blue-500"
+                }`}
             >
               <div className="mb-6 border-b pb-3">
                 <h2 className={`text-2xl font-bold ${texthead}`}>
@@ -319,9 +298,8 @@ export default function Editacc() {
                     type="text"
                     value={Name}
                     onChange={(e) => setName(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -330,9 +308,8 @@ export default function Editacc() {
                     type="text"
                     value={Nickname}
                     onChange={(e) => setNickname(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -341,9 +318,8 @@ export default function Editacc() {
                     type="text"
                     value={ID}
                     onChange={(e) => setID(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -352,9 +328,8 @@ export default function Editacc() {
                     type="text"
                     value={Phone_Number}
                     onChange={(e) => setPhone_Number(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -363,31 +338,43 @@ export default function Editacc() {
                     type="text"
                     value={Email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
-                  <p>ตำแหน่ง</p>
+                  <p>สายงาน</p>
                   <input
                     type="text"
                     value={Position}
                     onChange={(e) => setPosition(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
+                <div>
+                  <p>Role</p>
+                  <select
+                    value={role} onChange={(e) => setRole(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"}`}
+                  >
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                    <option value="chief">Chief</option>
+                    <option value="executive">Executive</option>
+                  </select>
+
+                </div>
+
+
                 <div>
                   <p>วันเกิด</p>
                   <input
                     type="date"
                     value={Birthday}
                     onChange={(e) => setBirthday(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -396,9 +383,8 @@ export default function Editacc() {
                     type="date"
                     value={Start_data}
                     onChange={(e) => setStart_data(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -407,9 +393,8 @@ export default function Editacc() {
                     type="text"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div>
@@ -418,9 +403,8 @@ export default function Editacc() {
                     type="text"
                     value={passwork}
                     onChange={(e) => setpasswork(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div className="col-span-2">
@@ -429,9 +413,8 @@ export default function Editacc() {
                     value={Address}
                     onChange={(e) => setAddress(e.target.value)}
                     rows={3}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
                 <div className="col-span-2">
@@ -439,48 +422,44 @@ export default function Editacc() {
                   <input
                     type="file"
                     onChange={(e) => setProfile(e.target.files?.[0] || null)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                    }`}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                      }`}
                   />
                 </div>
               </div>
 
-                <div className="ml-auto w-fit mt-5 flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setshowModal(false)}
-                    className="border rounded-xl p-2 cursor-pointer"
-                  >
-                    ยกเลิก
-                  </button>
-                  <button
-                    type="submit"
-                    className="border rounded-xl bg-blue-500 text-white px-4 py-2 hover:bg-blue-600"
-                  >
-                    ยืนยัน
-                  </button>
-                  
-                </div>
+              <div className="ml-auto w-fit mt-5 flex gap-3">
+                <button
+                  type="button"
+                  onClick={() => setshowModal(false)}
+                  className="border rounded-xl p-2 cursor-pointer"
+                >
+                  ยกเลิก
+                </button>
+                <button
+                  type="submit"
+                  className="border rounded-xl bg-blue-500 text-white px-4 py-2 hover:bg-blue-600"
+                >
+                  ยืนยัน
+                </button>
               </div>
             </div>
-          </form>
-        )}
+          </div>
+        </form>
+      )}
 
       {/* Modal ลบ */}
       {showdeleted && selectedTradesman && (
         <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
           <div
-            className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
-            }`}
+            className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
           >
             <p className="text-lg mb-4">
               คุณต้องการลบช่าง{" "}
               <span
-                className={`font-bold ${
-                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                }`}
+                className={`font-bold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
               >
                 {selectedTradesman.Name}
               </span>{" "}
