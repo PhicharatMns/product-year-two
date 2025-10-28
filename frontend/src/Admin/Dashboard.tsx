@@ -5,12 +5,11 @@ import {
   YAxis,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
 import { useTheme } from "@/components/theme-provider";
-import { animate, motion, useMotionValue, useTransform } from "motion/react"
+import { animate, motion, useMotionValue, useTransform } from "motion/react";
 import { useEffect } from "react";
-
 
 export default function Dashboard() {
   const materialData = [
@@ -38,18 +37,17 @@ export default function Dashboard() {
   ];
 
   // #endregion
-  const count = useMotionValue(0)
-  const rounded = useTransform(() => Math.round(count.get()))
+  const count = useMotionValue(0);
+  const rounded = useTransform(() => Math.round(count.get()));
 
   useEffect(() => {
-    const controls = animate(count, 100, { duration: 5 })
-    return () => controls.stop()
-  }, [])
-
+    const controls = animate(count, 100, { duration: 5 });
+    return () => controls.stop();
+  }, []);
 
   const { theme } = useTheme();
   const text = theme === "dark" ? "text-yellow-500" : "text-gray-800";
-  const descrtiption = theme === 'dark' ? 'text-white' : 'text-gray-500'
+  const descrtiption = theme === "dark" ? "text-white" : "text-gray-500";
   const cardBg = theme === "dark" ? "bg-gray-700" : "bg-blue-50/40";
   const barColor1 = theme === "dark" ? "#60a5fa" : "#3b82f6";
   const barColor2 = theme === "dark" ? "#34d399" : "#10b981";
@@ -62,8 +60,19 @@ export default function Dashboard() {
     <div className="w-max-380 p-6 mx-auto container pt-10">
       <div className="">
         <header className="p-5">
-          <h1 className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
-            Dashboard <span className={`${theme === 'dark' ? 'text-white' : 'text-yellow-500'}`}>Admin</span>
+          <h1
+            className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${
+              theme === "dark" ? "text-yellow-500" : "text-blue-500"
+            }`}
+          >
+            Dashboard{" "}
+            <span
+              className={`${
+                theme === "dark" ? "text-white" : "text-yellow-500"
+              }`}
+            >
+              Admin
+            </span>
           </h1>
           <p className={`  text-lg font-medium ${descrtiption}`}>
             ภาพรวมการทำงานทั้งหมดในระบบ
@@ -74,10 +83,30 @@ export default function Dashboard() {
           <div className="flex flex-col lg:flex-row gap-10">
             <div className="lg:w-1/3 grid grid-cols-1 gap-6">
               {[
-                { title: "จำนวนช่าง", value: "7,850", unit: "คน", color: "bg-gray-700" },
-                { title: "งานทั้งหมด", value: "500", unit: "งาน", color: "bg-blue-600" },
-                { title: "กำลังดำเนิน", value: "85", unit: "งาน", color: "bg-yellow-500" },
-                { title: "งานที่เสร็จแล้ว", value: "26", unit: "งาน", color: "bg-green-500" },
+                {
+                  title: "จำนวนช่าง",
+                  value: "7,850",
+                  unit: "คน",
+                  color: "bg-gray-700",
+                },
+                {
+                  title: "งานทั้งหมด",
+                  value: "500",
+                  unit: "งาน",
+                  color: "bg-blue-600",
+                },
+                {
+                  title: "กำลังดำเนิน",
+                  value: "85",
+                  unit: "งาน",
+                  color: "bg-yellow-500",
+                },
+                {
+                  title: "งานที่เสร็จแล้ว",
+                  value: "26",
+                  unit: "งาน",
+                  color: "bg-green-500",
+                },
               ].map((item, index) => (
                 <div
                   key={index}
@@ -85,8 +114,10 @@ export default function Dashboard() {
                 >
                   <h2 className="text-2xl font-bold mb-2">{item.title}</h2>
                   <p className="my-5 text-6xl font-extrabold tracking-wide flex gap-2">
-                    <motion.pre >{rounded}</motion.pre>
-                    <span className="text-lg font-semibold align-top">{item.unit}</span>
+                    <motion.pre>{rounded}</motion.pre>
+                    <span className="text-lg font-semibold align-top">
+                      {item.unit}
+                    </span>
                   </p>
                   <button className="bg-white/20 hover:bg-white/30 text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-300 shadow-md">
                     รายละเอียด
@@ -97,14 +128,23 @@ export default function Dashboard() {
 
             <div className="lg:w-2/3 flex flex-col gap-8">
               <div className={`rounded-3xl shadow-inner p-6 ${cardBg}`}>
-                <h2 className={`text-2xl font-extrabold mb-4 text-center ${text}`}>
+                <h2
+                  className={`text-2xl font-extrabold mb-4 text-center ${text}`}
+                >
                   งานทั้งหมด
                 </h2>
                 <div className="w-full h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={materialData} barSize={35}>
-                      <XAxis dataKey="name" stroke={axisColor} tick={{ fontSize: 14, fill: axisColor }} />
-                      <YAxis stroke={axisColor} tick={{ fontSize: 14, fill: axisColor }} />
+                      <XAxis
+                        dataKey="name"
+                        stroke={axisColor}
+                        tick={{ fontSize: 14, fill: axisColor }}
+                      />
+                      <YAxis
+                        stroke={axisColor}
+                        tick={{ fontSize: 14, fill: axisColor }}
+                      />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: tooltipBg,
@@ -113,22 +153,37 @@ export default function Dashboard() {
                           color: tooltipText,
                         }}
                       />
-                      <Legend wrapperStyle={{ fontSize: "14px", color: tooltipText }} />
-                      <Bar dataKey="quantity" fill={barColor1} radius={[8, 8, 0, 0]} />
+                      <Legend
+                        wrapperStyle={{ fontSize: "14px", color: tooltipText }}
+                      />
+                      <Bar
+                        dataKey="quantity"
+                        fill={barColor1}
+                        radius={[8, 8, 0, 0]}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
               </div>
 
               <div className={`rounded-3xl shadow-inner p-6 ${cardBg}`}>
-                <h2 className={`text-2xl font-extrabold mb-4 text-center ${text}`}>
+                <h2
+                  className={`text-2xl font-extrabold mb-4 text-center ${text}`}
+                >
                   จำนวนงานแต่ละเดือน
                 </h2>
                 <div className="w-full h-[400px]">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={WorkMountData} barSize={35}>
-                      <XAxis dataKey="name" stroke={axisColor} tick={{ fontSize: 14, fill: axisColor }} />
-                      <YAxis stroke={axisColor} tick={{ fontSize: 14, fill: axisColor }} />
+                      <XAxis
+                        dataKey="name"
+                        stroke={axisColor}
+                        tick={{ fontSize: 14, fill: axisColor }}
+                      />
+                      <YAxis
+                        stroke={axisColor}
+                        tick={{ fontSize: 14, fill: axisColor }}
+                      />
                       <Tooltip
                         contentStyle={{
                           backgroundColor: tooltipBg,
@@ -137,8 +192,14 @@ export default function Dashboard() {
                           color: tooltipText,
                         }}
                       />
-                      <Legend wrapperStyle={{ fontSize: "14px", color: tooltipText }} />
-                      <Bar dataKey="quantity" fill={barColor2} radius={[8, 8, 0, 0]} />
+                      <Legend
+                        wrapperStyle={{ fontSize: "14px", color: tooltipText }}
+                      />
+                      <Bar
+                        dataKey="quantity"
+                        fill={barColor2}
+                        radius={[8, 8, 0, 0]}
+                      />
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
