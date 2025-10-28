@@ -79,15 +79,6 @@ export default function Calendar() {
 
   return (
     <div
-      className={`transition-all duration-700 transform ${
-        fade
-          ? "opacity-100 translate-x-0"
-          : slideDir === "right"
-            ? "opacity-0 translate-x-10"
-            : slideDir === "left"
-              ? "opacity-0 -translate-x-10"
-              : "opacity-0"
-          }`}
       >
         <div className="w-max-380 p-9 mx-auto container">
           {/* Header */}
