@@ -16,6 +16,7 @@ interface Tradesman {
   username?: string;
   passwork?: string;
   Address?: string;
+  role?: string
 }
 
 export default function Editacc() {
@@ -42,6 +43,7 @@ export default function Editacc() {
   const [passwork, setpasswork] = useState("");
   const [Address, setAddress] = useState("");
   const [Profile, setProfile] = useState<File | null>(null);
+  const [role, setRole] = useState("user");
 
   // ฟังก์ชัน preload ข้อมูลเมื่อแก้ไข
   const openEditModal = (tradesman: Tradesman) => {
@@ -60,6 +62,9 @@ export default function Editacc() {
     setpasswork(tradesman.passwork || "");
     setAddress(tradesman.Address || "");
     setProfile(null);
+    setRole(tradesman.role || "user");
+
+
   };
 
   // fetch ข้อมูล tradesman จาก backend
@@ -105,13 +110,17 @@ export default function Editacc() {
       data.append("username", username);
       data.append("passwork", passwork);
       data.append("Address", Address);
+      data.append("role", role); // สำคัญ
       if (Profile) data.append("Profile", Profile);
 
       if (editMode && selectedTradesman) {
         await axios.put(
           `http://localhost:5000/api/login/${selectedTradesman._id}`,
           data,
-          { withCredentials: true }
+          {
+            withCredentials: true,
+            headers: { "Content-Type": "multipart/form-data" }, // สำคัญ
+          }
         );
       } else {
         await axios.post("http://localhost:5000/api/login/register", data, {
@@ -120,8 +129,6 @@ export default function Editacc() {
       }
 
       await fetchTradesman();
-
-      // reset form และปิด modal
       setshowModal(false);
       setEditMode(false);
       setSelectedTradesman(null);
@@ -137,6 +144,7 @@ export default function Editacc() {
       setpasswork("");
       setAddress("");
       setProfile(null);
+      setRole("user");
     } catch (err: unknown) {
       if (axios.isAxiosError(err))
         alert(err.response?.data?.message || err.message);
@@ -144,6 +152,8 @@ export default function Editacc() {
       console.error(err);
     }
   };
+
+
 
   // modal ลบ
   const openDeleteModal = (tradesman: Tradesman) => {
@@ -227,195 +237,214 @@ export default function Editacc() {
             <p>การจัดการ</p>
           </div>
 
-          {/* Table Rows */}
-          {loading ? (
-        <button className="inline-flex cursor-pointer items-center rounded-[8px] bg-neutral-950 px-3 py-1 text-sm text-neutral-100 transition-colors hover:bg-neutral-800 active:bg-neutral-700 disabled:pointer-events-none disabled:opacity-50" ><div className="h-3 w-3 animate-spin rounded-full border-2 border-solid border-neutral-100 border-t-transparent">
-          </div><span className="ml-1">กำลังโหลด...</span></button>
-          ) : (
-            <div className="space-y-1">
-              {dataTradesman.map((event) => (
-                <div
-                  key={event._id}
-                  className="grid grid-cols-7 gap-5 items-center border rounded-xl bg transition-all duration-200 shadow-sm py-2"
-                >
-                  <img
-                    src={`http://localhost:5000/uploads/Profile/${event.Profile || "default.png"
-                      }`}
-                    alt="profile"
-                    className="w-10 h-10 object-cover rounded-full mx-auto border-2 border-blue-300 shadow-sm"
-                  />
-                  <p
-                    className={`text-center font-medium ${theme === "dark" ? "text-yellow-500" : "text-gray-800"
-                      }`}
-                  >
-                    {event.Name}
-                  </p>
-                  <p className="text-center">{event.Position}</p>
-                  <p className="text-center">{event.Phone_Number}</p>
-                  <p className="text-center">{event.Email}</p>
-                  <p
-                    className={`text-center font-medium ${theme === "dark" ? "text-yellow-500" : "text-gray-800"
-                      }`}
-                  >
-                    {new Date(event.Start_data).toLocaleDateString("th-TH")}
-                  </p>
-                  <div className="flex justify-center gap-2">
-                    <button
-                      onClick={() => openDeleteModal(event)}
-                      className="bg-red-600 text-white px-5 py-2 rounded-full hover:bg-red-700 transition-all shadow-md"
-                    >
-                      ลบ
-                    </button>
-                    <button
-                      onClick={() => openEditModal(event)}
-                      className="bg-orange-400 text-white px-5 py-2 rounded-full hover:bg-orange-500 transition-all shadow-md"
-                    >
-                      แก้ไข
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Modal เพิ่ม/แก้ไข */}
-        {showModal && (
-          <form onSubmit={handleSubmit}>
-            <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
+        {/* Table Rows */}
+        {loading ? (
+          <div className="flex justify-center items-center h-40">
+            <p className="text-xl font-semibold text-blue-500">
+              กำลังโหลดข้อมูล...
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-1">
+            {dataTradesman.map((event) => (
               <div
-                className={`rounded-2xl shadow-2xl p-8 w-[900px] border transition-colors duration-500 ${theme === "dark"
-                    ? "bg-gray-800 border-gray-700 text-yellow-500"
-                    : "bg-white border-blue-200 text-blue-500"
-                  }`}
+                key={event._id}
+                className="grid grid-cols-7 gap-5 items-center border rounded-xl bg transition-all duration-200 shadow-sm py-2"
               >
-                <div className="mb-6 border-b pb-3">
-                  <h2 className={`text-2xl font-bold ${texthead}`}>
-                    {editMode ? "แก้ไขช่าง" : "เพิ่มช่างเข้าระบบ"}
-                  </h2>
+                <img
+                  src={`http://localhost:5000/uploads/Profile/${
+                    event.Profile || "default.png"
+                  }`}
+                  alt="profile"
+                  className="w-10 h-10 object-cover rounded-full mx-auto border-2 border-blue-300 shadow-sm"
+                />
+                <p
+                  className={`text-center font-medium ${
+                    theme === "dark" ? "text-yellow-500" : "text-gray-800"
+                  }`}
+                >
+                  {event.Name}
+                </p>
+                <p className="text-center">{event.Position}</p>
+                <p className="text-center">{event.Phone_Number}</p>
+                <p className="text-center">{event.Email}</p>
+                <p
+                  className={`text-center font-medium ${
+                    theme === "dark" ? "text-yellow-500" : "text-gray-800"
+                  }`}
+                >
+                  {new Date(event.Start_data).toLocaleDateString("th-TH")}
+                </p>
+                <div className="flex justify-center gap-2">
+                  <button
+                    onClick={() => openDeleteModal(event)}
+                    className="bg-red-600 text-white px-5 py-2 rounded-full hover:bg-red-700 transition-all shadow-md"
+                  >
+                    ลบ
+                  </button>
+                  <button
+                    onClick={() => openEditModal(event)}
+                    className="bg-orange-400 text-white px-5 py-2 rounded-full hover:bg-orange-500 transition-all shadow-md"
+                  >
+                    แก้ไข
+                  </button>
                 </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-                <div className="grid grid-cols-2 gap-5">
-                  <div>
-                    <p>ชื่อนามสกุล</p>
-                    <input
-                      type="text"
-                      value={Name}
-                      onChange={(e) => setName(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div>
-                    <p>ชื่อเล่น</p>
-                    <input
-                      type="text"
-                      value={Nickname}
-                      onChange={(e) => setNickname(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div>
-                    <p>เลขบัตรประชาชน</p>
-                    <input
-                      type="text"
-                      value={ID}
-                      onChange={(e) => setID(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div>
-                    <p>เบอร์โทรศัพท์</p>
-                    <input
-                      type="text"
-                      value={Phone_Number}
-                      onChange={(e) => setPhone_Number(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div>
-                    <p>Email</p>
-                    <input
-                      type="text"
-                      value={Email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div>
-                    <p>ตำแหน่ง</p>
-                    <input
-                      type="text"
-                      value={Position}
-                      onChange={(e) => setPosition(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div>
-                    <p>วันเกิด</p>
-                    <input
-                      type="date"
-                      value={Birthday}
-                      onChange={(e) => setBirthday(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div>
-                    <p>วันที่เริ่มงาน</p>
-                    <input
-                      type="date"
-                      value={Start_data}
-                      onChange={(e) => setStart_data(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div>
-                    <p>User</p>
-                    <input
-                      type="text"
-                      value={username}
-                      onChange={(e) => setUsername(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div>
-                    <p>รหัสผ่าน</p>
-                    <input
-                      type="text"
-                      value={passwork}
-                      onChange={(e) => setpasswork(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <p>ที่อยู่</p>
-                    <textarea
-                      value={Address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      rows={3}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
-                  <div className="col-span-2">
-                    <p>รูปภาพพนักงาน</p>
-                    <input
-                      type="file"
-                      onChange={(e) => setProfile(e.target.files?.[0] || null)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-50"
-                        }`}
-                    />
-                  </div>
+      {/* Modal เพิ่ม/แก้ไข */}
+      {showModal && (
+        <form onSubmit={handleSubmit}>
+          <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
+            <div
+              className={`rounded-2xl shadow-2xl p-8 w-[900px] border transition-colors duration-500 ${
+                theme === "dark"
+                  ? "bg-gray-800 border-gray-700 text-yellow-500"
+                  : "bg-white border-blue-200 text-blue-500"
+              }`}
+            >
+              <div className="mb-6 border-b pb-3">
+                <h2 className={`text-2xl font-bold ${texthead}`}>
+                  {editMode ? "แก้ไขช่าง" : "เพิ่มช่างเข้าระบบ"}
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-2 gap-5">
+                <div>
+                  <p>ชื่อนามสกุล</p>
+                  <input
+                    type="text"
+                    value={Name}
+                    onChange={(e) => setName(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
                 </div>
+                <div>
+                  <p>ชื่อเล่น</p>
+                  <input
+                    type="text"
+                    value={Nickname}
+                    onChange={(e) => setNickname(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p>เลขบัตรประชาชน</p>
+                  <input
+                    type="text"
+                    value={ID}
+                    onChange={(e) => setID(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p>เบอร์โทรศัพท์</p>
+                  <input
+                    type="text"
+                    value={Phone_Number}
+                    onChange={(e) => setPhone_Number(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p>Email</p>
+                  <input
+                    type="text"
+                    value={Email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p>ตำแหน่ง</p>
+                  <input
+                    type="text"
+                    value={Position}
+                    onChange={(e) => setPosition(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p>วันเกิด</p>
+                  <input
+                    type="date"
+                    value={Birthday}
+                    onChange={(e) => setBirthday(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p>วันที่เริ่มงาน</p>
+                  <input
+                    type="date"
+                    value={Start_data}
+                    onChange={(e) => setStart_data(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p>User</p>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+                <div>
+                  <p>รหัสผ่าน</p>
+                  <input
+                    type="text"
+                    value={passwork}
+                    onChange={(e) => setpasswork(e.target.value)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <p>ที่อยู่</p>
+                  <textarea
+                    value={Address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    rows={3}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+                <div className="col-span-2">
+                  <p>รูปภาพพนักงาน</p>
+                  <input
+                    type="file"
+                    onChange={(e) => setProfile(e.target.files?.[0] || null)}
+                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none mt-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-50"
+                    }`}
+                  />
+                </div>
+              </div>
 
                 <div className="ml-auto w-fit mt-5 flex gap-3">
                   <button
@@ -438,41 +467,42 @@ export default function Editacc() {
           </form>
         )}
 
-        {/* Modal ลบ */}
-        {showdeleted && selectedTradesman && (
-          <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
-            <div
-              className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${theme === "dark" ? "bg-gray-800" : "bg-white"
+      {/* Modal ลบ */}
+      {showdeleted && selectedTradesman && (
+        <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
+          <div
+            className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            }`}
+          >
+            <p className="text-lg mb-4">
+              คุณต้องการลบช่าง{" "}
+              <span
+                className={`font-bold ${
+                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
                 }`}
-            >
-              <p className="text-lg mb-4">
-                คุณต้องการลบช่าง{" "}
-                <span
-                  className={`font-bold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    }`}
-                >
-                  {selectedTradesman.Name}
-                </span>{" "}
-                ใช่หรือไม่
-              </p>
-              <div className="flex justify-end gap-3">
-                <button
-                  onClick={() => setshowdeleted(false)}
-                  className="border px-4 py-2 cursor-pointer rounded-lg"
-                >
-                  ยกเลิก
-                </button>
-                <button
-                  onClick={confirmDelete}
-                  className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
-                >
-                  ลบ
-                </button>
-              </div>
+              >
+                {selectedTradesman.Name}
+              </span>{" "}
+              ใช่หรือไม่
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setshowdeleted(false)}
+                className="border px-4 py-2 cursor-pointer rounded-lg"
+              >
+                ยกเลิก
+              </button>
+              <button
+                onClick={confirmDelete}
+                className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700"
+              >
+                ลบ
+              </button>
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

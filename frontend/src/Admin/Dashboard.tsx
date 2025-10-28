@@ -8,7 +8,6 @@ import {
   ResponsiveContainer
 } from "recharts";
 import { useTheme } from "@/components/theme-provider";
-import { useEffect, useState } from "react";
 
 export default function Dashboard() {
    const [fade, setFade] = useState(false);
@@ -43,6 +42,16 @@ export default function Dashboard() {
     { name: "พ.ย.", quantity: 25 },
     { name: "ธ.ค.", quantity: 10 },
   ];
+
+  // #endregion
+  const count = useMotionValue(0)
+  const rounded = useTransform(() => Math.round(count.get()))
+
+  useEffect(() => {
+    const controls = animate(count, 100, { duration: 5 })
+    return () => controls.stop()
+  }, [])
+
 
   const { theme } = useTheme();
   const text = theme === "dark" ? "text-yellow-500" : "text-gray-800";
@@ -86,8 +95,8 @@ export default function Dashboard() {
                   className={`${item.color} text-white p-7 rounded-2xl shadow-lg hover:shadow-2xl transition-transform transform hover:-translate-y-1`}
                 >
                   <h2 className="text-2xl font-bold mb-2">{item.title}</h2>
-                  <p className="my-5 text-6xl font-extrabold tracking-wide">
-                    {item.value}{" "}
+                  <p className="my-5 text-6xl font-extrabold tracking-wide flex gap-2">
+                    <motion.pre >{rounded}</motion.pre>
                     <span className="text-lg font-semibold align-top">{item.unit}</span>
                   </p>
                   <button className="bg-white/20 hover:bg-white/30 text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-300 shadow-md">

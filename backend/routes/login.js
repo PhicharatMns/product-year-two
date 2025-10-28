@@ -67,7 +67,7 @@ router.post("/register", upload.single("Profile"), async (req, res) => {
       Profile: req.file ? req.file.filename : "", // ถ้ามีรูปให้บันทึกชื่อไฟล์
       Position: req.body.Position,
       Start_data: req.body.Start_data,
-      role: req.body.role || "user",
+      role: req.body.role,
     });
 
     await newUser.save();
@@ -123,18 +123,15 @@ router.delete("/:id", async (req, res) => {
 
     // ลบไฟล์รูปถ้ามี
     if (deleted.Profile) {
-      const filepath = path.join(
-        __dirname,
-        "../uploads/Profile",
-        deleted.Profile
-      );
-      fs.unlink(filepath, (err) => {
-        if (err) console.error("ลบรูปไม่สำเร็จ:", err);
-      });
+      const filepath = path.join(__dirname, "../uploads/Profile", deleted.Profile);
+      if (fs.existsSync(filepath)) {
+        fs.unlink(filepath, (err) => {
+          if (err) console.error("ลบรูปไม่สำเร็จ:", err);
+        });
+      }
     }
 
-    // ส่ง status 200 แทน 500
-    res.status(200).json({ message: "ลบข้อมูลสำเร็จ" });
+    res.status(200).json({ message: `ลบข้อมูล ${deleted.Name} สำเร็จ` });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "ลบไม่สำเร็จ" });
@@ -164,7 +161,8 @@ router.get("/dashboardUser", verifyToken, async (req, res) => {
 router.get("/all-tradesman", async (req, res) => {
   try {
     // ดึงเฉพาะ role = "user" (สมมติช่างคือ user)
-    const tradesman = await Login.find({ role: "user" });
+    const tradesman = await Login.find(); // ไม่กรอง role
+    //    const tradesman = await Login.find({ role: { $in: ["user", "chief", "executive"] } });
     res.json(tradesman);
   } catch (err) {
     console.error(err);
@@ -188,6 +186,7 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
       Email,
       Position,
       Start_data,
+      role,
     } = req.body;
 
     // หา user เดิมก่อน
@@ -228,7 +227,7 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
     user.Email = Email || user.Email;
     user.Position = Position || user.Position;
     user.Start_data = Start_data || user.Start_data;
-
+    user.role = role || user.role
     // บันทึกข้อมูลที่อัปเดตแล้ว
     await user.save();
 
