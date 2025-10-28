@@ -39,6 +39,10 @@ import Detailwork from "./User/Detailwork";
 import DashboardExecutive from "./executive/DashboardExecutive";
 import Executive from "./executive/Executive";
 
+// userChief 
+import Dashboardchief from "./chief/Dashboardchief";
+import Chief from "./chief/Chief";
+
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
@@ -96,6 +100,19 @@ const router = createBrowserRouter([
     ),
     children: [{ path: "DashboardExecutive", element: <DashboardExecutive /> }],
   },
+
+  //chief
+  {
+    path: '/chief', element: (
+      <ProtectedRoute>
+        <Chief   />
+      </ProtectedRoute>
+    ),
+    children: [
+      { path: 'Dashboardchief', element: <Dashboardchief /> }
+    ]
+  }
+
 ]);
 
 export default function App() {

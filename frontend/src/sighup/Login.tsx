@@ -33,8 +33,10 @@ export default function Login() {
         navigate("/dashboard"); // หน้า admin
       } else if (response.data.role === "user") {
         navigate("/user/DashboardUser"); // หน้า user
-      } else {
+      } else if (response.data.role === 'executive') {
         navigate("/executive/DashboardExecutive");
+      } else {
+        navigate('/chief/Dashboardchief')
       }
     } catch (err) {
       console.error(err);
@@ -46,9 +48,8 @@ export default function Login() {
     <div className={`flex h-screen ${theme === "dark" ? "bg-black/10" : ""}`}>
       <div className="flex-1 flex items-center justify-center shadow-lg">
         <div
-          className={`w-full max-w-md p-8 shadow-lg rounded-xl ${
-            theme === "dark" ? "bg-gray-800" : "bg-gray-100"
-          }`}
+          className={`w-full max-w-md p-8 shadow-lg rounded-xl ${theme === "dark" ? "bg-gray-800" : "bg-gray-100"
+            }`}
         >
           <h2 className="text-2xl font-bold text-center text-blue-600 mb-8">
             ยินดีต้อนรับ

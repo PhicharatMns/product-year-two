@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
-import { RiFilePaper2Line } from "react-icons/ri";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose, IoLogOutOutline } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { useTheme } from "@/components/theme-provider";
 import axios from "axios";
-import { AiTwotoneCalendar } from "react-icons/ai";
 
 interface SidebarItem {
     text: string;
@@ -16,7 +14,7 @@ interface SidebarItem {
     onClick?: () => void;
 }
 
-export default function Sidebarexecutive() {
+export default function SidebarChief() {
     const [open, setOpen] = useState(false); // sidebar มือถือ
     const navigate = useNavigate();
     const token = localStorage.getItem("token");
@@ -29,9 +27,7 @@ export default function Sidebarexecutive() {
     };
 
     const items: SidebarItem[] = [
-        { text: "Dashboard", icon: MdDashboard, link: "/executive/DashboardExecutive" },
-        { text: "รายงาน", icon: RiFilePaper2Line, link: "/executive/getpaper" },
-        { text: "ทีมงาน", icon: AiTwotoneCalendar, link: "/executive/Calendar" },
+        { text: "Dashboard", icon: MdDashboard, link: "/chief/Dashboardchief" },
         { text: "ออกจากระบบ", icon: IoLogOutOutline, onClick: handleLogout },
     ];
 
