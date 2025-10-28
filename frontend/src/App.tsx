@@ -27,13 +27,17 @@ import Suppiles from "./User/Supplies";
 import DashboardUser from "./User/DashboardUser";
 import Getpaper from "./User/GetPaper";
 import Calendars from "./User/Calendar";
+import Withdraw from "./User/Withdraw";
 
 // Auth
 import Login from "./sighup/Login";
 import Register from "./sighup/Register";
 import ProtectedRoute from "./sighup/ProtectedRoute";
 import Detailwork from "./User/Detailwork";
-import Withdraw from "./User/withdraw";
+
+// Xexcutive
+import DashboardExecutive from "./executive/DashboardExecutive";
+import Executive from "./executive/Executive";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -43,7 +47,11 @@ const router = createBrowserRouter([
   // Admin Routes
   {
     path: "/",
-    element: <AdminLayout />,
+    element: (
+      <ProtectedRoute allowedRoles={["admin"]}>
+        <AdminLayout />
+      </ProtectedRoute>
+    ),
     children: [
       { path: "dashboard", element: <Dashboard /> },
       { path: "editacc", element: <Editacc /> },
@@ -76,6 +84,17 @@ const router = createBrowserRouter([
       { path: "Calendar", element: <Calendars /> },
       { path: "withdraw", element: <Withdraw /> },
     ],
+  },
+
+  // xexcutive Router
+  {
+    path: "/executive",
+    element: (
+      <ProtectedRoute>
+        <Executive />
+      </ProtectedRoute>
+    ),
+    children: [{ path: "DashboardExecutive", element: <DashboardExecutive /> }],
   },
 ]);
 

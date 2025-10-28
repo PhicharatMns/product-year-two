@@ -25,13 +25,20 @@ export default function Login() {
 
       setMessage(response.data.message || "เข้าสู่ระบบสำเร็จ");
 
-      //  บันทึก token
-      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("token", response.data.token); //  บันทึก token
+      localStorage.setItem("role", response.data.role); // เก็บ role
 
       // ไปหน้า /user/dashboardUser
-      navigate("/user/DashboardUser");
+      if (response.data.role === "admin") {
+        navigate("/dashboard"); // หน้า admin
+      } else if (response.data.role === "user") {
+        navigate("/user/DashboardUser"); // หน้า user
+      } else {
+        navigate("/executive/DashboardExecutive");
+      }
     } catch (err) {
       console.error(err);
+      setMessage("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง");
     }
   };
 
