@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -5,11 +6,20 @@ import {
   YAxis,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
 } from "recharts";
 import { useTheme } from "@/components/theme-provider";
 
 export default function DashboardUser() {
+  const [fade, setFade] = useState(false);
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    // เปิด fade หลัง render
+    const timer = setTimeout(() => setFade(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
   const materialData = [
     { name: "งานไม้", quantity: 57 },
     { name: "งานไฟฟ้า", quantity: 54 },
@@ -34,7 +44,6 @@ export default function DashboardUser() {
     { name: "ธ.ค.", quantity: 10 },
   ];
 
-  const { theme } = useTheme();
   const text = theme === "dark" ? "text-white" : "text-gray-800";
   const cardBg = theme === "dark" ? "bg-gray-700" : "bg-blue-50/40";
   const barColor1 = theme === "dark" ? "#60a5fa" : "#3b82f6";
@@ -45,20 +54,40 @@ export default function DashboardUser() {
   const tooltipText = theme === "dark" ? "#f9fafb" : "#111827";
 
   return (
-    <div>
+    <div
+      className={`transition-opacity duration-700 ${
+        fade ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <div className={`w-max-380 p-6 mx-auto container pt-4`}>
         <div>
           <header className="p-5">
-            <h1 className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>
-              Dashboard <span className={`${theme === 'dark' ? 'text-white' : 'text-yellow-500'}`}>User</span>
+            <h1
+              className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm ${
+                theme === "dark" ? "text-yellow-500" : "text-blue-500"
+              }`}
+            >
+              Dashboard{" "}
+              <span
+                className={`${
+                  theme === "dark" ? "text-white" : "text-yellow-500"
+                }`}
+              >
+                User
+              </span>
             </h1>
-            <p className={`mt-2 text-lg font-medium ${theme === 'dark' ? 'text-white' : 'text-gray-600'}`}>
+            <p
+              className={`mt-2 text-lg font-medium ${
+                theme === "dark" ? "text-white" : "text-gray-600"
+              }`}
+            >
               ภาพรวมการทำงานทั้งหมดในระบบ
             </p>
           </header>
 
           <section>
             <div className="flex flex-col lg:flex-row gap-10">
+              {/* สรุปจำนวน */}
               <div className="lg:w-1/3 grid grid-cols-1 gap-6">
                 {[
                   { title: "จำนวนช่าง", value: "7,850", unit: "คน", color: "bg-gray-700" },
@@ -82,6 +111,7 @@ export default function DashboardUser() {
                 ))}
               </div>
 
+              {/* กราฟ */}
               <div className="lg:w-2/3 flex flex-col gap-8">
                 <div className={`rounded-3xl shadow-inner p-6 ${cardBg}`}>
                   <h2 className={`text-2xl font-extrabold mb-4 text-center ${text}`}>
