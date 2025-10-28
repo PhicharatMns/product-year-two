@@ -20,16 +20,21 @@ interface SidebarItem {
 }
 
 export default function Sidebar() {
-  const [open, setOpen] = useState(false); // sidebar มือถือ
-  const [showManu, setShowManu] = useState(false); // กล่องข้อความ
-  const [slideIn, setSlideIn] = useState(false); // animation กล่องข้อความ
-  const [openManage, setManage] = useState(false); // เมนูย่อย
-  const [slideManage, setslideManage] = useState(false); // animation เมนูย่อย
+  const [open, setOpen] = useState(false);
+  const [showManu, setShowManu] = useState(false);
+  const [slideIn, setSlideIn] = useState(false);
+  const [openManage, setManage] = useState(false);
+  const [slideManage, setslideManage] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const [Message, setMessage] = useState("");
 
-  //ออกระบบ
+  useEffect(() => {
+    if (window.innerWidth >= 768) {
+      setOpen(true);
+    }
+  }, []);
+
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/logins");
@@ -45,33 +50,25 @@ export default function Sidebar() {
     { text: "ออกจากระบบ", icon: IoLogOutOutline, onClick: handleLogout },
   ];
 
-  //ดึงข้อมูลมาเเสดงใน sidebar user
   useEffect(() => {
     if (!token) {
       navigate("/logins");
       return;
     }
-
     const fetchData = async () => {
       try {
         const response = await axios.get(
           "http://localhost:5000/api/login/dashboardUser",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
+          { headers: { Authorization: `Bearer ${token}` } }
         );
-
-        console.log("Sidebar response:", response.data); // <-- เพิ่มบรรทัดนี้
         setMessage(response.data.Name);
       } catch (err) {
-        console.error("Fetch sidebar message error:", err); // <-- เพิ่มบรรทัดนี้
+        console.error(err);
       }
     };
-
     fetchData();
   }, [navigate, token]);
 
-  // เปิดกล่องข้อความ
   const openManu = () => {
     setShowManu(true);
     setTimeout(() => setSlideIn(true), 10);
@@ -82,7 +79,6 @@ export default function Sidebar() {
     setTimeout(() => setShowManu(false), 500);
   };
 
-  // เปิดเมนูย่อย
   const openManageMenu = () => {
     setManage(true);
     setTimeout(() => setslideManage(true), 10);
@@ -92,27 +88,25 @@ export default function Sidebar() {
     setslideManage(false);
     setTimeout(() => setManage(false), 500);
   };
-  const { theme } = useTheme();
 
+  const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-900" : "bg-blue-100";
   const text = theme === "dark" ? "text-black" : "text-gray-500";
+
   return (
     <>
-      {/* ปุ่มเปิดเมนูมือถือ เเหะๆ */}
+
       <button
         className="md:hidden fixed top-4 left-4 z-30 text-3xl bg-blue-500 p-2 text-white rounded-lg"
         onClick={() => setOpen(!open)}
       >
         {open ? <IoClose /> : <GiHamburgerMenu />}
       </button>
-
-      {/* Sidebar หลัก */}
       <div
         className={`  ${text} ${bg}  fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white font-bold border-r transition-transform duration-300 ${
           open ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
-        {/* Logo */}
         <div className="flex flex-col">
           <div className="flex items-center  py-3 p-4 mt-5">
             <Link
@@ -129,12 +123,9 @@ export default function Sidebar() {
               </span>
             </Link>
           </div>
-
-          {/* Sidebar Items */}
           <div className="flex flex-col mt-5">
             {items.map((item, index) => {
               const Icon = item.icon;
-
               if (item.link) {
                 return (
                   <NavLink
@@ -152,7 +143,6 @@ export default function Sidebar() {
                   </NavLink>
                 );
               }
-
               return (
                 <button
                   key={index}
@@ -169,8 +159,6 @@ export default function Sidebar() {
             })}
           </div>
         </div>
-
-        {/* Profile + Theme */}
         <div>
           <ThemeSwitcher />
           <Link to="Profile" className="mt-auto">
@@ -187,16 +175,12 @@ export default function Sidebar() {
           </Link>
         </div>
       </div>
-
-      {/* Overlay มือถือ */}
       {open && (
         <div
           className="fixed inset-0 bg-black opacity-40 md:hidden z-10"
           onClick={() => setOpen(false)}
         ></div>
       )}
-
-      {/* กล่องข้อความ */}
       {showManu && (
         <div
           className={` ml-2 fixed lg:left-64 left-4 bottom-0 rounded-t-xl h-120 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${
@@ -206,9 +190,7 @@ export default function Sidebar() {
           }`}
         >
           <div className="flex justify-between items-center mb-4 border-b-2 border-blue-100 pb-2">
-            <h2 className="text-xl font-semibold text-blue-500">
-              กล่องข้อความ
-            </h2>
+            <h2 className="text-xl font-semibold text-blue-500">กล่องข้อความ</h2>
             <button
               onClick={closeManu}
               className={`text-2xl hover:text-red-500 pr-2 cursor-pointer ${text}`}
@@ -216,8 +198,6 @@ export default function Sidebar() {
               ✕
             </button>
           </div>
-
-          {/* ผู้ใช้ในกล่องข้อความ */}
           <div className="h-100">
             <div
               onClick={openManageMenu}
@@ -235,8 +215,6 @@ export default function Sidebar() {
           </div>
         </div>
       )}
-
-      {/* เมนูย่อย */}
       {openManage && (
         <div
           className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl h-100 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${

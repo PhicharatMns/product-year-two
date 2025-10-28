@@ -2,6 +2,7 @@ import React from "react";
 import { useTheme } from "@/components/theme-provider";
 import { MapPin } from "lucide-react";
 
+
 export default function Maps() {
   const { theme } = useTheme();
 
