@@ -33,10 +33,10 @@ export default function Login() {
         navigate("/dashboard"); // หน้า admin
       } else if (response.data.role === "user") {
         navigate("/user/DashboardUser"); // หน้า user
-      } else if (response.data.role === 'executive') {
+      } else if (response.data.role === "executive") {
         navigate("/executive/DashboardExecutive");
       } else {
-        navigate('/chief/Dashboardchief')
+        navigate("/chief/Dashboardchief");
       }
     } catch (err) {
       console.error(err);
@@ -44,20 +44,23 @@ export default function Login() {
     }
   };
 
+  const textcolor = `${theme === "dark" ? "text-yellow-500" : "text-blue-500"}`;
+
   return (
     <div className={`flex h-screen ${theme === "dark" ? "bg-black/10" : ""}`}>
       <div className="flex-1 flex items-center justify-center shadow-lg">
         <div
-          className={`w-full max-w-md p-8 shadow-lg rounded-xl ${theme === "dark" ? "bg-gray-800" : "bg-gray-100"
-            }`}
+          className={`w-full max-w-md p-8 shadow-lg rounded-xl ${
+            theme === "dark" ? "bg-gray-900/80" : "bg-gray-100"
+          }`}
         >
-          <h2 className="text-2xl font-bold text-center text-blue-600 mb-8">
+          <h2 className={`text-2xl font-bold text-center mb-8 ${textcolor}`}>
             ยินดีต้อนรับ
           </h2>
 
           <form onSubmit={handleSubmit}>
             <div className="mb-6">
-              <label className="block text-blue-700 mb-2">
+              <label className={`block mb-2 ${textcolor}`}>
                 อีเมล/ชื่อผู้ใช้
               </label>
               <input
@@ -71,7 +74,7 @@ export default function Login() {
             </div>
 
             <div className="mb-6">
-              <label className="block text-blue-700 mb-2">รหัสผ่าน</label>
+              <label className={`block mb-2 ${textcolor}`}>รหัสผ่าน</label>
               <input
                 type="password"
                 value={passwork}
@@ -84,7 +87,9 @@ export default function Login() {
 
             <button
               type="submit"
-              className="bg-blue-600 w-full py-2 text-white font-semibold rounded-md shadow hover:bg-blue-700"
+              className={`w-full py-2 text-white font-semibold rounded-md shadow ${
+                theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+              }`}
             >
               เข้าสู่ระบบ
             </button>
@@ -96,17 +101,14 @@ export default function Login() {
 
           <p className="text-center mt-4 text-sm">
             ยังไม่มีบัญชี?{" "}
-            <Link
-              to="/register"
-              className="text-blue-500 hover:underline font-semibold"
-            >
+            <Link to="/register" className={` hover:underline font-semibold ${textcolor}`}>
               สมัครสมาชิก
             </Link>
           </p>
         </div>
       </div>
 
-      <div className="hidden md:flex flex-1 bg-blue-700 relative items-center justify-center">
+      <div className={`hidden md:flex flex-1 relative items-center justify-center ${theme === 'dark' ? 'bg-yellow-700/60' : 'bg-blue-700'}`}>
         <img
           src="https://i.pinimg.com/1200x/57/e6/c7/57e6c76add74f7163c6057159d953440.jpg"
           alt="background"

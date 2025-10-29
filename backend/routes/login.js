@@ -68,6 +68,7 @@ router.post("/register", upload.single("Profile"), async (req, res) => {
       Position: req.body.Position,
       Start_data: req.body.Start_data,
       role: req.body.role,
+      Salary: req.body.Salary
     });
 
     await newUser.save();
@@ -187,6 +188,8 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
       Position,
       Start_data,
       role,
+      Salary,
+
     } = req.body;
 
     // หา user เดิมก่อน
@@ -227,7 +230,8 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
     user.Email = Email || user.Email;
     user.Position = Position || user.Position;
     user.Start_data = Start_data || user.Start_data;
-    user.role = role || user.role
+    user.role = role || user.role;
+    user.Salary = role || user.Salary;
     // บันทึกข้อมูลที่อัปเดตแล้ว
     await user.save();
 
