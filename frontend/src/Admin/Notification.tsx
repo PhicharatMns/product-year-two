@@ -176,7 +176,7 @@ export default function Notification() {
   }, []);
   return (
     <div
-      className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"
+      className={`transition-opacity  duration-700 ${fade ? "opacity-100" : "opacity-0"
         }`}
     >
       <div className={`w-max-380 p-4 mx-auto container pt-10 ${text}`}>

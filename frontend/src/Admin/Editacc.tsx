@@ -186,8 +186,18 @@ export default function Editacc() {
       : "border-b-4 border-blue-200";
   const bg = theme === "dark" ? "bg-black/10" : "";
   const texthead = theme === "dark" ? "text-yellow-300" : "text-blue-700";
-
+const text = theme === "dark" ? "text-white" : "text-gray-800";
+useEffect(() => {
+    // เปิด fade หลัง render
+    const timer = setTimeout(() => setFade(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+ const [fade, setFade] = useState(false);
   return (
+     <div
+      className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"
+        }`}
+    >
     <div className="w-max-380 p-4 mx-auto container pt-10">
       <div className={`mx-auto container rounded-2xl shadow-xl p-6 ${bg}`}>
         <div className="flex items-center justify-between mb-6">
@@ -199,12 +209,14 @@ export default function Editacc() {
               ช่าง
             </span>
           </p>
-          <button
-            onClick={() => setshowModal(true)}
-            className={`border p-2 rounded-xl bg-blue-500 text-white cursor-pointer ${Bg_border}`}
-          >
-            เพิ่มช่าง
-          </button>
+       
+          <button 
+           onClick={() => setshowModal(true)}
+            className={`group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-md bg-blue-500  px-6 font-medium text-neutral-200 transition hover:scale-110 ${text} ${Bg_border}`}>
+              <span>เพิ่มช่าง</span>
+          <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
+            <div className="relative h-full w-8 bg-white"></div>
+            </div></button>
         </div>
 
         {/* Table Header */}
@@ -256,18 +268,16 @@ export default function Editacc() {
                   {new Date(event.Start_data).toLocaleDateString("th-TH")}
                 </p>
                 <div className="flex justify-center gap-2">
-                  <button
-                    onClick={() => openDeleteModal(event)}
-                    className="bg-red-600 text-white px-5 py-2 rounded-full hover:bg-red-700 transition-all shadow-md"
-                  >
-                    ลบ
-                  </button>
-                  <button
-                    onClick={() => openEditModal(event)}
-                    className="bg-orange-400 text-white px-5 py-2 rounded-full hover:bg-orange-500 transition-all shadow-md"
-                  >
-                    แก้ไข
-                  </button>
+                
+                  <button 
+                  onClick={() => openDeleteModal(event)}
+                  className ="relative overflow-hidden rounded-md bg-red-500 px-5 py-2 text-white transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110">
+                    ลบ</button>
+                 
+                  <button 
+                   onClick={() => openEditModal(event)}
+                   className="relative overflow-hidden rounded-md bg-yellow-500 px-5 py-2.5 text-white duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90">
+                    แก้ไข</button>
                 </div>
               </div>
             ))}
@@ -278,14 +288,14 @@ export default function Editacc() {
       {/* Modal เพิ่ม/แก้ไข */}
       {showModal && (
         <form onSubmit={handleSubmit}>
-          <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50">
+          <div className="fixed inset-0  flex justify-center  items-center bg-black/40 backdrop-blur-sm z-50">
             <div
-              className={`rounded-2xl shadow-2xl p-8 w-[900px] border transition-colors duration-500 ${theme === "dark"
+              className={`rounded-2xl  shadow-2xl p-6  w-[900px] border  transition-all duration-500 ${theme === "dark"
                 ? "bg-gray-800 border-gray-700 text-yellow-500"
                 : "bg-white border-blue-200 text-blue-500"
                 }`}
             >
-              <div className="mb-6 border-b pb-3">
+              <div className="mb-6 border-b pb-3 ">
                 <h2 className={`text-2xl font-bold ${texthead}`}>
                   {editMode ? "แก้ไขช่าง" : "เพิ่มช่างเข้าระบบ"}
                 </h2>
@@ -482,6 +492,7 @@ export default function Editacc() {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 }
