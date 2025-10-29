@@ -120,10 +120,10 @@ export default function Editacc() {
   const texthead = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
   return (
-    <div className="w-max-380 p-4 mx-auto pt-10">
+    <div className="w-max-380 container p-4 mx-auto pt-10">
       {/* ตาราง */}
       <div
-        className={`rounded-2xl shadow-xl p-6 ${theme === "dark" ? "bg-black/10" : ""
+        className={`rounded-2xl h-screen shadow-xl p-6 ${theme === "dark" ? "bg-black/10" : ""
           }`}
       >
         <div className="flex justify-between mb-6">
