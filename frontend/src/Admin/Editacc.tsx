@@ -21,7 +21,7 @@ interface Tradesman {
 }
 
 const defaultForm: Partial<Tradesman> = {
-  role: "user"
+  role: "user",
 };
 
 export default function Editacc() {
@@ -35,9 +35,12 @@ export default function Editacc() {
 
   const fetchTradesmen = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/login/all-tradesman", {
-        withCredentials: true,
-      });
+      const res = await axios.get(
+        "http://localhost:5000/api/login/all-tradesman",
+        {
+          withCredentials: true,
+        }
+      );
       setTradesmen(res.data);
     } catch (err) {
       console.error(err);
@@ -88,10 +91,14 @@ export default function Editacc() {
 
     try {
       if (editMode && selected?._id) {
-        await axios.put(`http://localhost:5000/api/login/${selected._id}`, data, {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        });
+        await axios.put(
+          `http://localhost:5000/api/login/${selected._id}`,
+          data,
+          {
+            withCredentials: true,
+            headers: { "Content-Type": "multipart/form-data" },
+          }
+        );
       } else {
         await axios.post("http://localhost:5000/api/login/register", data, {
           withCredentials: true,
@@ -115,24 +122,26 @@ export default function Editacc() {
     fetchTradesmen();
   };
 
-  const inputClass = `border w-full p-2 rounded-lg mt-2 ${theme === "dark" ? "bg-gray-700 text-yellow-500" : "bg-gray-50 text-blue-500"
-    }`;
+  const inputClass = `border w-full p-2 rounded-lg mt-2 ${
+    theme === "dark"
+      ? "bg-gray-700 text-yellow-500"
+      : "bg-gray-50 text-blue-500"
+  }`;
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-700";
 
   return (
     <div className="w-max-380 container p-4 mx-auto pt-10">
       {/* ตาราง */}
       <div
-        className={`rounded-2xl h-screen shadow-xl p-6 ${theme === "dark" ? "bg-black/10" : ""
-          }`}
+        className={`rounded-2xl h-screen shadow-xl p-6 ${
+          theme === "dark" ? "bg-black/10" : ""
+        }`}
       >
         <div className="flex justify-between mb-6">
           <p className={`text-3xl font-bold ${texthead}`}>
             จัดการบัญชี{" "}
             <span
-              className={
-                theme === "dark" ? "text-white" : "text-yellow-500"
-              }
+              className={theme === "dark" ? "text-white" : "text-yellow-500"}
             >
               ช่าง
             </span>
@@ -147,10 +156,11 @@ export default function Editacc() {
 
         {/* หัวตาราง */}
         <div
-          className={`grid grid-cols-7 gap-5 text-center font-semibold text-lg mb-3 ${theme === "dark"
-            ? "text-yellow-500 border-b-4 border-yellow-500"
-            : "text-blue-500 border-b-4 border-blue-200"
-            }`}
+          className={`grid grid-cols-7 gap-5 text-center font-semibold text-lg mb-3 ${
+            theme === "dark"
+              ? "text-yellow-500 border-b-4 border-yellow-500"
+              : "text-blue-500 border-b-4 border-blue-200"
+          }`}
         >
           <p>รูป</p>
           <p>ชื่อ</p>
@@ -167,13 +177,15 @@ export default function Editacc() {
             className="grid grid-cols-7 gap-5 items-center border rounded-xl py-2 shadow-sm"
           >
             <img
-              src={`http://localhost:5000/uploads/Profile/${t.Profile || "default.png"
-                }`}
+              src={`http://localhost:5000/uploads/Profile/${
+                t.Profile || "default.png"
+              }`}
               className="w-10 h-10 rounded-full mx-auto border-2"
             />
             <p
-              className={`text-center font-medium ${theme === "dark" ? "text-yellow-500" : "text-gray-800"
-                }`}
+              className={`text-center font-medium ${
+                theme === "dark" ? "text-yellow-500" : "text-gray-800"
+              }`}
             >
               {t.Nickname}
             </p>
@@ -208,10 +220,11 @@ export default function Editacc() {
         <form onSubmit={handleSubmit}>
           <div className="fixed inset-0 flex justify-center items-center bg-black/40 z-50">
             <div
-              className={`rounded-2xl shadow-2xl p-8 w-[900px] border ${theme === "dark"
-                ? "bg-gray-800 border-gray-700 text-yellow-500"
-                : "bg-white border-blue-200 text-blue-500"
-                }`}
+              className={`rounded-2xl shadow-2xl p-8 w-[900px] border ${
+                theme === "dark"
+                  ? "bg-gray-800 border-gray-700 text-yellow-500"
+                  : "bg-white border-blue-200 text-blue-500"
+              }`}
             >
               <h2
                 className={`text-2xl font-bold mb-6 border-b pb-3 ${texthead}`}
@@ -239,7 +252,9 @@ export default function Editacc() {
                 }).map(([key]) => (
                   <div
                     key={key}
-                    className={`${key === 'Address' || key === 'Profile' ? 'col-span-2' : ''}`}
+                    className={`${
+                      key === "Address" || key === "Profile" ? "col-span-2" : ""
+                    }`}
                   >
                     <label>{key}</label>
                     {key === "role" ? (
@@ -255,31 +270,38 @@ export default function Editacc() {
                       </select>
                     ) : (
                       <input
-                        type={{
-                          Salary: "number",
-                          Birthday: "date",
-                          Start_data: "date",
-                          Profile: "file",
-                        }[key] || "text"}
-                        value={key === "Profile" ? undefined : form[key as keyof Tradesman] ?? ""}
+                        type={
+                          {
+                            Salary: "number",
+                            Birthday: "date",
+                            Start_data: "date",
+                            Profile: "file",
+                          }[key] || "text"
+                        }
+                        value={
+                          key === "Profile"
+                            ? undefined
+                            : form[key as keyof Tradesman] ?? ""
+                        }
                         onChange={(e) => {
                           if (key === "Profile") {
                             const file = e.target.files?.[0];
                             if (file) handleChange("Profile", file);
                           } else {
-                            handleChange(key as keyof Tradesman, e.target.value);
+                            handleChange(
+                              key as keyof Tradesman,
+                              e.target.value
+                            );
                           }
                         }}
-                        className={inputClass}
+                        className={`focus:ring-2 outline-none  ${inputClass}`}
                       />
                     )}
-
-
                   </div>
                 ))}
               </div>
 
-              <div className="flex justify-end mt-5 gap-3">
+              <div className="flex justify-end mt-5 gap-3 ">
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
@@ -297,8 +319,7 @@ export default function Editacc() {
             </div>
           </div>
         </form>
-      )
-      }
-    </div >
+      )}
+    </div>
   );
 }

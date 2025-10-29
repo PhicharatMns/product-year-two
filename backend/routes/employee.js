@@ -40,9 +40,8 @@ router.post("/", upload.single("image"), async (req, res) => {
       Closing_date: Closing_date || Date.now(),
       description,
       image,
-      Status
+      Status,
     });
-
 
     await employee.save();
     res.status(201).json(employee);
@@ -71,6 +70,50 @@ router.delete("/:id", async (req, res) => {
     }
     await Employee.findByIdAndDelete(req.params.id);
     res.json({ message: "Deleted" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// PUT update employee
+router.put("/:id", upload.single("image"), async (req, res) => {
+  try {
+    const emp = await Employee.findById(req.params.id);
+    if (!emp) return res.status(404).json({ error: "Employee not found" });
+
+    const {
+      Worksheet,
+      Employer,
+      Contact_number,
+      address,
+      responsible,
+      Date_of_acceptance_of_work,
+      Closing_date,
+      description,
+      Status,
+    } = req.body;
+
+    // ถ้ามีไฟล์ใหม่ ให้ลบไฟล์เก่า
+    if (req.file && emp.image) {
+      const oldPath = path.resolve("uploads", emp.image);
+      if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
+      emp.image = req.file.filename;
+    }
+
+    // อัปเดตฟิลด์
+    emp.Worksheet = Worksheet ?? emp.Worksheet;
+    emp.Employer = Employer ?? emp.Employer;
+    emp.Contact_number = Contact_number ?? emp.Contact_number;
+    emp.address = address ?? emp.address;
+    emp.responsible = responsible ?? emp.responsible;
+    emp.Date_of_acceptance_of_work =
+      Date_of_acceptance_of_work ?? emp.Date_of_acceptance_of_work;
+    emp.Closing_date = Closing_date ?? emp.Closing_date;
+    emp.description = description ?? emp.description;
+    emp.Status = Status ?? emp.Status;
+
+    await emp.save();
+    res.json(emp);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
