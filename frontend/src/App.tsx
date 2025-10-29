@@ -33,16 +33,17 @@ import Withdraw from "./User/Withdraw";
 import Login from "./sighup/Login";
 import Register from "./sighup/Register";
 import ProtectedRoute from "./sighup/ProtectedRoute";
-import Detailwork from "./User/Detailwork";
 
 // Xexcutive
 import DashboardExecutive from "./executive/DashboardExecutive";
 import Executive from "./executive/Executive";
-import Getpaperexecutive from "./executive/Getpaperexecutive";
+
 
 // userChief 
 import Dashboardchief from "./chief/Dashboardchief";
 import Chief from "./chief/Chief";
+import Getpaperexecutive from "./executive/getpaperexecutive";
+import Detailwork from "./User/Detailwork";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },

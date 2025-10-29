@@ -69,46 +69,11 @@ export default function Detailwork() {
                   <span className="text-green-400">อนุมัติ</span> เรียบร้อยแล้ว
                 </p>
               </div>
-
-              <div className={`rounded-2xl border ${borderSoft} overflow-x-auto`}>
-                <table className={`w-full min-w-full text-left ${text}`}>
-                  <thead className={`${bg} sticky top-0 z-10`}>
-                    <tr>
-                      <th className="py-2 px-4 border-b">ชื่อวัสดุ</th>
-                      <th className="py-2 px-4 border-b">จำนวน</th>
-                      <th className="py-2 px-4 border-b">ใช้ไป</th>
-                      <th className="py-2 px-4 border-b">คงเหลือ</th>
-                    </tr>
-                  </thead>
-                  <tbody className={cardBg}>
-                    {items.map((item, idx) => (
-                      <tr
-                        key={idx}
-                        className={`transition duration-200 ${
-                          theme === "dark"
-                            ? "hover:bg-gray-700 bg-gray-900/50"
-                            : "hover:bg-gray-200 bg-white"
-                        }`}
-                      >
-                        <td className="py-2 px-4 border-b">{item.name}</td>
-                        <td className="py-2 px-4 border-b">{item.qty}</td>
-                        <td className="py-2 px-4 border-b">{item.used}</td>
-                        <td className="py-2 px-4 border-b">{item.remain}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-           
-             
- </div>
-             
-
-       
-<div className="border py-5 px-6 rounded-2xl ">
-  <h2 className="text-xl font-semibold text-blue-500 mb-3">
-    ข้อความตอบกลับ
-  </h2>
+            </div>
+            <div className="border py-5 px-6 col-span-2 rounded-2xl ">
+              <h2 className="text-xl font-semibold text-blue-500 mb-3">
+                ข้อความตอบกลับ
+              </h2>
 
               <div
                 className={`p-5 rounded-2xl border ${borderSoft}   dark:text-gray-200`}
