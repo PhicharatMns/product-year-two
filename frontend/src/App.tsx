@@ -38,6 +38,7 @@ import Detailwork from "./User/Detailwork";
 // Xexcutive
 import DashboardExecutive from "./executive/DashboardExecutive";
 import Executive from "./executive/Executive";
+import Getpaperexecutive from "./executive/Getpaperexecutive";
 
 // userChief 
 import Dashboardchief from "./chief/Dashboardchief";
@@ -98,14 +99,15 @@ const router = createBrowserRouter([
         <Executive />
       </ProtectedRoute>
     ),
-    children: [{ path: "DashboardExecutive", element: <DashboardExecutive /> }],
+    children: [{ path: "DashboardExecutive", element: <DashboardExecutive /> }
+      , { path: 'getpaperexecutive', element: <Getpaperexecutive /> }],
   },
 
   //chief
   {
     path: '/chief', element: (
       <ProtectedRoute>
-        <Chief   />
+        <Chief />
       </ProtectedRoute>
     ),
     children: [

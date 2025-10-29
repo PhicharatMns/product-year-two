@@ -126,9 +126,13 @@ useEffect(() => {
   }, []);
  const [fade, setFade] = useState(false);
   return (
-    <div className="w-max-380 p-4 mx-auto container pt-10">
-      <div className={`mx-auto container rounded-2xl shadow-xl p-6 ${bg}`}>
-        <div className="flex items-center justify-between mb-6">
+    <div className="w-max-380 p-4 mx-auto pt-10">
+      {/* ตาราง */}
+      <div
+        className={`rounded-2xl shadow-xl p-6 ${theme === "dark" ? "bg-black/10" : ""
+          }`}
+      >
+        <div className="flex justify-between mb-6">
           <p className={`text-3xl font-bold ${texthead}`}>
             จัดการบัญชี{" "}
             <span

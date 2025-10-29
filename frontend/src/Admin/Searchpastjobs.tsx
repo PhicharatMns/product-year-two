@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, type ChangeEvent } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
 
-const headerNav = [
-  "ชื่องาน",
-  "รายชื่อผู้จ้าง",
-  "เบอร์ติดต่อ",
-  "สถานะ",
-  "วันที่รับ",
-  "วันที่ต้องปิดงาน",
-  "จัดการ",
-];
+const headerNav = ["ชื่องาน", "รายชื่อผู้จ้าง", "เบอร์ติดต่อ", "สถานะ", "วันที่รับ", "วันที่ต้องปิดงาน", "จัดการ"];
 
 interface Employees {
   _id: string;
@@ -23,465 +15,239 @@ interface Employees {
   Date_of_acceptance_of_work: string;
   Closing_date: string;
   description: string;
-  JobTitle?: string;
   Status?: string;
-  image: string;
+  image?: string;
 }
 
-const Searchpastjobs: React.FC = () => {
+interface FormState {
+  Worksheet: string;
+  Employer: string;
+  Contact_number: string;
+  address: string;
+  responsible: string;
+  Date_of_acceptance_of_work: string;
+  Closing_date: string;
+  description: string;
+  Status: string;
+  image: File | null;
+}
+
+export default function Searchpastjobs() {
   const { theme } = useTheme();
-
   const [dataEmployees, setDataEmployees] = useState<Employees[]>([]);
+  const [fade, setFade] = useState(false);
   const [showModal, setShowModal] = useState(false);
-  const [animationshowModal, setAnimationShowModal] = useState(false);
-  const [Worksheet, setWorksheet] = useState("");
-  const [Employer, setEmployer] = useState("");
-  const [Contact_number, setContact_number] = useState("");
-  const [address, setAddress] = useState("");
-  const [Date_of_acceptance_of_work, setDate_of_acceptance_of_work] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [Closing_date, setClosing_date] = useState(
-    new Date().toISOString().split("T")[0]
-  );
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState<File | null>(null);
-  const [Status, setStatus] = useState("Active");
-
-  // === Modal Animation Control ===
-  const openModal = () => {
-    setShowModal(true);
-    setTimeout(() => setAnimationShowModal(true), 10);
-  };
-
-  const closeModal = () => {
-    setAnimationShowModal(false);
-    setTimeout(() => setShowModal(false), 400);
-  };
+  const [animate, setAnimate] = useState(false);
+  const [form, setForm] = useState<FormState>({
+    Worksheet: "",
+    Employer: "",
+    Contact_number: "",
+    address: "",
+    responsible: "",
+    Date_of_acceptance_of_work: new Date().toISOString().split("T")[0],
+    Closing_date: new Date().toISOString().split("T")[0],
+    description: "",
+    Status: "Active",
+    image: null,
+  });
 
   const fetchEmployees = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/employees");
-      const data: Employees[] = await res.json();
-      setDataEmployees(data);
-    } catch (err) {
-      console.error(err);
+      const data = await res.json();
+      setDataEmployees(Array.isArray(data) ? data : []);
+    } catch (e) {
+      console.error(e);
     }
   };
 
   useEffect(() => {
     fetchEmployees();
+    const t = setTimeout(() => setFade(true), 100);
+    return () => clearTimeout(t);
   }, []);
 
-  const handleDelete = async (id: string) => {
-    try {
-      await fetch(`http://localhost:5000/api/employees/${id}`, {
-        method: "DELETE",
-      });
-      fetchEmployees();
-    } catch (err) {
-      console.error(err);
-    }
+  const handleChange = (key: keyof FormState, value: string | File | null) => {
+    setForm(prev => ({ ...prev, [key]: value }));
   };
 
   const handleSave = async () => {
     try {
-      const newJob = {
-        Worksheet,
-        Employer,
-        Contact_number,
-        address,
-        Date_of_acceptance_of_work,
-        Closing_date,
-        description,
-        Status,
-      };
-      if (image) {
-        const formData = new FormData();
-        Object.entries(newJob).forEach(([key, value]) =>
-          formData.append(key, value)
-        );
-        formData.append("image", image);
-        await fetch("http://localhost:5000/api/employees", {
-          method: "POST",
-          body: formData,
-        });
-      } else {
-        await fetch("http://localhost:5000/api/employees", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newJob),
-        });
-      }
-      closeModal();
-      fetchEmployees();
-    } catch (err) {
-      console.error("Error saving data:", err);
+      const fd = new FormData();
+      (Object.keys(form) as Array<keyof FormState>).forEach((key) => {
+        const value = form[key];
+        if (value !== null && value !== "") {
+          // ถ้าเป็น File append ได้เลย, ถ้าเป็น string ต้อง convert เป็น string
+          fd.append(key, value instanceof File ? value : String(value));
+        }
+      });
+      await fetch("http://localhost:5000/api/employees", { method: "POST", body: fd });
+      await fetchEmployees();
+      setShowModal(false);
+      setForm({
+        Worksheet: "",
+        Employer: "",
+        Contact_number: "",
+        address: "",
+        responsible: "",
+        Date_of_acceptance_of_work: new Date().toISOString().split("T")[0],
+        Closing_date: new Date().toISOString().split("T")[0],
+        description: "",
+        Status: "Active",
+        image: null,
+      });
+    } catch (e) {
+      console.error(e);
     }
   };
+  const handleDelete = async (id: string) => {
+    await fetch(`http://localhost:5000/api/employees/${id}`, { method: "DELETE" });
+    fetchEmployees();
+  };
 
-  // === Theme Classes ===
-  const text = theme === "dark" ? "text-white" : "text-gray-900";
-  const cardBg = theme === "dark" ? "bg-gray-900/80" : "bg-blue-50/50";
-  const border = theme === "dark" ? "border-gray-700" : "border-blue-100";
-  const labelText = theme === "dark" ? "text-yellow-300" : "text-blue-700";
-  const [fade, setFade] = useState(false);
+  const openModal = () => {
+    setShowModal(true);
+    setTimeout(() => setAnimate(true), 10);
+  };
+  const closeModal = () => {
+    setAnimate(false);
+    setTimeout(() => setShowModal(false), 300);
+  };
 
-  useEffect(() => {
-    // เปิด fade หลัง render
-    const timer = setTimeout(() => setFade(true), 50);
-    return () => clearTimeout(timer);
-  }, []);
+  const t = theme === "dark";
+  const cls = {
+    text: t ? "text-white" : "text-gray-900",
+    label: t ? "text-yellow-300" : "text-blue-700",
+    input: t
+      ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+      : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800",
+  };
 
   return (
-    <div
-      className={`transition-opacity duration-700 ${
-        fade ? "opacity-100" : "opacity-0"
-      }`}
-    >
-      <div className=" w-max-380 p-6 mx-auto container pt-10">
-        <div
-          className={`container  mx-auto rounded-xl min-h-screen shadow-lg p-5 transition-colors duration-600 ${
-            theme === "dark"
-              ? "bg-gray-800 text-white"
-              : "bg-white text-gray-900"
-          }`}
-        >
+    <div className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"}`}>
+      <div className="container mx-auto pt-10 p-6">
+        <div className={`rounded-xl shadow-lg p-5 min-h-screen ${t ? "bg-gray-800 text-white" : "bg-white text-gray-900"}`}>
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
-            <h2
-              className={`text-3xl font-bold ${
-                theme === "dark" ? "text-yellow-500" : "text-blue-700"
-              }`}
-            >
-              รับใบ
-              <span
-                className={theme === "dark" ? "text-white" : "text-yellow-500"}
-              >
-                งาน
-              </span>
+            <h2 className={`text-3xl font-bold ${t ? "text-yellow-500" : "text-blue-700"}`}>
+              รับใบ<span className={t ? "text-white" : "text-yellow-500"}>งาน</span>
             </h2>
             <div className="flex flex-wrap gap-4 items-center">
               <button
                 onClick={openModal}
-                className={`group relative inline-flex p-2 items-center justify-center overflow-hidden rounded-md  px-5  font-medium text-neutral-200 transition hover:scale-104 cursor-pointer ${
-                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                } `}
+                className={`px-5 py-2 rounded-md text-white ${t ? "bg-yellow-500" : "bg-blue-500"} hover:scale-105 transition`}
               >
-                <span>+ เพิ่มใบงาน</span>
-                <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)]">
-                  <div className="relative h-full w-8 bg-yellow-500"></div>
-                </div>
+                + เพิ่มใบงาน
               </button>
-              <div className={`relative w-full sm:w-auto ${text}`}>
-                <CiSearch
-                  className={`absolute left-3 top-1/2 -translate-y-1/2 ${labelText}`}
-                />
-                <input
-                  type="text"
-                  placeholder="ค้นหา..."
-                  className={`border rounded-xl pl-10 pr-3 py-1 w-full sm:w-64 focus:outline-none focus:ring-2 ${
-                    theme === "dark"
-                      ? "border-gray-700 bg-gray-700 text-white focus:ring-yellow-500"
-                      : "border-blue-300 bg-white text-gray-800 focus:ring-blue-400"
-                  }`}
-                />
+              <div className="relative">
+                <CiSearch className={`absolute left-3 top-1/2 -translate-y-1/2 ${cls.label}`} />
+                <input placeholder="ค้นหา..." className={`border pl-10 pr-3 py-1 rounded-xl ${cls.input}`} />
               </div>
             </div>
           </div>
 
-          {/* Table Header */}
-          <div
-            className={`hidden lg:grid grid-cols-7 gap-5 items-center pl-5  ${
-              theme === "dark" ? "text-yellow-500" : "text-blue-700"
-            } border-b-2 pb-2`}
-          >
-            {headerNav.map((header, i) => (
-              <div className={`${i === 6 ? "text-center" : " "}`} key={i}>
-                {header}
-              </div>
+          {/* Table */}
+          <div className={`hidden lg:grid grid-cols-7 gap-5 border-b-2 pb-2 ${t ? "text-yellow-500" : "text-blue-700"}`}>
+            {headerNav.map((h, i) => (
+              <div key={i} className={`${i === 6 ? "text-center" : ""}`}>{h}</div>
             ))}
           </div>
 
-          {/* Table Rows */}
-          <div className="space-y-2 mt-3">
-            {dataEmployees.map((event, i) => (
-              <div
-                key={i}
-                className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center ${border} rounded-xl ${cardBg} pl-5 transition-all  shadow-sm py-1`}
-              >
-                {/* Mobile view */}
-                <div className="lg:hidden space-y-1 text-sm">
-                  <p>
-                    <span className={`font-semibold ${labelText}`}>
-                      ชื่องาน:
-                    </span>{" "}
-                    {event.Worksheet}
-                  </p>
-                  <p>
-                    <span className={`font-semibold ${labelText}`}>
-                      ผู้จ้าง:
-                    </span>{" "}
-                    {event.Employer}
-                  </p>
-                  <p>
-                    <span className={`font-semibold ${labelText}`}>เบอร์:</span>{" "}
-                    {event.Contact_number}
-                  </p>
-                  <p>
-                    <span className={`font-semibold ${labelText}`}>สถานะ:</span>{" "}
-                    {event.Status}
-                  </p>
-                </div>
-
-                {/* Desktop view */}
-                <p className="hidden lg:block truncate">{event.Worksheet}</p>
-                <p className="hidden lg:block truncate">{event.Employer}</p>
-                <p className="hidden lg:block truncate">
-                  {event.Contact_number}
-                </p>
-                <p className="hidden lg:block truncate text-orange-400">
-                  {event.Status}
-                </p>
-                <p className="hidden lg:block truncate">
-                  {event.Date_of_acceptance_of_work.split("T")[0]}
-                </p>
-                <p className="hidden lg:block truncate">
-                  {event.Closing_date.split("T")[0]}
-                </p>
-
-                {/* Buttons */}
-                <div className="flex gap-2 justify-center">
-                  <button
-                    onClick={() => handleDelete(event._id)}
-                    className="bg-red-500 cursor-pointer text-white px-3  rounded-lg hover:bg-red-600 relative overflow-hidden   py-2  transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110"
-                  >
-                    ลบ
-                  </button>
-
-                  <Link to={`/Details/${event._id}`}>
-                    <button className="bg-green-500 cursor-pointer text-white px-3 py-2  rounded-lg hover:bg-green-600 transition relative overflow-hidden  duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110">
-                      รายละเอียดงาน
-                    </button>
-                  </Link>
-                </div>
+          {dataEmployees.map((e, i) => (
+            <div
+              key={i}
+              className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center rounded-xl shadow-sm py-1 px-5 mt-2 ${t ? "bg-gray-900/80 border-gray-700" : "bg-blue-50/50 border-blue-100"} border`}
+            >
+              <p className="hidden lg:block truncate">{e.Worksheet}</p>
+              <p className="hidden lg:block truncate">{e.Employer}</p>
+              <p className="hidden lg:block truncate">{e.Contact_number}</p>
+              <p className="hidden lg:block truncate text-orange-400">{e.Status}</p>
+              <p className="hidden lg:block truncate">{e.Date_of_acceptance_of_work?.split("T")[0]}</p>
+              <p className="hidden lg:block truncate">{e.Closing_date?.split("T")[0]}</p>
+              <div className="flex gap-2 justify-center">
+                <button onClick={() => handleDelete(e._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">ลบ</button>
+                <Link to={`/Details/${e._id}`}>
+                  <button className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">รายละเอียด</button>
+                </Link>
               </div>
-            ))}
-          </div>
+            </div>
+          ))}
 
           {/* Modal */}
           {showModal && (
             <div
-              className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm transition-opacity  ${
-                animationshowModal ? "opacity-100" : "opacity-0"
-              }`}
+              className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 transition-opacity ${animate ? "opacity-100" : "opacity-0"}`}
             >
               <div
-                className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all  ${
-                  animationshowModal
-                    ? "translate-y-0 opacity-100 scale-100"
-                    : "translate-y-10 opacity-0 scale-95"
-                } ${
-                  theme === "dark"
-                    ? "bg-gray-800 border-gray-700 text-white"
-                    : "bg-white border-blue-200 text-gray-800"
-                }`}
+                className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all duration-300 ${animate ? "scale-100 opacity-100" : "scale-95 opacity-0"} ${t ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-blue-200 text-gray-800"}`}
               >
-                <div
-                  className={`mb-6 border-b pb-3 ${
-                    theme === "dark" ? "border-gray-700" : "border-blue-200"
-                  }`}
-                >
-                  <h2
-                    className={`text-2xl font-bold ${
-                      theme === "dark" ? "text-yellow-300" : "text-blue-700"
-                    }`}
-                  >
-                    เพิ่มใบงาน
-                  </h2>
-                </div>
+                <h2 className={`text-2xl font-bold mb-6 border-b pb-3 ${cls.label} `}>เพิ่มใบงาน</h2>
 
-                {/* Form */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                  <div>
-                    <label className={`block mb-1 font-semibold ${labelText}`}>
-                      ชื่อใบงาน
-                    </label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    ["Worksheet", "ชื่อใบงาน"],
+                    ["Employer", "ชื่อผู้จ้าง"],
+                    ["Contact_number", "เบอร์โทร"],
+                    ["responsible", "ผู้รับผิดชอบ"],
+                    ["address", "ที่อยู่"],
+                  ].map(([k, label]) => (
+                    <div key={k} className="flex flex-col">
+                      <label className={`mb-1 font-semibold ${cls.label}`}>{label}</label>
+                      <input
+                        type="text"
+                        value={form[k as keyof FormState] as string}
+                        onChange={(e) => handleChange(k as keyof FormState, e.target.value)}
+                        className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input}`}
+                      />
+                    </div>
+                  ))}
+
+                  {[
+                    ["Date_of_acceptance_of_work", "วันที่รับงาน"],
+                    ["Closing_date", "วันที่ปิดงาน"],
+                  ].map(([k, label]) => (
+                    <div key={k} className="flex flex-col">
+                      <label className={`mb-1 font-semibold ${cls.label}`}>{label}</label>
+                      <input
+                        type="date"
+                        value={form[k as keyof FormState] as string}
+                        onChange={(e) => handleChange(k as keyof FormState, e.target.value)}
+                        className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input}`}
+                      />
+                    </div>
+                  ))}
+
+                  <div className="flex flex-col">
+                    <label className={`mb-1 font-semibold ${cls.label}`}>ไฟล์แนบ</label>
                     <input
-                      type="text"
-                      value={Worksheet}
-                      onChange={(e) => setWorksheet(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${
-                        theme === "dark"
-                          ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                          : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <label className={`block mb-1 font-semibold ${labelText}`}>
-                      ชื่อผู้จ้างงาน
-                    </label>
-                    <input
-                      type="text"
-                      value={Employer}
-                      onChange={(e) => setEmployer(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${
-                        theme === "dark"
-                          ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                          : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                      }`}
-                    />
-                  </div>
-                  <div>
-                    <label className={`block mb-1 font-semibold ${labelText}`}>
-                      เบอร์โทรติดต่อ
-                    </label>
-                    <input
-                      type="text"
-                      value={Contact_number}
-                      onChange={(e) => setContact_number(e.target.value)}
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${
-                        theme === "dark"
-                          ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                          : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                      }`}
+                      type="file"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        handleChange("image", e.target.files?.[0] ?? null)
+                      }
+                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input}`}
                     />
                   </div>
                 </div>
 
-                {/* Address + Dates + Description */}
-                <div className="mb-6">
-                  <label className={`block mb-1 font-semibold ${labelText}`}>
-                    ที่อยู่
-                  </label>
-                  <input
-                    type="text"
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${
-                      theme === "dark"
-                        ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                        : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                    }`}
+                <div className="mt-4">
+                  <label className={`block mb-1 font-semibold ${cls.label}`}>รายละเอียดงาน</label>
+                  <textarea
+                    value={form.description}
+                    onChange={(e) => handleChange("description", e.target.value)}
+                    className={`border w-full p-2 rounded-lg h-35 resize-none focus:ring-2 outline-none ${cls.input}`}
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div className="space-y-4">
-                    <div>
-                      <label
-                        className={`block mb-1 font-semibold ${labelText}`}
-                      >
-                        สถานะ
-                      </label>
-                      <select
-                        className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${
-                          theme === "dark"
-                            ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                            : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                        }`}
-                        value={Status}
-                        onChange={(e) => setStatus(e.target.value)}
-                      >
-                        <option value="Active">Active</option>
-                      </select>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label
-                          className={`block mb-1 font-semibold ${labelText}`}
-                        >
-                          วันที่รับงาน
-                        </label>
-                        <input
-                          type="date"
-                          value={Date_of_acceptance_of_work}
-                          onChange={(e) =>
-                            setDate_of_acceptance_of_work(e.target.value)
-                          }
-                          className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${
-                            theme === "dark"
-                              ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                              : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                          }`}
-                        />
-                      </div>
-                      <div>
-                        <label
-                          className={`block mb-1 font-semibold ${labelText}`}
-                        >
-                          วันที่ต้องปิดงาน
-                        </label>
-                        <input
-                          type="date"
-                          value={Closing_date}
-                          onChange={(e) => setClosing_date(e.target.value)}
-                          className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${
-                            theme === "dark"
-                              ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                              : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                          }`}
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label
-                        className={`block mb-1 font-semibold ${labelText}`}
-                      >
-                        ไฟล์เริ่มงาน
-                      </label>
-                      <input
-                        type="file"
-                        onChange={(e) =>
-                          setImage(e.target.files ? e.target.files[0] : null)
-                        }
-                        className={`border p-2 rounded-lg w-full focus:ring-2 outline-none ${
-                          theme === "dark"
-                            ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                            : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                        }`}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <label className={`block mb-1 font-semibold ${labelText}`}>
-                      รายละเอียดงาน
-                    </label>
-                    <textarea
-                      value={description}
-                      onChange={(e) => setDescription(e.target.value)}
-                      className={`border p-2 rounded-lg w-full h-48 resize-none focus:ring-2 outline-none ${
-                        theme === "dark"
-                          ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-                          : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
-                      }`}
-                    />
-                  </div>
-                </div>
-
-                {/* Buttons */}
-                <div className="flex justify-end gap-4 border-t pt-4">
+                <div className="flex justify-end gap-4 border-t pt-4 mt-4">
                   <button
                     onClick={closeModal}
-                    className={`px-6 py-2 rounded-lg font-semibold transition ${
-                      theme === "dark"
-                        ? "bg-gray-700 text-white hover:bg-gray-600"
-                        : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                    }`}
+                    className={`px-6 py-2 rounded-lg ${t ? "bg-gray-700 hover:bg-gray-600" : "bg-gray-200 hover:bg-gray-300"}`}
                   >
                     ยกเลิก
                   </button>
                   <button
                     onClick={handleSave}
-                    className={`px-6 py-2 rounded-lg font-semibold shadow-md transition ${
-                      theme === "dark"
-                        ? "bg-yellow-400 text-gray-900 hover:bg-yellow-300"
-                        : "bg-blue-600 text-white hover:bg-blue-700"
-                    }`}
+                    className={`px-6 py-2 rounded-lg ${t ? "bg-yellow-400 hover:bg-yellow-300 text-gray-900" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
                   >
                     บันทึก
                   </button>
@@ -489,10 +255,9 @@ const Searchpastjobs: React.FC = () => {
               </div>
             </div>
           )}
+
         </div>
       </div>
     </div>
   );
-};
-
-export default Searchpastjobs;
+}
