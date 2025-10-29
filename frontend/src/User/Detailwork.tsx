@@ -75,6 +75,18 @@ export default function Detailwork() {
                 ข้อความตอบกลับ
               </h2>
 
+
+
+
+            </div>
+
+
+
+            <div className="border py-5 px-6 rounded-2xl ">
+              <h2 className="text-xl font-semibold text-blue-500 mb-3">
+                ข้อความตอบกลับ
+              </h2>
+
               <div
                 className={`p-5 rounded-2xl border ${borderSoft}   dark:text-gray-200`}
               >
