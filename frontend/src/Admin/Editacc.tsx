@@ -115,15 +115,15 @@ export default function Editacc() {
     fetchTradesmen();
   };
 
-  const inputClass = `border w-full p-2 rounded-lg mt-2 ${theme === "dark" ? "bg-gray-900 text-yellow-500" : "bg-gray-50 text-blue-500"
+  const inputClass = `border w-full p-2 rounded-lg mt-2 ${theme === "dark" ? "bg-gray-700 text-yellow-300" : "bg-gray-50 text-blue-700"
     }`;
-  const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+  const texthead = theme === "dark" ? "text-yellow-300" : "text-blue-700";
 
   return (
-    <div className="w-max-380 container p-5 mx-auto pt-10">
+    <div className="w-max-380 p-4 mx-auto pt-10">
       {/* ตาราง */}
       <div
-        className={`rounded-2xl h-screen shadow-xl p-6 ${theme === "dark" ? "bg-black/10" : ""
+        className={`rounded-2xl shadow-xl p-6 ${theme === "dark" ? "bg-black/10" : ""
           }`}
       >
         <div className="flex justify-between mb-6">
@@ -164,7 +164,7 @@ export default function Editacc() {
         {tradesmen.map((t) => (
           <div
             key={t.Address}
-            className={`grid grid-cols-7 gap-5 items-center border rounded-xl py-2 my-2  shadow-sm ${theme === 'dark' ? 'bg-gray-900' : ''}`}
+            className="grid grid-cols-7 gap-5 items-center border rounded-xl py-2 shadow-sm"
           >
             <img
               src={`http://localhost:5000/uploads/Profile/${t.Profile || "default.png"
@@ -208,7 +208,7 @@ export default function Editacc() {
         <form onSubmit={handleSubmit}>
           <div className="fixed inset-0 flex justify-center items-center bg-black/40 z-50">
             <div
-              className={`rounded-2xl shadow-2xl p-8 w-[900px] border  ${theme === "dark"
+              className={`rounded-2xl shadow-2xl p-8 w-[900px] border ${theme === "dark"
                 ? "bg-gray-800 border-gray-700 text-yellow-500"
                 : "bg-white border-blue-200 text-blue-500"
                 }`}
@@ -236,30 +236,43 @@ export default function Editacc() {
                   passwork: "รหัสผ่าน",
                   Address: "ที่อยู่",
                   Profile: "รูปภาพพนักงาน",
-                }).map(([key, label]) => (
+                }).map(([key]) => (
                   <div
                     key={key}
-                    className={`${key === 'Address' || key === 'Profile' ? 'col-span-2 ' : ''}`}
+                    className={`${key === 'Address' || key === 'Profile' ? 'col-span-2' : ''}`}
                   >
-                    <p>{label}</p>
-                    <input
-                      type={{
-                        Salary: "number",
-                        Birthday: "date",
-                        Start_data: "date",
-                        Profile: "file",
-                      }[key] || "text"}
-                      value={key === "Profile" ? undefined : form[key as keyof Tradesman] ?? ""}
-                      onChange={(e) => {
-                        if (key === "Profile") {
-                          const file = e.target.files?.[0];
-                          if (file) handleChange("Profile", file);
-                        } else {
-                          handleChange(key as keyof Tradesman, e.target.value);
-                        }
-                      }}
-                      className={inputClass}
-                    />
+                    {key === "role" ? (
+                      <select
+                        value={form.role ?? "user"}
+                        onChange={(e) => handleChange("role", e.target.value)}
+                        className={inputClass}
+                      >
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                        <option value="chief">Chief</option>
+                        <option value="executive">Executive</option>
+                      </select>
+                    ) : (
+                      <input
+                        type={{
+                          Salary: "number",
+                          Birthday: "date",
+                          Start_data: "date",
+                          Profile: "file",
+                        }[key] || "text"}
+                        value={key === "Profile" ? undefined : form[key as keyof Tradesman] ?? ""}
+                        onChange={(e) => {
+                          if (key === "Profile") {
+                            const file = e.target.files?.[0];
+                            if (file) handleChange("Profile", file);
+                          } else {
+                            handleChange(key as keyof Tradesman, e.target.value);
+                          }
+                        }}
+                        className={inputClass}
+                      />
+                    )}
+
 
                   </div>
                 ))}
