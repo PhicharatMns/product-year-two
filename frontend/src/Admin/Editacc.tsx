@@ -115,9 +115,9 @@ export default function Editacc() {
     fetchTradesmen();
   };
 
-  const inputClass = `border w-full p-2 rounded-lg mt-2 ${theme === "dark" ? "bg-gray-700 text-yellow-300" : "bg-gray-50 text-blue-700"
+  const inputClass = `border w-full p-2 rounded-lg mt-2 ${theme === "dark" ? "bg-gray-700 text-yellow-500" : "bg-gray-50 text-blue-500"
     }`;
-  const texthead = theme === "dark" ? "text-yellow-300" : "text-blue-700";
+  const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-700";
 
   return (
     <div className="w-max-380 container p-4 mx-auto pt-10">
@@ -241,6 +241,7 @@ export default function Editacc() {
                     key={key}
                     className={`${key === 'Address' || key === 'Profile' ? 'col-span-2' : ''}`}
                   >
+                    <label>{key}</label>
                     {key === "role" ? (
                       <select
                         value={form.role ?? "user"}
