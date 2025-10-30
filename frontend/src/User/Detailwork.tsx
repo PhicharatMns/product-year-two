@@ -40,9 +40,6 @@ export default function Detailwork() {
             )}
           </div>
 
-
-
-
           <div className="text-2xl py-2 font-semibold border p-5 rounded-2xl">รายละเอียดงาน
             <p className="text-sm mt-2 text-gray-500 ">
               งานซ่อมแซมระบบไฟฟ้าภายในอาคารสำนักงานชั้น 3 ตรวจสอบระบบสายไฟ
