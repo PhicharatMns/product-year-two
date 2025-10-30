@@ -43,7 +43,9 @@ export default function DashboardUser() {
     { name: "พ.ย.", quantity: 25 },
     { name: "ธ.ค.", quantity: 10 },
   ];
- q
+
+
+
   const text = theme === "dark" ? "text-white" : "text-gray-800";
   const cardBg = theme === "dark" ? "bg-gray-700" : "bg-blue-50/40";
   const barColor1 = theme === "dark" ? "#60a5fa" : "#3b82f6";
