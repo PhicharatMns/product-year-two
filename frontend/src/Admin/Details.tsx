@@ -4,6 +4,8 @@ import { useTheme } from "@/components/theme-provider";
 
 export default function Details() {
   const [showOpenaddTradesman, setshowOpenaddTradesman] = useState(false);
+  const [duplicateTradesman, setDuplicateTradesman] = useState<Tradesman | null>(null);
+
 
   const { id } = useParams();
   interface Employees {
@@ -65,6 +67,8 @@ export default function Details() {
     }
   };
 
+
+
   // ดึงข้อมูลช่างทั้งหมด (Tradesman)
   const fetchTradesman = async () => {
     try {
@@ -79,7 +83,6 @@ export default function Details() {
   };
 
   //  ดึงข้อมูล otherTradesman เฉพาะของงานนี้
-
   const fetchOtherTradesman = async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/otherTradesman/${id}`);
@@ -90,17 +93,17 @@ export default function Details() {
     }
   };
 
-  //  เพิ่มช่างไปยัง otherTradesman พร้อม employeeId
   const handleAddTradesman = async (tradesman: Tradesman) => {
     try {
-      //  ตรวจสอบว่าช่างคนนี้ถูกเพิ่มไปแล้วหรือยัง
+      // ตรวจสอบว่าช่างคนนี้ถูกเพิ่มไปแล้วหรือยัง
       const isDuplicate = SelectedTradesmen.some(
         (t) => t.Name === tradesman.Name
       );
 
       if (isDuplicate) {
-        setshowOpenaddTradesman(true);
-        setMobled(false);
+        setDuplicateTradesman(tradesman); // เก็บช่างที่ซ้ำ
+        setshowOpenaddTradesman(true); // เปิด modal เตือน
+        setMobled(false); // ปิด modal เพิ่มช่าง
         return;
       }
 
@@ -166,36 +169,31 @@ export default function Details() {
             <div className="max-w-380 mx-auto" key={index}>
               {/* ---------- ข้อมูลงาน ---------- */}
               <div
-                className={`mx-auto  rounded-2xl shadow-lg p-6 mb-6 border ${
-                  theme === "dark" ? "order-yellow-200 bg-gray-900" : ""
-                }`}
+                className={`mx-auto  rounded-2xl shadow-lg p-6 mb-6 border ${theme === "dark" ? "order-yellow-200 bg-gray-900" : ""
+                  }`}
               >
                 <p
-                  className={`text-3xl font-extrabold  mb-3 ${
-                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                  }`}
+                  className={`text-3xl font-extrabold  mb-3 ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
                 >
                   ชื่องาน
                 </p>
                 <p
-                  className={` mb-5 text-lg ${
-                    theme === "dark" ? "text-white" : "text-black"
-                  }`}
+                  className={` mb-5 text-lg ${theme === "dark" ? "text-white" : "text-black"
+                    }`}
                 >
                   {event.Worksheet}
                 </p>
 
                 <p
-                  className={`text-2xl font-bold  mb-2  ${
-                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                  }`}
+                  className={`text-2xl font-bold  mb-2  ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
                 >
                   รายละเอียดงาน
                 </p>
                 <p
-                  className={`leading-relaxed text-lg ${
-                    theme === "dark" ? "text-white" : "text-black"
-                  }`}
+                  className={`leading-relaxed text-lg ${theme === "dark" ? "text-white" : "text-black"
+                    }`}
                 >
                   {event.description}
                 </p>
@@ -209,44 +207,38 @@ export default function Details() {
                   className={`flex flex-col md:flex-row md:justify-between gap-4 text-lg ${text}`}
                 >
                   <p
-                    className={`font-semibold ${
-                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    }`}
+                    className={`font-semibold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      }`}
                   >
                     ชื่อผู้จ้าง:{" "}
                     <span
-                      className={` ${
-                        theme === "dark" ? "text-white" : "text-black"
-                      }`}
+                      className={` ${theme === "dark" ? "text-white" : "text-black"
+                        }`}
                     >
                       {event.Employer}
                     </span>
                   </p>
 
                   <p
-                    className={`${
-                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    } font-semibold`}
+                    className={`${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      } font-semibold`}
                   >
                     เบอร์ติดต่อ:{" "}
                     <span
-                      className={` ${
-                        theme === "dark" ? "text-white" : "text-black"
-                      } `}
+                      className={` ${theme === "dark" ? "text-white" : "text-black"
+                        } `}
                     >
                       {event.Contact_number}
                     </span>
                   </p>
                   <p
-                    className={`${
-                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    } font-semibold`}
+                    className={`${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      } font-semibold`}
                   >
                     ที่อยู่:{" "}
                     <span
-                      className={`${
-                        theme === "dark" ? "text-white" : "text-black"
-                      }`}
+                      className={`${theme === "dark" ? "text-white" : "text-black"
+                        }`}
                     >
                       {event.address}
                     </span>
@@ -263,19 +255,17 @@ export default function Details() {
                     className={`flex justify-between items-center border-b  pb-3 p-2 ${bg_border}`}
                   >
                     <h3
-                      className={`text-xl font-bold ${
-                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                      }`}
+                      className={`text-xl font-bold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                        }`}
                     >
                       รายชื่อช่าง
                     </h3>
                     <button
                       onClick={() => setMobled(true)}
-                      className={`text-white font-semibold px-4 py-2 rounded-xl cursor-pointer duration-500 shadow ${
-                        theme === "dark"
-                          ? "bg-yellow-500 hover:bg-yellow-600"
-                          : "bg-blue-500 hover:bg-blue-600"
-                      }`}
+                      className={`text-white font-semibold px-4 py-2 rounded-xl cursor-pointer duration-500 shadow ${theme === "dark"
+                        ? "bg-yellow-500 hover:bg-yellow-600"
+                        : "bg-blue-500 hover:bg-blue-600"
+                        }`}
                     >
                       + เพิ่มช่าง
                     </button>
@@ -283,9 +273,8 @@ export default function Details() {
 
                   {/* แสดงรายชื่อช่างที่เพิ่มแล้ว */}
                   <div
-                    className={`font-semibold  text-lg p-2 ${
-                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    }`}
+                    className={`font-semibold  text-lg p-2 ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      }`}
                   >
                     {SelectedTradesmen.map((t, index) => (
                       <div
@@ -301,20 +290,18 @@ export default function Details() {
                           <div>
                             <p>{t.Name}</p>
                             <p
-                              className={`text-sm ${
-                                theme === "dark"
-                                  ? "text-white"
-                                  : "text-gray-500"
-                              }`}
+                              className={`text-sm ${theme === "dark"
+                                ? "text-white"
+                                : "text-gray-500"
+                                }`}
                             >
                               {t.Position}
                             </p>
                             <p
-                              className={`text-sm ${
-                                theme === "dark"
-                                  ? "text-white"
-                                  : "text-gray-500"
-                              }`}
+                              className={`text-sm ${theme === "dark"
+                                ? "text-white"
+                                : "text-gray-500"
+                                }`}
                             >
                               {t.Phone_Number}
                             </p>
@@ -323,11 +310,10 @@ export default function Details() {
 
                         <button
                           onClick={() => handeDelete(t._id)}
-                          className={`${
-                            theme === "dark"
-                              ? "bg-yellow-500 hover:bg-yellow-600"
-                              : "bg-blue-500 hover:bg-yellow-600"
-                          } border px-5 p-1 rounded-xl  text-white cursor-pointer hover:shadow-lg duration-300 hover:scale-100`}
+                          className={`${theme === "dark"
+                            ? "bg-yellow-500 hover:bg-yellow-600"
+                            : "bg-blue-500 hover:bg-yellow-600"
+                            } border px-5 p-1 rounded-xl  text-white cursor-pointer hover:shadow-lg duration-300 hover:scale-100`}
                         >
                           ลบ
                         </button>
@@ -341,9 +327,8 @@ export default function Details() {
                   className={`lg:col-span-6 h-fit  rounded-2xl shadow-lg border p-6 ${bg_border}`}
                 >
                   <p
-                    className={`text-xl font-bold mb-4 ${
-                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    }`}
+                    className={`text-xl font-bold mb-4 ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      }`}
                   >
                     รายละเอียดการดำเนินงาน
                   </p>
@@ -368,9 +353,8 @@ export default function Details() {
                       />
                       <p>{event.name}</p>
                       <p
-                        className={`${
-                          theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                        }`}
+                        className={`${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                          }`}
                       >
                         {event.position}
                       </p>
@@ -379,11 +363,10 @@ export default function Details() {
                         {event.status}
                       </p>
                       <button
-                        className={`px-3 py-1 text-white rounded-lg duration-500 cursor-pointer shadow ${
-                          theme === "dark"
-                            ? "bg-yellow-500 hover:bg-yellow-600"
-                            : "bg-blue-500 hover:bg-blue-600"
-                        }`}
+                        className={`px-3 py-1 text-white rounded-lg duration-500 cursor-pointer shadow ${theme === "dark"
+                          ? "bg-yellow-500 hover:bg-yellow-600"
+                          : "bg-blue-500 hover:bg-blue-600"
+                          }`}
                       >
                         {event.reply}
                       </button>
@@ -396,37 +379,34 @@ export default function Details() {
       })}
 
       {/* เตือนว่า เคยเเอดช่างใว้เเล้ว */}
-      {showOpenaddTradesman && (
+      {showOpenaddTradesman && duplicateTradesman && (
         <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop:blur-sm z-50">
           <div
-            className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
-            }`}
+            className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
           >
-            {SelectedTradesmen.map((event, index) => {
-              return (
-                <div className="flex items-center" key={index}>
-                  <p className="flex gap-1">
-                    ช่าง{" "}
-                    <span
-                      className={`${
-                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                      }`}
-                    >
-                      {event.Name}
-                    </span>
-                    <p>อยุ่ในระบบเเล้ว</p>
-                  </p>
 
-                  <button
-                    className="cursor-pointer border bg-red-500 w-fit p-1 rounded-lg ml-auto"
-                    onClick={() => setshowOpenaddTradesman(false)}
-                  >
-                    ออก{" "}
-                  </button>
-                </div>
-              );
-            })}
+            <div className="flex items-center">
+              <p className="flex gap-1">
+                ช่าง{" "}
+                <span
+                  className={`${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
+                >
+                  {duplicateTradesman.Name}
+                </span>
+                <p>อยุ่ในระบบเเล้ว</p>
+              </p>
+
+              <button
+                className="cursor-pointer border bg-red-500 text-white   w-fit p-1 rounded-lg ml-auto"
+                onClick={() => setshowOpenaddTradesman(false)}
+              >
+                ออก{" "}
+              </button>
+            </div>
+
+
             <div>
               <img src="" alt="" />
               <p></p>
@@ -448,7 +428,7 @@ export default function Details() {
                 ✕
               </button>
             </div>
-          
+
             <div className="my-6">
               {dataTradesman.map((event, index) => (
                 <div
@@ -468,7 +448,7 @@ export default function Details() {
                       <p className="text-gray-400 font-normal">
                         <span className="font-normal">ตำแหน่ง :</span>{" "}
                         {event.Address}
-                      </p>
+                      </p> ๆ
                       <p className="text-gray-400 font-normal">
                         <span className="font-normal">เบอร์โทร :</span>{" "}
                         {event.Phone_Number}

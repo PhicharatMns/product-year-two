@@ -253,30 +253,30 @@ export default function Searchpastjobs() {
               ))}
 
               <div className="gap-1 flex justify-center">
+                {/* ปุ่มแก้ไข */}
+                <button
+                  onClick={() => openModal(e)}
+                  className="relative overflow-hidden cursor-pointer rounded-md bg-yellow-500 px-2 py-0.5 text-white text-sm duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90 hover:bg-yellow-600"
+                >
+                  แก้ไข
+                </button>
+
                 {/* ปุ่มลบ */}
                 <button
                   onClick={() => handleDelete(e._id)}
-                  className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-2 py-0.5 text-white text-sm duration-300 
+                  className="relative overflow-hidden rounded-md bg-red-500 px-2 py-0.5 text-white text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              active:translate-y-1 active:scale-x-110 active:scale-y-90 hover:bg-red-600"
                 >
                   ลบ
                 </button>
 
-                {/* ปุ่มแก้ไข */}
-                <button
-                  onClick={() => openModal(e)}
-                  className={`relative overflow-hidden rounded-md  px-3 py-0.5 text-white text-sm shadow-md transition-all duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${theme === 'dark' ? 'bg-yellow-500' : 'bg-blue-500'}`}
-                >
-                  แก้ไข
-                </button>
-
                 {/* ปุ่มรายละเอียด */}
                 <Link to={`/Details/${e._id}`}>
                   <button
-                    className="relative overflow-hidden cursor-pointer rounded-md bg-green-500 px-2 py-0.5 text-white text-sm duration-300 
+                    className="relative overflow-hidden rounded-md bg-green-500 px-2 py-0.5 text-white text-sm duration-300 
                [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
                active:translate-y-1 active:scale-x-110 active:scale-y-90 hover:bg-green-600"
                   >

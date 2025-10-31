@@ -11,6 +11,7 @@ import { useTheme } from "@/components/theme-provider";
 import { animate, motion, useMotionValue, useTransform } from "motion/react";
 import { useEffect } from "react";
 
+
 export default function Dashboard() {
   const materialData = [
     { name: "งานไม้", quantity: 57 },
@@ -61,15 +62,13 @@ export default function Dashboard() {
       <div className="">
         <header className="p-5">
           <h1
-            className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${
-              theme === "dark" ? "text-yellow-500" : "text-blue-500"
-            }`}
+            className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+              }`}
           >
             Dashboard{" "}
             <span
-              className={`${
-                theme === "dark" ? "text-white" : "text-yellow-500"
-              }`}
+              className={`${theme === "dark" ? "text-white" : "text-yellow-500"
+                }`}
             >
               Admin
             </span>

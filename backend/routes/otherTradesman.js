@@ -15,7 +15,8 @@ router.get("/", async (req, res) => {
 // POST - เพิ่มช่าง
 router.post("/", async (req, res) => {
   try {
-    const newTradesman = new OtherTradesman(req.body);
+    const { Name, Position, Phone_Number, Profile, employeeId } = req.body;
+    const newTradesman = new OtherTradesman({ Name, Position, Phone_Number, Profile, employeeId });
     const saved = await newTradesman.save();
     res.status(201).json(saved);
   } catch (err) {
@@ -23,51 +24,29 @@ router.post("/", async (req, res) => {
   }
 });
 
-
-router.post("/", async (req, res) => {
-  try {
-    const { Name, Position, Phone_Number, Profile, employeeId } = req.body;
-    const newTradesman = new OtherTradesman({
-      Name,
-      Position,
-      Phone_Number,
-      Profile,
-      employeeId
-    });
-    const saved = await newTradesman.save();
-    res.json(saved);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-
+// GET - ดึงช่างตามงาน
 router.get("/:employeeId", async (req, res) => {
   try {
     const { employeeId } = req.params;
     const list = await OtherTradesman.find({ employeeId });
     res.json(list);
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ message: err.message });
   }
 });
 
-// DELETE - ลบช่างจาก otherTradesman ตาม _id
+// DELETE - ลบช่างตาม _id
 router.delete("/:id", async (req, res) => {
   try {
-    const { id } = req.params; 
+    const { id } = req.params;
     const deleted = await OtherTradesman.findByIdAndDelete(id);
 
-    if (!deleted) {
-      return res.status(404).json({ message: "ไม่พบช่างที่จะลบ" });
-    }
+    if (!deleted) return res.status(404).json({ message: "ไม่พบช่างที่จะลบ" });
 
     res.json({ message: "ลบช่างสำเร็จ" });
   } catch (err) {
     res.status(500).json({ message: "ลบไม่สำเร็จ", error: err.message });
   }
 });
-
-
 
 module.exports = router;
