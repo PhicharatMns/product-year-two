@@ -44,7 +44,7 @@ export default function Sidebaradmin() {
   const bg = theme === "dark" ? "bg-gray-900" : "bg-blue-100";
 
   return (
-    
+
     <>
       {/* ปุ่มเปิดเมนูบนมือถือ */}
       <button
@@ -80,24 +80,24 @@ export default function Sidebaradmin() {
               if (event.Link) {
                 return (
                   // เพื่อให้ลิงก์ที่กำลังใช้งานอยู่มีสไตล์พิเศษ
-                <NavLink
-                      to={event.Link}
-                      key={index}
-                      className={({ isActive }) =>
-                        `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium text-neutral-0 transition duration-300 ${isActive ? "bg-yellow-500" : ""
-                        }`
-                      }
-                      onClick={() => setOpen(false)}
-                    >
-                      {/* แถบ animation */}
-                      <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
-                        <div className="relative h-full w-8 bg-white/50"></div>
-                      </div>
+                  <NavLink
+                    to={event.Link}
+                    key={index}
+                    className={({ isActive }) =>
+                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium text-neutral-0 transition duration-300 ${isActive ? "bg-yellow-500" : ""
+                      }`
+                    }
+                    onClick={() => setOpen(false)}
+                  >
+                    {/* แถบ animation */}
+                    <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
+                      <div className="relative h-full w-8 bg-white/50"></div>
+                    </div>
 
-                      {/* เนื้อหาภายใน NavLink */}
-                      <Icons size={24} className="relative z-10" />
-                      <span className="relative z-10">{event.text}</span>
-                    </NavLink>
+                    {/* เนื้อหาภายใน NavLink */}
+                    <Icons size={24}/>
+                    <span className="relative z-10">{event.text}</span>
+                  </NavLink>
                 );
               }
 
@@ -145,6 +145,6 @@ export default function Sidebaradmin() {
         ></div>
       )}
     </>
-    
+
   );
 }

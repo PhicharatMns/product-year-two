@@ -51,16 +51,21 @@ export default function Calendar() {
     saveEvents(updated);
   };
 
-  // ✅ เปลี่ยนเดือนพร้อม fade + slide
+  //  เปลี่ยนเดือนพร้อม fade + slide
   const changeMonth = (offset: number) => {
-    setFade(false);
+    // กำหนด direction ของ slide
+    setSlideDir(offset > 10 ? "right" : "left");
+    setFade(false); // fade-out
+
     setTimeout(() => {
       const newMonth = new Date(month);
       newMonth.setMonth(month.getMonth() + offset);
       setMonth(newMonth);
-      setSlideDir("");
+
+      // slide-in จาก opposite direction
+      setSlideDir(offset > 0 ? "left" : "right");
       setFade(true);
-    }, 500); // เวลา fade-out + slide ก่อนเปลี่ยนเดือน
+    }, 400); // ปรับเวลา fade-out + slide
   };
 
   const start = new Date(month.getFullYear(), month.getMonth(), 1);
@@ -88,7 +93,7 @@ export default function Calendar() {
             : "opacity-0"
         }`} >
         <div>
-          <div className="w-max-380 p-9 mx-auto container">
+          <div className="w-max-380 p-7 mx-auto container">
             {/* Header */}
             <div className="flex justify-between mb-5 items-center">
               <p className={`text-3xl font-extrabold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"}`}>
@@ -122,7 +127,7 @@ export default function Calendar() {
             </div>
 
             {/* ตารางวันที่ */}
-            <div className={`border rounded-4xl h-192 p-3 ${theme === "dark" ? "bg-gray-900" : "shadow-xl"}`}>
+            <div className={`border rounded-xl h-192 p-3 ${theme === "dark" ? "bg-gray-900" : "shadow-xl"}`}>
               <div className="grid grid-cols-7 text-lg font-extrabold gap-2 my-2">
                 {daysOfWeek.map((day, index) => (
                   <div key={index} className="pl-2">
@@ -138,7 +143,7 @@ export default function Calendar() {
                   return (
                     <div
                       key={i}
-                      onClick={() => day && setSelectedDate(dayStr)}
+                      onClick={() => day && setSelectedDate(dayStr!)}
                       className={`relative border-t h-27 rounded-lg border pl-2 cursor-pointer transition-all duration-200 ${theme === "dark" ? "hover:bg-gray-700 bg-gray-800" : "hover:bg-blue-50 shadow-4xl"
                         }`}
                     >
@@ -178,7 +183,7 @@ export default function Calendar() {
           >
             <p className="text-lg font-semibold mb-2 flex items-center">
               งานวันที่{" "}
-              <span className="text-blue-400">
+              <span className={` ${theme === 'dark' ? 'text-yellow-500' : 'text-bule-500'}`}>
                 {new Date(selectedDate).toLocaleDateString("th-TH", {
                   day: "numeric",
                   month: "long",
@@ -225,7 +230,12 @@ export default function Calendar() {
               />
               <button
                 onClick={addEvent}
-                className={`px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg text-white cursor-pointer`}
+                className={` relative overflow-hidden rounded-md px-3 py-0.5 font-semibold tracking-wide shadow-md transition-all duration-300 ${theme === "dark"
+                  ? "bg-yellow-500 hover:bg-yellow-400 text-white"
+                  : "bg-blue-500 hover:bg-blue-400 text-white"
+                  }
+                           [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
+                           active:-translate-y-1 active:scale-x-90 active:scale-y-110`}
               >
                 บันทึก
               </button>

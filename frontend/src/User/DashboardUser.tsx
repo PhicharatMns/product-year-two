@@ -44,6 +44,8 @@ export default function DashboardUser() {
     { name: "ธ.ค.", quantity: 10 },
   ];
 
+
+
   const text = theme === "dark" ? "text-white" : "text-gray-800";
   const cardBg = theme === "dark" ? "bg-gray-700" : "bg-blue-50/40";
   const barColor1 = theme === "dark" ? "#60a5fa" : "#3b82f6";
@@ -55,31 +57,27 @@ export default function DashboardUser() {
 
   return (
     <div
-      className={`transition-opacity duration-700 ${
-        fade ? "opacity-100" : "opacity-0"
-      }`}
+      className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"
+        }`}
     >
       <div className={`w-max-380 p-6 mx-auto container pt-4`}>
         <div>
           <header className="p-5">
             <h1
-              className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm ${
-                theme === "dark" ? "text-yellow-500" : "text-blue-500"
-              }`}
+              className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                }`}
             >
               Dashboard{" "}
               <span
-                className={`${
-                  theme === "dark" ? "text-white" : "text-yellow-500"
-                }`}
+                className={`${theme === "dark" ? "text-white" : "text-yellow-500"
+                  }`}
               >
                 User
               </span>
             </h1>
             <p
-              className={`mt-2 text-lg font-medium ${
-                theme === "dark" ? "text-white" : "text-gray-600"
-              }`}
+              className={`mt-2 text-lg font-medium ${theme === "dark" ? "text-white" : "text-gray-600"
+                }`}
             >
               ภาพรวมการทำงานทั้งหมดในระบบ
             </p>

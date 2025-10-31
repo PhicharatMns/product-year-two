@@ -40,9 +40,6 @@ export default function Detailwork() {
             )}
           </div>
 
-
-
-
           <div className="text-2xl py-2 font-semibold border p-5 rounded-2xl">รายละเอียดงาน
             <p className="text-sm mt-2 text-gray-500 ">
               งานซ่อมแซมระบบไฟฟ้าภายในอาคารสำนักงานชั้น 3 ตรวจสอบระบบสายไฟ
@@ -75,37 +72,37 @@ export default function Detailwork() {
                 ข้อความตอบกลับ
               </h2>
 
-            
-           
-             
- </div>
-             
 
-       
-<div className="border py-5 px-6 rounded-2xl ">
-  <h2 className="text-xl font-semibold text-blue-500 mb-3">
-    ข้อความตอบกลับ
-  </h2>
 
-  <div
-    className={`p-5 rounded-2xl border ${borderSoft}   dark:text-gray-200`}
-  >
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
-      <div className={`col-span-2 ${text} `}>
-        <p>
-          “ขอบคุณสำหรับการรายงานงานนี้ ตรวจสอบเรียบร้อยดีแล้ว
-          ขอให้ดำเนินการตรวจสอบอุปกรณ์เพิ่มเติมอีกครั้งในสัปดาห์หน้า
-          และแนบรูปภาพหลังซ่อมในระบบด้วยนะครับ”
-        </p>
-      </div>
 
-      <div className="col-span-2 text-sm text-gray-500 mt-2">
-        — หัวหน้างาน: นายสมชาย แสงทอง (วันที่ตอบกลับ: 23 ตุลาคม 2568)
-      </div>
-    </div>
-  </div>
-</div>
-</div>
+            </div>
+
+
+
+            <div className="border py-5 px-6 rounded-2xl ">
+              <h2 className="text-xl font-semibold text-blue-500 mb-3">
+                ข้อความตอบกลับ
+              </h2>
+
+              <div
+                className={`p-5 rounded-2xl border ${borderSoft}   dark:text-gray-200`}
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
+                  <div className={`col-span-2 ${text} `}>
+                    <p>
+                      “ขอบคุณสำหรับการรายงานงานนี้ ตรวจสอบเรียบร้อยดีแล้ว
+                      ขอให้ดำเนินการตรวจสอบอุปกรณ์เพิ่มเติมอีกครั้งในสัปดาห์หน้า
+                      และแนบรูปภาพหลังซ่อมในระบบด้วยนะครับ”
+                    </p>
+                  </div>
+
+                  <div className="col-span-2 text-sm text-gray-500 mt-2">
+                    — หัวหน้างาน: นายสมชาย แสงทอง (วันที่ตอบกลับ: 23 ตุลาคม 2568)
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {/* แผนที่ */}
           <div className="text-2xl mt-10 font-semibold">แผนที่</div>
