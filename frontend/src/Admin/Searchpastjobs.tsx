@@ -165,9 +165,10 @@ export default function Searchpastjobs() {
               <p className="hidden lg:block truncate">{e.Date_of_acceptance_of_work?.split("T")[0]}</p>
               <p className="hidden lg:block truncate">{e.Closing_date?.split("T")[0]}</p>
               <div className="flex gap-2 justify-center">
-                <button onClick={() => handleDelete(e._id)} className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600">ลบ</button>
+                <button onClick={() => handleDelete(e._id)} className="relative overflow-hidden rounded-md bg-red-500 px-3 py-1 text-white transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110">ลบ</button>
                 <Link to={`/Details/${e._id}`}>
-                  <button className="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600">รายละเอียด</button>
+                  <button className="relative overflow-hidden rounded-md bg-green-500 px-5 py-1 text-white duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90">
+                    รายละเอียด</button>
                 </Link>
               </div>
             </div>
