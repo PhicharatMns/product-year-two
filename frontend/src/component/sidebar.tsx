@@ -198,44 +198,51 @@ export default function Sidebar() {
             onClick={() => setOpen(false)}
           ></div>
         )}
-        {showManu && (
-          <div
-            className={` ml-2 fixed lg:left-64 left-4 bottom-0 rounded-t-xl h-120 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${slideIn
-              ? "-translate-y-0 scale-100 opacity-100"
-              : "translate-y-full opacity-0"
-              }`}
-          >
-            <div className="flex justify-between items-center mb-4 border-b-2 border-blue-100 pb-2">
-              <h2 className="text-xl font-semibold text-blue-500">กล่องข้อความ</h2>
-              <button
-                onClick={closeManu}
-                className={`text-2xl hover:text-red-500 pr-2 cursor-pointer ${text}`}
-              >
-                ✕
-              </button>
-            </div>
-            <div className="h-100">
-              <div
-                onClick={openManageMenu}
-                className="border-black p-2 shadow-xl rounded-xl flex items-center gap-3 cursor-pointer hover:bg-gray-100"
-              >
-                <img
-                  className="w-12 h-12 rounded-full object-cover"
-                  src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
-                  alt="พิชรัตน์"
-                />
-                <div>
-                  <p className={`font-semibold ${text}`}>พิชรัตน์</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+      {showManu && (
+  <div
+    className={`
+      fixed left-0 bottom-0 
+      rounded-t-xl h-225 w-80 p-2 bg-white 
+      transition-all transform duration-500
+      z-10
+      ${slideIn
+        ? "translate-x-64 scale-100 opacity-100" // เลื่อนเข้ามาใต้ sidebar
+        : "-translate-x-full opacity-0"         // ซ่อนซ้ายจอ
+      }
+    `}
+  >
+    <div className="flex justify-between items-center mb-4 border-b-2 border-blue-100 pb-2">
+      <h2 className="text-xl font-semibold text-blue-500">กล่องข้อความ</h2>
+      <button
+        onClick={closeManu}
+        className={`text-2xl hover:text-red-500 pr-2 cursor-pointer ${text}`}
+      >
+        ✕
+      </button>
+    </div>
+    <div className="h-100">
+      <div
+        onClick={openManageMenu}
+        className="border-black p-2 shadow-xl rounded-xl flex items-center gap-3 cursor-pointer hover:bg-gray-100"
+      >
+        <img
+          className="w-12 h-12 rounded-full object-cover"
+          src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
+          alt="พิชรัตน์"
+        />
+        <div>
+          <p className={`font-semibold ${text}`}>พิชรัตน์</p>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
         {openManage && (
           <div
-            className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl h-100 w-80 p-2 bg-white lg:z-50 transition-all transform duration-500 ${slideManage
+            className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl h-200 w-80 p-2 bg-white z-10 transition-all transform duration-500 ${slideManage
               ? "-translate-x-4 scale-100 opacity-100"
-              : "-translate-x-10 scale-100 opacity-0"
+              : "-translate-x-20 scale-100 opacity-0"
               }`}
           >
             <div className="border-black p-2 rounded-xl flex items-center gap-3">
