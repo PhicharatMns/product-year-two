@@ -231,7 +231,7 @@ export default function Sidebar() {
           alt="พิชรัตน์"
         />
         <div>
-          <p className={`font-semibold ${text}`}>พิชรัตน์</p>
+          <p className={`font-semibold ${text}`}>พิชรัตน</p>
         </div>
       </div>
     </div>
