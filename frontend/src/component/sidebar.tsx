@@ -99,7 +99,7 @@ export default function Sidebar() {
 
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-900" : "bg-blue-100";
-  const text = theme === "dark" ? "text-black" : "text-gray-500";
+  const text = theme === "dark" ? "text-white" : "text-black";
 
   return (
 
@@ -202,7 +202,7 @@ export default function Sidebar() {
   <div
     className={`
       fixed left-0 bottom-0 
-      rounded-t-xl h-225 w-80 p-2 bg-white 
+      rounded-t-xl h-225 w-80 p-2 ${bg}
       transition-all transform duration-500
       z-10
       ${slideIn
@@ -211,7 +211,7 @@ export default function Sidebar() {
       }
     `}
   >
-    <div className="flex justify-between items-center mb-4 border-b-2 border-blue-100 pb-2">
+    <div className={`flex justify-between items-center mb-4 border-b-2 border-blue-100 pb-2 ${text}`}>
       <h2 className="text-xl font-semibold text-blue-500">กล่องข้อความ</h2>
       <button
         onClick={closeManu}
@@ -231,7 +231,7 @@ export default function Sidebar() {
           alt="พิชรัตน์"
         />
         <div>
-          <p className={`font-semibold ${text}`}>พิชรัตน์</p>
+          <p className={`font-semibold ${text}`}>พิชรัตน</p>
         </div>
       </div>
     </div>
@@ -240,7 +240,7 @@ export default function Sidebar() {
 
         {openManage && (
           <div
-            className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl h-200 w-80 p-2 bg-white z-10 transition-all transform duration-500 ${slideManage
+            className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl h-200 w-80 p-2 ${bg} z-10 transition-all transform duration-500 ${slideManage
               ? "-translate-x-4 scale-100 opacity-100"
               : "-translate-x-20 scale-100 opacity-0"
               }`}
