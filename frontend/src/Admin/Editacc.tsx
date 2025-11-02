@@ -191,7 +191,7 @@ export default function Editacc() {
             className={`grid grid-cols-7 my-2 gap-5 pl-5 items-center border rounded-xl shadow-sm ${
               theme === "dark"
                 ? "bg-gray-800/90 border-gray-700"
-                : "shadow-lg bg-gra-50/40"
+                : "shadow-lg bg-blue-50/50"
             }`}
           >
             <img

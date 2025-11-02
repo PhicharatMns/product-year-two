@@ -23,7 +23,6 @@ interface FormState extends Omit<Employee, "_id"> {
   Status: string;
 }
 
-
 const defaultForm: FormState = {
   Worksheet: "",
   Employer: "",
@@ -165,19 +164,22 @@ export default function Searchpastjobs() {
 
   return (
     <div
-      className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"
-        }`}
+      className={`transition-opacity duration-700 ${
+        fade ? "opacity-100" : "opacity-0"
+      }`}
     >
       <div className="container mx-auto pt-10 p-6">
         <div
-          className={`rounded-xl shadow-lg p-5 min-h-screen ${t ? "bg-gray-900 text-white" : "bg-white text-gray-900"
-            }`}
+          className={`rounded-xl shadow-lg p-5 min-h-screen ${
+            t ? "bg-gray-900 text-white" : "bg-white text-gray-900"
+          }`}
         >
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
             <h2
-              className={`text-3xl font-bold ${t ? "text-yellow-500" : "text-blue-700"
-                }`}
+              className={`text-3xl font-bold ${
+                t ? "text-yellow-500" : "text-blue-700"
+              }`}
             >
               รับใบ{" "}
               <span className={t ? "text-white" : "text-yellow-500"}>งาน</span>
@@ -185,7 +187,9 @@ export default function Searchpastjobs() {
             <div className="flex flex-wrap gap-4 items-center">
               <button
                 onClick={() => openModal()}
-                className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white ${theme === 'dark' ? 'bg-yellow-500' : 'bg-blue-500'}`}
+                className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white ${
+                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                }`}
               >
                 เพิ่มช่าง
                 <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
@@ -208,8 +212,11 @@ export default function Searchpastjobs() {
 
           {/* Table */}
           <div
-            className={`hidden lg:grid font-extrabold grid-cols-7 gap-5 border-b-2 px-5  mb-3 ${t ? "text-yellow-500 border-yellow-500" : "text-blue-700 border-blue-500"
-              }`}
+            className={`hidden lg:grid font-extrabold grid-cols-7 gap-5 border-b-2 px-5  mb-3 ${
+              t
+                ? "text-yellow-500 border-yellow-500"
+                : "text-blue-700 border-blue-500"
+            }`}
           >
             {headers.map((h, i) => (
               <div key={i} className={`${i === 6 ? "text-center" : ""}`}>
@@ -221,10 +228,9 @@ export default function Searchpastjobs() {
           {filtered.map((e, i) => (
             <div
               key={i}
-              className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center rounded-xl shadow-sm py-1 px-5 mt-2 ${t
-                ? "bg-gray-800/90 border-gray-700"
-                : "bg-blue-50/40"
-                } border`}
+              className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center rounded-xl shadow-sm py-1 px-5 mt-2 ${
+                t ? "bg-gray-800/90 border-gray-700" : "bg-blue-50/40"
+              } border`}
             >
               {(
                 [
@@ -254,16 +260,6 @@ export default function Searchpastjobs() {
               ))}
 
               <div className="gap-1 flex justify-center">
-                {/* ปุ่มแก้ไข */}
-                <button
-                  onClick={() => openModal(e)}
-                  className="relative overflow-hidden cursor-pointer rounded-md bg-yellow-500 px-2 py-0.5 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 hover:bg-yellow-600"
-                >
-                  แก้ไข
-                </button>
-
                 {/* ปุ่มลบ */}
                 <button
                   onClick={() => handleDelete(e._id)}
@@ -274,17 +270,26 @@ export default function Searchpastjobs() {
                   ลบ
                 </button>
 
+                {/* ปุ่มแก้ไข */}
+                <button
+                  onClick={() => openModal(e)}
+                  className={` relative overflow-hidden cursor-pointer rounded-md  px-2 py-0.5 text-white text-sm duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${theme === 'dark' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-blue-500 hover:bg-blue-600'}`}
+                >
+                  แก้ไข
+                </button>
+
                 {/* ปุ่มรายละเอียด */}
                 <Link to={`/Details/${e._id}`}>
                   <button
-                    className="relative overflow-hidden rounded-md bg-green-500 px-2 py-0.5 text-white text-sm duration-300 
+                    className={`relative overflow-hidden rounded-md  px-2 py-0.5 text-white text-sm duration-300 
                [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-               active:translate-y-1 active:scale-x-110 active:scale-y-90 hover:bg-green-600"
+               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${theme === 'dark' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-blue-700 hover:bg-blue-800'}`}
                   >
                     รายละเอียด
                   </button>
                 </Link>
-
               </div>
             </div>
           ))}
@@ -292,15 +297,18 @@ export default function Searchpastjobs() {
           {/* Modal */}
           {showModal && (
             <div
-              className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 transition-opacity ${anim ? "opacity-100" : "opacity-0"
-                }`}
+              className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 transition-opacity ${
+                anim ? "opacity-100" : "opacity-0"
+              }`}
             >
               <div
-                className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all duration-300 ${anim ? "scale-100 opacity-100" : "scale-95 opacity-0"
-                  } ${t
+                className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all duration-300 ${
+                  anim ? "scale-100 opacity-100" : "scale-95 opacity-0"
+                } ${
+                  t
                     ? "bg-gray-800 border-gray-700 text-white"
                     : "bg-white border-blue-200 text-gray-800"
-                  }`}
+                }`}
               >
                 <h2
                   className={`text-2xl font-bold mb-6 border-b pb-3 ${cls.label}`}
@@ -381,7 +389,9 @@ export default function Searchpastjobs() {
                   </button>
                   <button
                     onClick={handleSave}
-                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === 'dark' ? 'bg-yellow-500' : 'bg-blue-500'}`}
+                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
                   >
                     <span className="relative z-10">ยืนยัน</span>
                     <span className="absolute inset-0 overflow-hidden  pointer-events-none">
