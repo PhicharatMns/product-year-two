@@ -70,7 +70,6 @@ const router = createBrowserRouter([
       { path: "addwork", element: <Addwork /> },
       { path: "notification", element: <Notification /> },
       { path: "suppliesAdmin", element: <SuppliesAdmin /> },
-      { path: 'Followtheprogress', element: <Followtheprogress /> }
     ],
   },
 
@@ -91,6 +90,7 @@ const router = createBrowserRouter([
       { path: "Detailwork", element: <Detailwork /> }, // ตรวจสอบชื่อ component ให้ตรง
       { path: "Calendar", element: <Calendars /> },
       { path: "withdraw", element: <Withdraw /> },
+      { path: 'Followtheprogress', element: <Followtheprogress /> }
     ],
   },
 
