@@ -28,6 +28,7 @@ import DashboardUser from "./User/DashboardUser";
 import Getpaper from "./User/GetPaper";
 import Calendars from "./User/Calendar";
 import Withdraw from "./User/Withdraw";
+import Followtheprogress from "./User/Followtheprogress";
 
 // Auth
 import Login from "./sighup/Login";
@@ -69,6 +70,7 @@ const router = createBrowserRouter([
       { path: "addwork", element: <Addwork /> },
       { path: "notification", element: <Notification /> },
       { path: "suppliesAdmin", element: <SuppliesAdmin /> },
+      { path: 'Followtheprogress', element: <Followtheprogress /> }
     ],
   },
 

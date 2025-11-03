@@ -30,7 +30,7 @@ export default function Sidebarexecutive() {
 
     const items: SidebarItem[] = [
         { text: "Dashboard", icon: MdDashboard, link: "/executive/DashboardExecutive" },
-        { text: "รายงาน", icon: RiFilePaper2Line, link: "/executive/getpaper" },
+        { text: "รายงาน", icon: RiFilePaper2Line, link: "/executive/Getpaperexecutive" },
         { text: "ทีมงาน", icon: AiTwotoneCalendar, link: "/executive/Calendar" },
         { text: "ออกจากระบบ", icon: IoLogOutOutline, onClick: handleLogout },
     ];

@@ -50,9 +50,8 @@ export default function Login() {
     <div className={`flex h-screen ${theme === "dark" ? "bg-black/10" : ""}`}>
       <div className="flex-1 flex items-center justify-center shadow-lg">
         <div
-          className={`w-full max-w-md p-8 shadow-lg rounded-xl ${
-            theme === "dark" ? "bg-gray-900/80" : "bg-gray-100"
-          }`}
+          className={`w-full max-w-md p-8 shadow-lg rounded-xl ${theme === "dark" ? "bg-gray-900/80" : "bg-gray-100"
+            }`}
         >
           <h2 className={`text-2xl font-bold text-center mb-8 ${textcolor}`}>
             ยินดีต้อนรับ
@@ -68,7 +67,7 @@ export default function Login() {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 placeholder="กรอกข้อมูล"
-                className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className={`w-full px-4 py-3 ${theme === 'dark' ? 'text-white focus:ring-yellow-500' : 'text-black focus:ring-blue-400'}  rounded-md shadow-md border focus:outline-none focus:ring-2`}
                 required
               />
             </div>
@@ -80,16 +79,15 @@ export default function Login() {
                 value={passwork}
                 onChange={(e) => setPasswork(e.target.value)}
                 placeholder="กรอกรหัสผ่าน"
-                className="w-full px-4 py-3 rounded-md shadow-md border focus:outline-none focus:ring-2 focus:ring-blue-400"
+                className={`w-full px-4 py-3 ${theme === 'dark' ? 'text-white focus:ring-yellow-500Dashboard ' : 'text-black focus:ring-blue-400'}  rounded-md shadow-md border focus:outline-none focus:ring-2 `}
                 required
               />
             </div>
 
             <button
               type="submit"
-              className={`w-full py-2 text-white font-semibold rounded-md shadow ${
-                theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-              }`}
+              className={`w-full py-2 text-white font-semibold rounded-md shadow ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                }`}
             >
               เข้าสู่ระบบ
             </button>
