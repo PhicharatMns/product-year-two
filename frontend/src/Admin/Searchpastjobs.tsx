@@ -59,7 +59,7 @@ export default function Searchpastjobs() {
   const [fade, setFade] = useState(false);
 
   const cls = {
-    label: t ? "text-yellow-300" : "text-blue-700",
+    label: t ? "text-yellow-500" : "text-blue-500",
     input: t
       ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
       : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800",
@@ -168,12 +168,8 @@ export default function Searchpastjobs() {
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="container mx-auto pt-10 p-6">
-        <div
-          className={`rounded-xl shadow-lg p-5 min-h-screen ${
-            t ? "bg-gray-900 text-white" : "bg-white text-gray-900"
-          }`}
-        >
+      <div className="container mx-auto p-5 max-w-380">
+        <div className={``}>
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
             <h2
@@ -229,7 +225,7 @@ export default function Searchpastjobs() {
             <div
               key={i}
               className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center rounded-xl shadow-sm py-1 px-5 mt-2 ${
-                t ? "bg-gray-800/90 border-gray-700" : "bg-blue-50/40"
+                t ? "bg-gray-900 border-gray-700" : "bg-blue-50/40"
               } border`}
             >
               {(
@@ -244,7 +240,7 @@ export default function Searchpastjobs() {
                 </p>
               ))}
 
-              <p className="hidden lg:block truncate text-orange-400">
+              <p className="hidden lg:block truncate text-yellow-500">
                 {e.Status ?? ""}
               </p>
 
@@ -275,7 +271,11 @@ export default function Searchpastjobs() {
                   onClick={() => openModal(e)}
                   className={` relative overflow-hidden cursor-pointer rounded-md  px-2 py-0.5 text-white text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${theme === 'dark' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-blue-500 hover:bg-blue-600'}`}
+             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+               theme === "dark"
+                 ? "bg-yellow-500 hover:bg-yellow-600"
+                 : "bg-blue-500 hover:bg-blue-600"
+             }`}
                 >
                   แก้ไข
                 </button>
@@ -285,7 +285,11 @@ export default function Searchpastjobs() {
                   <button
                     className={`relative overflow-hidden rounded-md  px-2 py-0.5 text-white text-sm duration-300 
                [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${theme === 'dark' ? 'bg-yellow-600 hover:bg-yellow-700' : 'bg-blue-700 hover:bg-blue-800'}`}
+               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
+                 theme === "dark"
+                   ? "bg-yellow-600 hover:bg-yellow-700"
+                   : "bg-blue-700 hover:bg-blue-800"
+               }`}
                   >
                     รายละเอียด
                   </button>
@@ -306,8 +310,8 @@ export default function Searchpastjobs() {
                   anim ? "scale-100 opacity-100" : "scale-95 opacity-0"
                 } ${
                   t
-                    ? "bg-gray-800 border-gray-700 text-white"
-                    : "bg-white border-blue-200 text-gray-800"
+                    ? "bg-gray-800 border-gray-900 text-white"
+                    : "bg-white border-blue-200 text-gray-900"
                 }`}
               >
                 <h2
