@@ -11,7 +11,6 @@ import { useTheme } from "@/components/theme-provider";
 import { animate, motion, useMotionValue, useTransform } from "motion/react";
 import { useEffect } from "react";
 
-
 export default function Dashboard() {
   const materialData = [
     { name: "งานไม้", quantity: 57 },
@@ -62,13 +61,15 @@ export default function Dashboard() {
       <div className="">
         <header className="p-5">
           <h1
-            className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-              }`}
+            className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${
+              theme === "dark" ? "text-yellow-500" : "text-blue-500"
+            }`}
           >
             Dashboard{" "}
             <span
-              className={`${theme === "dark" ? "text-white" : "text-yellow-500"
-                }`}
+              className={`${
+                theme === "dark" ? "text-white" : "text-yellow-500"
+              }`}
             >
               Admin
             </span>
@@ -80,59 +81,55 @@ export default function Dashboard() {
 
         <section>
           <div className="flex flex-col lg:flex-row gap-10">
-            <div className="lg:w-1/3 grid grid-cols-1 gap-6">
+            <div className="grid grid-cols-1 w-90 gap-5">
               {[
                 {
                   title: "จำนวนช่าง",
-                  value: "7,850",
-                  unit: "คน",
                   color: "bg-gray-700",
                 },
                 {
-                  title: "งานทั้งหมด",
-                  value: "500",
-                  unit: "งาน",
+                  title: "ช่างที่ยังไม่มีงาน",
                   color: "bg-blue-600",
                 },
                 {
                   title: "กำลังดำเนิน",
-                  value: "85",
-                  unit: "งาน",
                   color: "bg-yellow-500",
                 },
                 {
                   title: "งานที่เสร็จแล้ว",
-                  value: "26",
-                  unit: "งาน",
                   color: "bg-green-500",
                 },
               ].map((item, index) => (
                 <div
                   key={index}
-                  className={`${item.color} text-white p-7 rounded-2xl shadow-lg hover:shadow-2xl transition-transform transform hover:-translate-y-1`}
+                  className={`${item.color} text-white rounded-2xl flex  pl-5 justify-center flex-col shadow-lg`}
                 >
-                  <h2 className="text-2xl font-bold mb-2">{item.title}</h2>
-                  <p className="my-5 text-6xl font-extrabold tracking-wide flex gap-2">
+                  <h2 className="text-2xl mb-3 font-extrabold">{item.title}</h2>
+                  <p className="mb-3 font-extrabold text-xl">
                     <motion.pre>{rounded}</motion.pre>
-                    <span className="text-lg font-semibold align-top">
-                      {item.unit}
-                    </span>
                   </p>
-                  <button className="bg-white/20 hover:bg-white/30 text-white font-semibold py-2.5 px-6 rounded-xl transition-all duration-300 shadow-md">
-                    รายละเอียด
-                  </button>
+                  <div className="text-sm text-white">
+                    <button
+                      role="link"
+                      className={`relative bg-[linear-gradient(#ffffff,#ffffff),linear-gradient(#EAB308,#EAB308)]  bg-[length:100%_2px,0_2px] bg-[position:100%_100%,0_100%]  bg-no-repeat   transition-[background-size,color] duration-500  hover:bg-[0_2px,100%_2px]   rounded-md ${
+                        theme === "dark" ? "hover:text-yellow-500" : "hover:text-blue-500"
+                      }`}
+                    >
+                      รายละเอียด
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>
 
-            <div className="lg:w-2/3 flex flex-col gap-8">
+            <div className="w-full flex flex-col gap-3">
               <div className={`rounded-3xl shadow-inner p-6 ${cardBg}`}>
                 <h2
                   className={`text-2xl font-extrabold mb-4 text-center ${text}`}
                 >
                   งานทั้งหมด
                 </h2>
-                <div className="w-full h-[400px]">
+                <div className="w-full h-70">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={materialData} barSize={35}>
                       <XAxis
@@ -171,7 +168,7 @@ export default function Dashboard() {
                 >
                   จำนวนงานแต่ละเดือน
                 </h2>
-                <div className="w-full h-[400px]">
+                <div className="w-full h-70">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={WorkMountData} barSize={35}>
                       <XAxis

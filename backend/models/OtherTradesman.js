@@ -7,8 +7,9 @@ const otherTradesmanSchema = new mongoose.Schema({
   Profile: String,
   employeeId: {
     type: String, // ผูกกับ _id ของ employee
-    required: true
-  }
+    required: true,
+  },
+  id: String,
 });
 
 module.exports = mongoose.model("OtherTradesman", otherTradesmanSchema);
