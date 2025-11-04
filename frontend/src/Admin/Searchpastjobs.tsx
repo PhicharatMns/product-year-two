@@ -36,6 +36,11 @@ const defaultForm: FormState = {
   image: null,
 };
 
+interface Count {
+  _id: string;
+  count: number;
+}
+
 const headers = [
   "ชื่องาน",
   "รายชื่อผู้จ้าง",
@@ -57,6 +62,7 @@ export default function Searchpastjobs() {
   const [showModal, setShowModal] = useState(false);
   const [anim, setAnim] = useState(false);
   const [fade, setFade] = useState(false);
+
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
@@ -80,6 +86,7 @@ export default function Searchpastjobs() {
       console.error(err);
     }
   };
+
 
   const handleChange = (key: keyof FormState, value: string | File | null) =>
     setForm((f) => ({ ...f, [key]: value }));
@@ -168,7 +175,7 @@ export default function Searchpastjobs() {
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="container mx-auto p-5 max-w-380">
+      <div className="container mx-auto p-5 max-w-380  pt-10">
         <div className={``}>
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">

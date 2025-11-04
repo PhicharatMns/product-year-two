@@ -42,6 +42,7 @@ export default function Details() {
   const [Mobiles, setMobled] = useState(false);
   const [dataTradesman, setDataTradesman] = useState<Tradesman[]>([]);
   const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradesman[]>([]);
+  const [jobCounts, setJobCounts] = useState<{ [key: string]: number }>({});
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
 
@@ -149,10 +150,28 @@ export default function Details() {
     }
   };
 
+  //รับงานช่าง
+  const fetchJobCounts = async () => {
+    try {
+      const res = await fetch(
+        "http://localhost:5000/api/otherTradesman/count/all"
+      );
+      const data: { _id: string; count: number }[] = await res.json();
+      const map: { [key: string]: number } = {};
+      data.forEach((item) => {
+        map[item._id] = item.count;
+      });
+      setJobCounts(map);
+    } catch (err) {
+      console.error("โหลดจำนวนงานล้มเหลว:", err);
+    }
+  };
+
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
     fetchEmployees();
     fetchTradesman();
+    fetchJobCounts();
     if (id) fetchOtherTradesman(); //  ตรวจว่ามี id ก่อน
   }, [id]);
 
@@ -163,7 +182,7 @@ export default function Details() {
     theme === "dark" ? "bg-gray-900" : "border-bule-200 shadow-lg";
 
   return (
-    <div className="w-max-380 p-5 mx-auto container">
+    <div className="w-max-380 p-5 mx-auto container  pt-10">
       <div className="">
         <div className="mb-5">
           <p
@@ -491,12 +510,12 @@ export default function Details() {
         {Mobiles && (
           <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-10">
             <div
-              className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto scrollbar-hide ${
+              className={`rounded-2xl shadow-2xl  w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto scrollbar-hide  ${
                 theme === "dark" ? "bg-gray-800" : "bg-white"
               }`}
             >
               {" "}
-              <div className="mb-6 border-b border-blue-200 pb-3 flex justify-between items-center">
+              <div className="mb-6 border-b  border-blue-200 pb-3 p-8 sticky top-0 z-20 flex justify-between items-center bg-inherit  ">
                 <h2
                   className={`text-2xl font-bold ${
                     theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -511,92 +530,116 @@ export default function Details() {
                     เข้างาน
                   </span>
                 </h2>
+
                 <button
                   onClick={() => setMobled(false)}
-                  className={`font-semibold cursor-pointer ${
+                  className={`font-semibold cursor-pointer transition-transform hover:scale-110 ${
                     theme === "dark" ? "text-white" : "text-black"
                   }`}
                 >
                   ✕
                 </button>
               </div>
-              <div className="my-6">
-                {dataTradesman.map((event, index) => (
-                  <div
-                    key={index}
-                    className={`flex my-2 py-2 justify-between  pr-5 shadow-sm  pl-3 rounded-xl ${
-                      theme === "dark" ? "bg-gray-900" : "bg-white"
-                    }`}
-                  >
-                    <div className="flex gap-5 items-center">
-                      <img
-                        src={`http://localhost:5000/uploads/Profile/${event.Profile}`}
-                        alt=""
-                        className="w-12 h-12 object-cover  rounded-full bg-blue-700 shadow-md"
-                      />
-                      <div className="flex-col">
-                        <h2
-                          className={`text-lg font-extrabold ${
-                            theme === "dark"
-                              ? "text-yellow-500"
-                              : "text-blue-500"
-                          }`}
-                        >
-                          {event.Name}
-                        </h2>
-                        <p
-                          className={`text-sm ${
-                            theme === "dark" ? "text-white" : "text-black"
-                          }`}
-                        >
-                          <span
-                            className={` font-extrabold ${
+              <div className="px-8">
+                {dataTradesman
+        
+                  .sort(
+                    (a, b) => (jobCounts[a._id] ?? 0) - (jobCounts[b._id] ?? 0)
+                  ) // เรียงจากงานน้อย → งานมาก ถ้าใครยังไม่มีงาน ใช้ค่า 0
+                  .map((event, index) => (
+                    <div
+                      key={index}
+                      className={`flex my-2 py-2 justify-between shadow-sm  px-5 rounded-xl ${
+                        theme === "dark" ? "bg-gray-900" : "bg-white"
+                      }`}
+                    >
+                      <div className="flex  gap-5 items-center">
+                        <img
+                          src={`http://localhost:5000/uploads/Profile/${event.Profile}`}
+                          alt=""
+                          className="w-12 h-12 object-cover  rounded-full bg-blue-700 shadow-md"
+                        />
+                        <div className="flex-col">
+                          <h2
+                            className={`text-lg font-extrabold ${
                               theme === "dark"
                                 ? "text-yellow-500"
                                 : "text-blue-500"
                             }`}
                           >
-                            ตำแหน่ง :
-                          </span>{" "}
-                          {event.Address}
-                        </p>{" "}
-                        <p
-                          className={`text-sm ${
-                            theme === "dark" ? "text-white" : "text-black"
-                          }`}
-                        >
-                          {" "}
-                          <span
-                            className={` font-extrabold ${
-                              theme === "dark"
-                                ? "text-yellow-500"
-                                : "text-blue-500"
+                            {event.Name}
+                          </h2>
+                          <p
+                            className={`text-sm ${
+                              theme === "dark" ? "text-white" : "text-black"
                             }`}
                           >
-                            เบอร์โทร :
-                          </span>{" "}
-                          {event.Phone_Number}
-                        </p>
+                            <span
+                              className={` font-extrabold ${
+                                theme === "dark"
+                                  ? "text-yellow-500"
+                                  : "text-blue-500"
+                              }`}
+                            >
+                              ตำแหน่ง :
+                            </span>{" "}
+                            {event.Address}
+                          </p>{" "}
+                          <p
+                            className={`text-sm ${
+                              theme === "dark" ? "text-white" : "text-black"
+                            }`}
+                          >
+                            {" "}
+                            <span
+                              className={` font-extrabold ${
+                                theme === "dark"
+                                  ? "text-yellow-500"
+                                  : "text-blue-500"
+                              }`}
+                            >
+                              เบอร์โทร :
+                            </span>{" "}
+                            {event.Phone_Number}
+                          </p>
+                          <p>
+                            <p
+                              className={`text-sm ${
+                                theme === "dark" ? "text-white" : "text-black"
+                              }`}
+                            >
+                              <span
+                                className={`font-extrabold ${
+                                  theme === "dark"
+                                    ? "text-yellow-500"
+                                    : "text-blue-500"
+                                }`}
+                              >
+                                งานที่ได้รับในเดือนนี่ :
+                              </span>{" "}
+                              {jobCounts[event._id] ?? 0} งาน
+                            </p>
+                          </p>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-center">
-                      <button
-                        onClick={() => handleAddTradesman(event)}
-                        className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-2 text-white text-sm duration-300 
+                      <div className="flex items-center">
+                        <button
+                          onClick={() => handleAddTradesman(event)}
+                          className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-2 text-white text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
                theme === "dark"
                  ? "bg-yellow-500 hover:bg-yellow-600"
                  : "bg-blue-500 hover:bg-blue-600"
              }`}
-                      >
-                        {" "}
-                        เพิ่มช่าง
-                      </button>
+                        >
+                          {" "}
+                          เพิ่มช่าง
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
             </div>
           </div>

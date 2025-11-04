@@ -118,7 +118,7 @@ export default function Dashboard() {
   const cardBg = theme === "dark" ? "bg-gray-900  " : "";
 
   return (
-    <div className="w-max-380 p-5 mx-auto container ">
+    <div className="w-max-380 p-5 mx-auto container pt-10">
       <header className="mb-5">
         <h1
           className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${
