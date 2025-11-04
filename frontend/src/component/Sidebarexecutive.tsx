@@ -8,6 +8,7 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import { useTheme } from "@/components/theme-provider";
 import axios from "axios";
 import { AiTwotoneCalendar } from "react-icons/ai";
+import { FaMapMarkedAlt } from "react-icons/fa";
 
 interface SidebarItem {
     text: string;
@@ -32,6 +33,7 @@ export default function Sidebarexecutive() {
         { text: "Dashboard", icon: MdDashboard, link: "/executive/DashboardExecutive" },
         { text: "รายงาน", icon: RiFilePaper2Line, link: "/executive/getpaper" },
         { text: "ทีมงาน", icon: AiTwotoneCalendar, link: "/executive/Calendar" },
+        { text: "แผนที่", icon: FaMapMarkedAlt, link: "/executive/MapWork" },
         { text: "ออกจากระบบ", icon: IoLogOutOutline, onClick: handleLogout },
     ];
 

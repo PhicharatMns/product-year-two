@@ -11,6 +11,7 @@ import { IoClose } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { FaTools } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
+import { FaMapMarkedAlt } from "react-icons/fa";
 
 
 interface SidebarItem {
@@ -35,6 +36,7 @@ export default function Sidebaradmin() {
     { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "Searchpastjobs" },
     { text: "ส่งแจ้งการเตือน", icons: TbBellPlus, Link: "Notification" },
     { text: "จัดการวัสดุอุปกรณ์", icons: FaTools, Link: "SuppliesAdmin" },
+     { text: "แผนที่", icons: FaMapMarkedAlt, Link: "MapAdmin" },
     { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "Editacc" },
     { text: "ออกจากระบบ", icons: IoIosLogOut, onClick: handleLogout },
   ];
