@@ -14,7 +14,7 @@ export default function Followtheprogress() {
   const isDark = theme === "dark";
 
   return (
-    <div className="max-w-6xl mx-auto py-10"> {/* ทำให้กว้างขึ้นด้วย */}
+    <div className="max-w-6xl mx-auto py-10">
       <h1 className="text-4xl font-extrabold text-center text-blue-600 mb-8">
         ติดตามความคืบหน้า
       </h1>
@@ -42,7 +42,7 @@ export default function Followtheprogress() {
 
           <tbody>
             {data.map((item, index) => {
-              //  เลือกสีสถานะ
+              // สีสถานะ
               let statusColor = "";
               switch (item.status) {
                 case "กำลังดำเนิน":
@@ -78,12 +78,11 @@ export default function Followtheprogress() {
                     {item.name}
                   </td>
 
+                  {/* ปุ่ม */}
                   <td className="px-6 py-3 text-lg border-b border-gray-200 text-center">
                     <button
-                      className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm font-medium duration-300 
-                      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
-                      active:translate-y-1 active:scale-x-110 active:scale-y-90
-                      ${statusColor}`}
+                      className={`rounded-md px-3 py-1 text-white text-sm font-medium duration-300 
+                      cursor-default ${statusColor}`}
                     >
                       {item.status}
                     </button>
@@ -98,8 +97,7 @@ export default function Followtheprogress() {
 
                   <td className="px-6 py-3 border-b border-gray-200 text-center">
                     <button
-                      className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm font-medium duration-300
-                      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
+                      className={`rounded-md px-3 py-1 text-white text-sm font-medium duration-300
                       ${
                         isDark
                           ? "bg-yellow-500 hover:bg-yellow-600"
