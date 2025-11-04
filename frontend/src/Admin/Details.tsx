@@ -43,6 +43,9 @@ export default function Details() {
   const [dataTradesman, setDataTradesman] = useState<Tradesman[]>([]);
   const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradesman[]>([]);
   const [jobCounts, setJobCounts] = useState<{ [key: string]: number }>({});
+  const [modalFade, setModalFade] = useState(false);
+  const [fade, setFade] = useState(false);
+  const [duplicateFade, setDuplicateFade] = useState(false);
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
 
@@ -57,6 +60,26 @@ export default function Details() {
       reply: "ตอบกลับ",
     },
   ];
+
+  const openModal = () => {
+    setMobled(true);
+    setTimeout(() => setModalFade(true), 50); // ให้ transition ทำงาน
+  };
+
+  const closeModal = () => {
+    setModalFade(false);
+    setTimeout(() => setMobled(false), 300); // รอให้ fade out เสร็จก่อนปิดจริง
+  };
+
+  const openshowOpenaddTradesman = () => {
+    setDuplicateFade(true);
+    setTimeout(() => setshowOpenaddTradesman(true), 50);
+  };
+
+  const classhowOpenaddTradesman = () => {
+    setDuplicateFade(false);
+    setTimeout(() => setshowOpenaddTradesman(false), 300);
+  };
 
   // ดึงข้อมูลพนักงาน
   const fetchEmployees = async () => {
@@ -102,8 +125,7 @@ export default function Details() {
 
       if (isDuplicate) {
         setDuplicateTradesman(tradesman); // เก็บช่างที่ซ้ำ
-        setshowOpenaddTradesman(true); // เปิด modal เตือน
-        setMobled(false); // ปิด modal เพิ่มช่าง
+        openshowOpenaddTradesman(); // เปิด modal เตือน
         return;
       }
 
@@ -127,7 +149,6 @@ export default function Details() {
 
       // ดึงข้อมูลใหม่หลังเพิ่ม
       fetchOtherTradesman();
-      setMobled(false);
     } catch (err) {
       console.error("เกิดข้อผิดพลาด:", err);
     }
@@ -173,6 +194,8 @@ export default function Details() {
     fetchTradesman();
     fetchJobCounts();
     if (id) fetchOtherTradesman(); //  ตรวจว่ามี id ก่อน
+    const timer = setTimeout(() => setFade(true), 100);
+    return () => clearTimeout(timer);
   }, [id]);
 
   const { theme } = useTheme();
@@ -182,7 +205,11 @@ export default function Details() {
     theme === "dark" ? "bg-gray-900" : "border-bule-200 shadow-lg";
 
   return (
-    <div className="w-max-380 p-5 mx-auto container  pt-10">
+    <div
+      className={` w-max-380 transition-opacity duration-300  p-5 mx-auto container  pt-10 ${
+        fade ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <div className="">
         <div className="mb-5">
           <p
@@ -231,13 +258,13 @@ export default function Details() {
                     }`}
                   >
                     รายละเอียดงาน :{" "}
-                    <p
+                    <span
                       className={`leading-relaxed text-lg ${
                         theme === "dark" ? "text-white" : "text-black"
                       }`}
                     >
                       {event.description}
-                    </p>
+                    </span>
                   </p>
                 </div>
 
@@ -310,7 +337,7 @@ export default function Details() {
                         รายชื่อช่าง
                       </h3>
                       <button
-                        onClick={() => setMobled(true)}
+                        onClick={openModal}
                         className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-4 font-medium text-neutral-0 transition duration-300  text-white ${
                           theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
                         }`}
@@ -393,7 +420,7 @@ export default function Details() {
 
                           <button
                             onClick={() => handeDelete(t._id)}
-                            className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-2 text-white text-sm duration-300 
+                            className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-white text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
                theme === "dark"
@@ -471,7 +498,11 @@ export default function Details() {
 
         {/* เตือนว่า เคยเเอดช่างใว้เเล้ว */}
         {showOpenaddTradesman && duplicateTradesman && (
-          <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop:blur-sm z-50">
+          <div
+            className={`fixed inset-0 duration-100 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 ${
+              duplicateFade ? "opacity-100" : "opacity-0"
+            }`}
+          >
             <div
               className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${
                 theme === "dark" ? "bg-gray-800" : "bg-white"
@@ -491,16 +522,14 @@ export default function Details() {
                 </p>
 
                 <button
-                  className="cursor-pointer border bg-red-500 text-white px-2 w-fit p-1 rounded-lg ml-auto"
-                  onClick={() => setshowOpenaddTradesman(false)}
+                  className={`relative ml-auto overflow-hidden cursor-pointer rounded-md px-4 py-1 text-white text-sm duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90  bg-red-500
+              `}
+                  onClick={classhowOpenaddTradesman}
                 >
                   ออก{" "}
                 </button>
-              </div>
-
-              <div>
-                <img src="" alt="" />
-                <p></p>
               </div>
             </div>
           </div>
@@ -508,14 +537,18 @@ export default function Details() {
 
         {/* ---------- Modal เพิ่มช่าง ---------- */}
         {Mobiles && (
-          <div className="fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-10">
+          <div
+            className={`fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 
+     duration-300 ${modalFade ? "opacity-100 " : "opacity-0"}`}
+          >
+            {" "}
             <div
-              className={`rounded-2xl shadow-2xl  w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto scrollbar-hide  ${
+              className={`rounded-2xl shadow-2xl  w-[95%] md:w-[700px] duration-300 lg:w-[900px] border max-h-[95vh] overflow-y-auto scrollbar-hide  ${
                 theme === "dark" ? "bg-gray-800" : "bg-white"
-              }`}
+              } ${modalFade ? "opacity-100 " : "scale-90 opacity-0"} `}
             >
               {" "}
-              <div className="mb-6 border-b  border-blue-200 pb-3 p-8 sticky top-0 z-20 flex justify-between items-center bg-inherit  ">
+              <div className="mb-6 border-b  border-blue-200 pb-3 p-8 sticky top-0 z-20 flex justify-between items-center bg-inherit   ">
                 <h2
                   className={`text-2xl font-bold ${
                     theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -532,7 +565,7 @@ export default function Details() {
                 </h2>
 
                 <button
-                  onClick={() => setMobled(false)}
+                  onClick={closeModal}
                   className={`font-semibold cursor-pointer transition-transform hover:scale-110 ${
                     theme === "dark" ? "text-white" : "text-black"
                   }`}
@@ -542,7 +575,7 @@ export default function Details() {
               </div>
               <div className="px-8">
                 {dataTradesman
-        
+
                   .sort(
                     (a, b) => (jobCounts[a._id] ?? 0) - (jobCounts[b._id] ?? 0)
                   ) // เรียงจากงานน้อย → งานมาก ถ้าใครยังไม่มีงาน ใช้ค่า 0
@@ -625,16 +658,18 @@ export default function Details() {
 
                       <div className="flex items-center">
                         <button
-                          onClick={() => handleAddTradesman(event)}
+                          onClick={async () => {
+                            await handleAddTradesman(event);
+                            closeModal();
+                          }}
                           className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-2 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
-               theme === "dark"
-                 ? "bg-yellow-500 hover:bg-yellow-600"
-                 : "bg-blue-500 hover:bg-blue-600"
-             }`}
+     [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+     active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
+       theme === "dark"
+         ? "bg-yellow-500 hover:bg-yellow-600"
+         : "bg-blue-500 hover:bg-blue-600"
+     }`}
                         >
-                          {" "}
                           เพิ่มช่าง
                         </button>
                       </div>

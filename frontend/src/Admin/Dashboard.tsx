@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { useTheme } from "@/components/theme-provider";
 import { animate, motion, useMotionValue, useTransform } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
   const techniciansData = [
@@ -107,10 +107,16 @@ export default function Dashboard() {
   // #endregion
   const count = useMotionValue(0);
   const rounded = useTransform(() => Math.round(count.get()));
+  const [Faev, setFaev] = useState(false);
 
   useEffect(() => {
     const controls = animate(count, 100, { duration: 5 });
-    return () => controls.stop();
+    const timer = setTimeout(() => setFaev(true), 10);
+
+    return () => {
+      controls.stop(); // หยุด animation
+      clearTimeout(timer); // ล้าง timer
+    };
   }, []);
 
   const { theme } = useTheme();
@@ -118,7 +124,11 @@ export default function Dashboard() {
   const cardBg = theme === "dark" ? "bg-gray-900  " : "";
 
   return (
-    <div className="w-max-380 p-5 mx-auto container pt-10">
+    <div
+      className={` w-max-380 p-5 mx-auto container duration-300 pt-10 ${
+        Faev ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <header className="mb-5">
         <h1
           className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${

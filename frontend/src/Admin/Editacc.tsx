@@ -136,7 +136,7 @@ export default function Editacc() {
 
   return (
     <div
-      className={`w-max-380  container p-5 mx-auto ${
+      className={`w-max-380  container p-5 mx-auto pt-10 ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -219,7 +219,7 @@ export default function Editacc() {
                   setSelectedDelete(t);
                   setopenDelete(true);
                 }}
-                className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-0.5 text-white text-sm shadow-md transition-all duration-300 
+                className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              hover:bg-red-600 active:-translate-y-1 active:scale-x-90 active:scale-y-110"
               >
@@ -228,7 +228,7 @@ export default function Editacc() {
 
               <button
                 onClick={() => openModal(t)}
-                className={`relative overflow-hidden cursor-pointer rounded-md  px-3 py-0.5 text-white text-sm shadow-md transition-all duration-300 
+                className={`relative overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
               active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
                 theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
@@ -362,9 +362,9 @@ export default function Editacc() {
 
       {/* mode delete  */}
       {openDelete && selectedDelete && (
-        <div className="fixed inset-0 cursor-pointer z-50 flex justify-center items-center bg-black/40 transition-opacity ">
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 transition-opacity ">
           <div
-            className={`rounded-2xl shadow-2xl p-8 w-100 ${
+            className={`rounded-2xl shadow-2xl p-8 w-130 flex items-center ${
               theme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
           >
@@ -379,7 +379,7 @@ export default function Editacc() {
               <span>{selectedDelete.Name}</span>
             </div>
             {/* ลบและยกเลิก */}
-            <div className="flex gap-3 my-1 justify-end">
+            <div className="flex gap-2 my-1 ml-auto">
               <button
                 onClick={() => setopenDelete(false)}
                 className="relative cursor-pointer overflow-hidden rounded-lg border px-3 py-1 text-black bg-white shadow-lg transition-all duration-300 
