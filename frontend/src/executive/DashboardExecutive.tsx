@@ -1,16 +1,13 @@
 import {
   ComposedChart,
   Line,
-  Area,
   Bar,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   Legend,
-  Scatter,
   ResponsiveContainer,
-  LineChart,
   BarChart,
 } from "recharts";
 import { animate, motion, useMotionValue, useTransform } from "motion/react"

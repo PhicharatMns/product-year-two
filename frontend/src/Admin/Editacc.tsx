@@ -136,17 +136,15 @@ export default function Editacc() {
 
   return (
     <div
-      className={`w-max-380 transition-opacity duration-700 container p-4 mx-auto pt-10 ${
+      className={`w-max-380  container p-5 mx-auto ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
       {/* ตาราง */}
       <div
-        className={`rounded-2xl h-screen shadow-xl p-6 ${
-          theme === "dark" ? "bg-gray-900" : ""
-        }`}
+        className={` h-screen `}
       >
-        <div className="flex justify-between items-center mb-7">
+        <div className="flex justify-between items-center mb-5">
           <p className={`text-3xl font-bold ${texthead}`}>
             จัดการบัญชี{" "}
             <span
@@ -191,7 +189,7 @@ export default function Editacc() {
             className={`grid grid-cols-7 my-2 gap-5 pl-5 items-center border rounded-xl shadow-sm ${
               theme === "dark"
                 ? "bg-gray-800/90 border-gray-700"
-                : "shadow-lg bg-gra-50/40"
+                : "shadow-lg bg-blue-50/50"
             }`}
           >
             <img

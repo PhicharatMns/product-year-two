@@ -141,7 +141,7 @@ export default function Calendar() {
 
   return (
     <div
-      className={`w-max-380 p-7 mx-auto container transition-all duration-500 ease-in-out
+      className={`w-max-380 p-5 mx-auto container
       ${fade ? "opacity-100" : "opacity-0"}
       ${!fade && slideDir === "right" ? "-translate-x-10" : ""}
       ${!fade && slideDir === "left" ? "translate-x-10" : ""}`}

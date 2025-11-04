@@ -29,6 +29,7 @@ import DashboardUser from "./User/DashboardUser";
 import Getpaper from "./User/GetPaper";
 import Calendars from "./User/Calendar";
 import Withdraw from "./User/Withdraw";
+import Followtheprogress from "./User/Followtheprogress";
 
 // Auth
 import Login from "./sighup/Login";
@@ -93,6 +94,7 @@ const router = createBrowserRouter([
       { path: "Detailwork", element: <Detailwork /> }, // ตรวจสอบชื่อ component ให้ตรง
       { path: "Calendar", element: <Calendars /> },
       { path: "withdraw", element: <Withdraw /> },
+      { path: 'Followtheprogress', element: <Followtheprogress /> }
     ],
   },
 
