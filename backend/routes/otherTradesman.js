@@ -17,6 +17,18 @@ router.get("/", async (req, res) => {
 router.post("/", async (req, res) => {
   try {
     const { Name, Position, Phone_Number, Profile, employeeId, id } = req.body;
+
+    //  หาว่าช่างคนนี้ เคยอยู่ในงานนี้มาก่อนหรือยัง
+    const existing = await OtherTradesman.findOne({ id, employeeId });
+
+    if (existing) {
+      //  ถ้ามีอยู่แล้ว ให้เพิ่มค่า Jobs
+      existing.Jobs += 1;
+      await existing.save();
+      return res.json(existing);
+    }
+
+    //  ถ้ายังไม่มี ให้สร้างใหม่ (เพิ่มช่างเข้าใบงานนี้)
     const newTradesman = new OtherTradesman({
       Name,
       Position,
@@ -24,10 +36,13 @@ router.post("/", async (req, res) => {
       Profile,
       employeeId,
       id,
+      Jobs: 1,
     });
+
     const saved = await newTradesman.save();
     res.status(201).json(saved);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 });
@@ -90,6 +105,23 @@ router.get("/check/:id", async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "เกิดข้อผิดพลาดของเซิร์ฟเวอร์" });
+  }
+});
+
+// routes/otherTradesman.js
+router.get("/count/all", async (req, res) => {
+  try {
+    const result = await OtherTradesman.aggregate([
+      {
+        $group: {
+          _id: "$id", // แยกตาม id ของช่าง
+          count: { $sum: "$Jobs" }, // รวมค่าของฟิลด์ Jobs
+        },
+      },
+    ]);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });
 

@@ -179,8 +179,8 @@ export default function Notification() {
       className={`transition-opacity  duration-700 ${fade ? "opacity-100" : "opacity-0"
         }`}
     >
-      <div className={`w-max-380 p-4 mx-auto container pt-10 ${text}`}>
-        <div className="p-5">
+      <div className={`w-max-380 p-5 mx-auto container  ${text}`}>
+        <div className="mb-5">
           <p
             className={`text-3xl font-extrabold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
               }`}

@@ -10,6 +10,10 @@ const otherTradesmanSchema = new mongoose.Schema({
     required: true,
   },
   id: String,
+  Jobs: {
+    type: Number,
+    default: 0, // เริ่มจาก 0
+  },
 });
 
 module.exports = mongoose.model("OtherTradesman", otherTradesmanSchema);
