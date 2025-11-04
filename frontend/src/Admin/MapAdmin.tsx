@@ -148,7 +148,7 @@ function MapClickHandler({
 
 
 // --- Main Map Component ---
-export default function Map({ addressToGeocode, onMarkerSet }: MapProps) {
+export default function MapAdmin({ addressToGeocode, onMarkerSet }: MapProps) {
   const [form, setForm] = useState({ name: "", phone: "", location: "", detail: "", area: "" });
   const [formMode, setFormMode] = useState<'stop' | 'destination'>('stop');
   const [currentPos, setCurrentPos] = useState<[number, number] | null>(null);
