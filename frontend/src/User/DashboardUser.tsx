@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import { useTheme } from "@/components/theme-provider";
 import { animate, motion, useMotionValue, useTransform } from "motion/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function DashboardUser() {
   const techniciansData = [
@@ -107,10 +107,16 @@ export default function DashboardUser() {
   // #endregion
   const count = useMotionValue(0);
   const rounded = useTransform(() => Math.round(count.get()));
+  const [Faev, setFaev] = useState(false);
+
 
   useEffect(() => {
+    const timer = setTimeout(() => setFaev(true), 10);
     const controls = animate(count, 100, { duration: 5 });
-    return () => controls.stop();
+    return () => {
+      controls.stop();
+      clearTimeout(timer); // ล้าง timer
+    }
   }, []);
 
   const { theme } = useTheme();
@@ -118,19 +124,19 @@ export default function DashboardUser() {
   const cardBg = theme === "dark" ? "bg-gray-900  " : "";
 
   return (
-    <div className="w-max-380 p-5 mx-auto container ">
-      <div className="">
+    <div
+      className={` w-max-380 p-5 mx-auto container duration-300 ${Faev ? "opacity-100" : "opacity-0"
+        }`}
+    >      <div className="">
         <header className="mb-5">
           <h1
-            className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${
-              theme === "dark" ? "text-yellow-500" : "text-blue-500"
-            }`}
+            className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+              }`}
           >
             Dashboard{" "}
             <span
-              className={`${
-                theme === "dark" ? "text-white" : "text-yellow-500"
-              }`}
+              className={`${theme === "dark" ? "text-white" : "text-yellow-500"
+                }`}
             >
               User
             </span>
@@ -167,9 +173,8 @@ export default function DashboardUser() {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className={`  text-white rounded-2xl flex  pl-5 justify-center flex-col shadow-lg ${
-                    theme === "dark" ? item.color_bark : item.color
-                  }`}
+                  className={`  text-white rounded-2xl flex  pl-5 justify-center flex-col shadow-lg ${theme === "dark" ? item.color_bark : item.color
+                    }`}
                 >
                   <h2 className="text-2xl mb-3 font-extrabold">{item.title}</h2>
                   <p className="mb-3 font-extrabold text-xl">
@@ -180,11 +185,10 @@ export default function DashboardUser() {
                       role="link"
                       className={`relative cursor-pointer bg-[length:100%_2px,0_2px] bg-[position:100%_100%,0_100%] 
                  bg-no-repeat transition-[background-size,color] duration-500 hover:bg-[0_2px,100%_2px] 
-                 rounded-md ${
-                   theme === "dark"
-                     ? "hover:text-purple-600 bg-[linear-gradient(#ffffff,#ffffff),linear-gradient(#7c3aed,#7c3aed)]" // ม่วงเข้มตัดเหลือง
-                     : "hover:text-yellow-500 bg-[linear-gradient(#ffffff,#ffffff),linear-gradient(#facc15,#facc15)]" // น้ำเงินเข้มตัดเหลือง
-                 }`}
+                 rounded-md ${theme === "dark"
+                          ? "hover:text-purple-600 bg-[linear-gradient(#ffffff,#ffffff),linear-gradient(#7c3aed,#7c3aed)]" // ม่วงเข้มตัดเหลือง
+                          : "hover:text-yellow-500 bg-[linear-gradient(#ffffff,#ffffff),linear-gradient(#facc15,#facc15)]" // น้ำเงินเข้มตัดเหลือง
+                        }`}
                     >
                       รายละเอียด
                     </button>
@@ -196,9 +200,8 @@ export default function DashboardUser() {
             <div className="w-full flex flex-col gap-3">
               <div className={`rounded-xl shadow-xl p-6 ${cardBg}`}>
                 <h2
-                  className={`text-2xl font-extrabold mb-4 text-center ${
-                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                  }`}
+                  className={`text-2xl font-extrabold mb-4 text-center ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
                 >
                   จํานวนกราฟที่ได่รับงาน
                 </h2>
@@ -246,9 +249,8 @@ export default function DashboardUser() {
 
               <div className={`rounded-xl shadow-xl p-6 ${cardBg}`}>
                 <h2
-                  className={`text-2xl font-extrabold mb-4 text-center ${
-                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                  }`}
+                  className={`text-2xl font-extrabold mb-4 text-center ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
                 >
                   จำนวนงานแต่ละเดือน
                 </h2>

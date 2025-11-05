@@ -1,6 +1,6 @@
-import { Search } from "lucide-react";
 import { useTheme } from "@/components/theme-provider";
 import { useEffect, useState } from "react";
+import { CiSearch } from "react-icons/ci";
 
 interface User {
   id: number;
@@ -49,6 +49,7 @@ const users: User[] = [
 export default function GetPaper() {
   const { theme } = useTheme();
   const [fade, setFade] = useState(false);
+  const [focused, setfocused] = useState(false)
 
   useEffect(() => {
     const timer = setTimeout(() => setFade(true), 50);
@@ -61,38 +62,37 @@ export default function GetPaper() {
 
   return (
     <div
-      className={`transition-opacity duration-700 ${
-        fade ? "opacity-100" : "opacity-0"
-      }`}
+      className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"
+        }`}
     >
       <div className="w-max-380 p-5 mx-auto container ">
         {/* Header */}
 
         <div className="flex items-center justify-between mb-5">
           <p
-            className={`text-3xl font-bold ${
-              theme === "dark" ? "text-yellow-500" : "text-blue-500"
-            }`}
+            className={`text-3xl font-bold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+              }`}
           >
             ใบ
             <span
-              className={`${
-                theme === "dark" ? "text-white" : "text-yellow-500"
-              }`}
+              className={`${theme === "dark" ? "text-white" : "text-yellow-500"
+                }`}
             >
               งาน
             </span>
           </p>
 
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-2.5 w-4 h-4" />
-              <input
-                type="text"
-                placeholder="Search"
-                className={`pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm outline-none focus:ring-2 focus:ring-indigo-400 `}
-              />
-            </div>
+          <div className='relative'>
+            <CiSearch className={`absolute left-3 top-1/2 -translate-y-1/2 transition-all duration-300`} />
+            <input
+              placeholder="ค้นหา..."
+              onFocus={() => setfocused(true)}
+              onBlur={() => setfocused(false)}
+              type="text"
+              className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
+              ${focused ? 'w-72 shadow-lg' : 'w-60 border-gray-300'}  
+              ${theme === 'dark' ? 'border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white' : 'border-b-purple-300 focus:ring-blue-400 bg-white text-gray-800'}`}
+            />
           </div>
         </div>
 
@@ -127,11 +127,10 @@ export default function GetPaper() {
                       rel="noopener noreferrer"
                     >
                       <button
-                        className={` relative overflow-hidden rounded-md px-3 py-0.5 font-semibold tracking-wide shadow-md transition-all duration-300 ${
-                          theme === "dark"
-                            ? "bg-yellow-500 hover:bg-yellow-400 text-white"
-                            : "bg-blue-500 hover:bg-blue-400 text-white"
-                        }
+                        className={` relative overflow-hidden rounded-md px-3 py-0.5 font-semibold tracking-wide shadow-md transition-all duration-300 ${theme === "dark"
+                          ? "bg-yellow-500 hover:bg-yellow-400 text-white"
+                          : "bg-blue-500 hover:bg-blue-400 text-white"
+                          }
                            [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
                            active:-translate-y-1 active:scale-x-90 active:scale-y-110`}
                       >
