@@ -180,13 +180,6 @@ export default function Calendar() {
           theme === "dark" ? "bg-gray-900" : "shadow-xl"
         }`}
       >
-        <div className="grid grid-cols-7 text-lg font-extrabold gap-2 my-2">
-          {daysOfWeek.map((d, i) => (
-            <div key={i} className="pl-2">
-              {d}
-            </div>
-          ))}
-        </div>
         <div className="grid grid-cols-7 gap-2">
           {days.map((day, i) => {
             const dayStr = day
@@ -195,36 +188,53 @@ export default function Calendar() {
                   "0"
                 )}-${String(day.getDate()).padStart(2, "0")}`
               : null;
+
             const dayEvents = dayStr
               ? events.filter((e) => e.date === dayStr)
               : [];
+
             return (
               <div
                 key={i}
                 onClick={() => dayStr && setSelectedDate(dayStr)}
-                className={`relative border-t h-27 rounded-lg border pl-2 cursor-pointer transition-all duration-200
-                  ${
-                    theme === "dark"
-                      ? "hover:bg-gray-700 bg-gray-800"
-                      : "hover:bg-blue-50 shadow-4xl"
-                  }`}
+                className={`relative overflow-y-auto scrollbar-hide border-t h-27 rounded-lg border cursor-pointer transition-all duration-200
+          ${
+            theme === "dark"
+              ? "hover:bg-gray-700 bg-gray-800"
+              : "hover:bg-blue-50 shadow-4xl"
+          }`}
               >
-                <p>{day?.getDate()}</p>
-                {dayEvents.map((e, idx) => (
+                {/* วันที่ */}
+                {day && (
                   <p
-                    key={idx}
-                    onClick={(ev) => {
-                      ev.stopPropagation();
-                      if (e.jobId) checkJob(e.jobId);
-                    }}
-                    className={`text-xs rounded-sm h-5 mt-1 pl-2 cursor-pointer ${
-                      theme === "dark"
-                        ? "bg-yellow-500 text-white"
-                        : "bg-blue-500 text-white"
+                    className={`sticky top-0 z-10 text-sm font-bold pl-2 py-1 ${
+                      theme === "dark" ? "bg-gray-800" : "bg-blue-50 text-black"
                     }`}
                   >
-                    {e.title}
+                    {day.getDate()}
                   </p>
+                )}
+
+                {/* รายการงานในวันนั้น */}
+                {dayEvents.map((e, idx) => (
+                  <div
+                    key={idx}
+                    className={`text-xs mt-1 px-2 transition-all duration-200 ${
+                      theme === "dark" ? "text-yellow-300" : "text-blue-600"
+                    }`}
+                  >
+                    <p
+                      className={`rounded-sm pl-1 py-[2px] ${
+                        theme === "dark"
+                          ? "bg-yellow-500 text-white "
+                          : "bg-blue-500 text-white "
+                      }`}
+                      //  ไม่ stopPropagation เพราะอยากให้คลิกได้ทุกส่วน
+                      onClick={() => dayStr && setSelectedDate(dayStr)}
+                    >
+                      {e.title}
+                    </p>
+                  </div>
                 ))}
               </div>
             );
@@ -236,30 +246,32 @@ export default function Calendar() {
       {selectedDate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
           <div
-            className={`p-5 rounded-4xl ${
+            className={`p-5 rounded-4xl ite ${
               theme === "dark" ? "bg-gray-900" : "bg-white"
             }`}
           >
-            <p className="text-lg font-semibold mb-2 flex items-center">
-              งานวันที่{" "}
-              <span
-                className={`${
-                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                }`}
-              >
-                {new Date(selectedDate).toLocaleDateString("th-TH", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </span>
-              <div className="ml-auto">
-                <button onClick={() => setSelectedDate(null)}>
+            <div className=" flex items-center w-80">
+              <p className="text-lg font-semibold mb-2 gap-2 flex items-center">
+                งานวันที่{" "}
+                <span
+                  className={`${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
+                >
+                  {new Date(selectedDate).toLocaleDateString("th-TH", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </span>
+              </p>
+              <div className="ml-auto ">
+                <button className="cursor-pointer" onClick={() => setSelectedDate(null)}>
                   <BsXLg />
                 </button>
               </div>
-            </p>
-            <div className="flex flex-col w-full gap-2 mb-3 max-h-40 overflow-y-auto">
+            </div>
+            <div className="flex flex-col w-full gap-2 mb-3 max-h-80 overflow-y-auto scrollbar-hide">
               {events
                 .filter((e) => e.date === selectedDate)
                 .map((e, idx) => (

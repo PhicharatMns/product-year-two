@@ -4,6 +4,7 @@ import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
 
+//  ข้อมูลพนักงาน
 interface Employee {
   _id: string;
   Worksheet: string;
@@ -17,12 +18,13 @@ interface Employee {
   Status?: string;
   image: File | null;
 }
-
+// ฟอร์มเพิ่ม/แก้ไขงาน
 interface FormState extends Omit<Employee, "_id"> {
   image: File | null;
   Status: string;
 }
 
+//  Default Form
 const defaultForm: FormState = {
   Worksheet: "",
   Employer: "",
@@ -36,6 +38,7 @@ const defaultForm: FormState = {
   image: null,
 };
 
+//  Table Headers
 const headers = [
   "ชื่องาน",
   "รายชื่อผู้จ้าง",
@@ -51,12 +54,14 @@ export default function Searchpastjobs() {
   const t = theme === "dark";
 
   const [data, setData] = useState<Employee[]>([]);
+  const [deleteTarget, setDeleteTarget] = useState<Employee | null>(null);
   const [search, setSearch] = useState("");
   const [form, setForm] = useState<FormState>(defaultForm);
   const [editId, setEditId] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
   const [anim, setAnim] = useState(false);
   const [fade, setFade] = useState(false);
+  const [Opendatele, setopendatele] = useState(false);
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
@@ -65,12 +70,7 @@ export default function Searchpastjobs() {
       : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800",
   };
 
-  useEffect(() => {
-    fetchData();
-    const timer = setTimeout(() => setFade(true), 100);
-    return () => clearTimeout(timer);
-  }, []);
-
+  //ดึงข้อมูล employees
   const fetchData = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/employees");
@@ -81,6 +81,7 @@ export default function Searchpastjobs() {
     }
   };
 
+  //เเก้ไข employees
   const handleChange = (key: keyof FormState, value: string | File | null) =>
     setForm((f) => ({ ...f, [key]: value }));
 
@@ -111,8 +112,8 @@ export default function Searchpastjobs() {
     }
   };
 
+  // ลบ employees
   const handleDelete = async (id: string) => {
-    if (!confirm("คุณต้องการลบใช่หรือไม่?")) return;
     try {
       await fetch(`http://localhost:5000/api/employees/${id}`, {
         method: "DELETE",
@@ -123,6 +124,7 @@ export default function Searchpastjobs() {
     }
   };
 
+  //เตีอนว่าจะลบจริงไหม
   const openModal = (e?: Employee) => {
     if (e) {
       setForm({
@@ -150,11 +152,27 @@ export default function Searchpastjobs() {
     setTimeout(() => setAnim(true), 10);
   };
 
+  //setAnim
   const closeModal = () => {
     setAnim(false);
     setTimeout(() => setShowModal(false), 300);
   };
 
+  //setAnim delate Employee
+  const Opendatele_function = (e: Employee) => {
+    setDeleteTarget(e); // เก็บงานที่จะลบ
+    setopendatele(true); // เปิด modal ก่อน
+    setAnim(false); // เริ่มจาก anim = false
+    setTimeout(() => setAnim(true), 0); // trigger animation หลัง modal render
+  };
+
+  //setAnim delate Employee
+  const clasOpendate = () => {
+    setAnim(false);
+    setTimeout(() => setopendatele(false), 300);
+  };
+
+  // ฟิลเตอร์ข้อมูลตามคำค้นหา
   const filtered = data.filter(
     (e) =>
       (e.Worksheet ?? "").toLowerCase().includes(search.toLowerCase()) ||
@@ -162,13 +180,20 @@ export default function Searchpastjobs() {
       (e.Contact_number ?? "").includes(search)
   );
 
+  // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
+  useEffect(() => {
+    fetchData();
+    const timer = setTimeout(() => setFade(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <div
-      className={`transition-opacity duration-700 ${
+      className={`transition-opacity duration-500 ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="container mx-auto p-5 max-w-380">
+      <div className="container mx-auto p-5 max-w-380  pt-10">
         <div className={``}>
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
@@ -258,8 +283,9 @@ export default function Searchpastjobs() {
               <div className="gap-1 flex justify-center">
                 {/* ปุ่มลบ */}
                 <button
-                  onClick={() => handleDelete(e._id)}
-                  className="relative overflow-hidden rounded-md bg-red-500 px-2 py-0.5 text-white text-sm duration-300 
+                  //onClick={() => handleDelete(e._id)}
+                  onClick={() => Opendatele_function(e)}
+                  className="relative overflow-hidden cursor-pointer  rounded-md bg-red-500 px-2 py-1 text-white text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              active:translate-y-1 active:scale-x-110 active:scale-y-90 hover:bg-red-600"
                 >
@@ -269,7 +295,7 @@ export default function Searchpastjobs() {
                 {/* ปุ่มแก้ไข */}
                 <button
                   onClick={() => openModal(e)}
-                  className={` relative overflow-hidden cursor-pointer rounded-md  px-2 py-0.5 text-white text-sm duration-300 
+                  className={` relative overflow-hidden cursor-pointer rounded-md  px-2 py-1 text-white text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
                theme === "dark"
@@ -283,7 +309,7 @@ export default function Searchpastjobs() {
                 {/* ปุ่มรายละเอียด */}
                 <Link to={`/Details/${e._id}`}>
                   <button
-                    className={`relative overflow-hidden rounded-md  px-2 py-0.5 text-white text-sm duration-300 
+                    className={`relative overflow-hidden rounded-md cursor-pointer px-2 py-1 text-white text-sm duration-300 
                [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
                active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
                  theme === "dark"
@@ -301,7 +327,7 @@ export default function Searchpastjobs() {
           {/* Modal */}
           {showModal && (
             <div
-              className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 transition-opacity ${
+              className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${
                 anim ? "opacity-100" : "opacity-0"
               }`}
             >
@@ -402,6 +428,57 @@ export default function Searchpastjobs() {
                       <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
                     </span>
                   </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {/* //เตือนก่อนลบ */}
+          {Opendatele && deleteTarget && (
+            <div
+              className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${
+                anim ? "opacity-100" : "opacity-0"
+              }`}
+            >
+              <div
+                className={`rounded-2xl shadow-2xl p-8 w-[400px] border max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+                  anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
+                } ${
+                  theme === "dark"
+                    ? "bg-gray-800 text-white"
+                    : "bg-white text-gray-900"
+                }`}
+              >
+                <div className="flex items-center">
+                  <p>
+                    {" "}
+                    ลบงาน : <span>{deleteTarget.Worksheet}</span>
+                  </p>
+                  <div className="flex gap-2 ml-auto items-center ">
+                    <button
+                      onClick={() => {
+                        handleDelete(deleteTarget._id); // ลบงาน
+                        clasOpendate(); // ปิด modal
+                      }}
+                      className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-white text-sm duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90  
+             bg-red-500 hover:bg-red-600`}
+                    >
+                      ลบ
+                    </button>
+                    <button
+                      onClick={clasOpendate}
+                      className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-white text-sm duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
+               theme === "dark"
+                 ? "bg-yellow-500 hover:bg-yellow-600"
+                 : "bg-blue-500 hover:bg-blue-600"
+             }`}
+                    >
+                      ยกเลิก
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
