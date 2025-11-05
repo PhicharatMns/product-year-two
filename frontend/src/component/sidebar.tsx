@@ -98,8 +98,10 @@ export default function Sidebar() {
   };
 
   const { theme } = useTheme();
-  const bg = theme === "dark" ? "bg-gray-900" : "bg-blue-100";
+  const bg = theme === "dark" ? "bg-gray-900" : "bg-white-100";
   const text = theme === "dark" ? "text-white" : "text-black";
+  const bgside = theme === "dark" ? "bg-gray-900" : "bg-white";
+
 
   return (
 
@@ -202,11 +204,11 @@ export default function Sidebar() {
   <div
     className={`
       fixed left-0 bottom-0 
-      rounded-t-xl h-225 w-80 p-2 ${bg}
+      rounded-t-xl h-180 w-80 p-2 ${bgside}
       transition-all transform duration-500
       z-10
       ${slideIn
-        ? "translate-x-64 scale-100 opacity-100" // เลื่อนเข้ามาใต้ sidebar
+        ? "translate-x-67 scale-100 opacity-100" // เลื่อนเข้ามาใต้ sidebar
         : "-translate-x-full opacity-0"         // ซ่อนซ้ายจอ
       }
     `}
@@ -240,8 +242,8 @@ export default function Sidebar() {
 
         {openManage && (
           <div
-            className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl h-200 w-80 p-2 ${bg} z-10 transition-all transform duration-500 ${slideManage
-              ? "-translate-x-4 scale-100 opacity-100"
+            className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl h-150 w-80 p-2 ${bgside} z-10 transition-all transform duration-500 ${slideManage
+              ? "-translate-x-0 scale-100 opacity-100"
               : "-translate-x-20 scale-100 opacity-0"
               }`}
           >
