@@ -4,6 +4,8 @@
 @plugin "tailwindcss-animate";
 @import "tw-animate-css";
 
+
+
 /* global.css */
 body {
   font-family: "Kanit", "Noto Sans Thai", "Prompt", sans-serif;
@@ -142,3 +144,4 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* ปิดระบบเเสดงการเลี่อนเเต่ยังเลี่ยนได้ */
 }
+
