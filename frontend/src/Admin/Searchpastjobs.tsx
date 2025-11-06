@@ -4,7 +4,13 @@ import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
 // import react-leaflet components
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMapEvents,
+  useMap,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
@@ -53,7 +59,6 @@ const headers = [
   "จัดการ",
 ];
 
-
 export default function Searchpastjobs() {
   const { theme } = useTheme();
   const t = theme === "dark";
@@ -69,7 +74,7 @@ export default function Searchpastjobs() {
   const [Opendatele, setopendatele] = useState(false);
   const [OpenMap, setOpenMap] = useState(false);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
-
+  const [position, setPosition] = useState<[number, number] | null>(null);
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
@@ -194,32 +199,52 @@ export default function Searchpastjobs() {
 
   // โหลดค่าที่เคยบันทึกไว้ตอนเปิดหน้า
   useEffect(() => {
-    const saved = localStorage.getItem("savedLocation");
-    if (saved) {
-      const pos = JSON.parse(saved);
-      setMarkerPos(pos);
+    if (form?.address) {
+      try {
+        // ถ้า address เป็น object อยู่แล้ว
+        const { lat, lng } =
+          typeof form.address === "string"
+            ? JSON.parse(form.address)
+            : form.address;
+        setMarkerPos([lat, lng]);
+      } catch (err) {
+        console.error("Invalid address format:", err);
+      }
     }
-  }, []);
+  }, [form?.address]);
 
   // component ดักการคลิก
-  function ClickHandler() {
+    function ClickHandler() {
     useMapEvents({
       click(e) {
-        setMarkerPos([e.latlng.lat, e.latlng.lng]); // เก็บพิกัด
+        setMarkerPos([e.latlng.lat, e.latlng.lng]);
       },
     });
     return null;
   }
-
-  // ✅ ฟังก์ชันกดยืนยัน
+  
+  //  ฟังก์ชันกดยืนยัน
   const handleConfirm = () => {
     if (markerPos) {
-      localStorage.setItem("savedLocation", JSON.stringify(markerPos));
-      console.log("บันทึกตำแหน่งแล้ว:", markerPos);
+      const [lat, lng] = markerPos;
+      const posObj = { lat, lng };
+      // เก็บพิกัดใน state แบบ string เพื่อส่งไป MongoDB ได้
+      setForm((f) => ({ ...f, address: JSON.stringify(posObj) }));
+      setOpenMap(false);
     }
-    setOpenMap(false);
   };
+  // ซูมไปตรงพิกัดที่เคยปักไว้ล่าสุด
+  function FlyToSaved({ markerPos }: { markerPos: [number, number] | null }) {
+    const map = useMap();
 
+    useEffect(() => {
+      if (markerPos) {
+        map.flyTo(markerPos, 16); // ซูมไปที่พิกัดที่เคยบันทึกไว้ (16 = ระดับซูม)
+      }
+    }, [markerPos, map]);
+
+    return null;
+  }
 
   // สร้าง icon กำหนดสีเอง
   const customIcon = new L.Icon({
@@ -233,7 +258,6 @@ export default function Searchpastjobs() {
     shadowSize: [41, 41],
   });
 
-
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
     fetchData();
@@ -243,16 +267,18 @@ export default function Searchpastjobs() {
 
   return (
     <div
-      className={`transition-opacity duration-500 ${fade ? "opacity-100" : "opacity-0"
-        }`}
+      className={`transition-opacity duration-500 ${
+        fade ? "opacity-100" : "opacity-0"
+      }`}
     >
       <div className="container mx-auto p-5 max-w-380  pt-10">
         <div className={``}>
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
             <h2
-              className={`text-3xl font-bold ${t ? "text-yellow-500" : "text-blue-700"
-                }`}
+              className={`text-3xl font-bold ${
+                t ? "text-yellow-500" : "text-blue-700"
+              }`}
             >
               รับใบ{" "}
               <span className={t ? "text-white" : "text-yellow-500"}>งาน</span>
@@ -260,8 +286,9 @@ export default function Searchpastjobs() {
             <div className="flex flex-wrap gap-4 items-center">
               <button
                 onClick={() => openModal()}
-                className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                  }`}
+                className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white ${
+                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                }`}
               >
                 เพิ่มช่าง
                 <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
@@ -284,10 +311,11 @@ export default function Searchpastjobs() {
 
           {/* Table */}
           <div
-            className={`hidden lg:grid font-extrabold grid-cols-7 gap-5 border-b-2 px-5  mb-3 ${t
-              ? "text-yellow-500 border-yellow-500"
-              : "text-blue-700 border-blue-500"
-              }`}
+            className={`hidden lg:grid font-extrabold grid-cols-7 gap-5 border-b-2 px-5  mb-3 ${
+              t
+                ? "text-yellow-500 border-yellow-500"
+                : "text-blue-700 border-blue-500"
+            }`}
           >
             {headers.map((h, i) => (
               <div key={i} className={`${i === 6 ? "text-center" : ""}`}>
@@ -299,8 +327,9 @@ export default function Searchpastjobs() {
           {filtered.map((e, i) => (
             <div
               key={i}
-              className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center rounded-xl shadow-sm py-1 px-5 mt-2 ${t ? "bg-gray-900 border-gray-700" : "bg-blue-50/40"
-                } border`}
+              className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center rounded-xl shadow-sm py-1 px-5 mt-2 ${
+                t ? "bg-gray-900 border-gray-700" : "bg-blue-50/40"
+              } border`}
             >
               {(
                 [
@@ -346,10 +375,11 @@ export default function Searchpastjobs() {
                   onClick={() => openModal(e)}
                   className={` relative overflow-hidden cursor-pointer rounded-md  px-2 py-1 text-white text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${theme === "dark"
-                      ? "bg-yellow-500 hover:bg-yellow-600"
-                      : "bg-blue-500 hover:bg-blue-600"
-                    }`}
+             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+               theme === "dark"
+                 ? "bg-yellow-500 hover:bg-yellow-600"
+                 : "bg-blue-500 hover:bg-blue-600"
+             }`}
                 >
                   แก้ไข
                 </button>
@@ -359,10 +389,11 @@ export default function Searchpastjobs() {
                   <button
                     className={`relative overflow-hidden rounded-md cursor-pointer px-2 py-1 text-white text-sm duration-300 
                [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${theme === "dark"
-                        ? "bg-yellow-600 hover:bg-yellow-700"
-                        : "bg-blue-700 hover:bg-blue-800"
-                      }`}
+               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
+                 theme === "dark"
+                   ? "bg-yellow-600 hover:bg-yellow-700"
+                   : "bg-blue-700 hover:bg-blue-800"
+               }`}
                   >
                     รายละเอียด
                   </button>
@@ -374,15 +405,18 @@ export default function Searchpastjobs() {
           {/* Modal */}
           {showModal && (
             <div
-              className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${anim ? "opacity-100" : "opacity-0"
-                }`}
+              className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${
+                anim ? "opacity-100" : "opacity-0"
+              }`}
             >
               <div
-                className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all duration-300 ${anim ? "scale-100 opacity-100" : "scale-95 opacity-0"
-                  } ${t
+                className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all duration-300 ${
+                  anim ? "scale-100 opacity-100" : "scale-95 opacity-0"
+                } ${
+                  t
                     ? "bg-gray-800 border-gray-900 text-white"
                     : "bg-white border-blue-200 text-gray-900"
-                  }`}
+                }`}
               >
                 <h2
                   className={`text-2xl font-bold mb-6 border-b pb-3 ${cls.label}`}
@@ -408,7 +442,7 @@ export default function Searchpastjobs() {
                           className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input} text-left`}
                           onClick={() => setOpenMap(true)}
                         >
-                          {form.address || "เลือกที่อยุ่"}
+                          ที่อยู่งาน
                         </button>
                       ) : (
                         <input
@@ -475,8 +509,9 @@ export default function Searchpastjobs() {
                   </button>
                   <button
                     onClick={handleSave}
-                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                      }`}
+                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
                   >
                     <span className="relative z-10">ยืนยัน</span>
                     <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -490,20 +525,24 @@ export default function Searchpastjobs() {
           {/* //เตือนก่อนลบ */}
           {Opendatele && deleteTarget && (
             <div
-              className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${anim ? "opacity-100" : "opacity-0"
-                }`}
+              className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${
+                anim ? "opacity-100" : "opacity-0"
+              }`}
             >
               <div
-                className={`rounded-2xl shadow-2xl p-5 w-120  max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
-                  } ${theme === "dark"
+                className={`rounded-2xl shadow-2xl p-5 w-120  max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+                  anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
+                } ${
+                  theme === "dark"
                     ? "bg-gray-800 text-white"
                     : "bg-white text-gray-900"
-                  }`}
+                }`}
               >
                 <div className="flex items-center gap-1">
                   <p
-                    className={`font-semibold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                      }`}
+                    className={`font-semibold ${
+                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
                   >
                     {" "}
                     ลบงาน :
@@ -547,13 +586,16 @@ export default function Searchpastjobs() {
                 >
                   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                   <ClickHandler />
-                  {markerPos && <Marker position={markerPos} icon={customIcon} />}
+                  {markerPos && (
+                    <Marker position={markerPos} icon={customIcon} />
+                  )}
+                  <FlyToSaved markerPos={markerPos} />{" "}
+                  {/* <--- ตัวนี้ช่วยวาร์ป */}
                 </MapContainer>
                 <div className="flex gap-2 justify-end my-3 ">
                   <button
                     onClick={() => {
-                      setOpenMap(false)
-
+                      setOpenMap(false);
                     }}
                     className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
                   >
@@ -564,11 +606,12 @@ export default function Searchpastjobs() {
                   </button>
                   <button
                     onClick={() => {
-                      setOpenMap(false)
-                      { handleConfirm }
+                      setOpenMap(false);
+                      handleConfirm();
                     }}
-                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                      }`}
+                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
                   >
                     <span className="relative z-10">ยืนยัน</span>
                     <span className="absolute inset-0 overflow-hidden  pointer-events-none">

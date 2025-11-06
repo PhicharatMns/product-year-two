@@ -30,11 +30,20 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     const image = req.file ? req.file.filename : undefined;
 
+    // แปลง address จาก string → object (กรณีมาจาก frontend เป็น JSON string)
+    let parsedAddress = null;
+    try {
+      parsedAddress =
+        typeof address === "string" ? JSON.parse(address) : address;
+    } catch {
+      parsedAddress = null;
+    }
+
     const employee = new Employee({
       Worksheet,
       Employer,
       Contact_number,
-      address,
+      address: parsedAddress, //  เก็บเป็น object เช่น { lat: 13.7, lng: 100.5 }
       responsible,
       Date_of_acceptance_of_work: Date_of_acceptance_of_work || Date.now(),
       Closing_date: Closing_date || Date.now(),
@@ -46,6 +55,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     await employee.save();
     res.status(201).json(employee);
   } catch (err) {
+    console.error("Error creating employee:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -93,18 +103,28 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       Status,
     } = req.body;
 
-    // ถ้ามีไฟล์ใหม่ ให้ลบไฟล์เก่า
+    // ถ้ามีไฟล์ใหม่ → ลบไฟล์เก่า
     if (req.file && emp.image) {
       const oldPath = path.resolve("uploads", emp.image);
       if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       emp.image = req.file.filename;
     }
 
-    // อัปเดตฟิลด์
+    //  parse address ใหม่ถ้ามาเป็น JSON string
+    let parsedAddress = emp.address;
+    try {
+      parsedAddress =
+        typeof address === "string"
+          ? JSON.parse(address)
+          : address || emp.address;
+    } catch {
+      parsedAddress = emp.address;
+    }
+
     emp.Worksheet = Worksheet ?? emp.Worksheet;
     emp.Employer = Employer ?? emp.Employer;
     emp.Contact_number = Contact_number ?? emp.Contact_number;
-    emp.address = address ?? emp.address;
+    emp.address = parsedAddress;
     emp.responsible = responsible ?? emp.responsible;
     emp.Date_of_acceptance_of_work =
       Date_of_acceptance_of_work ?? emp.Date_of_acceptance_of_work;

@@ -1,21 +1,19 @@
-
 const mongoose = require("mongoose");
 
 const employeeSchema = new mongoose.Schema({
   Worksheet: String,
   Employer: String,
   Contact_number: String,
-  address: String,
+  address: {
+    lat: Number,
+    lng: Number, // เก็บพิกัดในรูปแบบ object
+  },
   responsible: String,
   Date_of_acceptance_of_work: Date,
   Closing_date: Date,
   description: String,
   image: String,
-  Status: String
+  Status: String,
 });
 
-
-module.exports = mongoose.model('employee', employeeSchema)
-
-
-
+module.exports = mongoose.model("employee", employeeSchema);
