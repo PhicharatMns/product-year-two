@@ -154,7 +154,7 @@ export default function Editacc() {
   // ปิด modal
   const closeAddEmployee = () => {
     setAmin(false); // เริ่ม fade-out
-    setSelectedDelete(null);// ล้างค่า
+    setSelectedDelete(null); // ล้างค่า
     setTimeout(() => setShowModal(false), 300); // ซ่อน modal หลัง fade-out
   };
 
@@ -365,14 +365,14 @@ export default function Editacc() {
                   passwork: "รหัสผ่าน",
                   Address: "ที่อยู่",
                   Profile: "รูปภาพพนักงาน",
-                }).map(([key]) => (
+                }).map(([key, label]) => (
                   <div
                     key={key}
                     className={`${
                       key === "Address" || key === "Profile" ? "col-span-2" : ""
                     }`}
                   >
-                    <label>{key}</label>
+                    <label>{label}</label>
                     {key === "role" ? (
                       <select
                         value={form.role ?? "user"}
@@ -485,7 +485,7 @@ export default function Editacc() {
               </button>
               <button
                 onClick={handleConfirmDelete}
-                className="group relative py-1  overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                className="group relative   overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
               >
                 <span className="relative z-10">ลบ</span>
                 <span className="absolute inset-0 overflow-hidden  pointer-events-none">

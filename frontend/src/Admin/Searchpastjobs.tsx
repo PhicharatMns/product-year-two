@@ -3,6 +3,9 @@ import type { ChangeEvent } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
+// import react-leaflet components
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 //  ข้อมูลพนักงาน
 interface Employee {
@@ -49,6 +52,7 @@ const headers = [
   "จัดการ",
 ];
 
+
 export default function Searchpastjobs() {
   const { theme } = useTheme();
   const t = theme === "dark";
@@ -62,6 +66,8 @@ export default function Searchpastjobs() {
   const [anim, setAnim] = useState(false);
   const [fade, setFade] = useState(false);
   const [Opendatele, setopendatele] = useState(false);
+  const [OpenMap, setOpenMap] = useState(false);
+  const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
@@ -179,6 +185,20 @@ export default function Searchpastjobs() {
       (e.Employer ?? "").toLowerCase().includes(search.toLowerCase()) ||
       (e.Contact_number ?? "").includes(search)
   );
+
+  //------------------------------Map ทั้งหมด----------------------------------------
+  // ประกาศด้านบน component หรือ function
+  const defaultCenter: [number, number] = [13.736717, 100.523186]; // พิกัดเริ่มต้น (Bangkok)
+
+  // component ดักการคลิก
+  function ClickHandler() {
+    useMapEvents({
+      click(e) {
+        setMarkerPos([e.latlng.lat, e.latlng.lng]); // เก็บพิกัด
+      },
+    });
+    return null;
+  }
 
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
@@ -346,27 +366,39 @@ export default function Searchpastjobs() {
                   {editId ? "แก้ไขใบงาน" : "เพิ่มใบงาน"}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    "Worksheet",
-                    "Employer",
-                    "Contact_number",
-                    "responsible",
-                    "address",
-                  ].map((k) => (
+                  {Object.entries({
+                    Worksheet: "ชื่องาน",
+                    Employer: "ชื่อผู้จ้าง",
+                    Contact_number: "เบอร์ติดต่อ",
+                    responsible: "ผู้สร้างงาน",
+                    address: "ที่อยุ่",
+                  }).map(([k, label]) => (
                     <div key={k} className="flex flex-col">
                       <label className={`mb-1 font-semibold ${cls.label}`}>
-                        {k}
+                        {label}
                       </label>
-                      <input
-                        type="text"
-                        value={form[k as keyof FormState] as string}
-                        onChange={(e) =>
-                          handleChange(k as keyof FormState, e.target.value)
-                        }
-                        className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input}`}
-                      />
+
+                      {k === "address" ? (
+                        <button
+                          type="button"
+                          className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input} text-left`}
+                          onClick={() => setOpenMap(true)}
+                        >
+                          {form.address || "เลือกที่อยุ่"}
+                        </button>
+                      ) : (
+                        <input
+                          type="text"
+                          value={form[k as keyof FormState] as string}
+                          onChange={(e) =>
+                            handleChange(k as keyof FormState, e.target.value)
+                          }
+                          className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input}`}
+                        />
+                      )}
                     </div>
                   ))}
+
                   {["Date_of_acceptance_of_work", "Closing_date"].map((k) => (
                     <div key={k} className="flex flex-col">
                       <label className={`mb-1 font-semibold ${cls.label}`}>
@@ -440,7 +472,7 @@ export default function Searchpastjobs() {
               }`}
             >
               <div
-                className={`rounded-2xl shadow-2xl p-8 w-[400px] border max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+                className={`rounded-2xl shadow-2xl p-5 w-120  max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
                   anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
                 } ${
                   theme === "dark"
@@ -448,38 +480,56 @@ export default function Searchpastjobs() {
                     : "bg-white text-gray-900"
                 }`}
               >
-                <div className="flex items-center">
-                  <p>
+                <div className="flex items-center gap-1">
+                  <p
+                    className={`font-semibold ${
+                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
+                  >
                     {" "}
-                    ลบงาน : <span>{deleteTarget.Worksheet}</span>
+                    ลบงาน :
                   </p>
-                  <div className="flex gap-2 ml-auto items-center ">
+                  <span>{deleteTarget.Worksheet}</span>
+                  <div className="flex gap-2 ml-auto  items-center ">
+                    <button
+                      onClick={clasOpendate}
+                      className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                    >
+                      <span className="relative z-10">ยกเลิก</span>
+                      <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                        <span className="absolute left-0 top-0 w-0 h-full bg-gray-200  transition-all duration-500 group-hover:w-full"></span>
+                      </span>
+                    </button>
                     <button
                       onClick={() => {
                         handleDelete(deleteTarget._id); // ลบงาน
                         clasOpendate(); // ปิด modal
                       }}
-                      className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90  
-             bg-red-500 hover:bg-red-600`}
+                      className="group relative   overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
                     >
-                      ลบ
-                    </button>
-                    <button
-                      onClick={clasOpendate}
-                      className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
-               theme === "dark"
-                 ? "bg-yellow-500 hover:bg-yellow-600"
-                 : "bg-blue-500 hover:bg-blue-600"
-             }`}
-                    >
-                      ยกเลิก
+                      <span className="relative z-10">ลบ</span>
+                      <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                        <span className="absolute left-0 top-0 w-0 h-full bg-red-600  transition-all duration-500 group-hover:w-full"></span>
+                      </span>
                     </button>
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+          {/* เปิดMap */}
+          {OpenMap && (
+            <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
+              <div className="w-300 h-180 p-5 bg-gray-800">
+                <MapContainer
+                  center={defaultCenter}
+                  zoom={13}
+                  className="w-full h-full"
+                >
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  <ClickHandler />
+                  {markerPos && <Marker position={markerPos} />}
+                </MapContainer>
               </div>
             </div>
           )}
