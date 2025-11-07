@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import type { ChangeEvent } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
@@ -10,11 +10,13 @@ import {
   Marker,
   useMapEvents,
   useMap,
-  FeatureGroup,
 } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import "leaflet-draw"; // ต้อง import แบบนี้เพื่อให้ L.Control.Draw ทำงาน
+import "leaflet-draw/dist/leaflet.draw.css"; // โหลด CSS ของ draw
+
 import L from "leaflet";
 
+import "leaflet-draw";
 //  ข้อมูลพนักงาน
 interface Employee {
   _id: string;
@@ -102,8 +104,13 @@ export default function Searchpastjobs() {
     try {
       const fd = new FormData();
       Object.entries(form).forEach(([k, v]) => {
-        if (v !== null && v !== "")
-          fd.append(k, v instanceof File ? v : String(v));
+        if (v !== null && v !== "") {
+          if (k === "address") {
+            fd.append(k, JSON.stringify(v)); // แปลง address เป็น JSON string
+          } else {
+            fd.append(k, v instanceof File ? v : String(v));
+          }
+        }
       });
 
       if (editId) {
@@ -201,15 +208,27 @@ export default function Searchpastjobs() {
   useEffect(() => {
     if (form?.address) {
       try {
-        // ถ้า address เป็น object อยู่แล้ว
-        const { lat, lng } =
+        const addr =
           typeof form.address === "string"
             ? JSON.parse(form.address)
             : form.address;
-        setMarkerPos([lat, lng]);
+
+        // ตรวจสอบว่า addr มี lat และ lng จริง
+        if (
+          addr &&
+          typeof addr.lat === "number" &&
+          typeof addr.lng === "number"
+        ) {
+          setMarkerPos([addr.lat, addr.lng]);
+        } else {
+          setMarkerPos(null); // ป้องกันค่าไม่ถูกต้อง
+        }
       } catch (err) {
         console.error("Invalid address format:", err);
+        setMarkerPos(null);
       }
+    } else {
+      setMarkerPos(null);
     }
   }, [form?.address]);
 
@@ -233,13 +252,66 @@ export default function Searchpastjobs() {
       setOpenMap(false);
     }
   };
+
+  function DrawTools({ onChange }: { onChange: (shape: any) => void }) {
+    const map = useMap();
+
+    useEffect(() => {
+      if (!map) return;
+
+      // ป้องกันเพิ่มซ้ำ
+      if ((map as any)._drawnItems) return;
+
+      const drawnItems = new L.FeatureGroup();
+      map.addLayer(drawnItems);
+      (map as any)._drawnItems = drawnItems; // เก็บไว้กันซ้ำ
+
+      const drawControl = new L.Control.Draw({
+        edit: { featureGroup: drawnItems },
+        draw: {
+          polygon: true,
+          rectangle: true,
+          circle: true,
+          polyline: false,
+          marker: false,
+        },
+      });
+
+      map.addControl(drawControl);
+
+      map.on(L.Draw.Event.CREATED, (e: any) => {
+        const layer = e.layer;
+        drawnItems.addLayer(layer);
+        const geoJson = layer.toGeoJSON();
+        onChange(JSON.stringify(geoJson));
+      });
+
+      map.on(L.Draw.Event.EDITED, (e: any) => {
+        e.layers.eachLayer((layer: any) => {
+          const geoJson = layer.toGeoJSON();
+          onChange(JSON.stringify(geoJson));
+        });
+      });
+
+      map.on(L.Draw.Event.DELETED, (e: any) => {
+        onChange("");
+      });
+    }, [map, onChange]);
+
+    return null;
+  }
+
   // ซูมไปตรงพิกัดที่เคยปักไว้ล่าสุด
   function FlyToSaved({ markerPos }: { markerPos: [number, number] | null }) {
     const map = useMap();
 
     useEffect(() => {
-      if (markerPos) {
-        map.flyTo(markerPos, 16); // ซูมไปที่พิกัดที่เคยบันทึกไว้ (16 = ระดับซูม)
+      if (
+        markerPos &&
+        markerPos[0] !== undefined &&
+        markerPos[1] !== undefined
+      ) {
+        map.flyTo(markerPos, 16);
       }
     }, [markerPos, map]);
 
@@ -257,66 +329,6 @@ export default function Searchpastjobs() {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
-
-  //วาด Polygon
-  function DrawTools() {
-    const map = useMap();
-
-    useEffect(() => {
-      const drawnItems = new L.FeatureGroup();
-      map.addLayer(drawnItems);
-
-      const drawControl = new L.Control.Draw({
-        edit: {
-          featureGroup: drawnItems,
-        },
-        draw: {
-          polygon: {
-            allowIntersection: false,
-            showArea: true,
-            shapeOptions: {
-              color: "#f57c00",
-            },
-          },
-          rectangle: {
-            shapeOptions: {
-              color: "#4caf50",
-            },
-          },
-          circle: {
-            shapeOptions: {
-              color: "#2196f3",
-            },
-          },
-          polyline: false,
-          marker: false,
-          circlemarker: false,
-        },
-      });
-
-      map.addControl(drawControl);
-
-      map.on(L.Draw.Event.CREATED, function (e: any) {
-        const type = e.layerType;
-        const layer = e.layer;
-
-        // ใส่ Tooltip แบบกำหนดเอง
-        layer.bindTooltip(`Shape: ${type}`).openTooltip();
-
-        drawnItems.addLayer(layer);
-
-        // แปลง shape เป็น GeoJSON และ log
-        console.log(layer.toGeoJSON());
-      });
-
-      return () => {
-        map.removeControl(drawControl);
-        map.removeLayer(drawnItems);
-      };
-    }, [map]);
-
-    return null;
-  }
 
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
@@ -649,9 +661,12 @@ export default function Searchpastjobs() {
                   {markerPos && (
                     <Marker position={markerPos} icon={customIcon} />
                   )}
-                  <FlyToSaved markerPos={markerPos} />{" "}
-                  {/* <--- ตัวนี้ช่วยวาร์ป */}
+                  <FlyToSaved markerPos={markerPos} />
+                  <DrawTools
+                    onChange={(shapeJson) => handleChange("address", shapeJson)}
+                  />
                 </MapContainer>
+
                 <div className="flex gap-2 justify-end my-3 ">
                   <button
                     onClick={() => {
