@@ -55,6 +55,8 @@ export default function Details() {
   const [fade, setFade] = useState(false);
   const [duplicateFade, setDuplicateFade] = useState(false);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
+  const [openMap, setopenMap] = useState(false);
+  const [fadeMap, setFadeMap] = useState(false);
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
 
@@ -196,6 +198,18 @@ export default function Details() {
     }
   };
 
+  // ตอนเปิดแผนที่
+  const openMapHandler = () => {
+    setopenMap(true);
+    setTimeout(() => setFadeMap(true), 50);
+  };
+
+  // ตอนปิดแผนที่
+  const closeMapHandler = () => {
+    setFadeMap(false);
+    setTimeout(() => setopenMap(false), 300);
+  };
+
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
     fetchEmployees();
@@ -327,18 +341,17 @@ export default function Details() {
                         {event.Contact_number}
                       </span>
                     </p>
-                    <p
-                      className={`${
-                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                      } font-semibold`}
+                    <button
+                      onClick={openMapHandler}
+                      className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-4 font-medium text-neutral-0 transition duration-300 text-white ${
+                        theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                      }`}
                     >
-                      ที่อยู่:{" "}
-                      <span
-                        className={`${
-                          theme === "dark" ? "text-white" : "text-black"
-                        }`}
-                      ></span>
-                    </p>
+                      ที่อยู่
+                      <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
+                        <div className="relative h-full w-8 bg-white/50"></div>
+                      </div>
+                    </button>
                   </div>
                 </div>
 
@@ -700,29 +713,49 @@ export default function Details() {
             </div>
           </div>
         )}
-        {markerPos && (
-          <MapContainer
-            center={markerPos}
-            zoom={13}
-            className="w-full h-64 rounded-xl"
+        {openMap && markerPos && (
+          <div
+            className={`fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${
+              fadeMap ? "opacity-100" : "opacity-0"
+            }`}
           >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <div className="w-300 h-190 p-5 pb-12 bg-gray-800 rounded-lg transition-transform duration-300">
+              <MapContainer
+                center={markerPos}
+                zoom={13}
+                className="w-full h-170 rounded-lg"
+              >
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <Marker
+                  position={markerPos}
+                  icon={L.icon({
+                    iconUrl:
+                      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                  })}
+                >
+                  <Tooltip permanent direction="top" offset={[0, -40]}>
+                    {dataEmployees.find((e) => e._id === id)?.Worksheet ||
+                      "ชื่องาน"}
+                  </Tooltip>
+                </Marker>
+              </MapContainer>
 
-            <Marker
-              position={markerPos}
-              icon={L.icon({
-                iconUrl:
-                  "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-              })}
-            >
-              <Tooltip permanent direction="top" offset={[0, -40]}>
-                {dataEmployees.find((e) => e._id === id)?.Worksheet ||
-                  "ชื่องาน"}
-              </Tooltip>
-            </Marker>
-          </MapContainer>
+              {/* ปุ่มปิด */}
+              <div className="flex gap-2 justify-end my-3">
+                <button
+                  onClick={closeMapHandler}
+                  className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                >
+                  <span className="relative z-10">ยกเลิก</span>
+                  <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </div>

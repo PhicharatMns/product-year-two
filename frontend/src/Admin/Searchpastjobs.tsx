@@ -620,7 +620,7 @@ export default function Searchpastjobs() {
                 <MapContainer
                   center={defaultCenter}
                   zoom={13}
-                  className="w-full h-170"
+                  className="w-full h-170 rounded-lg"
                 >
                   <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                   <ClickHandler />
