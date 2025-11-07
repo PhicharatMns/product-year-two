@@ -1,6 +1,7 @@
 import { useTheme } from "@/components/theme-provider";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { CiSearch } from "react-icons/ci";
 
 interface Tradesman {
   _id?: string;
@@ -35,6 +36,18 @@ export default function Editacc() {
   const [fade, setFade] = useState(false);
   const [openDelete, setopenDelete] = useState(false);
   const [selectedDelete, setSelectedDelete] = useState<Tradesman | null>(null);
+  const [Anim, setAmin] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [Focused, setFocused] = useState(false);
+  //ระบบค้นหา
+  const filteredTradesmen = tradesmen.filter((t) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      t.Name.toLowerCase().includes(term),
+      t.Position.toLowerCase().includes(term),
+      t.Email.toLowerCase().includes(term)
+    );
+  });
 
   const fetchTradesmen = async () => {
     try {
@@ -77,7 +90,10 @@ export default function Editacc() {
       setSelected(null);
     }
     setProfile(null);
-    setShowModal(true);
+    setShowModal(true); // render modal
+
+    // เริ่ม animation ให้เด้ง
+    setTimeout(() => setAmin(true), 50);
   };
 
   const handleChange = (key: keyof Tradesman, value: string | File) => {
@@ -110,10 +126,12 @@ export default function Editacc() {
         });
       }
       fetchTradesmen();
-      setShowModal(false);
-      setSelected(null);
-      setForm(defaultForm);
-      setProfile(null);
+      setAmin(false);
+      setTimeout(() => {
+        setShowModal(false);
+        setForm(defaultForm);
+        setProfile(null);
+      }, 300);
     } catch (err) {
       console.error(err);
     }
@@ -127,6 +145,43 @@ export default function Editacc() {
     fetchTradesmen();
   };
 
+  // เปิด modal
+  const openAddEmployee = () => {
+    setShowModal(true); // render modal
+    setTimeout(() => setAmin(true), 50); // เริ่ม animation หลัง render
+  };
+
+  // ปิด modal
+  const closeAddEmployee = () => {
+    setAmin(false); // เริ่ม fade-out
+    setSelectedDelete(null); // ล้างค่า
+    setTimeout(() => setShowModal(false), 300); // ซ่อน modal หลัง fade-out
+  };
+
+  // เปิด modal
+  const openDeleteModal = (t: Tradesman) => {
+    setSelectedDelete(t);
+    setopenDelete(true); // render modal
+    setTimeout(() => setAmin(true), 50); // fade-in
+  };
+
+  //ยืนยันการลบ
+  const handleConfirmDelete = async () => {
+    if (!selectedDelete) return;
+
+    try {
+      await handleDelete(selectedDelete); // ลบข้อมูลจริง
+      setAmin(false); // เริ่ม fade-out animation
+
+      setTimeout(() => {
+        setopenDelete(false); // ปิด modal หลัง animation
+        setSelectedDelete(null); // ล้าง selected
+      }, 300); // 300ms ต้องตรงกับ duration ของ CSS transition
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   const inputClass = `border w-full p-2 rounded-lg mt-2 ${
     theme === "dark"
       ? "bg-gray-700 text-yellow-500"
@@ -136,15 +191,13 @@ export default function Editacc() {
 
   return (
     <div
-      className={`w-max-380  container p-5 mx-auto ${
+      className={`w-max-380  container duration-300 p-5 mx-auto pt-10 ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
       {/* ตาราง */}
-      <div
-        className={` h-screen `}
-      >
-        <div className="flex justify-between items-center mb-5">
+      <div className={` h-screen `}>
+        <div className="flex  items-center mb-5">
           <p className={`text-3xl font-bold ${texthead}`}>
             จัดการบัญชี{" "}
             <span
@@ -153,17 +206,51 @@ export default function Editacc() {
               ช่าง
             </span>
           </p>
-          <button
-            onClick={() => openModal()}
-            className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white ${
-              theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-            }`}
-          >
-            เพิ่มช่าง
-            <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
-              <div className="relative h-full w-8 bg-white/50"></div>
+          <div className="flex gap-3 ml-auto">
+            <button
+              onClick={openAddEmployee}
+              className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white  ${
+                theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+              }`}
+            >
+              เพิ่มช่าง
+              <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
+                <div className="relative h-full w-8 bg-white/50"></div>
+              </div>
+            </button>
+            <div className="relative">
+              <CiSearch
+                className={`absolute left-3 top-1/2 -translate-y-1/2 transition-all duration-300 
+      ${
+        searchTerm
+          ? "text-blue-500 scale-125"
+          : theme === "dark"
+          ? "text-white"
+          : "text-black"
+      }`}
+              />
+              <input
+                placeholder="ค้นหา..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                onFocus={() => setFocused(true)}
+                onBlur={() => setFocused(false)}
+                className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 ${
+                  Focused ? "w-72" : "w-60"
+                } ${
+                  theme === "dark"
+                    ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
+                    : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+                } ${
+                  searchTerm
+                    ? "border-blue-500 shadow-lg"
+                    : theme === "dark"
+                    ? "border-gray-600"
+                    : "border-blue-300"
+                }`}
+              />
             </div>
-          </button>
+          </div>
         </div>
 
         {/* หัวตาราง */}
@@ -183,12 +270,12 @@ export default function Editacc() {
           <p className="text-center">จัดการ</p>
         </div>
 
-        {tradesmen.map((t) => (
+        {filteredTradesmen.map((t, idx) => (
           <div
-            key={t.Address}
-            className={`grid grid-cols-7 my-2 gap-5 pl-5 items-center border rounded-xl shadow-sm ${
+            key={t._id || idx}
+            className={`grid grid-cols-7 my-2 gap-5 pl-5 items-center border rounded-lg shadow-sm ${
               theme === "dark"
-                ? "bg-gray-800/90 border-gray-700"
+                ? "bg-gray-900 border-gray-700"
                 : "shadow-lg bg-blue-50/50"
             }`}
           >
@@ -213,13 +300,10 @@ export default function Editacc() {
                 ? new Date(t.Start_data).toLocaleDateString("th-TH")
                 : "-"}
             </p>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center gap-1">
               <button
-                onClick={() => {
-                  setSelectedDelete(t);
-                  setopenDelete(true);
-                }}
-                className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-0.5 text-white text-sm shadow-md transition-all duration-300 
+                onClick={() => openDeleteModal(t)}
+                className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              hover:bg-red-600 active:-translate-y-1 active:scale-x-90 active:scale-y-110"
               >
@@ -228,7 +312,7 @@ export default function Editacc() {
 
               <button
                 onClick={() => openModal(t)}
-                className={`relative overflow-hidden cursor-pointer rounded-md  px-3 py-0.5 text-white text-sm shadow-md transition-all duration-300 
+                className={`relative overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
               active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
                 theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
@@ -244,9 +328,15 @@ export default function Editacc() {
       {/* Modal */}
       {showModal && (
         <form onSubmit={handleSubmit}>
-          <div className="fixed inset-0 flex justify-center items-center bg-black/40 z-50">
+          <div
+            className={`fixed inset-0 flex justify-center items-center bg-black/40 z-50 backdrop-blur-sm transition-opacity duration-300 ${
+              Anim ? "opacity-100" : "opacity-0"
+            }`}
+          >
             <div
-              className={`rounded-2xl shadow-2xl p-8 w-[900px] border ${
+              className={`rounded-2xl shadow-2xl p-8 w-[900px] border transition-transform duration-300 ${
+                Anim ? "scale-100" : "scale-90 translate-y-5"
+              } ${
                 theme === "dark"
                   ? "bg-gray-800 border-gray-700 text-yellow-500"
                   : "bg-white border-blue-200 text-blue-500"
@@ -275,14 +365,14 @@ export default function Editacc() {
                   passwork: "รหัสผ่าน",
                   Address: "ที่อยู่",
                   Profile: "รูปภาพพนักงาน",
-                }).map(([key]) => (
+                }).map(([key, label]) => (
                   <div
                     key={key}
                     className={`${
                       key === "Address" || key === "Profile" ? "col-span-2" : ""
                     }`}
                   >
-                    <label>{key}</label>
+                    <label>{label}</label>
                     {key === "role" ? (
                       <select
                         value={form.role ?? "user"}
@@ -332,7 +422,7 @@ export default function Editacc() {
                   {/* ปุ่มยกเลิก */}
                   <button
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={closeAddEmployee}
                     className="group relative py-1 overflow-hidden rounded-xl cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
                   >
                     <span className="relative z-10">ยกเลิก</span>
@@ -362,15 +452,19 @@ export default function Editacc() {
 
       {/* mode delete  */}
       {openDelete && selectedDelete && (
-        <div className="fixed inset-0 cursor-pointer z-50 flex justify-center items-center bg-black/40 transition-opacity ">
+        <div
+          className={`fixed inset-0 z-50 backdrop-blur-sm flex justify-center items-center bg-black/40 transition-opacity duration-300 ${
+            Anim ? "opacity-100" : "opacity-0"
+          }`}
+        >
           <div
-            className={`rounded-2xl shadow-2xl p-8 w-100 ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
-            }`}
+            className={`rounded-2xl shadow-2xl p-5 w-120 flex items-center gap-4 transition-transform duration-300 ${
+              Anim ? "scale-100" : "scale-90"
+            } ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}
           >
-            <div className="flex gap-2">
+            <div className="flex gap-2  items-center ">
               <p
-                className={`font-extrabold ${
+                className={`font-semibold ${
                   theme === "dark" ? "text-yellow-500" : "text-blue-500"
                 }`}
               >
@@ -379,28 +473,24 @@ export default function Editacc() {
               <span>{selectedDelete.Name}</span>
             </div>
             {/* ลบและยกเลิก */}
-            <div className="flex gap-3 my-1 justify-end">
+            <div className="flex gap-2 my-1 ml-auto">
               <button
-                onClick={() => setopenDelete(false)}
-                className="relative cursor-pointer overflow-hidden rounded-lg border px-3 py-1 text-black bg-white shadow-lg transition-all duration-300 
-                     [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                     active:-translate-y-1 active:scale-x-90 active:scale-y-110"
+                onClick={closeAddEmployee}
+                className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
               >
-                ยกเลิก
+                <span className="relative z-10">ยกเลิก</span>
+                <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                  <span className="absolute left-0 top-0 w-0 h-full bg-gray-200  transition-all duration-500 group-hover:w-full"></span>
+                </span>
               </button>
               <button
-                onClick={async () => {
-                  if (selectedDelete) {
-                    await handleDelete(selectedDelete); // ลบข้อมูล
-                    setopenDelete(false); // ปิด modal
-                    setSelectedDelete(null); // ล้าง selected
-                  }
-                }}
-                className="relative overflow-hidden rounded-lg border px-3 py-1 text-white bg-red-500 cursor-pointer shadow-lg transition-all duration-300 
-                     [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                     active:-translate-y-1 active:scale-x-90 active:scale-y-110"
+                onClick={handleConfirmDelete}
+                className="group relative   overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
               >
-                ลบ
+                <span className="relative z-10">ลบ</span>
+                <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                  <span className="absolute left-0 top-0 w-0 h-full bg-red-600  transition-all duration-500 group-hover:w-full"></span>
+                </span>
               </button>
             </div>
           </div>

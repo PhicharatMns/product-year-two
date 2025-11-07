@@ -30,11 +30,21 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     const image = req.file ? req.file.filename : undefined;
 
+    let parsedAddress = { type: "Point", coordinates: [0, 0] };
+    try {
+      const addr = typeof address === "string" ? JSON.parse(address) : address;
+      if (addr && addr.coordinates && addr.coordinates.length === 2) {
+        parsedAddress = addr;
+      }
+    } catch (err) {
+      console.error("Invalid address JSON:", err);
+    }
+
     const employee = new Employee({
       Worksheet,
       Employer,
       Contact_number,
-      address,
+      address: parsedAddress,
       responsible,
       Date_of_acceptance_of_work: Date_of_acceptance_of_work || Date.now(),
       Closing_date: Closing_date || Date.now(),
@@ -46,6 +56,7 @@ router.post("/", upload.single("image"), async (req, res) => {
     await employee.save();
     res.status(201).json(employee);
   } catch (err) {
+    console.error("Error creating employee:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -86,6 +97,7 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       Employer,
       Contact_number,
       address,
+      area, // <-- เพิ่ม
       responsible,
       Date_of_acceptance_of_work,
       Closing_date,
@@ -93,18 +105,38 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       Status,
     } = req.body;
 
-    // ถ้ามีไฟล์ใหม่ ให้ลบไฟล์เก่า
+    // ถ้ามีไฟล์ใหม่ → ลบไฟล์เก่า
     if (req.file && emp.image) {
       const oldPath = path.resolve("uploads", emp.image);
       if (fs.existsSync(oldPath)) fs.unlinkSync(oldPath);
       emp.image = req.file.filename;
     }
 
-    // อัปเดตฟิลด์
+    // parse address
+    let parsedAddress = emp.address;
+    try {
+      parsedAddress =
+        typeof address === "string"
+          ? JSON.parse(address)
+          : address || emp.address;
+    } catch {
+      parsedAddress = emp.address;
+    }
+
+    // parse area
+    let parsedArea = emp.area;
+    try {
+      parsedArea =
+        typeof area === "string" ? JSON.parse(area) : area || emp.area;
+    } catch {
+      parsedArea = emp.area;
+    }
+
     emp.Worksheet = Worksheet ?? emp.Worksheet;
     emp.Employer = Employer ?? emp.Employer;
     emp.Contact_number = Contact_number ?? emp.Contact_number;
-    emp.address = address ?? emp.address;
+    emp.address = parsedAddress;
+    emp.area = parsedArea; // <-- อัพเดต area
     emp.responsible = responsible ?? emp.responsible;
     emp.Date_of_acceptance_of_work =
       Date_of_acceptance_of_work ?? emp.Date_of_acceptance_of_work;

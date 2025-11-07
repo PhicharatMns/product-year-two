@@ -1,454 +1,548 @@
-import { useState, useEffect, useRef, useMemo } from "react";
+// --- เพิ่ม import ---
+import { Autocomplete, LoadScript } from "@react-google-maps/api";
+import { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip, Circle, useMap, useMapEvents } from "react-leaflet";
 import { OpenStreetMapProvider } from "leaflet-geosearch";
 import L, { LeafletMouseEvent } from "leaflet";
 
 import "leaflet/dist/leaflet.css";
+// --- เพิ่ม import routing machine กลับมา ---
 import "leaflet-routing-machine";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 
 // --- Fix default marker icon ---
-// (เหมือนเดิม)
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 import markerIcon from 'leaflet/dist/images/marker-icon.png';
 import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 delete (L.Icon.Default.prototype as any)._getIconUrl;
 L.Icon.Default.mergeOptions({
-  iconUrl: markerIcon,
-  iconRetinaUrl: markerIcon2x,
-  shadowUrl: markerShadow
+  iconUrl: markerIcon,
+  iconRetinaUrl: markerIcon2x,
+  shadowUrl: markerShadow
 });
 
-// --- Custom icons (เหมือนเดิม) ---
+// --- Custom icons ---
 const currentIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
-const tempIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
 });
 const stopIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-green.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
 });
 const destinationIcon = new L.Icon({
-  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-red.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
 });
-const techIcon = new L.DivIcon({
-  html: `<span style="font-size: 20px; text-shadow: 0 0 2px white;">🧑‍🔧</span>`,
-  className: '',
-  iconSize: [24, 24],
-  iconAnchor: [12, 12]
+const tempIcon = new L.Icon({
+  iconUrl: "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-grey.png",
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
 });
 
 // --- Geocoding Provider (Global) ---
 const provider = new OpenStreetMapProvider();
 
-// --- Types (เหมือนเดิม) ---
+// --- Types ---
 type Stop = {
-  pos: [number, number];
-  name: string;
-  phone: string;
-  detail: string;
-  area?: number;
-  technicians?: number;
+  pos: [number, number];
+  name: string;
+  phone: string;
+  detail: string;
+  area?: number;
 };
+
+// Props ที่ Map Component จะรับ
 type MapProps = {
-  addressToGeocode?: string | null;
-  onMarkerSet?: (coords: [number, number]) => void;
+  addressToGeocode?: string | null;
+  onMarkerSet?: (coords: [number, number]) => void;
 };
 
-// --- ฟังก์ชันสุ่มพิกัด (เหมือนเดิม) ---
-function getRandomPointInCircle(center: [number, number], radiusInMeters: number): [number, number] {
-  const [lat, lng] = center;
-  const radiusInDegrees = radiusInMeters / 111111;
-  const t = 2 * Math.PI * Math.random();
-  const r = Math.sqrt(Math.random()) * radiusInDegrees;
-  const newLat = lat + r * Math.cos(t);
-  const newLng = lng + (r * Math.sin(t)) / Math.cos(lat * (Math.PI / 180));
-  return [newLat, newLng];
-}
-
-// --- Routing Components (เหมือนเดิม ตามโค้ดที่คุณส่งมา) ---
+// --- เพิ่ม Routing Components กลับมา ---
 function StopsRouting({ currentPos, stops }: { currentPos: [number, number] | null; stops: Stop[] }) {
-  const map = useMap();
-  const ref = useRef<any>(null);
+  const map = useMap();
+  const ref = useRef<any>(null);
 
-  useEffect(() => {
-    if (ref.current) { map.removeControl(ref.current); ref.current = null; }
-    if (!map || !currentPos || stops.length === 0) return;
-    ref.current = L.Routing.control({
-      waypoints: [L.latLng(...currentPos), ...stops.map(s => L.latLng(...s.pos))],
-      lineOptions: { styles: [{ color: "green", weight: 5, opacity: 0.8 }] },
-      addWaypoints: false, draggableWaypoints: false, fitSelectedRoutes: true, createMarker: () => null,
-    }).addTo(map);
-    return () => ref.current && map.removeControl(ref.current);
-  }, [currentPos, stops, map]);
-  return null;
+  useEffect(() => {
+    if (ref.current) { map.removeControl(ref.current); ref.current = null; }
+    if (!map || !currentPos || stops.length === 0) return;
+
+    ref.current = L.Routing.control({
+      waypoints: [L.latLng(...currentPos), ...stops.map(s => L.latLng(...s.pos))],
+      lineOptions: { styles: [{ color: "green", weight: 5, opacity: 0.8 }] },
+      addWaypoints: false,
+      draggableWaypoints: false,
+      fitSelectedRoutes: true,
+      createMarker: () => null,
+    }).addTo(map);
+
+    return () => ref.current && map.removeControl(ref.current);
+  }, [currentPos, stops, map]);
+
+  return null;
 }
 
 function DestinationRouting({ startPos, destination }: { startPos: [number, number] | null; destination: Stop | null }) {
-  const map = useMap();
-  const ref = useRef<any>(null);
+  const map = useMap();
+  const ref = useRef<any>(null);
 
-  useEffect(() => {
-    if (ref.current) { map.removeControl(ref.current); ref.current = null; }
-    if (!map || !startPos || !destination) return;
-    ref.current = L.Routing.control({
-      waypoints: [L.latLng(...startPos), L.latLng(...destination.pos)],
-      lineOptions: { styles: [{ color: "red", weight: 5, opacity: 0.8 }] },
-      addWaypoints: false, draggableWaypoints: false, fitSelectedRoutes: true, createMarker: () => null,
-    }).addTo(map);
-    return () => ref.current && map.removeControl(ref.current);
-  }, [startPos, destination, map]);
-  return null;
+  useEffect(() => {
+    if (ref.current) { map.removeControl(ref.current); ref.current = null; }
+    if (!map || !startPos || !destination) return;
+
+    ref.current = L.Routing.control({
+      waypoints: [L.latLng(...startPos), L.latLng(...destination.pos)],
+      lineOptions: { styles: [{ color: "red", weight: 5, opacity: 0.8 }] },
+      addWaypoints: false,
+      draggableWaypoints: false,
+      fitSelectedRoutes: true,
+      createMarker: () => null,
+    }).addTo(map);
+
+    // --- แก้ไข: ลบ 'section' ---
+    return () => ref.current && map.removeControl(ref.current);
+  }, [startPos, destination, map]);
+
+  return null;
 }
 
-// --- Map Click Handler Component (เหมือนเดิม) ---
+// --- Map Click Handler Component ---
 type MapClickHandlerProps = {
-  isPinning: boolean;
-  stops: Stop[];
-  setMapPosition: (pos: [number, number]) => void;
-  setIsPinning: (is: boolean) => void;
-  setStops: React.Dispatch<React.SetStateAction<Stop[]>>;
+  isPinning: boolean;
+  stops: Stop[];
+  setMapPosition: (pos: [number, number]) => void;
+  setIsPinning: (is: boolean) => void;
+  setStops: React.Dispatch<React.SetStateAction<Stop[]>>;
 };
-function MapClickHandler({ isPinning, stops, setMapPosition, setIsPinning, setStops }: MapClickHandlerProps) {
-  useMapEvents({
-    click(e) {
-      const newPos: [number, number] = [e.latlng.lat, e.latlng.lng];
-      setMapPosition(newPos); 
-      if (isPinning) {
-        const newStop: Stop = {
-          pos: newPos, name: `จุดแวะ ${stops.length + 1}`, phone: "",
-          detail: "ปักหมุดจากแผนที่", area: 0, technicians: 0,
-        };
-        setStops(p => [...p, newStop]); 
-        setIsPinning(false); 
-      }
-    },
-  });
-  return null; 
+
+function MapClickHandler({
+  isPinning,
+  stops,
+  setMapPosition,
+  setIsPinning,
+  setStops,
+}: MapClickHandlerProps) {
+
+  const map = useMapEvents({
+    click(e) {
+      const newPos: [number, number] = [e.latlng.lat, e.latlng.lng];
+      setMapPosition(newPos);
+
+      if (isPinning) {
+        const newStop: Stop = {
+          pos: newPos,
+          name: `จุดแวะ ${stops.length + 1}`,
+          phone: "",
+          detail: "ปักหมุดจากแผนที่",
+          area: 0,
+        };
+        setStops(p => [...p, newStop]);
+        setIsPinning(false);
+      }
+    },
+  });
+
+  return null;
 }
+
 
 // --- Main Map Component ---
-export default function MapWork({ addressToGeocode, onMarkerSet }: MapProps) {
-  
-  const [form, setForm] = useState({ 
-    name: "", phone: "", location: "", detail: "", area: "", technicians: "" 
-  });
-  const [formMode, setFormMode] = useState<'stop' | 'destination'>('stop');
-  const [currentPos, setCurrentPos] = useState<[number, number] | null>(null);
-  const [stops, setStops] = useState<Stop[]>([]);
-  const [destination, setDestination] = useState<Stop | null>(null);
-  const [mapPosition, setMapPosition] = useState<[number, number] | null>(null);
-  const [isPinning, setIsPinning] = useState(false);
-  const mapRef = useRef<L.Map | null>(null);
+// (ใช้ชื่อ Maps ตามที่คุณส่งมา)
+export default function Maps({ addressToGeocode, onMarkerSet }: MapProps) {
+  const [form, setForm] = useState({ name: "", phone: "", location: "", detail: "", area: "" });
+  const [formMode, setFormMode] = useState<'stop' | 'destination'>('stop');
+  const [currentPos, setCurrentPos] = useState<[number, number] | null>(null);
+  const [stops, setStops] = useState<Stop[]>([]);
+  const [destination, setDestination] = useState<Stop | null>(null);
+  const [mapPosition, setMapPosition] = useState<[number, number] | null>(null);
+  const [isPinning, setIsPinning] = useState(false);
 
-  // ⭐️ ลบ state isLoading ออก (ตามที่คุณขอล่าสุด)
-  // const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<Stop[]>([]);
 
-  // --- Load/Save localStorage (ปรับปรุง) ---
-  useEffect(() => {
-    let posFromStorage = false;
-    try {
-      const savedStops = localStorage.getItem("stops");
-      const savedDest = localStorage.getItem("destination");
-      const savedCurrent = localStorage.getItem("currentPos"); 
-      
-      if (savedStops) setStops(JSON.parse(savedStops));
-      if (savedDest) setDestination(JSON.parse(savedDest));
-      if (savedCurrent) { 
-        setCurrentPos(JSON.parse(savedCurrent)); 
-        posFromStorage = true;
-      }
-    } catch (error) {
-      console.error("Error parsing data from localStorage", error);
-      localStorage.removeItem("stops");
-      localStorage.removeItem("destination");
-      localStorage.removeItem("currentPos");
-    }
+  const mapRef = useRef<L.Map | null>(null);
 
-    if (!posFromStorage) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => { 
-          const c: [number, number] = [pos.coords.latitude, pos.coords.longitude];
-          setCurrentPos(c); 
-        }, 
-        (err) => { 
-          console.warn("GPS Error:", err.message);
-        }
-      );
-    }
-  }, []); // <-- ทำงานครั้งเดียวตอนเริ่ม
+  // --- 1. เพิ่ม State สำหรับ Autocomplete ---
+  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
+  const YOUR_GOOGLE_MAPS_API_KEY = "YOUR_API_KEY_HERE"; // 🚨🚨 ใส่ API Key ของคุณที่นี่
 
-  // --- Save to localStorage (แยกส่วน) ---
-  useEffect(() => { 
-    stops.length > 0 
-      ? localStorage.setItem("stops", JSON.stringify(stops)) 
-      : localStorage.removeItem("stops");
-  }, [stops]);
+  // --- 1. Load from localStorage ---
+  useEffect(() => {
+    const savedStops = localStorage.getItem("stops");
+    const savedDest = localStorage.getItem("destination");
+    const savedCurrent = localStorage.getItem("currentPos");
 
-  useEffect(() => {
-    destination 
-      ? localStorage.setItem("destination", JSON.stringify(destination)) 
-      : localStorage.removeItem("destination");
-  }, [destination]);
+    try {
+      if (savedStops) setStops(JSON.parse(savedStops));
+      if (savedDest) setDestination(JSON.parse(savedDest));
+      if (savedCurrent) setCurrentPos(JSON.parse(savedCurrent));
+    } catch (error) {
+      console.error("Error parsing data from localStorage", error);
+      localStorage.removeItem("stops");
+      localStorage.removeItem("destination");
+      localStorage.removeItem("currentPos");
+    }
+  }, []);
 
-  useEffect(() => { 
-    if(currentPos) localStorage.setItem("currentPos", JSON.stringify(currentPos)); 
-  }, [currentPos]);
-  
-  // --- FlyTo Map (เมื่อ currentPos พร้อม) ---
-  useEffect(() => {
-    if (currentPos && mapRef.current) {
-      mapRef.current.flyTo(currentPos, 15);
-    }
-  }, [currentPos]); 
+  // --- 2. Save to localStorage ---
+  useEffect(() => {
+    stops.length > 0
+      ? localStorage.setItem("stops", JSON.stringify(stops))
+      : localStorage.removeItem("stops");
+  }, [stops]);
 
-  // --- ⭐️ 1. Geocoding Effect (FlyTo จาก Parent) ---
-  useEffect(() => {
-    if (addressToGeocode && addressToGeocode.trim()) {
-      const geocode = async () => {
-         const results = await provider.search({ query: addressToGeocode });
-         if (results && results.length > 0) {
-           const coords: [number, number] = [results[0].y, results[0].x];
-           setMapPosition(coords);
-           mapRef.current?.flyTo(coords, 15); // <-- ⭐️ เพิ่ม flyTo
-           setForm(f => ({ ...f, location: addressToGeocode }));
-           if (onMarkerSet) {
-             onMarkerSet(coords);
-           }
-         } else {
-           console.warn("Geocode: ไม่พบที่อยู่", addressToGeocode);
-           alert("ไม่พบที่อยู่ที่คุณค้นหา");
-         }
-      };
-      geocode();
-    }
-  }, [addressToGeocode, onMarkerSet]); // ⭐️ เพิ่ม Effect นี้
+  useEffect(() => {
+    destination
+      ? localStorage.setItem("destination", JSON.stringify(destination))
+      : localStorage.removeItem("destination");
+  }, [destination]);
 
-  // --- Form Handlers ---
-  const handleChange = (e: any) => setForm({ ...form, [e.target.name]: e.target.value });
-  const togglePinning = () => {
-    if (formMode === 'destination') {
-      return alert("โหมดปักหมุดใช้ได้กับ 'จุดแวะ' เท่านั้น");
-    }
-    setIsPinning(!isPinning);
-  };
+  useEffect(() => {
+    if (currentPos) localStorage.setItem("currentPos", JSON.stringify(currentPos));
+    // --- แก้ไข: ลบ 'section' ---
+  }, [currentPos]);
 
-  // --- ⭐️ 2. FlyTo จากปุ่มค้นหาใน Component ---
-  const searchAndAdd = async () => {
-    if (!form.location) return alert("กรุณากรอกข้อมูลตำแหน่ง");
-    const res = await provider.search({ query: form.location });
-    if (res.length === 0) return alert("ไม่พบตำแหน่งนี้");
-    
-    const pos: [number, number] = [res[0].y, res[0].x];
-    setMapPosition(pos);
-    mapRef.current?.flyTo(pos, 15); // <-- ⭐️ เพิ่ม flyTo
-  };
-  
-  const confirmPosition = () => {
-    if (!mapPosition) return alert("กรุณาเลือกตำแหน่งบนแผนที่ก่อน");
-    const data: Stop = {
-      pos: mapPosition,
-      name: form.name || (formMode === 'stop' ? `จุดแวะ ${stops.length + 1}` : 'จุดหมาย'),
-      phone: form.phone,
-      detail: form.detail,
-      area: Number(form.area) || 0,
-      technicians: Number(form.technicians) || 0,
-    };
-    if (formMode === "stop") setStops(p => [...p, data]);
-    else setDestination(data);
-    setMapPosition(null);
-    setForm({ name: "", phone: "", location: "", detail: "", area: "", technicians: "" });
-  };
-  const clearStops = () => (setStops([]), alert("ล้างจุดแวะ ✅"));
-  const clearDest = () => (setDestination(null), alert("ล้างจุดหมาย ✅"));
-  const clearAll = () => (setStops([]), setDestination(null), alert("ล้างทั้งหมด ✅"));
-  const undoLastStop = () => setStops(prev => prev.slice(0, -1));
 
-  // --- useMemo (เหมือนเดิม) ---
-  const stopTechnicianMarkers = useMemo(() => {
-    return stops.flatMap((stop, i) => {
-      if (!stop.technicians || stop.technicians === 0 || !stop.area || stop.area === 0) {
-        return [];
-      }
-      return Array.from({ length: stop.technicians }).map((_, j) => {
-        const pos = getRandomPointInCircle(stop.pos, stop.area);
-        return <Marker key={`stop-${i}-${j}`} position={pos} icon={techIcon} />;
-      });
-    });
-  }, [stops]); 
+  // --- 3. Get user location ---
+  useEffect(() => {
+    if (!currentPos) {
+      navigator.geolocation.getCurrentPosition(pos => {
+        const c: [number, number] = [pos.coords.latitude, pos.coords.longitude];
+        setCurrentPos(c);
+        mapRef.current?.flyTo(c, 15);
+      });
+    } else if (mapRef.current) {
+      mapRef.current.flyTo(currentPos, 13);
+    }
+  }, [currentPos]);
 
-  const destinationTechnicianMarkers = useMemo(() => {
-    if (!destination || !destination.technicians || !destination.area) {
-      return null;
-    }
-    return Array.from({ length: destination.technicians }).map((_, j) => {
-      const pos = getRandomPointInCircle(destination.pos, destination.area);
-      return <Marker key={`dest-${j}`} position={pos} icon={techIcon} />;
-    });
-  }, [destination]); 
+  // --- 4. Geocoding Effect (รับคำสั่งจาก Parent) ---
+  useEffect(() => {
+    if (addressToGeocode && addressToGeocode.trim()) {
+      const geocode = async () => {
+        const results = await provider.search({ query: addressToGeocode });
 
-  // ⭐️ ลบหน้า Loading (if (isLoading) { ... }) ออก
+        if (results && results.length > 0) {
+          const coords: [number, number] = [results[0].y, results[0].x];
+          setMapPosition(coords);
+          mapRef.current?.flyTo(coords, 15);
+          setForm(f => ({ ...f, location: addressToGeocode }));
+          if (onMarkerSet) {
+            onMarkerSet(coords);
+            // --- แก้ไข: ลบ 'section' ---
+          }
+        } else {
+          console.warn("Geocode: ไม่พบที่อยู่", addressToGeocode);
+          alert("ไม่พบที่อยู่ที่คุณค้นหา");
+        }
+      };
+      geocode();
+    }
+  }, [addressToGeocode, onMarkerSet]);
 
-  // --- แสดงหน้าแผนที่ ---
-  return (
-    <div className="flex flex-col lg:flex-row gap-6 p-4">
-      {/* Form (เหมือนเดิม) */}
-      <div className="w-full lg:w-[350px] bg-white p-5 rounded-xl shadow">
-        <h2 className="font-bold text-xl mb-2">เพิ่มสถานที่ทำงาน</h2>
+  // --- 5. Search Logic ---
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
 
-        <div className="flex gap-2 mb-3 bg-gray-200 p-1 rounded-lg">
-          <button onClick={() => setFormMode("stop")} className={`w-full p-2 rounded ${formMode === "stop" ? "bg-green-600 text-white" : ""}`}>จุดแวะ</button>
-          <button onClick={() => setFormMode("destination")} className={`w-full p-2 rounded ${formMode === "destination" ? "bg-red-600 text-white" : ""}`}>จุดหมาย</button>
-        </div>
+    const allPins: Stop[] = [...stops];
+    if (destination) {
+      allPins.push(destination);
+    }
 
-        <input name="name" value={form.name} onChange={handleChange} placeholder="ชื่อ" className="p-2 border rounded w-full mb-2" />
-        <input name="phone" value={form.phone} onChange={handleChange} placeholder="เบอร์" className="p-2 border rounded w-full mb-2" />
-        <input name="location" value={form.location} onChange={handleChange} placeholder="ค้นหาพิกัด..." className="p-2 border rounded w-full mb-2" />
-        <textarea name="detail" value={form.detail} onChange={handleChange} placeholder="รายละเอียด" className="p-2 border rounded w-full mb-2" />
-        <input name="area" value={form.area} onChange={handleChange} placeholder="Area (เมตร)" type="number" className="p-2 border rounded w-full mb-2" />
-        <input name="technicians" value={form.technicians} onChange={handleChange} placeholder="จำนวนช่าง" type="number" className="p-2 border rounded w-full mb-2" />
+    const lowerQuery = searchQuery.toLowerCase();
 
-        <button onClick={searchAndAdd} className={`w-full p-2 text-white rounded ${formMode === "stop" ? "bg-green-600" : "bg-red-600"}`}>
-          🔍 {formMode === "stop" ? "ค้นหาจุดแวะ" : "ค้นหาจุดหมาย"}
-        </button>
+    const filtered = allPins.filter(pin =>
+      pin.name.toLowerCase().includes(lowerQuery) ||
+      pin.phone.toLowerCase().includes(lowerQuery) ||
+      pin.detail.toLowerCase().includes(lowerQuery)
+    );
 
-        <button onClick={togglePinning} disabled={formMode === 'destination'} className={`w-full p-2 mt-2 text-white rounded transition-colors ${isPinning ? 'bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} disabled:bg-gray-400 disabled:cursor-not-allowed`}>
-          {isPinning ? '📍 คลิกบนแผนที่เพื่อปักหมุด (คลิกอีกครั้งเพื่อยกเลิก)' : '📍 เปิดโหมดปักหมุด'}
-        </button>
+    setSearchResults(filtered);
 
-        <button onClick={confirmPosition} disabled={!mapPosition} className="w-full p-2 mt-2 bg-blue-600 text-white rounded disabled:bg-gray-400">
-          ✅ ยืนยันตำแหน่งนี้
-        </button>
+  }, [searchQuery, stops, destination]);
 
-        <div className="grid grid-cols-2 gap-2 mt-3">
-          <button onClick={clearStops} className="bg-orange-500 text-white p-2 rounded">ล้างจุดแวะ</button>
-          <button onClick={clearDest} className="bg-purple-600 text-white p-2 rounded">ล้างจุดหมาย</button>
-        </div>
 
-        <button onClick={undoLastStop} className="bg-yellow-500 text-white p-2 rounded w-full mt-2">Undo จุดล่าสุด</button>
-        <button onClick={clearAll} className="bg-gray-700 text-white p-2 rounded w-full mt-2">ล้างทั้งหมด</button>
+  const handleChange = (e: any) => setForm({ ...form, [e.target.name]: e.target.value });
 
-        {mapPosition && (
-          <p className="text-xs text-muted-foreground mt-2">
-            ตำแหน่งที่เลือก: {mapPosition[0].toFixed(6)}, {mapPosition[1].toFixed(6)}
-          </p>
-        )}
-      </div>
+  const togglePinning = () => {
+    if (formMode === 'destination') {
+      return alert("โหมดปักหมุดใช้ได้กับ 'จุดแวะ' เท่านั้น");
+    }
+    setIsPinning(!isPinning);
+  };
 
-      {/* Map */}
-      <div className="flex-1 h-[500px] rounded-xl shadow overflow-hidden">
-        <MapContainer
-          center={currentPos || [13.736717, 100.523186]} 
-          zoom={13}
-          className="w-full h-full"
-          whenCreated={map => (mapRef.current = map)}
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+  // --- 2. ลบฟังก์ชัน searchAndAdd (ไม่ใช้แล้ว) ---
+  /*
+  const searchAndAdd = async () => {
+    // ...
+  };
+  */
 
-          {/* 1. Component ดักการคลิก (เหมือนเดิม) */}
-          <MapClickHandler
-            isPinning={isPinning}
-            stops={stops}
-            setMapPosition={setMapPosition}
-            setIsPinning={setIsPinning}
-            setStops={setStops}
-          />
+  // --- แก้ไข: ลบ 'auto' (จากครั้งก่อน) ---
+  const confirmPosition = () => {
+    if (!mapPosition) return alert("กรุณาเลือกตำแหน่งบนแผนที่ก่อน");
+    const data: Stop = {
+      pos: mapPosition,
+      name: form.name || (formMode === 'stop' ? `จุดแวะ ${stops.length + 1}` : 'จุดหมาย'),
+      phone: form.phone,
+      detail: form.detail,
+      area: Number(form.area) || 0,
+    };
 
-          {/* (Markers ทั้งหมดเหมือนเดิม) */}
-          {currentPos && <Marker icon={currentIcon} position={currentPos}><Tooltip permanent>ตำแหน่งปัจจุบัน</Tooltip></Marker>}
-          
-          {mapPosition && (
-            <Marker
-              icon={tempIcon}
-              position={mapPosition}
-              draggable
-              eventHandlers={{ 
-                dragend: (e) => setMapPosition([e.target.getLatLng().lat, e.target.getLatLng().lng]),
-                contextmenu: (e) => { L.DomEvent.stopPropagation(e); setMapPosition(null); }
-              }}
-            >
-              <Tooltip permanent>📌 ปรับตำแหน่ง (คลิกขวาเพื่อลบ)</Tooltip>
-            </Marker>
-          )}
-          
-          {stops.map((s, i) => (
-            <Marker
-              key={i}
-              icon={stopIcon} 
-              position={s.pos}
-              draggable
-              eventHandlers={{
-                dragend: e => {
-                  const newPos = e.target.getLatLng();
-                  setStops(prev => prev.map((item, idx) => idx === i ? { ...item, pos: [newPos.lat, newPos.lng] } : item));
-                },
-                click: () => {
-                  if (window.confirm(`ตั้ง "${s.name}" เป็นจุดหมาย?`)) {
-                    setDestination(s);
-                    setStops(prev => prev.filter((_, idx) => idx !== i));
-                  }
-                },
-                contextmenu: (e) => { 
-                  L.DomEvent.stopPropagation(e);
-                  if (window.confirm(`ลบ "${s.name}" (จุดแวะ ${i + 1})?`)) {
-                    setStops(prev => prev.filter((_, idx) => idx !== i));
-                  }
-                }
-              }}
-            >
-              <Tooltip> 
-                <div>จุดแวะ {i + 1}: {s.name}</div>
-                {s.technicians ? <div>ช่าง: {s.technicians} คน</div> : null}
-              </Tooltip>
-              {s.area && s.area > 0 && <Circle center={s.pos} radius={s.area} pathOptions={{ color: "green", fillOpacity: 0.1 }} />}
-            </Marker>
-          ))}
-          
-          {destination && (
-            <Marker
-              icon={destinationIcon} 
-              position={destination.pos}
-              draggable
-              eventHandlers={{
-                dragend: e => {
-                  const newPos = e.target.getLatLng();
-                  setDestination({ ...destination, pos: [newPos.lat, newPos.lng] });
-                },
-                contextmenu: (e) => { 
-                  L.DomEvent.stopPropagation(e);
-                  if (window.confirm(`ลบจุดหมาย "${destination.name}"?`)) {
-                    setDestination(null);
-                  }
-                }
-              }}
-            >
-              <Tooltip>
-                <div>จุดหมาย: {destination.name}</div>
-                {destination.technicians ? <div>ช่าง: {destination.technicians} คน</div> : null}
-              </Tooltip>
-              {destination.area && destination.area > 0 && <Circle center={destination.pos} radius={destination.area} pathOptions={{ color: "red", fillOpacity: 0.1 }} />}
-            </Marker>
-          )}
-          
-          {/* --- Render Marker ช่าง (เหมือนเดิม) --- */}
-          {stopTechnicianMarkers}
-          {destinationTechnicianMarkers}
+    if (formMode === "stop") {
+      setStops(p => [...p, data]);
+    } else {
+      setDestination(data);
+    }
 
-          {/* 7. Routing (เหมือนเดิม) */}
-          <StopsRouting currentPos={currentPos} stops={stops} />
-          <DestinationRouting startPos={stops.length > 0 ? stops[stops.length - 1].pos : currentPos} destination={destination} />
+    setMapPosition(null);
+  };
 
-        </MapContainer>
-      </div>
-    </div>
-  );
+  const clearStops = () => (setStops([]), alert("ล้างจุดแวะ ✅"));
+  const clearDest = () => (setDestination(null), alert("ล้างจุดหมาย ✅"));
+  const clearAll = () => (setStops([]), setDestination(null), alert("ล้างทั้งหมด ✅"));
+  const undoLastStop = () => setStops(prev => prev.slice(0, -1));
+
+
+  // --- 3. เพิ่มฟังก์ชันสำหรับ Autocomplete ---
+  const onAutocompleteLoad = (ac: google.maps.places.Autocomplete) => {
+    setAutocomplete(ac);
+  };
+
+  const handleSearchResultClick = (stop: Stop) => {
+    mapRef.current?.flyTo(stop.pos, 16);
+    setSearchQuery("");
+  };
+
+  const onPlaceChanged = () => {
+    if (autocomplete !== null) {
+      const place = autocomplete.getPlace();
+
+      if (!place.geometry || !place.geometry.location) {
+        console.log("ไม่พบ geometry จาก Google");
+        return;
+      }
+
+      const lat = place.geometry.location.lat();
+      const lng = place.geometry.location.lng();
+      const pos: [number, number] = [lat, lng];
+
+      setMapPosition(pos); // ตั้งหมุดเทา
+      mapRef.current?.flyTo(pos, 15); // บินไป
+
+      // อัปเดตชื่อสถานที่ใน form
+      setForm(f => ({ ...f, location: place.formatted_address || place.name || "" }));
+
+    } else {
+      console.log("Autocomplete is not loaded yet!");
+    }
+  };
+
+
+  return (
+    // --- 4. ห่อหุ้มทั้งหมดด้วย LoadScript ---
+    <LoadScript
+      googleMapsApiKey={YOUR_GOOGLE_MAPS_API_KEY}
+      libraries={["places"]} // เปิดใช้งาน Places API
+    >
+      <div className="flex flex-col lg:flex-row gap-6 p-4">
+        {/* Form */}
+        <div className="w-full lg:w-[350px] bg-white p-5 rounded-xl shadow">
+
+          {/* (ส่วนค้นหาหมุดเดิม เหมือนเดิม) */}
+          <h2 className="font-bold text-xl mb-2">🔍 ค้นหาหมุด</h2>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="ค้นหาชื่อ, เบอร์, รายละเอียด..."
+            className="p-2 border rounded w-full mb-3"
+          />
+          {searchResults.length > 0 && (
+            <div className="border rounded max-h-48 overflow-y-auto mb-3">
+              {searchResults.map((result, index) => (
+                <div
+                  key={index}
+                  className="p-3 hover:bg-gray-100 cursor-pointer border-b last:border-b-0"
+                  onClick={() => handleSearchResultClick(result)}
+                >
+                  {/* --- แก้ไข: ลบ 'D' --- */}
+                  <p className="font-bold">{result.name}</p>
+                  <p className="text-sm text-gray-600">
+                    {result.detail || result.phone || `(${result.pos[0].toFixed(4)}, ${result.pos[1].toFixed(4)})`}
+                  </p>
+                </div>
+              ))}
+            </div>
+          )}
+          <hr className="my-4" />
+          {/* === จบส่วนค้นหา === */}
+
+          <h2 className="font-bold text-xl mb-2">เพิ่มสถานที่ทำงาน</h2>
+
+          <div className="flex gap-2 mb-3 bg-gray-200 p-1 rounded-lg">
+            <button onClick={() => setFormMode("stop")} className={`w-full p-2 rounded ${formMode === "stop" ? "bg-green-600 text-white" : ""}`}>จุดแวะ</button>
+            <button onClick={() => setFormMode("destination")} className={`w-full p-2 rounded ${formMode === "destination" ? "bg-red-600 text-white" : ""}`}>จุดหมาย</button>
+          </div>
+
+          <input name="name" value={form.name} onChange={handleChange} placeholder="ชื่อ" className="p-2 border rounded w-full mb-2" />
+          <input name="phone" value={form.phone} onChange={handleChange} placeholder="เบอร์" className="p-2 border rounded w-full mb-2" />
+
+          {/* --- 5. แทนที่ Input เดิมด้วย Autocomplete --- */}
+          <Autocomplete
+            onLoad={onAutocompleteLoad}
+            onPlaceChanged={onPlaceChanged}
+          >
+            <input
+              type="text"
+             
+                  name="location"
+              value={form.location} // ยังคงผูกกับ state เดิม
+              onChange={handleChange} // ให้พิมพ์ได้ปกติ
+              placeholder="ค้นหาพิกัดแบบ Google..."
+              className="p-2 border rounded w-full mb-2"
+            />
+          </Autocomplete>
+
+
+          <textarea name="detail" value={form.detail} onChange={handleChange} placeholder="รายละเอียด" className="p-2 border rounded w-full mb-2" />
+          <input name="area" value={form.area} onChange={handleChange} placeholder="Area (เมตร)" className="p-2 border rounded w-full mb-2" />
+
+          
+          <button onClick={togglePinning} disabled={formMode === 'destination'} className={`w-full p-2 mt-2 text-white rounded transition-colors ${isPinning ? 'bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} disabled:bg-gray-400 disabled:cursor-not-allowed`}>
+            {isPinning ? '📍 คลิกบนแผนที่เพื่อปักหมุด (คลิกอีกครั้งเพื่อยกเลิก)' : '📍 เปิดโหมดปักหมุด'}
+          </button>
+
+          <button onClick={confirmPosition} disabled={!mapPosition} className="w-full p-2 mt-2 bg-blue-600 text-white rounded disabled:bg-gray-400">
+            ✅ ยืนยันตำแหน่งนี้
+          </button>
+
+          <div className="grid grid-cols-2 gap-2 mt-3">
+            <button onClick={clearStops} className="bg-orange-500 text-white p-2 rounded">ล้างจุดแวะ</button>
+            <button onClick={clearDest} className="bg-purple-600 text-white p-2 rounded">ล้างจุดหมาย</button>
+          </div>
+
+          <button onClick={undoLastStop} className="bg-yellow-500 text-white p-2 rounded w-full mt-2">Undo จุดล่าสุด</button>
+          <button onClick={clearAll} className="bg-gray-700 text-white p-2 rounded w-full mt-2">ล้างทั้งหมด</button>
+
+          {mapPosition && (
+            <p className="text-xs text-muted-foreground mt-2">
+              ตำแหน่งที่เลือก: {mapPosition[0].toFixed(6)}, {mapPosition[1].toFixed(6)}
+            </p>
+          )}
+        </div>
+
+        {/* Map */}
+        <div className="flex-1 h-[500px] rounded-xl shadow overflow-hidden">
+          <MapContainer
+            center={currentPos || [13.736717, 100.523186]}
+            zoom={13}
+            className="w-full h-full"
+            ref={mapRef}
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+            {/* 1. Component ดักการคลิก */}
+            <MapClickHandler
+              isPinning={isPinning}
+              stops={stops}
+              setMapPosition={setMapPosition}
+              setIsPinning={setIsPinning}
+              setStops={setStops}
+            />
+
+            {/* 2. Marker ตำแหน่งปัจจุบัน */}
+            {currentPos && <Marker icon={currentIcon} position={currentPos}><Tooltip permanent>ตำแหน่งปัจจุบัน</Tooltip></Marker>}
+
+            {/* 3. Marker ชั่วคราว (สีเทา) */}
+            {mapPosition && (
+              <Marker
+                icon={tempIcon}
+                position={mapPosition}
+                draggable
+                eventHandlers={{
+                  dragend: (e) => setMapPosition([e.target.getLatLng().lat, e.target.getLatLng().lng]),
+                  contextmenu: (e) => {
+                    L.DomEvent.stopPropagation(e);
+                    setMapPosition(null);
+                  }
+                }}
+              >
+                <Tooltip permanent>📌 ปรับตำแหน่ง (คลิกขวาเพื่อลบ)</Tooltip>
+              </Marker>
+            )}
+
+            {/* 4. Marker จุดแวะ (Stops) */}
+            {stops.map((s, i) => (
+              <Marker
+                key={i}
+                icon={stopIcon}
+                position={s.pos}
+                draggable
+                eventHandlers={{
+                  dragend: e => {
+                    const newPos = e.target.getLatLng();
+                    setStops(prev => prev.map((item, idx) => idx === i ? { ...item, pos: [newPos.lat, newPos.lng] } : item));
+                    // --- แก้ไข: ลบ 'section' ---
+                  },
+                  click: () => {
+                    if (window.confirm(`ตั้ง "${s.name}" เป็นจุดหมาย?`)) {
+                      setDestination(s);
+                      setStops(prev => prev.filter((_, idx) => idx !== i));
+                    }
+                  },
+                  contextmenu: (e) => {
+                    L.DomEvent.stopPropagation(e);
+                    if (window.confirm(`ลบ "${s.name}" (จุดแวะ ${i + 1})?`)) {
+                      setStops(prev => prev.filter((_, idx) => idx !== i));
+                    }
+                  }
+                }}
+              >
+                <Tooltip permanent>จุดแวะ {i + 1}: {s.name}</Tooltip>
+                {s.area && s.area > 0 && <Circle center={s.pos} radius={s.area} pathOptions={{ color: "green" }} />}
+              </Marker>
+            ))}
+
+            {/* 5. Marker จุดหมาย (Destination) */}
+            {destination && (
+              <Marker
+                icon={destinationIcon}
+                position={destination.pos}
+                draggable
+                eventHandlers={{
+                  dragend: e => {
+                    const newPos = e.target.getLatLng();
+                    // --- แก้ไข: ลบ 's' ---
+                    setDestination({ ...destination, pos: [newPos.lat, newPos.lng] });
+                  },
+                  contextmenu: (e) => {
+                    L.DomEvent.stopPropagation(e);
+                    if (window.confirm(`ลบจุดหมาย "${destination.name}"?`)) {
+                      setDestination(null);
+                    }
+                }
+                  // --- แก้ไข: ลบ 'content' ---
+                }}
+              >
+                <Tooltip permanent>จุดหมาย: {destination.name}</Tooltip>
+                {destination.area && destination.area > 0 && <Circle center={destination.pos} radius={destination.area} pathOptions={{ color: "blue" }} />}
+              </Marker>
+            )}
+
+            {/* 6. Routing Components */}
+            <StopsRouting currentPos={currentPos} stops={stops} />
+            <DestinationRouting startPos={stops.length > 0 ? stops[stops.length - 1].pos : currentPos} destination={destination} />
+
+          </MapContainer>
+        </div>
+      </div>
+    </LoadScript>
+  );
 }
