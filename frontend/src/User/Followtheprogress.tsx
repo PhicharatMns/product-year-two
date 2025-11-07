@@ -1,4 +1,5 @@
 import { useTheme } from "@/components/theme-provider";
+import { SiHellofresh } from "react-icons/si";
 
 export default function Followtheprogress() {
   const data = [
@@ -116,3 +117,4 @@ export default function Followtheprogress() {
     </div>
   );
 }
+
