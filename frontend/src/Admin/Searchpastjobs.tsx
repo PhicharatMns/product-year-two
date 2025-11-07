@@ -74,7 +74,6 @@ export default function Searchpastjobs() {
   const [Opendatele, setopendatele] = useState(false);
   const [OpenMap, setOpenMap] = useState(false);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
-  const [position, setPosition] = useState<[number, number] | null>(null);
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",

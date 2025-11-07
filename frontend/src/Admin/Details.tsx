@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 export default function Details() {
   const [showOpenaddTradesman, setshowOpenaddTradesman] = useState(false);
@@ -13,7 +16,10 @@ export default function Details() {
     Worksheet: string;
     Employer: string;
     Contact_number: string;
-    address: string;
+    address: {
+      lat: number;
+      lng: number;
+    };
     responsible: string;
     Date_of_acceptance_of_work: string;
     Closing_date: string;
@@ -46,6 +52,7 @@ export default function Details() {
   const [modalFade, setModalFade] = useState(false);
   const [fade, setFade] = useState(false);
   const [duplicateFade, setDuplicateFade] = useState(false);
+  const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
 
@@ -193,10 +200,20 @@ export default function Details() {
     fetchEmployees();
     fetchTradesman();
     fetchJobCounts();
-    if (id) fetchOtherTradesman(); //  ตรวจว่ามี id ก่อน
+    if (id) fetchOtherTradesman();
     const timer = setTimeout(() => setFade(true), 100);
     return () => clearTimeout(timer);
   }, [id]);
+
+  // ตั้งค่า markerPos หลังจาก dataEmployees โหลดเสร็จ
+  useEffect(() => {
+    if (id && dataEmployees.length > 0) {
+      const employee = dataEmployees.find((e) => e._id === id);
+      if (employee && employee.address) {
+        setMarkerPos([employee.address.lat, employee.address.lng]);
+      }
+    }
+  }, [dataEmployees, id]);
 
   const { theme } = useTheme();
 
@@ -314,9 +331,7 @@ export default function Details() {
                         className={`${
                           theme === "dark" ? "text-white" : "text-black"
                         }`}
-                      >
-                        {event.address}
-                      </span>
+                      ></span>
                     </p>
                   </div>
                 </div>
@@ -678,6 +693,24 @@ export default function Details() {
               </div>
             </div>
           </div>
+        )}
+        {markerPos && (
+          <MapContainer
+            center={markerPos}
+            zoom={13}
+            className="w-full h-64 rounded-xl"
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <Marker
+              position={markerPos}
+              icon={L.icon({
+                iconUrl:
+                  "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+                iconSize: [25, 41],
+                iconAnchor: [12, 41],
+              })}
+            />
+          </MapContainer>
         )}
       </div>
     </div>
