@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
-import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
@@ -127,9 +127,8 @@ export default function Details() {
     try {
       // ตรวจสอบว่าช่างคนนี้ถูกเพิ่มไปแล้วหรือยัง
       const isDuplicate = SelectedTradesmen.some(
-        (t) => t.Name === tradesman.Name
+        (t) => t._id === tradesman._id
       );
-
       if (isDuplicate) {
         setDuplicateTradesman(tradesman); // เก็บช่างที่ซ้ำ
         openshowOpenaddTradesman(); // เปิด modal เตือน
@@ -701,6 +700,7 @@ export default function Details() {
             className="w-full h-64 rounded-xl"
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
             <Marker
               position={markerPos}
               icon={L.icon({
@@ -709,7 +709,12 @@ export default function Details() {
                 iconSize: [25, 41],
                 iconAnchor: [12, 41],
               })}
-            />
+            >
+              <Tooltip permanent direction="top" offset={[0, -40]}>
+                {dataEmployees.find((e) => e._id === id)?.Worksheet ||
+                  "ชื่องาน"}
+              </Tooltip>
+            </Marker>
           </MapContainer>
         )}
       </div>

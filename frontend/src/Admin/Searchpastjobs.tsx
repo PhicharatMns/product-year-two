@@ -10,6 +10,7 @@ import {
   Marker,
   useMapEvents,
   useMap,
+  FeatureGroup,
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -213,7 +214,7 @@ export default function Searchpastjobs() {
   }, [form?.address]);
 
   // component ดักการคลิก
-    function ClickHandler() {
+  function ClickHandler() {
     useMapEvents({
       click(e) {
         setMarkerPos([e.latlng.lat, e.latlng.lng]);
@@ -221,7 +222,7 @@ export default function Searchpastjobs() {
     });
     return null;
   }
-  
+
   //  ฟังก์ชันกดยืนยัน
   const handleConfirm = () => {
     if (markerPos) {
@@ -256,6 +257,66 @@ export default function Searchpastjobs() {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
+
+  //วาด Polygon
+  function DrawTools() {
+    const map = useMap();
+
+    useEffect(() => {
+      const drawnItems = new L.FeatureGroup();
+      map.addLayer(drawnItems);
+
+      const drawControl = new L.Control.Draw({
+        edit: {
+          featureGroup: drawnItems,
+        },
+        draw: {
+          polygon: {
+            allowIntersection: false,
+            showArea: true,
+            shapeOptions: {
+              color: "#f57c00",
+            },
+          },
+          rectangle: {
+            shapeOptions: {
+              color: "#4caf50",
+            },
+          },
+          circle: {
+            shapeOptions: {
+              color: "#2196f3",
+            },
+          },
+          polyline: false,
+          marker: false,
+          circlemarker: false,
+        },
+      });
+
+      map.addControl(drawControl);
+
+      map.on(L.Draw.Event.CREATED, function (e: any) {
+        const type = e.layerType;
+        const layer = e.layer;
+
+        // ใส่ Tooltip แบบกำหนดเอง
+        layer.bindTooltip(`Shape: ${type}`).openTooltip();
+
+        drawnItems.addLayer(layer);
+
+        // แปลง shape เป็น GeoJSON และ log
+        console.log(layer.toGeoJSON());
+      });
+
+      return () => {
+        map.removeControl(drawControl);
+        map.removeLayer(drawnItems);
+      };
+    }, [map]);
+
+    return null;
+  }
 
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
