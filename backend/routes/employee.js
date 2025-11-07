@@ -21,7 +21,6 @@ router.post("/", upload.single("image"), async (req, res) => {
       Employer,
       Contact_number,
       address,
-      area, // <-- เพิ่ม
       responsible,
       Date_of_acceptance_of_work,
       Closing_date,
@@ -31,21 +30,14 @@ router.post("/", upload.single("image"), async (req, res) => {
 
     const image = req.file ? req.file.filename : undefined;
 
-    // แปลง address จาก string → object
-    let parsedAddress = null;
+    let parsedAddress = { type: "Point", coordinates: [0, 0] };
     try {
-      parsedAddress =
-        typeof address === "string" ? JSON.parse(address) : address;
-    } catch {
-      parsedAddress = null;
-    }
-
-    // แปลง area จาก string → object
-    let parsedArea = null;
-    try {
-      parsedArea = typeof area === "string" ? JSON.parse(area) : area;
-    } catch {
-      parsedArea = null;
+      const addr = typeof address === "string" ? JSON.parse(address) : address;
+      if (addr && addr.coordinates && addr.coordinates.length === 2) {
+        parsedAddress = addr;
+      }
+    } catch (err) {
+      console.error("Invalid address JSON:", err);
     }
 
     const employee = new Employee({
@@ -53,7 +45,6 @@ router.post("/", upload.single("image"), async (req, res) => {
       Employer,
       Contact_number,
       address: parsedAddress,
-      area: parsedArea, // <-- เก็บ Polygon/GeoJSON
       responsible,
       Date_of_acceptance_of_work: Date_of_acceptance_of_work || Date.now(),
       Closing_date: Closing_date || Date.now(),

@@ -10,16 +10,18 @@ export default function Details() {
   const [duplicateTradesman, setDuplicateTradesman] =
     useState<Tradesman | null>(null);
 
+  interface Address {
+    type: string;
+    coordinates: [number, number]; // [lng, lat]
+  }
+
   const { id } = useParams();
   interface Employees {
     _id: string;
     Worksheet: string;
     Employer: string;
     Contact_number: string;
-    address: {
-      lat: number;
-      lng: number;
-    };
+    address: Address;
     responsible: string;
     Date_of_acceptance_of_work: string;
     Closing_date: string;
@@ -208,8 +210,13 @@ export default function Details() {
   useEffect(() => {
     if (id && dataEmployees.length > 0) {
       const employee = dataEmployees.find((e) => e._id === id);
-      if (employee && employee.address) {
-        setMarkerPos([employee.address.lat, employee.address.lng]);
+
+      if (employee && employee.address?.coordinates) {
+        const [lng, lat] = employee.address.coordinates;
+        setMarkerPos([lat, lng]);
+      } else {
+        // fallback ถ้าไม่มี address หรือ coordinates
+        setMarkerPos([13.7563, 100.5018]);
       }
     }
   }, [dataEmployees, id]);

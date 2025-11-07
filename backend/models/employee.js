@@ -8,14 +8,6 @@ const employeeSchema = new mongoose.Schema({
     type: { type: String, enum: ["Point"], default: "Point" },
     coordinates: { type: [Number], default: [0, 0] }, // สำหรับ Marker
   },
-  area: {
-    type: { type: String, enum: ["Feature"], default: "Feature" }, // GeoJSON Feature
-    geometry: {
-      type: { type: String, enum: ["Polygon", "MultiPolygon"], default: "Polygon" },
-      coordinates: { type: [[[Number]]], default: [] },
-    },
-    properties: { type: Object, default: {} },
-  },
   responsible: String,
   Date_of_acceptance_of_work: Date,
   Closing_date: Date,
