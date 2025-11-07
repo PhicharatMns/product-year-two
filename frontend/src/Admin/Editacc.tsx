@@ -273,7 +273,7 @@ export default function Editacc() {
         {filteredTradesmen.map((t, idx) => (
           <div
             key={t._id || idx}
-            className={`grid grid-cols-7 my-2 gap-5 pl-5 items-center border rounded-xl shadow-sm ${
+            className={`grid grid-cols-7 my-2 gap-5 pl-5 items-center border rounded-lg shadow-sm ${
               theme === "dark"
                 ? "bg-gray-900 border-gray-700"
                 : "shadow-lg bg-blue-50/50"
@@ -300,7 +300,7 @@ export default function Editacc() {
                 ? new Date(t.Start_data).toLocaleDateString("th-TH")
                 : "-"}
             </p>
-            <div className="flex justify-center gap-2">
+            <div className="flex justify-center gap-1">
               <button
                 onClick={() => openDeleteModal(t)}
                 className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 

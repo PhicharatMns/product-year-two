@@ -80,6 +80,7 @@ export default function Searchpastjobs() {
   const [Opendatele, setopendatele] = useState(false);
   const [OpenMap, setOpenMap] = useState(false);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
+  const [Focused, setFocused] = useState(false);
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
@@ -337,11 +338,20 @@ export default function Searchpastjobs() {
                 <CiSearch
                   className={`absolute left-3 top-1/2 -translate-y-1/2 ${cls.label}`}
                 />
+
                 <input
+                  onFocus={() => setFocused(true)}
+                  onBlur={() => setFocused(false)}
                   placeholder="ค้นหา..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className={`border pl-10 pr-3 py-1 rounded-xl ${cls.input}`}
+                  className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 
+                    ${
+                      theme === "dark"
+                        ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
+                        : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+                    }}
+                    ${Focused ? "w-72" : "w-60"} ${cls.input}`}
                 />
               </div>
             </div>
@@ -349,10 +359,10 @@ export default function Searchpastjobs() {
 
           {/* Table */}
           <div
-            className={`hidden lg:grid font-extrabold grid-cols-7 gap-5 border-b-2 px-5  mb-3 ${
+            className={`hidden lg:grid font-semibold  text-lg grid-cols-7 gap-5 border-b-2 px-5  mb-3 ${
               t
                 ? "text-yellow-500 border-yellow-500"
-                : "text-blue-700 border-blue-500"
+                : "text-blue-500 border-blue-500"
             }`}
           >
             {headers.map((h, i) => (
@@ -365,7 +375,7 @@ export default function Searchpastjobs() {
           {filtered.map((e, i) => (
             <div
               key={i}
-              className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center rounded-xl shadow-sm py-1 px-5 mt-2 ${
+              className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center crounded-xl shadow-sm py-1 px-5 mt-2 ${
                 t ? "bg-gray-900 border-gray-700" : "bg-blue-50/40"
               } border`}
             >
