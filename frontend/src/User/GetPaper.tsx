@@ -1,9 +1,8 @@
-import { useTheme } from "@/components/theme-provider";
+import { Link } from "react-router-dom";
 import { useEffect, useState, useCallback } from "react";
 // ❌ import { CiSearch } from "react-icons/ci"; // Removed due to import error
 import jwtDecode from "https://unpkg.com/jwt-decode@3.1.2/build/jwt-decode.esm.js"; // ✅ Using CDN
-// ❌ ลบ Link ออก เพราะเราจะใช้ปุ่มเปิด Modal แทน
-// import { Link } from "react-router-dom";
+
 import { useTheme } from "@/components/theme-provider";
 import { motion, AnimatePresence } from "framer-motion"; // ✨ 1. เพิ่ม Import สำหรับอนิเมชั่น
 
@@ -332,16 +331,15 @@ export default function GetPaper() {
               </p>
               {/* <p>{job.description || "-"}</p> */}
               <div className="flex gap-2 mx-auto">
-                {/* --- ⬇️ 5. เปลี่ยนจาก Link เป็น Button ที่เรียก Modal --- */}
-                <button
-                  onClick={() => OpneFadDataJob(job)} // 👈 เรียกฟังก์ชันเปิด
-                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-                    [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                    active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                      theme === "dark"
-                        ? "bg-yellow-500 hover:bg-yellow-600"
-                        : "bg-blue-500 hover:bg-blue-600"
-                    }`}
+                <Link
+                  to={`/user/Detailwork/${job._id}`}
+                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+               theme === "dark"
+                 ? "bg-yellow-500 hover:bg-yellow-600"
+                 : "bg-blue-500 hover:bg-blue-600"
+             }`}
                 >
                   รายละเอียดงาน
                 </Link>
@@ -354,7 +352,7 @@ export default function GetPaper() {
                         ? "bg-yellow-500 hover:bg-yellow-600"
                         : "bg-blue-500 hover:bg-blue-600"
                     }`}
-                >
+                > 
                   เบิกของ
                 </button>
               </div>
