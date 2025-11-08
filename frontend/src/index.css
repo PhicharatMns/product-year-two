@@ -4,6 +4,8 @@
 @plugin "tailwindcss-animate";
 @import "tw-animate-css";
 
+
+
 /* global.css */
 body {
   font-family: "Kanit", "Noto Sans Thai", "Prompt", sans-serif;

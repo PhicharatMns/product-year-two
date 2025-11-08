@@ -3,6 +3,22 @@ import type { ChangeEvent } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
+// import react-leaflet components
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  useMapEvents,
+  useMap,
+} from "react-leaflet";
+import "leaflet-draw"; // ต้อง import แบบนี้เพื่อให้ L.Control.Draw ทำงาน
+import "leaflet-draw/dist/leaflet.draw.css"; // โหลด CSS ของ draw
+import L from "leaflet";
+
+interface GeoPoint {
+  type: "Point";
+  coordinates: [number, number];
+}
 
 //  ข้อมูลพนักงาน
 interface Employee {
@@ -10,7 +26,7 @@ interface Employee {
   Worksheet: string;
   Employer: string;
   Contact_number: string;
-  address: string;
+  address: GeoPoint; //  แทนที่จะเป็น string
   responsible: string;
   Date_of_acceptance_of_work: string;
   Closing_date: string;
@@ -29,7 +45,7 @@ const defaultForm: FormState = {
   Worksheet: "",
   Employer: "",
   Contact_number: "",
-  address: "",
+  address: { type: "Point", coordinates: [0, 0] }, //  แก้ตรงนี้
   responsible: "",
   Date_of_acceptance_of_work: new Date().toISOString().split("T")[0],
   Closing_date: new Date().toISOString().split("T")[0],
@@ -62,6 +78,9 @@ export default function Searchpastjobs() {
   const [anim, setAnim] = useState(false);
   const [fade, setFade] = useState(false);
   const [Opendatele, setopendatele] = useState(false);
+  const [OpenMap, setOpenMap] = useState(false);
+  const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
+  const [Focused, setFocused] = useState(false);
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
@@ -89,8 +108,13 @@ export default function Searchpastjobs() {
     try {
       const fd = new FormData();
       Object.entries(form).forEach(([k, v]) => {
-        if (v !== null && v !== "")
-          fd.append(k, v instanceof File ? v : String(v));
+        if (v !== null && v !== "") {
+          if (k === "address") {
+            fd.append("address", JSON.stringify(form.address));
+          } else {
+            fd.append(k, v instanceof File ? v : String(v));
+          }
+        }
       });
 
       if (editId) {
@@ -180,6 +204,99 @@ export default function Searchpastjobs() {
       (e.Contact_number ?? "").includes(search)
   );
 
+  //------------------------------Map ทั้งหมด----------------------------------------
+  // ประกาศด้านบน component หรือ function
+  const defaultCenter: [number, number] = [13.736717, 100.523186]; // พิกัดเริ่มต้น (Bangkok)
+
+  // โหลดค่าที่เคยบันทึกไว้ตอนเปิดหน้า
+  useEffect(() => {
+    if (form?.address) {
+      try {
+        const addr =
+          typeof form.address === "string"
+            ? JSON.parse(form.address)
+            : form.address;
+
+        //  GeoJSON: coordinates = [lng, lat]
+        if (
+          addr &&
+          Array.isArray(addr.coordinates) &&
+          typeof addr.coordinates[0] === "number" &&
+          typeof addr.coordinates[1] === "number"
+        ) {
+          // ต้องสลับตำแหน่งกลับเป็น [lat, lng]
+          setMarkerPos([addr.coordinates[1], addr.coordinates[0]]);
+        } else {
+          setMarkerPos(null);
+        }
+      } catch (err) {
+        console.error("Invalid address format:", err);
+        setMarkerPos(null);
+      }
+    } else {
+      setMarkerPos(null);
+    }
+  }, [form?.address]);
+
+  // component ดักการคลิก
+  function ClickHandler() {
+    useMapEvents({
+      click(e) {
+        setMarkerPos([e.latlng.lat, e.latlng.lng]);
+      },
+    });
+    return null;
+  }
+
+  //  ฟังก์ชันกดยืนยัน
+  const handleConfirm = () => {
+    if (markerPos) {
+      const [lat, lng] = markerPos;
+
+      const posObj: GeoPoint = {
+        type: "Point",
+        coordinates: [lng, lat],
+      };
+
+      // ✅ เซ็ต object โดยตรง ไม่ต้อง stringify
+      setForm((f) => ({
+        ...f,
+        address: posObj,
+      }));
+
+      setOpenMap(false);
+    }
+  };
+
+  // ซูมไปตรงพิกัดที่เคยปักไว้ล่าสุด
+  function FlyToSaved({ markerPos }: { markerPos: [number, number] | null }) {
+    const map = useMap();
+
+    useEffect(() => {
+      if (
+        markerPos &&
+        markerPos[0] !== undefined &&
+        markerPos[1] !== undefined
+      ) {
+        map.flyTo(markerPos, 16);
+      }
+    }, [markerPos, map]);
+
+    return null;
+  }
+
+  // สร้าง icon กำหนดสีเอง
+  const customIcon = new L.Icon({
+    iconUrl:
+      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png", // สีเหลือง
+    shadowUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.3/images/marker-shadow.png",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41],
+  });
+
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
     fetchData();
@@ -193,7 +310,7 @@ export default function Searchpastjobs() {
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="container mx-auto p-5 max-w-380  pt-10">
+      <div className="container mx-auto p-5 max-w-380  ">
         <div className={``}>
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
@@ -202,8 +319,8 @@ export default function Searchpastjobs() {
                 t ? "text-yellow-500" : "text-blue-700"
               }`}
             >
-              รับใบ{" "}
-              <span className={t ? "text-white" : "text-yellow-500"}>งาน</span>
+              สร้าง{" "}
+              <span className={t ? "text-white" : "text-yellow-500"}>ใบงาน</span>
             </h2>
             <div className="flex flex-wrap gap-4 items-center">
               <button
@@ -221,11 +338,20 @@ export default function Searchpastjobs() {
                 <CiSearch
                   className={`absolute left-3 top-1/2 -translate-y-1/2 ${cls.label}`}
                 />
+
                 <input
+                  onFocus={() => setFocused(true)}
+                  onBlur={() => setFocused(false)}
                   placeholder="ค้นหา..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className={`border pl-10 pr-3 py-1 rounded-xl ${cls.input}`}
+                  className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 
+                    ${
+                      theme === "dark"
+                        ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
+                        : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+                    }}
+                    ${Focused ? "w-72" : "w-60"} ${cls.input}`}
                 />
               </div>
             </div>
@@ -233,10 +359,10 @@ export default function Searchpastjobs() {
 
           {/* Table */}
           <div
-            className={`hidden lg:grid font-extrabold grid-cols-7 gap-5 border-b-2 px-5  mb-3 ${
+            className={`hidden lg:grid font-semibold  text-lg grid-cols-7 gap-5 border-b-2 px-5  mb-3 ${
               t
                 ? "text-yellow-500 border-yellow-500"
-                : "text-blue-700 border-blue-500"
+                : "text-blue-500 border-blue-500"
             }`}
           >
             {headers.map((h, i) => (
@@ -249,7 +375,7 @@ export default function Searchpastjobs() {
           {filtered.map((e, i) => (
             <div
               key={i}
-              className={`grid grid-cols-1 lg:grid-cols-7 gap-5 items-center rounded-xl shadow-sm py-1 px-5 mt-2 ${
+              className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center crounded-xl shadow-sm py-1 px-5 mt-2 ${
                 t ? "bg-gray-900 border-gray-700" : "bg-blue-50/40"
               } border`}
             >
@@ -346,27 +472,39 @@ export default function Searchpastjobs() {
                   {editId ? "แก้ไขใบงาน" : "เพิ่มใบงาน"}
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {[
-                    "Worksheet",
-                    "Employer",
-                    "Contact_number",
-                    "responsible",
-                    "address",
-                  ].map((k) => (
+                  {Object.entries({
+                    Worksheet: "ชื่องาน",
+                    Employer: "ชื่อผู้จ้าง",
+                    Contact_number: "เบอร์ติดต่อ",
+                    responsible: "ผู้สร้างงาน",
+                    address: "ที่อยุ่",
+                  }).map(([k, label]) => (
                     <div key={k} className="flex flex-col">
                       <label className={`mb-1 font-semibold ${cls.label}`}>
-                        {k}
+                        {label}
                       </label>
-                      <input
-                        type="text"
-                        value={form[k as keyof FormState] as string}
-                        onChange={(e) =>
-                          handleChange(k as keyof FormState, e.target.value)
-                        }
-                        className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input}`}
-                      />
+
+                      {k === "address" ? (
+                        <button
+                          type="button"
+                          className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input} text-left`}
+                          onClick={() => setOpenMap(true)}
+                        >
+                          ที่อยู่งาน
+                        </button>
+                      ) : (
+                        <input
+                          type="text"
+                          value={form[k as keyof FormState] as string}
+                          onChange={(e) =>
+                            handleChange(k as keyof FormState, e.target.value)
+                          }
+                          className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input}`}
+                        />
+                      )}
                     </div>
                   ))}
+
                   {["Date_of_acceptance_of_work", "Closing_date"].map((k) => (
                     <div key={k} className="flex flex-col">
                       <label className={`mb-1 font-semibold ${cls.label}`}>
@@ -440,7 +578,7 @@ export default function Searchpastjobs() {
               }`}
             >
               <div
-                className={`rounded-2xl shadow-2xl p-8 w-[400px] border max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+                className={`rounded-2xl shadow-2xl p-5 w-120  max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
                   anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
                 } ${
                   theme === "dark"
@@ -448,37 +586,88 @@ export default function Searchpastjobs() {
                     : "bg-white text-gray-900"
                 }`}
               >
-                <div className="flex items-center">
-                  <p>
+                <div className="flex items-center gap-1">
+                  <p
+                    className={`font-semibold ${
+                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
+                  >
                     {" "}
-                    ลบงาน : <span>{deleteTarget.Worksheet}</span>
+                    ลบงาน :
                   </p>
-                  <div className="flex gap-2 ml-auto items-center ">
+                  <span>{deleteTarget.Worksheet}</span>
+                  <div className="flex gap-2 ml-auto  items-center ">
+                    <button
+                      onClick={clasOpendate}
+                      className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                    >
+                      <span className="relative z-10">ยกเลิก</span>
+                      <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                        <span className="absolute left-0 top-0 w-0 h-full bg-gray-200  transition-all duration-500 group-hover:w-full"></span>
+                      </span>
+                    </button>
                     <button
                       onClick={() => {
                         handleDelete(deleteTarget._id); // ลบงาน
                         clasOpendate(); // ปิด modal
                       }}
-                      className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90  
-             bg-red-500 hover:bg-red-600`}
+                      className="group relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
                     >
-                      ลบ
-                    </button>
-                    <button
-                      onClick={clasOpendate}
-                      className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
-               theme === "dark"
-                 ? "bg-yellow-500 hover:bg-yellow-600"
-                 : "bg-blue-500 hover:bg-blue-600"
-             }`}
-                    >
-                      ยกเลิก
+                      <span className="relative z-10">ลบ</span>
+                      <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                        <span className="absolute left-0 top-0 w-0 h-full bg-red-600  transition-all duration-500 group-hover:w-full"></span>
+                      </span>
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+          )}
+          {/* เปิดMap */}
+          {OpenMap && (
+            <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
+              <div className="w-300 h-190 p-5 bg-gray-800 rounded-lg">
+                <MapContainer
+                  center={defaultCenter}
+                  zoom={13}
+                  className="w-full h-170 rounded-lg"
+                >
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  <ClickHandler />
+                  {markerPos && (
+                    <Marker position={markerPos} icon={customIcon} />
+                  )}
+                  <FlyToSaved markerPos={markerPos} />
+
+                  {/* เพิ่มฟีเจอร์วาด shape */}
+                </MapContainer>
+
+                <div className="flex gap-2 justify-end my-3 ">
+                  <button
+                    onClick={() => {
+                      setOpenMap(false);
+                    }}
+                    className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                  >
+                    <span className="relative z-10">ยกเลิก</span>
+                    <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                      <span className="absolute left-0 top-0 w-0 h-full bg-gray-200  transition-all duration-500 group-hover:w-full"></span>
+                    </span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      setOpenMap(false);
+                      handleConfirm();
+                    }}
+                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
+                  >
+                    <span className="relative z-10">ยืนยัน</span>
+                    <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                      <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
+                    </span>
+                  </button>
                 </div>
               </div>
             </div>

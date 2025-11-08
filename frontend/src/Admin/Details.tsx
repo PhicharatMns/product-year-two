@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
+import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
 export default function Details() {
   const [showOpenaddTradesman, setshowOpenaddTradesman] = useState(false);
   const [duplicateTradesman, setDuplicateTradesman] =
     useState<Tradesman | null>(null);
+
+  interface Address {
+    type: string;
+    coordinates: [number, number]; // [lng, lat]
+  }
 
   const { id } = useParams();
   interface Employees {
@@ -13,7 +21,7 @@ export default function Details() {
     Worksheet: string;
     Employer: string;
     Contact_number: string;
-    address: string;
+    address: Address;
     responsible: string;
     Date_of_acceptance_of_work: string;
     Closing_date: string;
@@ -46,6 +54,9 @@ export default function Details() {
   const [modalFade, setModalFade] = useState(false);
   const [fade, setFade] = useState(false);
   const [duplicateFade, setDuplicateFade] = useState(false);
+  const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
+  const [openMap, setopenMap] = useState(false);
+  const [fadeMap, setFadeMap] = useState(false);
 
   const data = ["รูป", "ชื่อ", "ตำแหน่ง", "รายงาน", "สถานะงาน", "ตอบกลับ"];
 
@@ -120,9 +131,8 @@ export default function Details() {
     try {
       // ตรวจสอบว่าช่างคนนี้ถูกเพิ่มไปแล้วหรือยัง
       const isDuplicate = SelectedTradesmen.some(
-        (t) => t.Name === tradesman.Name
+        (t) => t._id === tradesman._id
       );
-
       if (isDuplicate) {
         setDuplicateTradesman(tradesman); // เก็บช่างที่ซ้ำ
         openshowOpenaddTradesman(); // เปิด modal เตือน
@@ -188,15 +198,42 @@ export default function Details() {
     }
   };
 
+  // ตอนเปิดแผนที่
+  const openMapHandler = () => {
+    setopenMap(true);
+    setTimeout(() => setFadeMap(true), 50);
+  };
+
+  // ตอนปิดแผนที่
+  const closeMapHandler = () => {
+    setFadeMap(false);
+    setTimeout(() => setopenMap(false), 300);
+  };
+
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
     fetchEmployees();
     fetchTradesman();
     fetchJobCounts();
-    if (id) fetchOtherTradesman(); //  ตรวจว่ามี id ก่อน
+    if (id) fetchOtherTradesman();
     const timer = setTimeout(() => setFade(true), 100);
     return () => clearTimeout(timer);
   }, [id]);
+
+  // ตั้งค่า markerPos หลังจาก dataEmployees โหลดเสร็จ
+  useEffect(() => {
+    if (id && dataEmployees.length > 0) {
+      const employee = dataEmployees.find((e) => e._id === id);
+
+      if (employee && employee.address?.coordinates) {
+        const [lng, lat] = employee.address.coordinates;
+        setMarkerPos([lat, lng]);
+      } else {
+        // fallback ถ้าไม่มี address หรือ coordinates
+        setMarkerPos([13.7563, 100.5018]);
+      }
+    }
+  }, [dataEmployees, id]);
 
   const { theme } = useTheme();
 
@@ -206,7 +243,7 @@ export default function Details() {
 
   return (
     <div
-      className={` w-max-380 transition-opacity duration-300  p-5 mx-auto container  pt-10 ${
+      className={` w-max-380 transition-opacity duration-300  p-5 mx-auto container  ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -304,20 +341,17 @@ export default function Details() {
                         {event.Contact_number}
                       </span>
                     </p>
-                    <p
-                      className={`${
-                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                      } font-semibold`}
+                    <button
+                      onClick={openMapHandler}
+                      className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-4 font-medium text-neutral-0 transition duration-300 text-white ${
+                        theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                      }`}
                     >
-                      ที่อยู่:{" "}
-                      <span
-                        className={`${
-                          theme === "dark" ? "text-white" : "text-black"
-                        }`}
-                      >
-                        {event.address}
-                      </span>
-                    </p>
+                      ที่อยู่
+                      <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
+                        <div className="relative h-full w-8 bg-white/50"></div>
+                      </div>
+                    </button>
                   </div>
                 </div>
 
@@ -351,14 +385,14 @@ export default function Details() {
 
                     {/* แสดงรายชื่อช่างที่เพิ่มแล้ว */}
                     <div
-                      className={`font-semibold  text-lg p-2 ${
+                      className={`font-semibold text-lg p-2 ${
                         theme === "dark" ? "text-yellow-500" : "text-blue-500"
                       }`}
                     >
                       {SelectedTradesmen.map((t, index) => (
                         <div
                           key={index}
-                          className={`flex items-center border my-2 rounded-lg px-2 hover:shadow-lg duration-300 justify-between  border-b ${bg_border}`}
+                          className={`flex items-center border my-2 rounded-lg px-2 hover:shadow-lg duration-300 justify-between  border-b ${theme === 'dark' ? 'bg-gray-800' : 'shadow-sm'}`}
                         >
                           <div className="flex items-center gap-5">
                             <img
@@ -675,6 +709,50 @@ export default function Details() {
                       </div>
                     </div>
                   ))}
+              </div>
+            </div>
+          </div>
+        )}
+        {openMap && markerPos && (
+          <div
+            className={`fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${
+              fadeMap ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <div className="w-300 h-190 p-5 pb-12 bg-gray-800 rounded-lg transition-transform duration-300">
+              <MapContainer
+                center={markerPos}
+                zoom={13}
+                className="w-full h-170 rounded-lg"
+              >
+                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                <Marker
+                  position={markerPos}
+                  icon={L.icon({
+                    iconUrl:
+                      "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+                    iconSize: [25, 41],
+                    iconAnchor: [12, 41],
+                  })}
+                >
+                  <Tooltip permanent direction="top" offset={[0, -40]}>
+                    {dataEmployees.find((e) => e._id === id)?.Worksheet ||
+                      "ชื่องาน"}
+                  </Tooltip>
+                </Marker>
+              </MapContainer>
+
+              {/* ปุ่มปิด */}
+              <div className="flex gap-2 justify-end my-3">
+                <button
+                  onClick={closeMapHandler}
+                  className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                >
+                  <span className="relative z-10">ยกเลิก</span>
+                  <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
+                  </span>
+                </button>
               </div>
             </div>
           </div>

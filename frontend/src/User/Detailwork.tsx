@@ -1,12 +1,77 @@
 import { useTheme } from "@/components/theme-provider";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+interface Employee {
+  _id: string;
+  Worksheet?: string;
+  Supervisor?: string;
+  PhoneNumber?: string;
+  Date_of_acceptance_of_work?: string;
+  Closing_date?: string;
+  description?: string;
+  address?: {
+    type: string;
+    coordinates: [number, number]; // [lng, lat]
+  };
+}
 
 export default function Detailwork() {
   const { theme } = useTheme();
-  const bg = theme === "dark" ? "bg-gray-800" : "bg-gray-100";
+  const { id } = useParams<{ id: string }>();
+  const [job, setJob] = useState<Employee | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
+  const [fade, setFade] = useState(false);
+
+  const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-900/80" : "bg-white";
+  const text_color = theme === "dark" ? "text-white" : "text-black";
   const borderSoft = theme === "dark" ? "border-gray-700" : "border-gray-300";
-  const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
+  const titleColor = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchJob = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/employees");
+        if (!res.ok) throw new Error("ไม่สามารถดึงข้อมูลได้");
+        const data: Employee[] = await res.json();
+
+        const selected = data.find((emp) => emp._id === id);
+        setJob(selected || null);
+
+        // ตั้งค่า marker ถ้ามี coordinates
+        if (selected?.address?.coordinates) {
+          const [lng, lat] = selected.address.coordinates;
+          setMarkerPos([lat, lng]);
+        } else {
+          // fallback ถ้าไม่มีตำแหน่ง
+          setMarkerPos([13.7563, 100.5018]); // Bangkok
+        }
+      } catch (err) {
+        console.error(err);
+        setJob(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJob();
+  }, [id]);
+
+  // เริ่ม fade-in หลังจากโหลดเสร็จ
+  useEffect(() => {
+    if (!loading) {
+      const timer = setTimeout(() => setFade(true), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  if (!job) return <div className="text-center py-10">ไม่พบข้อมูลงาน</div>;
 
   return (
     <div className={`w-max-380 p-5 mx-auto container ${bg} ${text}`}>
@@ -27,7 +92,7 @@ export default function Detailwork() {
             (title, idx) => (
               <div
                 key={idx}
-                className={`border-b rounded-2xl p-4 sm:p-6 font-semibold`}
+                className={`border ${borderSoft} rounded-2xl p-4 sm:p-6 font-semibold`}
               >
                 {title}
               </div>
@@ -35,35 +100,38 @@ export default function Detailwork() {
           )}
         </div>
 
-        <div className="text-2xl py-2 font-semibold border p-5 rounded-2xl">
-          รายละเอียดงาน
-          <p className="text-sm mt-2 text-gray-500 ">
-            งานซ่อมแซมระบบไฟฟ้าภายในอาคารสำนักงานชั้น 3 ตรวจสอบระบบสายไฟ
-            และเปลี่ยนหลอดไฟที่ชำรุด พร้อมจัดระเบียบสายไฟให้เรียบร้อย
-          </p>
-        </div>
-
-        <div className="flex items-start justify-start"></div>
-        <div className="grid grid-cols-5  gap-4 mt-5">
-          <div
-            className={`w-full min-h-[350px] col-span-3 rounded-2xl border ${borderSoft} p-6 text-gray-600`}
-          >
-            <div className="text-xl font-semibold mb-3 text-green-500">
-              รายละเอียดการเบิกของ
+        <div className={`mt-5 transition-all duration-300 rounded-2xl`}>
+          <div className="grid grid-cols-2 gap-5">
+            <div className={`border p-3 rounded-xl ${bg}`}>
+              <p>หัวหน้างาน: {job.Supervisor || "-"}</p>
+              <p>ตำแหน่ง: {"-"}</p>
+              <p>เบอร์ติดต่อ: {job.PhoneNumber || "-"}</p>
+              <p>
+                วันเริ่มงาน:{" "}
+                {job.Date_of_acceptance_of_work
+                  ? new Date(job.Date_of_acceptance_of_work).toLocaleDateString(
+                      "th-TH"
+                    )
+                  : "-"}
+              </p>
+              <p>
+                วันปิดงาน:{" "}
+                {job.Closing_date
+                  ? new Date(job.Closing_date).toLocaleDateString("th-TH")
+                  : "-"}
+              </p>
             </div>
 
-            <div
-              className={`mb-5 p-5 rounded-2xl border border-dashed border-green-500 `}
-            >
-              <p className={`${text} text-lg`}>
-                การเบิกของได้รับการ{" "}
-                <span className="text-green-400">อนุมัติ</span> เรียบร้อยแล้ว
+            <div className={`border p-3 rounded-xl ${bg}`}>
+              <p className={`text-lg mb-1 font-semibold ${titleColor}`}>
+                รายละเอียดงาน
               </p>
+              <p className="text-ellipsis"> {job.description || "-"}</p>
             </div>
           </div>
           <div className="border py-5 px-6 col-span-2 rounded-2xl ">
             <h2 className="text-xl font-semibold text-blue-500 mb-3">
-              อุปกรณ์ที่ใช้
+              ข้อความตอบกลับ
             </h2>
           </div>
 
@@ -72,7 +140,9 @@ export default function Detailwork() {
               ข้อความตอบกลับ
             </h2>
 
-           
+            <div
+              className={`p-5 rounded-2xl border ${borderSoft}   dark:text-gray-200`}
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
                 <div className={`col-span-2 ${text} `}>
                   <p>
@@ -87,22 +157,9 @@ export default function Detailwork() {
                 </div>
                   
               </div>
-           
+            </div>
           </div>
           
-        </div>
-
-        {/* แผนที่ */}
-        <div className="text-2xl mt-10 font-semibold">แผนที่</div>
-        <div className="w-full h-[400px] mt-3 rounded-2xl overflow-hidden border border-gray-300">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.484201879492!2d100.5017653152993!3d13.756330390360096!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ed6e1aa12c3%3A0x6d77e2e0c4a18b2!2sBangkok%2C%20Thailand!5e0!3m2!1sen!2sth!4v1700000000000!5m2!1sen!2sth"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
         </div>
       </div>
     </div>
