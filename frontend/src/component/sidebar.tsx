@@ -206,7 +206,7 @@ export default function Sidebar() {
       fixed left-0 bottom-0 
       rounded-t-xl h-180 w-80 p-2 ${bgside}
       transition-all transform duration-500
-      z-10
+      z-15
       ${slideIn
         ? "translate-x-67 scale-100 opacity-100" // เลื่อนเข้ามาใต้ sidebar
         : "-translate-x-full opacity-0"         // ซ่อนซ้ายจอ
