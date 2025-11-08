@@ -31,7 +31,7 @@ import Calendars from "./User/Calendar";
 import Withdraw from "./User/Withdraw";
 import Followtheprogress from "./User/Followtheprogress";
 import DetailItem from "./User/Detailitem";
-
+import Detailwork from "./User/Detailwork";
 
 
 // Auth
@@ -49,7 +49,7 @@ import Getpaperexecutive from "./executive/Getpaperexecutive";
 import Dashboardchief from "./chief/Dashboardchief";
 import Chief from "./chief/Chief";
 
-import Detailwork from "./User/Detailwork";
+
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -96,7 +96,9 @@ const router = createBrowserRouter([
       { path: "Detailwork/:id", element: <Detailwork /> },
       { path: "Calendar", element: <Calendars /> },
       { path: "withdraw", element: <Withdraw /> },
-      { path: 'Followtheprogress', element: <Followtheprogress /> }
+      { path: 'Followtheprogress', element: <Followtheprogress /> },
+      { path: "Detailwork", element: <Detailwork />},
+      { path: "DetailItem", element: <DetailItem />},
     ],
   },
 
