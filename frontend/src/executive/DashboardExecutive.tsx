@@ -59,7 +59,7 @@ const DashboardExecutive = () => {
   }, [])
 
   return (
-    <div className="w-max-380 p-6 mx-auto container pt-10">
+    <div className="w-max-380 p-5 mx-auto container pt-10">
       <div className="p-5 ">
         <p className="text-3xl  font-extrabold mb-5 ">Dashboard <span>ผู้บริหาร</span></p>
         {/* ข้อมูล */}
