@@ -31,6 +31,7 @@ import Calendars from "./User/Calendar";
 import Withdraw from "./User/Withdraw";
 import Followtheprogress from "./User/Followtheprogress";
 import DetailItem from "./User/Detailitem";
+import Profile from "./User/Profile";
 
 
 
