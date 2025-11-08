@@ -42,7 +42,7 @@ import Executive from "./executive/Executive";
 import MapWork from "./executive/MapWork";
 import Getpaperexecutive from "./executive/getpaperexecutive";
 
-// userChief 
+// userChief
 import Dashboardchief from "./chief/Dashboardchief";
 import Chief from "./chief/Chief";
 
@@ -73,7 +73,6 @@ const router = createBrowserRouter([
       { path: "notification", element: <Notification /> },
       { path: "suppliesAdmin", element: <SuppliesAdmin /> },
       { path: "mapadmin", element: <MapAdmin /> },
-
     ],
   },
 
@@ -91,10 +90,10 @@ const router = createBrowserRouter([
       { path: "getpaper", element: <Getpaper /> },
       { path: "maps", element: <Maps /> },
       { path: "supplies", element: <Suppiles /> },
-      { path: "Detailwork", element: <Detailwork /> }, // ตรวจสอบชื่อ component ให้ตรง
+      { path: "Detailwork/:id", element: <Detailwork /> },
       { path: "Calendar", element: <Calendars /> },
       { path: "withdraw", element: <Withdraw /> },
-      { path: 'Followtheprogress', element: <Followtheprogress /> }
+      { path: "Followtheprogress", element: <Followtheprogress /> },
     ],
   },
 
@@ -106,29 +105,23 @@ const router = createBrowserRouter([
         <Executive />
       </ProtectedRoute>
     ),
-    children: [{ path: "DashboardExecutive", element: <DashboardExecutive /> }
-      , { path: 'getpaperexecutive', element: <Getpaperexecutive /> },
-    { path: 'MapWork', element: <MapWork /> }
-
-
-
-
+    children: [
+      { path: "DashboardExecutive", element: <DashboardExecutive /> },
+      { path: "getpaperexecutive", element: <Getpaperexecutive /> },
+      { path: "MapWork", element: <MapWork /> },
     ],
-
   },
 
   //chief
   {
-    path: '/chief', element: (
+    path: "/chief",
+    element: (
       <ProtectedRoute>
         <Chief />
       </ProtectedRoute>
     ),
-    children: [
-      { path: 'Dashboardchief', element: <Dashboardchief /> }
-    ]
-  }
-
+    children: [{ path: "Dashboardchief", element: <Dashboardchief /> }],
+  },
 ]);
 
 export default function App() {

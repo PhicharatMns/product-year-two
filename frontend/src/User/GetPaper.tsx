@@ -2,6 +2,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useEffect, useState, useCallback } from "react";
 import { CiSearch } from "react-icons/ci";
 import { jwtDecode } from "jwt-decode";
+import { Link } from "react-router-dom";
 
 interface Employee {
   _id: string;
@@ -32,9 +33,10 @@ export default function GetPaper() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState<Employee[]>([]);
-  const [opendateJob, setopendateJob] = useState(false);
-  const [FadedataJob, setFadedataJob] = useState(false);
-  const [selectedJob, setSelectedJob] = useState<Employee | null>(null);
+  // const [opendateJob, setopendateJob] = useState(false);
+  // const [FadedataJob, setFadedataJob] = useState(false);
+  // const [selectedJob, setSelectedJob] = useState<Employee | null>(null);
+
 
   const token = localStorage.getItem("token");
   const decoded: JwtPayload | null = token
@@ -78,12 +80,12 @@ export default function GetPaper() {
 
   //Fad
 
-  const OpneFadDataJob = (job: Employee) => {
-    setSelectedJob(job); // 👈 เก็บงานที่คลิกไว้
-    setFadedataJob(false); // เริ่มจาก false ก่อน
-    setopendateJob(true); // เปิด modal ก่อน
-    setTimeout(() => setFadedataJob(true), 50); // แล้วค่อย fade-in
-  };
+  // const OpneFadDataJob = (job: Employee) => {
+  //   setSelectedJob(job); // 👈 เก็บงานที่คลิกไว้
+  //   setFadedataJob(false); // เริ่มจาก false ก่อน
+  //   setopendateJob(true); // เปิด modal ก่อน
+  //   setTimeout(() => setFadedataJob(true), 50); // แล้วค่อย fade-in
+  // };
 
   useEffect(() => {
     fetchData();
@@ -112,11 +114,13 @@ export default function GetPaper() {
       ? "bg-gray-900 border-gray-700"
       : "bg-gray-100 border-gray-300";
 
-  const bg = theme ? "bg-gray-800" : "";
+  // const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
+  // const text_color = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+  // const haedtext = theme === "dark" ? "text-white" : "text-yellow-500";
 
   return (
     <div
-      className={`transition-opacity duration-700 ${
+      className={`transition-opacity duration-700   ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -177,9 +181,9 @@ export default function GetPaper() {
           filtered.map((job) => (
             <div
               key={job._id}
-              className={`grid grid-cols-6 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 text-sm ${headerBg}`}
+              className={`grid grid-cols-6 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1  ${headerBg}`}
             >
-              <p>{job.Worksheet || "-"}</p>
+              <p className='truncate'>{job.Worksheet || "-"}</p>
               <p>{job.Supervisor || "-"}</p>
               <p>{job.PhoneNumber || "-"}</p>
               <p>
@@ -195,16 +199,14 @@ export default function GetPaper() {
                   : "-"}
               </p>
               {/* <p>{job.description || "-"}</p> */}
-              <button
-                onClick={() => OpneFadDataJob(job)}
-                className={`relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
-                theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-              }`}
+              <Link
+                to={`/user/Detailwork/${job._id}`}
+                className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm shadow-md transition-all duration-300 ${
+                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                }`}
               >
                 รายละเอียดงาน
-              </button>
+              </Link>
             </div>
           ))
         ) : (
@@ -220,17 +222,28 @@ export default function GetPaper() {
 
       {/* opendateJob */}
 
-      {opendateJob && selectedJob && (
+      {/* {opendateJob && selectedJob && (
         <div
           className={`inset-0 fixed z-50 items-center flex justify-center backdrop-blur-sm duration-300 bg-black/40 ${
             FadedataJob ? " opacity-100" : "opacity-0"
           }`}
         >
-          <div className={`w-220 h-180 p-8 ${bg}`}>
-            <p>รายละเอียดงาน {selectedJob.Worksheet}</p>
+          <div className={`w-220 h-180 p-8 rounded-xl ite ${bg}`}>
+            <div className="border-b pb-2">
+              <p className={`text-2xl font-extrabold  ${text_color}`}>
+                รายละเอียดงาน
+                <span className={` ${haedtext}`}> {selectedJob.Worksheet}</span>
+              </p>
+            </div>
+            <div className="mt-5">
+              <p className="font-semibold">หัวหน้างาน</p>
+                <p className="font-semibold">ตําเเหน่งงาน</p>
+              <p className="font-semibold">เบอร์ติดต่อ</p>
+              <p className="font-semibold">เมล</p>
+            </div>
           </div>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

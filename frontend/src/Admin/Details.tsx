@@ -243,7 +243,7 @@ export default function Details() {
 
   return (
     <div
-      className={` w-max-380 transition-opacity duration-300  p-5 mx-auto container  pt-10 ${
+      className={` w-max-380 transition-opacity duration-300  p-5 mx-auto container  ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -385,14 +385,14 @@ export default function Details() {
 
                     {/* แสดงรายชื่อช่างที่เพิ่มแล้ว */}
                     <div
-                      className={`font-semibold  text-lg p-2 ${
+                      className={`font-semibold text-lg p-2 ${
                         theme === "dark" ? "text-yellow-500" : "text-blue-500"
                       }`}
                     >
                       {SelectedTradesmen.map((t, index) => (
                         <div
                           key={index}
-                          className={`flex items-center border my-2 rounded-lg px-2 hover:shadow-lg duration-300 justify-between  border-b ${bg_border}`}
+                          className={`flex items-center border my-2 rounded-lg px-2 hover:shadow-lg duration-300 justify-between  border-b ${theme === 'dark' ? 'bg-gray-800' : 'shadow-sm'}`}
                         >
                           <div className="flex items-center gap-5">
                             <img
