@@ -150,16 +150,20 @@ export default function Calendar() {
       className={`w-max-380 p-5 mx-auto container
     transition-all duration-500 ease-out
     ${mounted ? "opacity-100 " : "opacity-0 "}
-    ${theme === "dark" ? "bg-gray-900 shadow-2xl border border-gray-700" : "bg-white shadow-2xl border border-gray-200"}
+    ${
+      theme === "dark"
+        ? "bg-gray-900 shadow-2xl border border-gray-700"
+        : "bg-white shadow-2xl border border-gray-200"
+    }
     rounded-3xl
   `}
     >
-
       {/* Header */}
       <div className="flex justify-between mb-5 items-center">
         <p
-          className={`text-3xl font-extrabold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-            }`}
+          className={`text-3xl font-extrabold ${
+            theme === "dark" ? "text-yellow-500" : "text-blue-500"
+          }`}
         >
           ปฏิทิน{" "}
           <span
@@ -184,16 +188,17 @@ export default function Calendar() {
 
       {/* ตารางวันที่ */}
       <div
-        className={`border rounded-xl h-full p-3 ${theme === "dark" ? "bg-gray-900" : "shadow-xl"
-          }`}
+        className={`border rounded-xl h-full p-3 ${
+          theme === "dark" ? "bg-gray-900" : "shadow-xl"
+        }`}
       >
-
         <div className="grid grid-cols-7 gap-2 mb-2">
           {daysOfWeek.map((day, i) => (
             <div
               key={i}
-              className={`text-center font-bold py-1 rounded-lg ${theme === "dark" ? "text-yellow-300" : "text-blue-700"
-                }`}
+              className={`text-center font-bold py-1 rounded-lg ${
+                theme === "dark" ? "text-yellow-300" : "text-blue-700"
+              }`}
             >
               {day}
             </div>
@@ -204,21 +209,21 @@ export default function Calendar() {
           className={`
     grid grid-cols-7 gap-2
     transition-all duration-300 ease-in-out
-    ${fade
-              ? "translate-x-0 opacity-100"
-              : slideDir === "right"
-                ? "translate-x-15 opacity-0"
-                : "-translate-x-15 opacity-0"
-            }
+    ${
+      fade
+        ? "translate-x-0 opacity-100"
+        : slideDir === "right"
+        ? "translate-x-15 opacity-0"
+        : "-translate-x-15 opacity-0"
+    }
   `}
         >
-
           {days.map((day, i) => {
             const dayStr = day
               ? `${day.getFullYear()}-${String(day.getMonth() + 1).padStart(
-                2,
-                "0"
-              )}-${String(day.getDate()).padStart(2, "0")}`
+                  2,
+                  "0"
+                )}-${String(day.getDate()).padStart(2, "0")}`
               : null;
 
             const dayEvents = dayStr
@@ -230,16 +235,18 @@ export default function Calendar() {
                 key={i}
                 onClick={() => dayStr && setSelectedDate(dayStr)}
                 className={`relative overflow-y-auto scrollbar-hide border-t h-27 rounded-lg border cursor-pointer transition-all duration-200
-          ${theme === "dark"
-                    ? "hover:bg-gray-700 bg-gray-800"
-                    : "hover:bg-blue-50 shadow-4xl"
-                  }`}
+          ${
+            theme === "dark"
+              ? "hover:bg-gray-700 bg-gray-800"
+              : "hover:bg-blue-50 shadow-4xl"
+          }`}
               >
                 {/* วันที่ */}
                 {day && (
                   <p
-                    className={`sticky top-0 z-10 text-sm font-bold pl-2 py-1 ${theme === "dark" ? "bg-gray-800" : "bg-blue-50 text-black"
-                      }`}
+                    className={`sticky top-0 z-10 text-sm font-bold pl-2 py-1 ${
+                      theme === "dark" ? "bg-gray-800" : "bg-blue-50 text-black"
+                    }`}
                   >
                     {day.getDate()}
                   </p>
@@ -249,14 +256,16 @@ export default function Calendar() {
                 {dayEvents.map((e, idx) => (
                   <div
                     key={idx}
-                    className={`text-xs mt-1 px-2 transition-all duration-200 ${theme === "dark" ? "text-yellow-300" : "text-blue-600"
-                      }`}
+                    className={`text-xs mt-1 px-2 transition-all duration-200 ${
+                      theme === "dark" ? "text-yellow-300" : "text-blue-600"
+                    }`}
                   >
                     <p
-                      className={`rounded-sm pl-1 py-[2px] ${theme === "dark"
-                        ? "bg-yellow-500 text-white "
-                        : "bg-blue-500 text-white "
-                        }`}
+                      className={`rounded-sm pl-1 py-[2px] ${
+                        theme === "dark"
+                          ? "bg-yellow-500 text-white "
+                          : "bg-blue-500 text-white "
+                      }`}
                       //  ไม่ stopPropagation เพราะอยากให้คลิกได้ทุกส่วน
                       onClick={() => dayStr && setSelectedDate(dayStr)}
                     >
@@ -274,15 +283,17 @@ export default function Calendar() {
       {selectedDate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
           <div
-            className={`p-5 rounded-4xl ite ${theme === "dark" ? "bg-gray-900" : "bg-white"
-              }`}
+            className={`p-5 rounded-4xl ite ${
+              theme === "dark" ? "bg-gray-900" : "bg-white"
+            }`}
           >
             <div className=" flex items-center w-80">
               <p className="text-lg font-semibold mb-2 gap-2 flex items-center">
                 งานวันที่{" "}
                 <span
-                  className={`${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    }`}
+                  className={`${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
                 >
                   {new Date(selectedDate).toLocaleDateString("th-TH", {
                     day: "numeric",
@@ -292,7 +303,10 @@ export default function Calendar() {
                 </span>
               </p>
               <div className="ml-auto ">
-                <button className="cursor-pointer" onClick={() => setSelectedDate(null)}>
+                <button
+                  className="cursor-pointer"
+                  onClick={() => setSelectedDate(null)}
+                >
                   <BsXLg />
                 </button>
               </div>
@@ -304,10 +318,11 @@ export default function Calendar() {
                   <div
                     key={idx}
                     onClick={() => e.jobId && checkJob(e.jobId)}
-                    className={`flex justify-between p-1 rounded cursor-pointer ${theme === "dark"
-                      ? "bg-yellow-500 text-white"
-                      : "bg-blue-500 text-white"
-                      }`}
+                    className={`flex justify-between p-1 rounded cursor-pointer ${
+                      theme === "dark"
+                        ? "bg-yellow-500 text-white"
+                        : "bg-blue-500 text-white"
+                    }`}
                   >
                     <span className="px-2">{e.title}</span>
                   </div>
