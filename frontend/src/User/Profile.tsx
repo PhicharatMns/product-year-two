@@ -11,7 +11,6 @@ import {
   Briefcase,
   Calendar,
   UserCheck,
-  Loader2,
 } from "lucide-react";
 
 interface DetailItemProps {
