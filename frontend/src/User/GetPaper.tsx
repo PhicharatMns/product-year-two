@@ -33,10 +33,10 @@ export default function GetPaper() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState<Employee[]>([]);
+  const [OpendateItem, setOpendateItem] = useState(false);
   // const [opendateJob, setopendateJob] = useState(false);
   // const [FadedataJob, setFadedataJob] = useState(false);
   // const [selectedJob, setSelectedJob] = useState<Employee | null>(null);
-
 
   const token = localStorage.getItem("token");
   const decoded: JwtPayload | null = token
@@ -124,7 +124,7 @@ export default function GetPaper() {
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="w-max-380 p-5 mx-auto container">
+      <div className="max-w-380 p-5 mx-auto container">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <p
@@ -173,7 +173,7 @@ export default function GetPaper() {
           <div>เบอร์ติดต่อ</div>
           <div>วันเริ่มงาน</div>
           <div>วันปิดงาน</div>
-          <div>รายละเอียด</div>
+          <div className="text-center">รายละเอียด</div>
         </div>
 
         {/* ข้อมูลใบงาน */}
@@ -183,7 +183,7 @@ export default function GetPaper() {
               key={job._id}
               className={`grid grid-cols-6 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1  ${headerBg}`}
             >
-              <p className='truncate'>{job.Worksheet || "-"}</p>
+              <p className="truncate">{job.Worksheet || "-"}</p>
               <p>{job.Supervisor || "-"}</p>
               <p>{job.PhoneNumber || "-"}</p>
               <p>
@@ -199,14 +199,32 @@ export default function GetPaper() {
                   : "-"}
               </p>
               {/* <p>{job.description || "-"}</p> */}
-              <Link
-                to={`/user/Detailwork/${job._id}`}
-                className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm shadow-md transition-all duration-300 ${
-                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                }`}
-              >
-                รายละเอียดงาน
-              </Link>
+              <div className="flex gap-2 mx-auto">
+                <Link
+                  to={`/user/Detailwork/${job._id}`}
+                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+               theme === "dark"
+                 ? "bg-yellow-500 hover:bg-yellow-600"
+                 : "bg-blue-500 hover:bg-blue-600"
+             }`}
+                >
+                  รายละเอียดงาน
+                </Link>
+                <button
+                  onClick={() => setOpendateItem(true)}
+                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+               theme === "dark"
+                 ? "bg-yellow-500 hover:bg-yellow-600"
+                 : "bg-blue-500 hover:bg-blue-600"
+             }`}
+                >
+                  เบิกของ
+                </button>
+              </div>
             </div>
           ))
         ) : (
@@ -244,6 +262,14 @@ export default function GetPaper() {
           </div>
         </div>
       )} */}
+
+      {OpendateItem && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50">
+          <div className="w-[900px] h-180 bg-gray-800 rounded-2xl"> 
+
+          </div>
+        </div>
+      )}
     </div>
   );
 }
