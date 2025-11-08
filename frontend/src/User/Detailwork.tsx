@@ -74,30 +74,19 @@ export default function Detailwork() {
   if (!job) return <div className="text-center py-10">ไม่พบข้อมูลงาน</div>;
 
   return (
-    <div className={`w-max-380 p-5 mx-auto container ${bg} ${text}`}>
-      <p className={`text-3xl mb-5 font-bold  ${titleColor}`}>
-        รายละเอียด
-        <span
-          className={`${theme === "dark" ? "text-white" : "text-yellow-500"}`}
-        >
-          งาน
-        </span>
-      </p>
-
+    <div className={`w-max-380 p-5 mx-auto container 0 ${text}`}>
       <div
-        className={`shadow-2xl p-6 sm:p-8 md:p-10 transition-all duration-300 rounded-2xl ${cardBg}`}
+        className={`transition-opacity duration-700 ${
+          fade ? "opacity-100" : "opacity-0"
+        }`}
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {["ชื่องาน :", "ชื่อหัวหน้างาน :", "เบอร์โทรศัพท์ :", "Email :"].map(
-            (title, idx) => (
-              <div
-                key={idx}
-                className={`border ${borderSoft} rounded-2xl p-4 sm:p-6 font-semibold`}
-              >
-                {title}
-              </div>
-            )
-          )}
+        <div className="text-3xl font-bold flex gap-2">
+          <p className={` ${titleColor}`}>รายละเอียดงาน :</p>
+          <span
+            className={`${theme === "dark" ? "text-white" : "text-yellow-500"}`}
+          >
+            {job.Worksheet}
+          </span>
         </div>
 
         <div className={`mt-5 transition-all duration-300 rounded-2xl`}>
@@ -129,37 +118,89 @@ export default function Detailwork() {
               <p className="text-ellipsis"> {job.description || "-"}</p>
             </div>
           </div>
-          <div className="border py-5 px-6 col-span-2 rounded-2xl ">
-            <h2 className="text-xl font-semibold text-blue-500 mb-3">
-              ข้อความตอบกลับ
-            </h2>
-          </div>
 
-          <div className="border py-5 px-6 rounded-2xl ">
-            <h2 className="text-xl font-semibold text-blue-500 mb-3">
-              ข้อความตอบกลับ
-            </h2>
-
+          <div className="grid grid-cols-5 gap-4 mt-3">
             <div
-              className={`p-5 rounded-2xl border ${borderSoft}   dark:text-gray-200`}
+              className={`w-full p-3 col-span-2 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
-                <div className={`col-span-2 ${text} `}>
-                  <p>
-                    “ขอบคุณสำหรับการรายงานงานนี้ ตรวจสอบเรียบร้อยดีแล้ว
-                    ขอให้ดำเนินการตรวจสอบอุปกรณ์เพิ่มเติมอีกครั้งในสัปดาห์หน้า
-                    และแนบรูปภาพหลังซ่อมในระบบด้วยนะครับ”
+              <div
+                className={`${
+                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                } text-xl font-semibold mb-3 border-b pb-3`}
+              >
+                รายการติดต่อ / เบิกของ
+              </div>
+              <div>
+                <div
+                  className={`items-center border p-1 my-1 rounded-xl ${
+                    theme === "dark" ? "bg-gray-800" : "shadow-sm"
+                  }
+              `}
+                >
+                  <p className={`text-sm pl-2 font-semibold ${titleColor}`}>
+                    การขอเบิกของ
                   </p>
-                </div>
+                  <div className="flex gap-2">
+                    <img
+                      className="h-10 w-10  rounded-4xl bg-blue-500"
+                      src=""
+                      alt=""
+                    />
+                    <div className="text-sm flex flex-col gap-1">
+                      <p className={` ${text_color}`}>
+                        <span className={`font-semibold  ${titleColor}`}>
+                          หัวหน้างาน:
+                        </span>{" "}
+                        ชื่อหัวหน้างาน
+                      </p>
 
-                <div className="col-span-2 text-sm text-gray-500 mt-2">
-                  — หัวหน้างาน: นายสมชาย แสงทอง (วันที่ตอบกลับ: 23 ตุลาคม 2568)
+                      <p className={`truncate w-120 ${text_color}`}>
+                        <span className={`font-semibold  ${titleColor}`}>
+                          รายละเอียด:
+                        </span>{" "}
+                        {job.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                  
               </div>
             </div>
+
+            {/* ---------- แผนที่ ---------- */}
+            <div
+              className={`border py-3 px-4 col-span-3 rounded-2xl h-160 ${bg}`}
+            >
+              <h2
+                className={`text-xl font-semibold text-blue-500 mb-3 ${
+                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                }`}
+              >
+                แผนที่งาน
+              </h2>
+              {markerPos && (
+                <MapContainer
+                  center={markerPos}
+                  zoom={15}
+                  className="w-full h-140 rounded-lg"
+                >
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  <Marker
+                    position={markerPos}
+                    icon={L.icon({
+                      iconUrl:
+                        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+                      iconSize: [25, 41],
+                      iconAnchor: [12, 41],
+                    })}
+                  >
+                    <Tooltip permanent direction="top" offset={[0, -40]}>
+                      {job.Worksheet || "ชื่องาน"}
+                    </Tooltip>
+                  </Marker>
+                </MapContainer>
+              )}
+            </div>
           </div>
-          
         </div>
       </div>
     </div>

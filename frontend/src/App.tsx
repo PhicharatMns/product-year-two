@@ -22,7 +22,7 @@ import MapAdmin from "./Admin/MapAdmin";
 
 // User Worker
 import UserLayout from "./User/UserLayout";
-import Profile from "./User/Profile";
+
 import Maps from "./User/Maps";
 import Suppiles from "./User/Supplies";
 import DashboardUser from "./User/DashboardUser";
@@ -31,7 +31,7 @@ import Calendars from "./User/Calendar";
 import Withdraw from "./User/Withdraw";
 import Followtheprogress from "./User/Followtheprogress";
 import DetailItem from "./User/Detailitem";
-
+import Profile from "./User/Profile";
 
 
 // Auth
@@ -50,6 +50,7 @@ import Dashboardchief from "./chief/Dashboardchief";
 import Chief from "./chief/Chief";
 
 import Detailwork from "./User/Detailwork";
+
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -89,7 +90,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "DashboardUser", element: <DashboardUser /> },
-      { path: "profile", element: <Profile /> },
+      { path: "Profile", element: <Profile /> },
       { path: "getpaper", element: <Getpaper /> },
       { path: "maps", element: <Maps /> },
       { path: "supplies", element: <Suppiles /> },
