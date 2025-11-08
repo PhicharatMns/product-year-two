@@ -30,6 +30,9 @@ import Getpaper from "./User/GetPaper";
 import Calendars from "./User/Calendar";
 import Withdraw from "./User/Withdraw";
 import Followtheprogress from "./User/Followtheprogress";
+import DetailItem from "./User/Detailitem";
+
+
 
 // Auth
 import Login from "./sighup/Login";
@@ -40,7 +43,7 @@ import ProtectedRoute from "./sighup/ProtectedRoute";
 import DashboardExecutive from "./executive/DashboardExecutive";
 import Executive from "./executive/Executive";
 import MapWork from "./executive/MapWork";
-import Getpaperexecutive from "./executive/getpaperexecutive";
+import Getpaperexecutive from "./executive/Getpaperexecutive";
 
 // userChief 
 import Dashboardchief from "./chief/Dashboardchief";
@@ -94,7 +97,9 @@ const router = createBrowserRouter([
       { path: "Detailwork", element: <Detailwork /> }, // ตรวจสอบชื่อ component ให้ตรง
       { path: "Calendar", element: <Calendars /> },
       { path: "withdraw", element: <Withdraw /> },
-      { path: 'Followtheprogress', element: <Followtheprogress /> }
+      { path: 'Followtheprogress', element: <Followtheprogress /> },
+      { path: 'DetailItem', element: <DetailItem /> },
+      
     ],
   },
 

@@ -27,7 +27,7 @@ export default function Detailwork() {
             (title, idx) => (
               <div
                 key={idx}
-                className={`border ${borderSoft} rounded-2xl p-4 sm:p-6 font-semibold`}
+                className={`border-b rounded-2xl p-4 sm:p-6 font-semibold`}
               >
                 {title}
               </div>
@@ -63,7 +63,7 @@ export default function Detailwork() {
           </div>
           <div className="border py-5 px-6 col-span-2 rounded-2xl ">
             <h2 className="text-xl font-semibold text-blue-500 mb-3">
-              ข้อความตอบกลับ
+              อุปกรณ์ที่ใช้
             </h2>
           </div>
 
@@ -72,9 +72,7 @@ export default function Detailwork() {
               ข้อความตอบกลับ
             </h2>
 
-            <div
-              className={`p-5 rounded-2xl border ${borderSoft}   dark:text-gray-200`}
-            >
+           
               <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
                 <div className={`col-span-2 ${text} `}>
                   <p>
@@ -87,9 +85,11 @@ export default function Detailwork() {
                 <div className="col-span-2 text-sm text-gray-500 mt-2">
                   — หัวหน้างาน: นายสมชาย แสงทอง (วันที่ตอบกลับ: 23 ตุลาคม 2568)
                 </div>
+                  
               </div>
-            </div>
+           
           </div>
+          
         </div>
 
         {/* แผนที่ */}
