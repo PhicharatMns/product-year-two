@@ -369,10 +369,7 @@ export default function GetPaper() {
         )}
       </div>
 
-      {/* =========================================================
-            MODAL 1: รายละเอียดงาน (โค้ดที่คุณเพิ่งส่งมา)
-            =========================================================
-      */}
+   
       {opendateJob && selectedJob && (
         <div
           className={`fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40 duration-300 ${
@@ -411,8 +408,7 @@ export default function GetPaper() {
               </p>
             </div>
 
-            {/* --- ⬇️ 7. แก้ไขการแสดงข้อมูลให้ตรงกับ Interface --- */}
-            <div className={`mt-5 space-y-2 ${text_color}`}>
+              <div className={`mt-5 space-y-2 ${text_color}`}>
               <p className="font-semibold">
                 หัวหน้างาน:
                 <span className="font-normal ml-2">
@@ -421,8 +417,7 @@ export default function GetPaper() {
               </p>
               <p className="font-semibold">
                 ตําเเหน่งงาน:
-                {/* 'Position' ไม่มีใน Interface 'Employee' */}
-                <span className="font-normal ml-2"> - </span>
+                  <span className="font-normal ml-2"> - </span>
               </p>
               <p className="font-semibold">
                 เบอร์ติดต่อ:
@@ -431,11 +426,9 @@ export default function GetPaper() {
                 </span>
               </p>
 
-              {/* ⬇️ FIX: เพิ่ม <p> ที่หายไปสำหรับ "เมล" และ "รายละเอียด" */}
-              <p className="font-semibold">
+                <p className="font-semibold">
                 เมล:
-                {/* 'Email' ไม่มีใน Interface 'Employee' */}
-                <span className="font-normal ml-2"> - </span>
+                 <span className="font-normal ml-2"> - </span>
               </p>
               <p className="font-semibold">
                 รายละเอียด:
@@ -444,17 +437,10 @@ export default function GetPaper() {
                 </span>
               </p>
             </div>
-            {/* ⬆️ FIX: เพิ่ม </div> ปิดสำหรับ 'mt-5' */}
-          </div>
-          {/* ⬆️ FIX: เพิ่ม </div> ปิดสำหรับ 'w-full max-w-2xl' */}
-        </div>
+              </div>
+            </div>
       )}
 
-      {/* =========================================================
-            ✨✨ MODAL 2: เบิกของ (อัปเกรดแล้ว) ✨✨
-            (นี่คือโค้ดส่วนที่ถูกแทนที่ทั้งหมด)
-            =========================================================
-      */}
       {OpendateItem && selectedJob && (
         <div
           className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50 p-4" // ✨ เพิ่ม p-4
