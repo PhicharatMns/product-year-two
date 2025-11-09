@@ -1,8 +1,10 @@
-import { useTheme } from "@/components/theme-provider";
-import { useEffect, useState, useCallback } from "react";
-import { CiSearch } from "react-icons/ci";
-import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
+import { useEffect, useState, useCallback } from "react";
+// ❌ import { CiSearch } from "react-icons/ci"; // Removed due to import error
+import jwtDecode from "https://unpkg.com/jwt-decode@3.1.2/build/jwt-decode.esm.js"; // ✅ Using CDN
+
+import { useTheme } from "@/components/theme-provider";
+import { motion, AnimatePresence } from "framer-motion"; // ✨ 1. เพิ่ม Import สำหรับอนิเมชั่น
 
 interface Employee {
   _id: string;
@@ -33,9 +35,16 @@ export default function GetPaper() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState<Employee[]>([]);
-  const [OpendateItem, setOpendateItem] = useState(false);
+  // --- ⬇️ 1. เปิดใช้งาน State สำหรับ Modal "รายละเอียดงาน" ---
+  const [opendateJob, setopendateJob] = useState(false);
+  const [FadedataJob, setFadedataJob] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Employee | null>(null);
-  const [fadeItem, setFadeItem] = useState(false);
+
+  // --- State สำหรับ Modal "เบิกของ" (จากปุ่มที่ 2) ---
+  const [OpendateItem, setOpendateItem] = useState(false);
+  // const [opendateJob, setopendateJob] = useState(false);
+  // const [FadedataJob, setFadedataJob] = useState(false);
+  // const [selectedJob, setSelectedJob] = useState<Employee | null>(null);
 
   const token = localStorage.getItem("token");
   const decoded: JwtPayload | null = token
@@ -79,28 +88,17 @@ export default function GetPaper() {
 
   //Fad
 
-  const openItemModal = (job: Employee) => {
-    setSelectedJob(job);
-    setOpendateItem(true); // เปิด modal ก่อน
-    setFadeItem(false); // เริ่ม opacity 0
-    setTimeout(() => setFadeItem(true), 50); // ค่อย fade-in
-  };
+  // const OpneFadDataJob = (job: Employee) => {
+  //   setSelectedJob(job); // 👈 เก็บงานที่คลิกไว้
+  //   setFadedataJob(false); // เริ่มจาก false ก่อน
+  //   setopendateJob(true); // เปิด modal ก่อน
+  //   setTimeout(() => setFadedataJob(true), 50); // แล้วค่อย fade-in
+  // };
 
-  const closeopenItemModal = () => {
-    // เริ่ม fade-out ก่อน
-    setFadeItem(false);
-
-    // รอให้ animation จบ (เช่น 300ms) แล้วค่อยปิด modal
-    setTimeout(() => {
-      setOpendateItem(false);
-      setSelectedJob(null); // ถ้าอยากล้างข้อมูลที่เลือกไว้
-    }, 300);
-  };
   useEffect(() => {
     fetchData();
   }, [fetchData]);
 
-  // ค้นหาใบงาน
   useEffect(() => {
     if (!search.trim()) {
       setFiltered(employees);
@@ -123,7 +121,7 @@ export default function GetPaper() {
       ? "bg-gray-900 border-gray-700"
       : "bg-gray-100 border-gray-300";
 
-  const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
+  // const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
   // const text_color = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   // const haedtext = theme === "dark" ? "text-white" : "text-yellow-500";
 
@@ -152,9 +150,25 @@ export default function GetPaper() {
           </p>
 
           <div className="relative">
-            <CiSearch
+            {/* ❌ Replaced CiSearch with inline SVG due to import error */}
+            {/* <CiSearch
               className={`absolute left-3 top-1/2 -translate-y-1/2 transition-all duration-300`}
-            />
+            /> */}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
             <input
               placeholder="ค้นหาใบงาน..."
               value={search}
@@ -163,12 +177,12 @@ export default function GetPaper() {
               onBlur={() => setFocused(false)}
               type="text"
               className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
-              ${focused ? "w-72 shadow-lg" : "w-60 border-gray-300"}  
-              ${
-                theme === "dark"
-                  ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
-                  : "border-b-purple-300 focus:ring-blue-400 bg-white text-gray-800"
-              }`}
+                 ${focused ? "w-72 shadow-lg" : "w-60 border-gray-300"}  
+                 ${
+                   theme === "dark"
+                     ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
+                     : "border-b-purple-300 focus:ring-blue-400 bg-white text-gray-800"
+                 }`}
             />
           </div>
         </div>
@@ -222,7 +236,7 @@ export default function GetPaper() {
                   รายละเอียดงาน
                 </Link>
                 <button
-                  onClick={() => openItemModal(job)}
+                  onClick={() => setOpendateItem(true)}
                   className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
@@ -247,157 +261,184 @@ export default function GetPaper() {
         )}
       </div>
 
-      {/* opendateJob */}
-
-      {/* {opendateJob && selectedJob && (
+      {/* =========================================================
+            MODAL 1: รายละเอียดงาน (โค้ดที่คุณเพิ่งส่งมา)
+            =========================================================
+      */}
+      {opendateJob && selectedJob && (
         <div
-          className={`inset-0 fixed z-50 items-center flex justify-center backdrop-blur-sm duration-300 bg-black/40 ${
-            FadedataJob ? " opacity-100" : "opacity-0"
-          }`}
+          className={`fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40 duration-300 ${
+            FadedataJob ? "opacity-100" : "opacity-0"
+          } transition-opacity`}
+          onClick={handleCloseJob} // 👈 6. ใช้ฟังก์ชันปิดที่ถูกต้อง
         >
-          <div className={`w-220 h-180 p-8 rounded-xl ite ${bg}`}>
+          <div
+            className={`w-full max-w-2xl h-auto p-8 rounded-xl ${bg} relative`}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={handleCloseJob} // 👈 6. ใช้ฟังก์ชันปิดที่ถูกต้อง
+              className="absolute top-4 right-4 text-gray-400 hover:text-gray-200"
+            >
+              <svg
+                className="w-6 h-6"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 18L18 6M6 6l12 12"
+                ></path>
+              </svg>
+            </button>
+
             <div className="border-b pb-2">
-              <p className={`text-2xl font-extrabold  ${text_color}`}>
+              <p className={`text-2xl font-extrabold ${text_color}`}>
                 รายละเอียดงาน
                 <span className={` ${haedtext}`}> {selectedJob.Worksheet}</span>
               </p>
             </div>
-            <div className="mt-5">
-              <p className="font-semibold">หัวหน้างาน</p>
-                <p className="font-semibold">ตําเเหน่งงาน</p>
-              <p className="font-semibold">เบอร์ติดต่อ</p>
-              <p className="font-semibold">เมล</p>
+
+            {/* --- ⬇️ 7. แก้ไขการแสดงข้อมูลให้ตรงกับ Interface --- */}
+            <div className={`mt-5 space-y-2 ${text_color}`}>
+              <p className="font-semibold">
+                หัวหน้างาน:
+                <span className="font-normal ml-2">
+                  {selectedJob.Supervisor || "-"}
+                </span>
+              </p>
+              <p className="font-semibold">
+                ตําเเหน่งงาน:
+                {/* 'Position' ไม่มีใน Interface 'Employee' */}
+                <span className="font-normal ml-2"> - </span>
+              </p>
+              <p className="font-semibold">
+                เบอร์ติดต่อ:
+                <span className="font-normal ml-2">
+                  {selectedJob.PhoneNumber || "-"}
+                </span>
+              </p>
+
+              {/* ⬇️ FIX: เพิ่ม <p> ที่หายไปสำหรับ "เมล" และ "รายละเอียด" */}
+              <p className="font-semibold">
+                เมล:
+                {/* 'Email' ไม่มีใน Interface 'Employee' */}
+                <span className="font-normal ml-2"> - </span>
+              </p>
+              <p className="font-semibold">
+                รายละเอียด:
+                <span className="font-normal ml-2">
+                  {selectedJob.Details || "-"}
+                </span>
+              </p>
             </div>
+            {/* ⬆️ FIX: เพิ่ม </div> ปิดสำหรับ 'mt-5' */}
           </div>
+          {/* ⬆️ FIX: เพิ่ม </div> ปิดสำหรับ 'w-full max-w-2xl' */}
         </div>
       )} */}
 
-      {OpendateItem && selectedJob && (
-        <div
-          className={`fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50 
-    transition-opacity duration-500 ${fadeItem ? "opacity-100" : "opacity-0"}`}
-        >
-          <div className={`w-[900px] p-4 h-180 rounded-2xl ${bg}`}>
-            <div className="flex gap-2 border-b pb-2 text-2xl font-semibold">
-              <p
-                className={
-                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                }
-              >
-                ฟอร์มเบิกของ
-              </p>
-              <span className={` ${theme === "dark" ? "" : "text-yellow-500"}`}>
-                (งาน{selectedJob.Worksheet})
-              </span>
-            </div>
-            <div className="mt-6">
-              {/* หัวตาราง */}
-              <div
-                className={`grid grid-cols-4 text-center p-2 rounded-t-lg font-semibold shadow-sm 
-      ${
-        theme === "dark"
-          ? "bg-gray-900 text-yellow-400 border-b border-gray-700"
-          : "bg-blue-50 text-blue-600 border-b border-blue-200"
-      }`}
-              >
-                <div className="col-span-2">รายชื่อ</div>
-                <div>จำนวน</div>
-                <div className=""> ลบ</div>
-              </div>
-              {/* แถวข้อมูล */}
-              <div className={`mt-4 transition-all duration-300 `}>
-                {[...Array(4)].map((_, index) => (
-                  <div
-                    key={index}
-                    className={`grid grid-cols-4 gap-4 items-center p-3 mb-1 
-                    `}
-                  >
-                    {/* รายชื่อ */}
-                    <div className="col-span-2">
-                      <input
-                        type="text"
-                        placeholder="ชื่ออุปกรณ์..."
-                        className={`w-full p-2 rounded-lg border focus:ring-2 outline-none transition-all duration-200 
-            ${
-              theme === "dark"
-                ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-                : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-            }`}
-                      />
-                    </div>
-
-                    {/* จำนวน */}
-                    <div>
-                      <input
-                        type="number"
-                        placeholder="จำนวน"
-                        className={`w-full p-2 rounded-lg border focus:ring-2 outline-none transition-all duration-200 
-            ${
-              theme === "dark"
-                ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-                : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-            }`}
-                      />
-                    </div>
-
-                    {/* ปุ่มลบ */}
-                    <div className="text-center">
-                      <button
-                        className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-5 py-2 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-               theme === "dark"
-                 ? "bg-yellow-500 hover:bg-yellow-600"
-                 : "bg-blue-500 hover:bg-blue-600"
-             }`}
-                      >
-                        ลบ
-                      </button>
-                    </div>
-                  </div>
-                ))}
-                <div className="px-3">
-                  <p
-                    className={`text-lg mb-1 font-semibold ${
-                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    }`}
-                  >
-                    หมายเหตุ
-                  </p>
-                  <textarea
-                    className={`border w-full px-2 py-2 rounded-lg h-45 resize-none focus:ring-2 outline-none duration-200 ${
-                      theme === "dark"
-                        ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-                        : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-                    }`}
-                  />
-                  <div className="flex justify-end gap-4 border-t pt-4 mt-4">
-                    <button
-                      onClick={closeopenItemModal}
-                      className="group relative py-1  overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
-                    >
-                      <span className="relative z-10">ยกเลิก</span>
-                      <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                        <span className="absolute left-0 top-0 w-0 h-full bg-gray-200  transition-all duration-500 group-hover:w-full"></span>
-                      </span>
-                    </button>
-                    <button
-                      className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-                        theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                      }`}
-                    >
-                      <span className="relative z-10">ยืนยัน</span>
-                      <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                        <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+      {OpendateItem && (
+        <div className="fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50">
+          <div className="w-[900px] h-180 bg-gray-800 rounded-2xl"></div>
         </div>
       )}
+      {/* --- ✨ สิ้นสุดส่วนที่แทนที่ --- */}
+
+      {/* =========================================================
+           ✨ ADD: 3. เพิ่ม POP-UP 3 "เสร็จสิ้น"
+           =========================================================
+      */}
+      <AnimatePresence>
+        {showSuccessPopup && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.2, ease: "easeInOut" }}
+            className="fixed inset-0 z-60 flex items-center justify-center   p-4"
+            // 💡 ใช้ z-[60] ให้อยู่เหนือ modal อื่น (z-50)
+            onClick={() => setShowSuccessPopup(false)} // 👈 คลิกพื้นหลังเพื่อปิด
+          >
+            <div
+              className={`
+                w-full max-w-xs p-6 rounded-2xl shadow-xl
+                flex flex-col items-center gap-4
+                ${
+                  theme === "dark"
+                    ? "bg-gray-800 text-white"
+                    : "bg-white text-gray-900"
+                }
+              `}
+              onClick={(e) => e.stopPropagation()} // 👈 ป้องกันการคลิกทะลุ
+            >
+              {/* ไอคอน Check (SVG) */}
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1, rotate: 0 }} // (แก้ rotate เป็น 0 หรือลบออกก็ได้ครับ)
+                transition={{
+                  delay: 0.2,
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 20,
+                }}
+                className={`
+                  w-16 h-16 rounded-full flex items-center justify-center 
+                  ${
+                    theme === "dark"
+                      ? "bg-green-500/20 text-green-400"
+                      : "bg-green-100 text-green-600"
+                  }
+                `}
+              >
+                <svg
+                  className="w-10 h-10"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2.5" // (เพิ่มความหนาเส้น)
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M5 13l4 4L19 7"
+                  ></path>
+                </svg>
+              </motion.div>
+
+              <h3 className="text-xl font-bold">ส่งคำขอเสร็จสิ้น!</h3>
+              <p
+                className={`text-sm ${
+                  theme === "dark" ? "text-gray-400" : "text-gray-600"
+                }`}
+              >
+                ระบบได้บันทึกคำขอของคุณแล้ว
+              </p>
+
+              <button
+                onClick={() => setShowSuccessPopup(false)}
+                className={`
+                  mt-2 w-full px-4 py-2 rounded-lg text-sm font-medium 
+                  transition-all duration-200
+                  ${
+                    theme === "dark"
+                      ? "bg-yellow-500 text-white hover:bg-yellow-600"
+                      : "bg-blue-500 text-white hover:bg-blue-600"
+                  }
+                `}
+              >
+                ตกลง
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      {/* --- ✨ สิ้นสุด Pop-up 3 --- */}
     </div>
   );
 }
