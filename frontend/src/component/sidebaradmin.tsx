@@ -34,7 +34,7 @@ export default function Sidebaradmin() {
   const datasizebar: SidebarItem[] = [
     { text: "Dashboard", icons: MdDashboard, Link: "Dashboard" },
     { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "Searchpastjobs" },
-    { text: "ส่งแจ้งการเตือน", icons: TbBellPlus, Link: "Notification" },
+    { text: "ส่งการแจ้งเตือน", icons: TbBellPlus, Link: "Notification" },
     { text: "จัดการวัสดุอุปกรณ์", icons: FaTools, Link: "SuppliesAdmin" },
      { text: "แผนที่", icons: FaMapMarkedAlt, Link: "MapAdmin" },
     { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "Editacc" },
