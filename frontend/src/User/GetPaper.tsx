@@ -410,14 +410,14 @@ export default function GetPaper() {
               >
                 <div className="col-span-2">รายชื่อ</div>
                 <div>จำนวน</div>
-                <div className=""> ลบ</div>
+                <div className="pl-6"> ลบ</div>
               </div>
 
               {/* --- 5. เปลี่ยนมา map จาก state `items` --- */}
               <div className="transition-all duration-300">
                 {items.map((item, index) => (
                   <div
-                    key={item.id} // --- ใช้ id ที่ไม่ซ้ำกันเป็น key ---
+                    key={index} // --- ใช้ id ที่ไม่ซ้ำกันเป็น key ---
                     className={`grid grid-cols-4 gap-4 items-center py-3 border-b 
                     ${
                       theme === "dark" ? "border-gray-700" : "border-gray-200"
@@ -464,13 +464,28 @@ export default function GetPaper() {
                     <div className="text-center">
                       <button
                         onClick={() => handleDeleteItem(item.id)} // --- เชื่อม onClick ---
-                        disabled={items.length <= 1} // --- Disable ปุ่ม ถ้าเหลือรายการเดียว ---
-                        className={`text-sm font-medium bg-red-500 w-20 h-10 hover:scale-105 duration-200 text-white rounded-2xl  ${
-                          items.length <= 1
-                            ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
-                            : theme === "dark"
-                            ? "hover:text-white"
-                            : "hover:text-white"
+                        //   disabled={items.length <= 1} // --- Disable ปุ่ม ถ้าเหลือรายการเดียว ---
+                        //   className={`text-sm font-medium bg-red-500 w-20 h-10 hover:scale-105 duration-200 text-white rounded-2xl  ${
+                        //     items.length <= 1
+                        //       ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
+                        //       : theme === "dark"
+                        //       ? "hover:text-white"
+                        //       : "hover:text-white"
+                        //   }`}
+                        // >
+                        //   ลบ
+                        className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-5 py-2 text-white text-sm duration-300 
+                  [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                    items.length <= 1
+                      ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
+                      : theme === "dark"
+                      ? "hover:text-white"
+                      : "hover:text-white"
+                  } ${
+                          theme === "dark"
+                            ? "bg-yellow-500 hover:bg-yellow-600"
+                            : "bg-blue-500 hover:bg-blue-600"
                         }`}
                       >
                         ลบ
