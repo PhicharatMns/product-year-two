@@ -50,10 +50,6 @@ export default function GetPaper() {
   // --- 2. เพิ่ม State สำหรับรายการเบิกของ ---
   const [items, setItems] = useState<RequisitionItem[]>([]);
 
-  // --- State สำหรับ Modal "รายละเอียดงาน" ---
-  const [opendateJob, setOpendateJob] = useState(false);
-  const [FadedataJob, setFadedataJob] = useState(false);
-
   const token = localStorage.getItem("token");
   const decoded: JwtPayload | null = token
     ? jwtDecode<JwtPayload>(token)
@@ -138,22 +134,6 @@ export default function GetPaper() {
     setItems((currentItems) => currentItems.filter((item) => item.id !== id));
   };
 
-  // --- ฟังก์ชันสำหรับ Modal "รายละเอียดงาน" ---
-  const openJobModal = (job: Employee) => {
-    setSelectedJob(job);
-    setOpendateJob(true);
-    setFadedataJob(false);
-    setTimeout(() => setFadedataJob(true), 50);
-  };
-
-  const closeJobModal = () => {
-    setFadedataJob(false);
-    setTimeout(() => {
-      setOpendateJob(false);
-      setSelectedJob(null);
-    }, 300);
-  };
-
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -182,9 +162,6 @@ export default function GetPaper() {
       : "bg-gray-100 border-gray-300";
 
   const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
-
-  const text_color = theme === "dark" ? "text-yellow-500" : "text-blue-500";
-  const haedtext = theme === "dark" ? "text-white" : "text-yellow-500";
 
   return (
     <div
@@ -297,9 +274,6 @@ export default function GetPaper() {
           </div>
         )}
       </div>
-
-
-
 
       {/* =========================================================
               MODAL 2: ฟอร์มเบิกของ (โค้ดที่อัปเดตแล้ว)
