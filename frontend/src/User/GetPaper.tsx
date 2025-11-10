@@ -298,11 +298,6 @@ export default function GetPaper() {
           </div>
         )}
       </div>
-
-      {/* =========================================================
-                MODAL 2: ฟอร์มเบิกของ (โค้ดที่อัปเดตแล้ว)
-                =========================================================
-      */}
       {OpendateItem && selectedJob && (
         <div
           className={`fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50 

@@ -67,7 +67,7 @@ const RoutingMachine = ({
     routingControl.on("routesfound", () => {
       if (!map._fitDone) {
         const bounds = L.latLngBounds([userPos, jobPos]);
-        map.fitBounds(bounds, { padding: [50, 50], maxZoom: 12 });
+        map.fitBounds(bounds, { padding: [20, 20], maxZoom: 10 });
         map._fitDone = true;
       }
     });
@@ -92,7 +92,7 @@ const JobMap = ({
     <MapContainer
       center={markerPos}
       zoom={15}
-      className="w-full h-166 rounded-lg"
+      className="w-full h-155 rounded-lg"
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <Marker
@@ -250,11 +250,10 @@ export default function DetailworkChief() {
                     </div>
                   </button>
                 </div>
-                <div></div>
               </div>
 
               <div
-                className={`w-full h-100 p-3 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
+                className={`w-full h-90 p-3 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
               >
                 <div
                   className={`${
@@ -304,7 +303,7 @@ export default function DetailworkChief() {
                 แผนที่งาน
               </h2>
               {loading || !markerPos || !userPos ? (
-                <div className="w-full h-166 rounded-lg bg-gray-200 animate-pulse"></div>
+                <div className="w-full  rounded-lg bg-gray-200 animate-pulse"></div>
               ) : (
                 <JobMap
                   markerPos={markerPos}
