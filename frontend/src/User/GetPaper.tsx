@@ -2,7 +2,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useEffect, useState, useCallback } from "react";
 import { CiSearch } from "react-icons/ci";
 import { jwtDecode } from "jwt-decode";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom"; // --- 3. เราจะใช้ปุ่มเปิด Modal แทน Link ---
 
 interface Employee {
   _id: string;
@@ -26,6 +26,13 @@ interface JwtPayload {
   id: string;
 }
 
+// --- 1. เพิ่ม Interface สำหรับรายการเบิกของ ---
+interface RequisitionItem {
+  id: string;
+  name: string;
+  quantity: string; // ใช้ string เพื่อความง่ายในการจัดการ input, ค่อยแปลงเป็น number ตอน submit
+}
+
 export default function GetPaper() {
   const { theme } = useTheme();
   const [fade, setFade] = useState(false);
@@ -33,9 +40,18 @@ export default function GetPaper() {
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [search, setSearch] = useState("");
   const [filtered, setFiltered] = useState<Employee[]>([]);
-  const [OpendateItem, setOpendateItem] = useState(false);
   const [selectedJob, setSelectedJob] = useState<Employee | null>(null);
+
+  // --- State สำหรับ Modal "เบิกของ" ---
+  const [OpendateItem, setOpendateItem] = useState(false);
   const [fadeItem, setFadeItem] = useState(false);
+  
+  // --- 2. เพิ่ม State สำหรับรายการเบิกของ ---
+  const [items, setItems] = useState<RequisitionItem[]>([]);
+
+  // --- State สำหรับ Modal "รายละเอียดงาน" ---
+  const [opendateJob, setOpendateJob] = useState(false);
+  const [FadedataJob, setFadedataJob] = useState(false);
 
   const token = localStorage.getItem("token");
   const decoded: JwtPayload | null = token
@@ -62,12 +78,10 @@ export default function GetPaper() {
       const employees: Employee[] = await resEmp.json();
       const tradesmen: Tradesman[] = await resTrades.json();
 
-      // หา employeeId ที่ user ปัจจุบันอยู่ในนั้น
       const myJobIds = tradesmen
         .filter((t) => t.id === currentUserId)
         .map((t) => t.employeeId);
 
-      // กรองเฉพาะงานที่อยู่ใน myJobIds
       const myJobs = employees.filter((emp) => myJobIds.includes(emp._id));
 
       setEmployees(myJobs);
@@ -77,25 +91,73 @@ export default function GetPaper() {
     }
   }, [token, currentUserId]);
 
-  //Fad
-
+  // --- ฟังก์ชันสำหรับ Modal "เบิกของ" (อัปเดต) ---
   const openItemModal = (job: Employee) => {
     setSelectedJob(job);
-    setOpendateItem(true); // เปิด modal ก่อน
-    setFadeItem(false); // เริ่ม opacity 0
-    setTimeout(() => setFadeItem(true), 50); // ค่อย fade-in
+    // --- 4. ตั้งค่าเริ่มต้นให้มี 1 รายการ ---
+    setItems([{ id: Date.now().toString(), name: "", quantity: "" }]);
+    setOpendateItem(true);
+    setFadeItem(false);
+    setTimeout(() => setFadeItem(true), 50);
   };
 
   const closeopenItemModal = () => {
-    // เริ่ม fade-out ก่อน
     setFadeItem(false);
-
-    // รอให้ animation จบ (เช่น 300ms) แล้วค่อยปิด modal
     setTimeout(() => {
       setOpendateItem(false);
-      setSelectedJob(null); // ถ้าอยากล้างข้อมูลที่เลือกไว้
+      setSelectedJob(null);
+      setItems([]); // --- 4. ล้างค่า items เมื่อปิด ---
     }, 300);
   };
+
+  // --- 3. เพิ่มฟังก์ชันสำหรับจัดการรายการเบิกของ ---
+  const handleItemChange = (
+    id: string,
+    field: "name" | "quantity",
+    value: string
+  ) => {
+    // ป้องกันการใส่ค่าน้อยกว่า 0 สำหรับจำนวน
+    if (field === "quantity" && Number(value) < 0) {
+      return;
+    }
+    setItems((currentItems) =>
+      currentItems.map((item) =>
+        item.id === id ? { ...item, [field]: value } : item
+      )
+    );
+  };
+
+  const handleAddItem = () => {
+    setItems([
+      ...items,
+      { id: Date.now().toString(), name: "", quantity: "" },
+    ]);
+  };
+
+  const handleDeleteItem = (id: string) => {
+    // ไม่ต้องทำอะไรถ้าเหลือรายการเดียว (ปุ่มจะถูก disabled อยู่แล้ว)
+    if (items.length <= 1) return;
+    setItems((currentItems) =>
+      currentItems.filter((item) => item.id !== id)
+    );
+  };
+
+  // --- ฟังก์ชันสำหรับ Modal "รายละเอียดงาน" ---
+  const openJobModal = (job: Employee) => {
+    setSelectedJob(job);
+    setOpendateJob(true);
+    setFadedataJob(false);
+    setTimeout(() => setFadedataJob(true), 50);
+  };
+
+  const closeJobModal = () => {
+    setFadedataJob(false);
+    setTimeout(() => {
+      setOpendateJob(false);
+      setSelectedJob(null);
+    }, 300);
+  };
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -124,12 +186,13 @@ export default function GetPaper() {
       : "bg-gray-100 border-gray-300";
 
   const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
-  // const text_color = theme === "dark" ? "text-yellow-500" : "text-blue-500";
-  // const haedtext = theme === "dark" ? "text-white" : "text-yellow-500";
+
+  const text_color = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+  const haedtext = theme === "dark" ? "text-white" : "text-yellow-500";
 
   return (
     <div
-      className={`transition-opacity duration-700   ${
+      className={`transition-opacity duration-700 ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
@@ -190,16 +253,16 @@ export default function GetPaper() {
           filtered.map((job) => (
             <div
               key={job._id}
-              className={`grid grid-cols-6 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1  ${headerBg}`}
+              className={`grid grid-cols-6 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
             >
               <p className="truncate">{job.Worksheet || "-"}</p>
               <p>{job.Supervisor || "-"}</p>
               <p>{job.PhoneNumber || "-"}</p>
               <p>
                 {job.Date_of_acceptance_of_work
-                  ? new Date(job.Date_of_acceptance_of_work).toLocaleDateString(
-                      "th-TH"
-                    )
+                  ? new Date(
+                      job.Date_of_acceptance_of_work
+                    ).toLocaleDateString("th-TH")
                   : "-"}
               </p>
               <p>
@@ -207,29 +270,28 @@ export default function GetPaper() {
                   ? new Date(job.Closing_date).toLocaleDateString("th-TH")
                   : "-"}
               </p>
-              {/* <p>{job.description || "-"}</p> */}
               <div className="flex gap-2 mx-auto">
-                <Link
-                  to={`/user/Detailwork/${job._id}`}
-                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-               theme === "dark"
-                 ? "bg-yellow-500 hover:bg-yellow-600"
-                 : "bg-blue-500 hover:bg-blue-600"
-             }`}
+                <button
+                  onClick={() => openJobModal(job)}
+                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+                  [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                    theme === "dark"
+                      ? "bg-yellow-500 hover:bg-yellow-600"
+                      : "bg-blue-500 hover:bg-blue-600"
+                  }`}
                 >
                   รายละเอียดงาน
-                </Link>
+                </button>
                 <button
                   onClick={() => openItemModal(job)}
-                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-               theme === "dark"
-                 ? "bg-yellow-500 hover:bg-yellow-600"
-                 : "bg-blue-500 hover:bg-blue-600"
-             }`}
+                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+                  [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                    theme === "dark"
+                      ? "bg-yellow-500 hover:bg-yellow-600"
+                      : "bg-blue-500 hover:bg-blue-600"
+                  }`}
                 >
                   เบิกของ
                 </button>
@@ -248,8 +310,8 @@ export default function GetPaper() {
       </div>
 
       {/* =========================================================
-            MODAL 1: รายละเอียดงาน (โค้ดที่คุณเพิ่งส่งมา)
-            =========================================================
+              MODAL 1: รายละเอียดงาน
+              =========================================================
       */}
       {opendateJob && selectedJob && (
         <div
@@ -257,15 +319,14 @@ export default function GetPaper() {
             FadedataJob ? " opacity-100" : "opacity-0"
           }`}
         >
-          <div className={`w-220 h-180 p-8 rounded-xl ite ${bg}`}>
+          <div className={`w-220 h-180 p-8 rounded-xl ${bg}`}>
             <div className="border-b pb-2">
-              <p className={`text-2xl font-extrabold  ${text_color}`}>
+              <p className={`text-2xl font-extrabold ${text_color}`}>
                 รายละเอียดงาน
                 <span className={` ${haedtext}`}> {selectedJob.Worksheet}</span>
               </p>
             </div>
 
-            {/* --- ⬇️ 7. แก้ไขการแสดงข้อมูลให้ตรงกับ Interface --- */}
             <div className={`mt-5 space-y-2 ${text_color}`}>
               <p className="font-semibold">
                 หัวหน้างาน:
@@ -275,7 +336,6 @@ export default function GetPaper() {
               </p>
               <p className="font-semibold">
                 ตําเเหน่งงาน:
-                {/* 'Position' ไม่มีใน Interface 'Employee' */}
                 <span className="font-normal ml-2"> - </span>
               </p>
               <p className="font-semibold">
@@ -284,11 +344,8 @@ export default function GetPaper() {
                   {selectedJob.PhoneNumber || "-"}
                 </span>
               </p>
-
-              {/* ⬇️ FIX: เพิ่ม <p> ที่หายไปสำหรับ "เมล" และ "รายละเอียด" */}
               <p className="font-semibold">
                 เมล:
-                {/* 'Email' ไม่มีใน Interface 'Employee' */}
                 <span className="font-normal ml-2"> - </span>
               </p>
               <p className="font-semibold">
@@ -298,19 +355,40 @@ export default function GetPaper() {
                 </span>
               </p>
             </div>
-            {/* ⬆️ FIX: เพิ่ม </div> ปิดสำหรับ 'mt-5' */}
+
+            <div className="flex justify-end gap-4 border-t pt-4 mt-4">
+              <button
+                onClick={closeJobModal}
+                className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+              >
+                <span className="relative z-10">ปิด</span>
+                <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
+                </span>
+              </button>
+            </div>
           </div>
-          {/* ⬆️ FIX: เพิ่ม </div> ปิดสำหรับ 'w-full max-w-2xl' */}
         </div>
       )}
 
+      {/* =========================================================
+              MODAL 2: ฟอร์มเบิกของ (โค้ดที่อัปเดตแล้ว)
+              =========================================================
+      */}
       {OpendateItem && selectedJob && (
         <div
           className={`fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50 
-    transition-opacity duration-500 ${fadeItem ? "opacity-100" : "opacity-0"}`}
+  transition-opacity duration-500 ${fadeItem ? "opacity-100" : "opacity-0"}`}
         >
-          <div className={`w-[900px] p-4 h-180 rounded-2xl ${bg}`}>
-            <div className="flex gap-2 border-b pb-2 text-2xl font-semibold">
+          <div
+            className={`w-[900px] max-h-[90vh] rounded-2xl ${bg} flex flex-col shadow-xl overflow-hidden`}
+          >
+            {/* Modal Header */}
+            <div
+              className={`flex gap-2 border-b px-6 py-4 text-2xl font-semibold ${
+                theme === "dark" ? "border-gray-700" : "border-gray-200"
+              }`}
+            >
               <p
                 className={
                   theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -322,39 +400,50 @@ export default function GetPaper() {
                 (งาน{selectedJob.Worksheet})
               </span>
             </div>
-            <div className="mt-6">
+
+            {/* Modal Body (Scrollable) */}
+            <div className="flex-grow overflow-y-auto p-6 space-y-4">
               {/* หัวตาราง */}
               <div
                 className={`grid grid-cols-4 text-center p-2 rounded-t-lg font-semibold shadow-sm 
-      ${
-        theme === "dark"
-          ? "bg-gray-900 text-yellow-400 border-b border-gray-700"
-          : "bg-blue-50 text-blue-600 border-b border-blue-200"
-      }`}
+  ${
+    theme === "dark"
+      ? "bg-gray-900 text-yellow-400 border-b border-gray-700"
+      : "bg-blue-50 text-blue-600 border-b border-blue-200"
+  }`}
               >
                 <div className="col-span-2">รายชื่อ</div>
                 <div>จำนวน</div>
                 <div className=""> ลบ</div>
               </div>
-              {/* แถวข้อมูล */}
-              <div className={`mt-4 transition-all duration-300 `}>
-                {[...Array(4)].map((_, index) => (
+
+              {/* --- 5. เปลี่ยนมา map จาก state `items` --- */}
+              <div className="transition-all duration-300">
+                {items.map((item, index) => (
                   <div
-                    key={index}
-                    className={`grid grid-cols-4 gap-4 items-center p-3 mb-1 
-                    `}
+                    key={item.id} // --- ใช้ id ที่ไม่ซ้ำกันเป็น key ---
+                    className={`grid grid-cols-4 gap-4 items-center py-3 border-b 
+                    ${
+                      theme === "dark"
+                        ? "border-gray-700"
+                        : "border-gray-200"
+                    }`}
                   >
                     {/* รายชื่อ */}
                     <div className="col-span-2">
                       <input
                         type="text"
                         placeholder="ชื่ออุปกรณ์..."
+                        value={item.name} // --- เชื่อม value ---
+                        onChange={(e) =>
+                          handleItemChange(item.id, "name", e.target.value)
+                        } // --- เชื่อม onChange ---
                         className={`w-full p-2 rounded-lg border focus:ring-2 outline-none transition-all duration-200 
-            ${
-              theme === "dark"
-                ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-                : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-            }`}
+          ${
+            theme === "dark"
+              ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
+              : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
+          }`}
                       />
                     </div>
 
@@ -362,70 +451,101 @@ export default function GetPaper() {
                     <div>
                       <input
                         type="number"
+                        min="0" // --- ใส่ min เพื่อไม่ให้ติดลบ ---
                         placeholder="จำนวน"
+                        value={item.quantity} // --- เชื่อม value ---
+                        onChange={(e) =>
+                          handleItemChange(item.id, "quantity", e.target.value)
+                        } // --- เชื่อม onChange ---
                         className={`w-full p-2 rounded-lg border focus:ring-2 outline-none transition-all duration-200 
-            ${
-              theme === "dark"
-                ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-                : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-            }`}
+          ${
+            theme === "dark"
+              ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
+              : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
+          }`}
                       />
                     </div>
 
                     {/* ปุ่มลบ */}
                     <div className="text-center">
                       <button
-                        className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-5 py-2 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-               theme === "dark"
-                 ? "bg-yellow-500 hover:bg-yellow-600"
-                 : "bg-blue-500 hover:bg-blue-600"
-             }`}
+                        onClick={() => handleDeleteItem(item.id)} // --- เชื่อม onClick ---
+                        disabled={items.length <= 1} // --- Disable ปุ่ม ถ้าเหลือรายการเดียว ---
+                        className={`text-sm font-medium bg-red-500 w-20 h-10 hover:scale-105 duration-200 text-white rounded-2xl  ${
+                          items.length <= 1
+                            ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
+                            : theme === "dark"
+                            ? "hover:text-white"
+                            : "hover:text-white"
+                        }`}
                       >
                         ลบ
                       </button>
                     </div>
                   </div>
                 ))}
-                <div className="px-3">
-                  <p
-                    className={`text-lg mb-1 font-semibold ${
-                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    }`}
-                  >
-                    หมายเหตุ
-                  </p>
-                  <textarea
-                    className={`border w-full px-2 py-2 rounded-lg h-45 resize-none focus:ring-2 outline-none duration-200 ${
-                      theme === "dark"
-                        ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-                        : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-                    }`}
-                  />
-                  <div className="flex justify-end gap-4 border-t pt-4 mt-4">
-                    <button
-                      onClick={closeopenItemModal}
-                      className="group relative py-1  overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
-                    >
-                      <span className="relative z-10">ยกเลิก</span>
-                      <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                        <span className="absolute left-0 top-0 w-0 h-full bg-gray-200  transition-all duration-500 group-hover:w-full"></span>
-                      </span>
-                    </button>
-                    <button
-                      className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-                        theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                      }`}
-                    >
-                      <span className="relative z-10">ยืนยัน</span>
-                      <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                        <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
-                      </span>
-                    </button>
-                  </div>
-                </div>
               </div>
+
+              {/* --- 5. ปุ่มเพิ่มรายการ --- */}
+              <div className="flex justify-start">
+                <button
+                  onClick={handleAddItem}
+                  className={`py-1 px-3 rounded-lg hover:scale-110 text-sm font-medium transition-all duration-200 ${
+                    theme === "dark"
+                      ? "text-yellow-500 hover:bg-yellow-500 hover:text-gray-900"
+                      : "text-blue-500 hover:bg-blue-500 hover:text-white"
+                  } border ${
+                    theme === "dark" ? "border-yellow-500" : "border-blue-500"
+                  }`}
+                >
+                  + เพิ่มรายการ
+                </button>
+              </div>
+
+              {/* หมายเหตุ */}
+              <div className="pt-2">
+                <p
+                  className={`text-lg mb-1 font-semibold ${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
+                >
+                  หมายเหตุ
+                </p>
+                <textarea
+                  className={`border w-full px-2 py-2 rounded-lg h-24 resize-none focus:ring-2 outline-none duration-200 ${
+                    theme === "dark"
+                      ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
+                      : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
+                  }`}
+                />
+              </div>
+            </div>
+
+           
+            <div
+              className={`flex justify-end gap-4 border-t p-4 ${
+                theme === "dark" ? "border-gray-700" : "border-gray-200"
+              }`}
+            >
+              <button
+                onClick={closeopenItemModal}
+                className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+              >
+                <span className="relative z-10">ยกเลิก</span>
+                <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
+                </span>
+              </button>
+              <button
+                className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                }`}
+              >
+                <span className="relative z-10">ยืนยัน</span>
+                <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20 transition-all duration-500 group-hover:w-full"></span>
+                </span>
+              </button>
             </div>
           </div>
         </div>

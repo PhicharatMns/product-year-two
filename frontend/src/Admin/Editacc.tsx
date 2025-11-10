@@ -41,11 +41,13 @@ export default function Editacc() {
   const [Focused, setFocused] = useState(false);
   //ระบบค้นหา
   const filteredTradesmen = tradesmen.filter((t) => {
-    const term = searchTerm.toLowerCase();
+    const term = (searchTerm ?? "").toLowerCase(); // ป้องกัน searchTerm undefined
+    const name = (t.Name ?? "").toLowerCase();
+    const position = (t.Position ?? "").toLowerCase();
+    const email = (t.Email ?? "").toLowerCase();
+
     return (
-      t.Name.toLowerCase().includes(term),
-      t.Position.toLowerCase().includes(term),
-      t.Email.toLowerCase().includes(term)
+      name.includes(term) || position.includes(term) || email.includes(term)
     );
   });
 
