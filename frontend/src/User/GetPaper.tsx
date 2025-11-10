@@ -305,67 +305,8 @@ export default function GetPaper() {
         )}
       </div>
 
-      {/* =========================================================
-              MODAL 1: รายละเอียดงาน
-              =========================================================
-      */}
-      {opendateJob && selectedJob && (
-        <div
-          className={`inset-0 fixed z-50 items-center flex justify-center backdrop-blur-sm duration-300 bg-black/40 ${
-            FadedataJob ? " opacity-100" : "opacity-0"
-          }`}
-        >
-          <div className={`w-220 h-180 p-8 rounded-xl ${bg}`}>
-            <div className="border-b pb-2">
-              <p className={`text-2xl font-extrabold ${text_color}`}>
-                รายละเอียดงาน
-                <span className={` ${haedtext}`}> {selectedJob.Worksheet}</span>
-              </p>
-            </div>
-
-            <div className={`mt-5 space-y-2 ${text_color}`}>
-              <p className="font-semibold">
-                หัวหน้างาน:
-                <span className="font-normal ml-2">
-                  {selectedJob.Supervisor || "-"}
-                </span>
-              </p>
-              <p className="font-semibold">
-                ตําเเหน่งงาน:
-                <span className="font-normal ml-2"> - </span>
-              </p>
-              <p className="font-semibold">
-                เบอร์ติดต่อ:
-                <span className="font-normal ml-2">
-                  {selectedJob.PhoneNumber || "-"}
-                </span>
-              </p>
-              <p className="font-semibold">
-                เมล:
-                <span className="font-normal ml-2"> - </span>
-              </p>
-              <p className="font-semibold">
-                รายละเอียด:
-                <span className="font-normal ml-2">
-                  {selectedJob.Details || "-"}
-                </span>
-              </p>
-            </div>
-
-            <div className="flex justify-end gap-4 border-t pt-4 mt-4">
-              <button
-                onClick={closeJobModal}
-                className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
-              >
-                <span className="relative z-10">ปิด</span>
-                <span className="absolute inset-0 overflow-hidden pointer-events-none">
-                  <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
-                </span>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+    
+ 
 
       {/* =========================================================
               MODAL 2: ฟอร์มเบิกของ (โค้ดที่อัปเดตแล้ว)
@@ -377,7 +318,7 @@ export default function GetPaper() {
   transition-opacity duration-500 ${fadeItem ? "opacity-100" : "opacity-0"}`}
         >
           <div
-            className={`w-[900px] max-h-[90vh] rounded-2xl ${bg} flex flex-col shadow-xl overflow-hidden`}
+            className={`w-[900px] h-200 rounded-2xl ${bg} flex flex-col shadow-xl overflow-hidden`}
           >
             {/* Modal Header */}
             <div
@@ -484,8 +425,8 @@ export default function GetPaper() {
                       : "hover:text-white"
                   } ${
                           theme === "dark"
-                            ? "bg-yellow-500 hover:bg-yellow-600"
-                            : "bg-blue-500 hover:bg-blue-600"
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-red-500 hover:bg-red-600"
                         }`}
                       >
                         ลบ
