@@ -310,7 +310,7 @@ export default function Searchpastjobs() {
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="container mx-auto p-5 max-w-380  pt-10">
+      <div className="container mx-auto p-5 max-w-380  ">
         <div className={``}>
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
@@ -319,8 +319,8 @@ export default function Searchpastjobs() {
                 t ? "text-yellow-500" : "text-blue-700"
               }`}
             >
-              รับใบ{" "}
-              <span className={t ? "text-white" : "text-yellow-500"}>งาน</span>
+              สร้าง{" "}
+              <span className={t ? "text-white" : "text-yellow-500"}>ใบงาน</span>
             </h2>
             <div className="flex flex-wrap gap-4 items-center">
               <button

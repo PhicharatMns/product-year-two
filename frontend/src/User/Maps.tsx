@@ -359,17 +359,14 @@ export default function Maps({ addressToGeocode, onMarkerSet }: MapProps) {
           🔍 {formMode === "stop" ? "ค้นหาจุดแวะ" : "ค้นหาจุดหมาย"}
         </button>
 
-        <button onClick={togglePinning} disabled={formMode === 'destination'} className={`w-full p-2 mt-2 text-white rounded transition-colors ${isPinning ? 'bg-blue-700' : 'bg-blue-500 hover:bg-blue-600'} disabled:bg-gray-400 disabled:cursor-not-allowed`}>
-          {isPinning ? '📍 คลิกบนแผนที่เพื่อปักหมุด (คลิกอีกครั้งเพื่อยกเลิก)' : '📍 เปิดโหมดปักหมุด'}
-        </button>
-
+      
         <button onClick={confirmPosition} disabled={!mapPosition} className="w-full p-2 mt-2 bg-blue-600 text-white rounded disabled:bg-gray-400">
           ✅ ยืนยันตำแหน่งนี้
         </button>
 
         <div className="grid grid-cols-2 gap-2 mt-3">
-          <button onClick={clearStops} className="bg-orange-500 text-white p-2 rounded">ล้างจุดแวะ</button>
-          <button onClick={clearDest} className="bg-purple-600 text-white p-2 rounded">ล้างจุดหมาย</button>
+          <button onClick={clearStops} className="bg-blue-500 text-white p-2 rounded">ล้างจุดแวะ</button>
+          <button onClick={clearDest} className="bg-blue-500 text-white p-2 rounded">ล้างจุดหมาย</button>
         </div>
 
         <button onClick={undoLastStop} className="bg-yellow-500 text-white p-2 rounded w-full mt-2">Undo จุดล่าสุด</button>
@@ -383,7 +380,7 @@ export default function Maps({ addressToGeocode, onMarkerSet }: MapProps) {
       </div>
 
       {/* Map */}
-      <div className="flex-1 h-[500px] rounded-xl shadow overflow-hidden">
+      <div className="flex-1 h-200 rounded-xl shadow overflow-hidden">
         <MapContainer
           center={currentPos || [13.736717, 100.523186]}
           zoom={13}

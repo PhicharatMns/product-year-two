@@ -22,7 +22,7 @@ import MapAdmin from "./Admin/MapAdmin";
 
 // User Worker
 import UserLayout from "./User/UserLayout";
-import Profile from "./User/Profile";
+import Detailwork from "./User/Detailwork";
 import Maps from "./User/Maps";
 import Suppiles from "./User/Supplies";
 import DashboardUser from "./User/DashboardUser";
@@ -30,6 +30,10 @@ import Getpaper from "./User/GetPaper";
 import Calendars from "./User/Calendar";
 import Withdraw from "./User/Withdraw";
 import Followtheprogress from "./User/Followtheprogress";
+import DetailItem from "./User/Detailitem";
+import Profile from "./User/Profile";
+
+
 
 // Auth
 import Login from "./sighup/Login";
@@ -40,13 +44,15 @@ import ProtectedRoute from "./sighup/ProtectedRoute";
 import DashboardExecutive from "./executive/DashboardExecutive";
 import Executive from "./executive/Executive";
 import MapWork from "./executive/MapWork";
-import Getpaperexecutive from "./executive/getpaperexecutive";
+import Getpaperexecutive from "./executive/Getpaperexecutive";
 
-// userChief 
+// userChief
 import Dashboardchief from "./chief/Dashboardchief";
 import Chief from "./chief/Chief";
-
-import Detailwork from "./User/Detailwork";
+// import Detailwork from "./User/Detailwork";
+import CalendarChief from "./chief/CalendarChief";
+import DetailworkChief from "./chief/DetailworkChief";
+import GetPaper from "./chief/getpaper";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -73,7 +79,6 @@ const router = createBrowserRouter([
       { path: "notification", element: <Notification /> },
       { path: "suppliesAdmin", element: <SuppliesAdmin /> },
       { path: "mapadmin", element: <MapAdmin /> },
-
     ],
   },
 
@@ -87,14 +92,15 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "DashboardUser", element: <DashboardUser /> },
-      { path: "profile", element: <Profile /> },
+      { path: "Profile", element: <Profile /> },
       { path: "getpaper", element: <Getpaper /> },
       { path: "maps", element: <Maps /> },
       { path: "supplies", element: <Suppiles /> },
-      { path: "Detailwork", element: <Detailwork /> }, // ตรวจสอบชื่อ component ให้ตรง
+      { path: "Detailwork/:id", element: <Detailwork /> },
       { path: "Calendar", element: <Calendars /> },
       { path: "withdraw", element: <Withdraw /> },
-      { path: 'Followtheprogress', element: <Followtheprogress /> }
+      { path: 'Followtheprogress', element: <Followtheprogress /> },
+      { path: "DetailItem", element: <DetailItem /> },
     ],
   },
 
@@ -106,29 +112,27 @@ const router = createBrowserRouter([
         <Executive />
       </ProtectedRoute>
     ),
-    children: [{ path: "DashboardExecutive", element: <DashboardExecutive /> }
-      , { path: 'getpaperexecutive', element: <Getpaperexecutive /> },
-    { path: 'MapWork', element: <MapWork /> }
-
-
-
-
+    children: [
+      { path: "DashboardExecutive", element: <DashboardExecutive /> },
+      { path: "getpaperexecutive", element: <Getpaperexecutive /> },
+      { path: "MapWork", element: <MapWork /> },
     ],
-
   },
 
   //chief
   {
-    path: '/chief', element: (
+    path: "/chief",
+    element: (
       <ProtectedRoute>
         <Chief />
       </ProtectedRoute>
     ),
-    children: [
-      { path: 'Dashboardchief', element: <Dashboardchief /> }
-    ]
-  }
-
+    children: [{ path: "Dashboardchief", element: <Dashboardchief /> },
+    { path: 'getpaper', element: <GetPaper /> },
+    { path: 'CalendarChief', element: <CalendarChief /> },
+    { path: "DetailworkChief/:id", element: <DetailworkChief /> },
+    ],
+  },
 ]);
 
 export default function App() {

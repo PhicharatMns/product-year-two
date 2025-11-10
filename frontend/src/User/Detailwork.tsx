@@ -1,108 +1,206 @@
 import { useTheme } from "@/components/theme-provider";
+import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+
+interface Employee {
+  _id: string;
+  Worksheet?: string;
+  Supervisor?: string;
+  PhoneNumber?: string;
+  Date_of_acceptance_of_work?: string;
+  Closing_date?: string;
+  description?: string;
+  address?: {
+    type: string;
+    coordinates: [number, number]; // [lng, lat]
+  };
+}
 
 export default function Detailwork() {
   const { theme } = useTheme();
-  const bg = theme === "dark" ? "bg-gray-800" : "bg-gray-100";
+  const { id } = useParams<{ id: string }>();
+  const [job, setJob] = useState<Employee | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
+  const [fade, setFade] = useState(false);
+
+  const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-900/80" : "bg-white";
+  const text_color = theme === "dark" ? "text-white" : "text-black";
   const borderSoft = theme === "dark" ? "border-gray-700" : "border-gray-300";
-  const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
+  const titleColor = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+
+  useEffect(() => {
+    if (!id) return;
+
+    const fetchJob = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/employees");
+        if (!res.ok) throw new Error("ไม่สามารถดึงข้อมูลได้");
+        const data: Employee[] = await res.json();
+
+        const selected = data.find((emp) => emp._id === id);
+        setJob(selected || null);
+
+        // ตั้งค่า marker ถ้ามี coordinates
+        if (selected?.address?.coordinates) {
+          const [lng, lat] = selected.address.coordinates;
+          setMarkerPos([lat, lng]);
+        } else {
+          // fallback ถ้าไม่มีตำแหน่ง
+          setMarkerPos([13.7563, 100.5018]); // Bangkok
+        }
+      } catch (err) {
+        console.error(err);
+        setJob(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchJob();
+  }, [id]);
+
+  // เริ่ม fade-in หลังจากโหลดเสร็จ
+  useEffect(() => {
+    if (!loading) {
+      const timer = setTimeout(() => setFade(true), 100);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  if (!job) return(<div></div>)
 
   return (
-    <div className={`w-max-380 p-5 mx-auto container ${bg} ${text}`}>
-      <p className={`text-3xl mb-5 font-bold  ${titleColor}`}>
-        รายละเอียด
-        <span
-          className={`${theme === "dark" ? "text-white" : "text-yellow-500"}`}
-        >
-          งาน
-        </span>
-      </p>
-
+    <div className={`w-max-380 p-5 mx-auto container 0 ${text}`}>
       <div
-        className={`shadow-2xl p-6 sm:p-8 md:p-10 transition-all duration-300 rounded-2xl ${cardBg}`}
+        className={`transition-opacity duration-700 ${
+          fade ? "opacity-100" : "opacity-0"
+        }`}
       >
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {["ชื่องาน :", "ชื่อหัวหน้างาน :", "เบอร์โทรศัพท์ :", "Email :"].map(
-            (title, idx) => (
-              <div
-                key={idx}
-                className={`border ${borderSoft} rounded-2xl p-4 sm:p-6 font-semibold`}
-              >
-                {title}
-              </div>
-            )
-          )}
-        </div>
-
-        <div className="text-2xl py-2 font-semibold border p-5 rounded-2xl">
-          รายละเอียดงาน
-          <p className="text-sm mt-2 text-gray-500 ">
-            งานซ่อมแซมระบบไฟฟ้าภายในอาคารสำนักงานชั้น 3 ตรวจสอบระบบสายไฟ
-            และเปลี่ยนหลอดไฟที่ชำรุด พร้อมจัดระเบียบสายไฟให้เรียบร้อย
-          </p>
-        </div>
-
-        <div className="flex items-start justify-start"></div>
-        <div className="grid grid-cols-5  gap-4 mt-5">
-          <div
-            className={`w-full min-h-[350px] col-span-3 rounded-2xl border ${borderSoft} p-6 text-gray-600`}
+        <div className="text-3xl font-bold flex gap-2">
+          <p className={` ${titleColor}`}>รายละเอียดงาน :</p>
+          <span
+            className={`${theme === "dark" ? "text-white" : "text-yellow-500"}`}
           >
-            <div className="text-xl font-semibold mb-3 text-green-500">
-              รายละเอียดการเบิกของ
-            </div>
+            {job.Worksheet}
+          </span>
+        </div>
 
-            <div
-              className={`mb-5 p-5 rounded-2xl border border-dashed border-green-500 `}
-            >
-              <p className={`${text} text-lg`}>
-                การเบิกของได้รับการ{" "}
-                <span className="text-green-400">อนุมัติ</span> เรียบร้อยแล้ว
+        <div className={`mt-5 transition-all duration-300 rounded-2xl`}>
+          <div className="grid grid-cols-2 gap-5">
+            <div className={`border p-3 rounded-xl ${bg}`}>
+              <p>หัวหน้างาน: {job.Supervisor || "-"}</p>
+              <p>ตำแหน่ง: {"-"}</p>
+              <p>เบอร์ติดต่อ: {job.PhoneNumber || "-"}</p>
+              <p>
+                วันเริ่มงาน:{" "}
+                {job.Date_of_acceptance_of_work
+                  ? new Date(job.Date_of_acceptance_of_work).toLocaleDateString(
+                      "th-TH"
+                    )
+                  : "-"}
+              </p>
+              <p>
+                วันปิดงาน:{" "}
+                {job.Closing_date
+                  ? new Date(job.Closing_date).toLocaleDateString("th-TH")
+                  : "-"}
               </p>
             </div>
-          </div>
-          <div className="border py-5 px-6 col-span-2 rounded-2xl ">
-            <h2 className="text-xl font-semibold text-blue-500 mb-3">
-              ข้อความตอบกลับ
-            </h2>
+
+            <div className={`border p-3 rounded-xl ${bg}`}>
+              <p className={`text-lg mb-1 font-semibold ${titleColor}`}>
+                รายละเอียดงาน
+              </p>
+              <p className="text-ellipsis"> {job.description || "-"}</p>
+            </div>
           </div>
 
-          <div className="border py-5 px-6 rounded-2xl ">
-            <h2 className="text-xl font-semibold text-blue-500 mb-3">
-              ข้อความตอบกลับ
-            </h2>
-
+          <div className="grid grid-cols-5 gap-4 mt-3">
             <div
-              className={`p-5 rounded-2xl border ${borderSoft}   dark:text-gray-200`}
+              className={`w-full p-3 col-span-2 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
             >
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-1">
-                <div className={`col-span-2 ${text} `}>
-                  <p>
-                    “ขอบคุณสำหรับการรายงานงานนี้ ตรวจสอบเรียบร้อยดีแล้ว
-                    ขอให้ดำเนินการตรวจสอบอุปกรณ์เพิ่มเติมอีกครั้งในสัปดาห์หน้า
-                    และแนบรูปภาพหลังซ่อมในระบบด้วยนะครับ”
+              <div
+                className={`${
+                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                } text-xl font-semibold mb-3 border-b pb-3`}
+              >
+                รายการติดต่อ / เบิกของ
+              </div>
+              <div>
+                <div
+                  className={`items-center border p-1 my-1 rounded-xl ${
+                    theme === "dark" ? "bg-gray-800" : "shadow-sm"
+                  }
+              `}
+                >
+                  <p className={`text-sm pl-2 font-semibold ${titleColor}`}>
+                    การขอเบิกของ
                   </p>
-                </div>
+                  <div className="flex gap-2">
+                    <img
+                      className="h-10 w-10  rounded-4xl bg-blue-500"
+                      src=""
+                      alt=""
+                    />
+                    <div className="text-sm flex flex-col gap-1">
+                      <p className={` ${text_color}`}>
+                        <span className={`font-semibold  ${titleColor}`}>
+                          หัวหน้างาน:
+                        </span>{" "}
+                        ชื่อหัวหน้างาน
+                      </p>
 
-                <div className="col-span-2 text-sm text-gray-500 mt-2">
-                  — หัวหน้างาน: นายสมชาย แสงทอง (วันที่ตอบกลับ: 23 ตุลาคม 2568)
+                      <p className={`truncate w-120 ${text_color}`}>
+                        <span className={`font-semibold  ${titleColor}`}>
+                          รายละเอียด:
+                        </span>{" "}
+                        {job.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* แผนที่ */}
-        <div className="text-2xl mt-10 font-semibold">แผนที่</div>
-        <div className="w-full h-[400px] mt-3 rounded-2xl overflow-hidden border border-gray-300">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.484201879492!2d100.5017653152993!3d13.756330390360096!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29ed6e1aa12c3%3A0x6d77e2e0c4a18b2!2sBangkok%2C%20Thailand!5e0!3m2!1sen!2sth!4v1700000000000!5m2!1sen!2sth"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          ></iframe>
+            {/* ---------- แผนที่ ---------- */}
+            <div
+              className={`border py-3 px-4 col-span-3 rounded-2xl h-160 ${bg}`}
+            >
+              <h2
+                className={`text-xl font-semibold text-blue-500 mb-3 ${
+                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                }`}
+              >
+                แผนที่งาน
+              </h2>
+              {markerPos && (
+                <MapContainer
+                  center={markerPos}
+                  zoom={15}
+                  className="w-full h-140 rounded-lg"
+                >
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  <Marker
+                    position={markerPos}
+                    icon={L.icon({
+                      iconUrl:
+                        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+                      iconSize: [25, 41],
+                      iconAnchor: [12, 41],
+                    })}
+                  >
+                    <Tooltip permanent direction="top" offset={[0, -40]}>
+                      {job.Worksheet || "ชื่องาน"}
+                    </Tooltip>
+                  </Marker>
+                </MapContainer>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>

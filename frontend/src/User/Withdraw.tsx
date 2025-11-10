@@ -1,22 +1,29 @@
+import { useTheme } from "@/components/theme-provider";
 export default function Withdraw() {
+      const { theme } = useTheme();
+      const bg = theme === "dark" ? "bg-gray-800" : "bg-gray-100";
+      const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
+      const cardBg = theme === "dark" ? "bg-gray-900/80" : "bg-white";
+      const borderSoft = theme === "dark" ? "border-gray-700" : "border-gray-300";
+      const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
   return (
-    <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-2xl p-8 mt-12">
+    <div className="max-w-380 mx-auto p-6  rounded-2xl  ">
       {/* หัวข้อใหญ่ */}
-      <p className="text-4xl font-extrabold text-center text-gray-900 mb-8">
+      <p className={`text-3xl font-extrabold   mb-8 ${titleColor}`} >
         เบิกของ
       </p>
 
       {/* ปุ่มวันที่ / เวลา */}
       <div className="flex justify-start mb-6">
-        <button className="border border-gray-300 rounded-lg px-5 py-2 text-sm text-gray-700 hover:bg-gray-50 shadow-sm transition">
+        <p className="border border-gray-300 rounded-lg px-5 py-2 text-sm text-gray-700 hover:bg-gray-50 shadow-sm transition">
           วันที่ / เวลา
-        </button>
+        </p>
       </div>
 
       {/* ตารางแนวนอน */}
       <div className="overflow-x-auto mb-6">
         <table className="min-w-full border-4 border-gray-500 rounded-lg overflow-hidden shadow-sm">
-          <thead className="bg-gray-100">
+          <thead className="">
             <tr>
               <th className="border-b border-r border-gray-300 px-6 py-3 text-left text-sm font-semibold text-gray-900">
                 รายการ
@@ -42,8 +49,9 @@ export default function Withdraw() {
                 <td className="border-b border-gray-300 px-6 py-4">
                   <input
                     type="number"
-                    defaultValue="0"
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 font-medium text-right focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+                    
+                    placeholder="จำนวนของ"
+                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800 font-medium  focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
                   />
                 </td>
               </tr>

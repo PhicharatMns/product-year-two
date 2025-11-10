@@ -41,11 +41,13 @@ export default function Editacc() {
   const [Focused, setFocused] = useState(false);
   //ระบบค้นหา
   const filteredTradesmen = tradesmen.filter((t) => {
-    const term = searchTerm.toLowerCase();
+    const term = (searchTerm ?? "").toLowerCase(); // ป้องกัน searchTerm undefined
+    const name = (t.Name ?? "").toLowerCase();
+    const position = (t.Position ?? "").toLowerCase();
+    const email = (t.Email ?? "").toLowerCase();
+
     return (
-      t.Name.toLowerCase().includes(term),
-      t.Position.toLowerCase().includes(term),
-      t.Email.toLowerCase().includes(term)
+      name.includes(term) || position.includes(term) || email.includes(term)
     );
   });
 
@@ -182,10 +184,10 @@ export default function Editacc() {
     }
   };
 
-  const inputClass = `border w-full p-2 rounded-lg mt-2 ${
+  const inputClass = `border w-full focus:ring-2 outline-none p-2 rounded-lg  mt-2 ${
     theme === "dark"
-      ? "bg-gray-700 text-yellow-500"
-      : "bg-gray-50 text-blue-500"
+      ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
+      : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
   }`;
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-700";
 
@@ -349,7 +351,7 @@ export default function Editacc() {
               </h2>
 
               {/* ช่องกรอก */}
-              <div className="grid grid-cols-2 gap-5">
+              <div className="grid grid-cols-2 gap-2">
                 {Object.entries({
                   Name: "ชื่อนามสกุล",
                   Nickname: "ชื่อเล่น",
@@ -417,13 +419,13 @@ export default function Editacc() {
                 ))}
               </div>
 
-              <div className="flex justify-end mt-5 gap-3 ">
+              <div className="flex justify-end gap-4 border-t pt-4 mt-4">
                 <div className="flex gap-4">
                   {/* ปุ่มยกเลิก */}
                   <button
                     type="button"
                     onClick={closeAddEmployee}
-                    className="group relative py-1 overflow-hidden rounded-xl cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                    className="group relative py-1  overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
                   >
                     <span className="relative z-10">ยกเลิก</span>
                     <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -434,7 +436,7 @@ export default function Editacc() {
                   {/* ปุ่มยืนยัน */}
                   <button
                     type="submit"
-                    className={`group relative py-1 overflow-hidden rounded-xl border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
                       theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
                     }`}
                   >

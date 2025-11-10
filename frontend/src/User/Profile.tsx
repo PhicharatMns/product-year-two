@@ -1,124 +1,200 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import axios from "axios";
-import { UserStar } from "lucide-react";
 
+// ✨ [แก้ไข] Import ไอคอน BicepsFlexed
+import { BicepsFlexed } from "lucide-react";
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Briefcase,
+  Calendar,
+  UserCheck,
+} from "lucide-react";
+
+interface DetailItemProps {
+  Icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
+  label: string;
+  value: string;
+}
+
+// --- Component: DetailItem ---
+const DetailItem: React.FC<DetailItemProps> = ({ Icon, label, value }) => {
+  const { theme } = useTheme();
+  return (
+    <div className="flex items-start space-x-4 py-3">
+      <Icon
+        className={`w-5 h-5 flex-shrink-0 ${
+          theme === "dark" ? "text-gray-400" : "text-gray-500"
+        } mt-1`}
+      />
+      <div className="flex flex-col overflow-hidden">
+        <span
+          className={`text-sm font-medium ${
+            theme === "dark" ? "text-gray-400" : "text-gray-500"
+          }`}
+        >
+          {label}
+        </span>
+        <span
+          className={`text-base font-semibold ${
+            theme === "dark" ? "text-gray-50" : "text-gray-800"
+          } break-words`}
+        >
+          {value}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+// --- Component: Profile ---
 export default function Profile() {
   const { theme } = useTheme();
   const token = localStorage.getItem("token");
-  const [Message, setMessage] = useState("");
+
+  const [Name, setName] = useState("");
   const [email, setemail] = useState("");
   const [phones, setphones] = useState("");
   const [Position, setposition] = useState("");
   const [profile, setprofile] = useState("");
-  const [ID, setID] = useState("")
-  const [Address, setAddress] = useState('')
-  const [Start_data, setStart_data] = useState('')
+  const [ID, setID] = useState("");
+  const [Address, setAddress] = useState("");
+  const [Start_data, setStart_data] = useState("");
+  // const [loading, setLoading] = useState(true);
+  const [fade, setfade] = useState(false);
 
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:5000/api/login/dashboardUser",
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setName(response.data.Name || "ไม่ระบุชื่อ");
+      setemail(response.data.Email || "ไม่ระบุอีเมล");
+      setphones(response.data.Phone_Number || "ไม่ระบุเบอร์โทร");
+      setposition(response.data.Position || "ไม่ระบุตำแหน่ง");
+      setprofile(response.data.Profile || "");
+      setID(response.data.ID || "N/A");
+      setAddress(response.data.Address || "ไม่ระบุที่อยู่");
+
+      const rawDate = response.data.Start_data;
+      if (rawDate) {
+        const date = new Date(rawDate);
+        const formattedDate = date.toLocaleDateString("th-TH", {
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        setStart_data(formattedDate);
+      } else {
+        setStart_data("ไม่ระบุวันที่");
+      }
+    } catch (err) {
+      console.error("Fetch profile data error:", err);
+    } finally {
+      // setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/login/dashboardUser",
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        console.log("Sidebar response:", response.data);
-        setMessage(response.data.Name);
-        setemail(response.data.Email);
-        setphones(response.data.Phone_Number);
-        setposition(response.data.Position);
-        setprofile(response.data.Profile);
-        setAddress(response.data.position);
-        setID(response.data.ID)
-        setAddress(response.data.Address)
-        setStart_data(response.data.Start_data || new Date().toISOString().split('T')[0]);
-
-      } catch (err) {
-        console.error("Fetch sidebar message error:", err);
-      }
-    };
-
     fetchData();
+    const timer = setTimeout(() => setfade(true), 100);
+    return () => clearTimeout(timer);
   }, [token]);
 
-  //ค่าสี
-  const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
-  const cardBg = theme === "dark" ? "bg-gray-900/70" : "bg-white";
-  const borderSoft =
-    theme === "dark" ? "border-yellow-300/10" : "border-blue-200/50";
-  const titleColor = theme === "dark" ? "text-yellow-400" : "text-blue-600";
-  const accentColor = theme === "dark" ? "text-yellow-300" : "text-blue-500";
+  const primaryColor = theme === "dark" ? "text-cyan-400" : "text-indigo-600";
+  const cardStyle = theme === "dark" ? "bg-gray-800" : "bg-white";
+  const textStyle = theme === "dark" ? "text-gray-50" : "text-gray-900";
+  const subTextStyle = theme === "dark" ? "text-gray-400" : "text-gray-500";
+  const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-200";
+
+  // if (loading) {
+  //   return (
+  //     <div
+  //       className={`min-h-screen flex items-center justify-center ${bgColor}`}
+  //     >
+  //       <Loader2 className={`w-8 h-8 ${primaryColor} animate-spin`} />
+  //       <span className={`ml-3 text-xl ${subTextStyle}`}>
+  //         กำลังโหลดข้อมูล...
+  //       </span>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div
-      className={`min-h-screen flex items-center justify-center p-6 transition-all duration-500 `}
+      className={`min-h-screen ${textStyle} transition-all duration-300 p-4 md:p-12 ${
+        fade ? "opacity-100" : "opacity-0"
+      }`}
     >
-      <div
-        className={`flex flex-wrap rounded-3xl shadow-xl overflow-hidden max-w-6xl w-full ${text} ${cardBg} backdrop-blur-md`}
-      >
-        <div className="flex flex-col items-center justify-start p-10 md:w-1/3 text-center border-b md:border-b-0 md:border-r border-blue-100/40">
-          <h1 className="text-4xl font-bold mb-8">
-            Pro<span className={accentColor}>file</span>
-          </h1>
+      <div className="max-w-full mx-auto">
+        <h1 className="text-3xl font-bold mb-6">Employee Profile</h1>
 
-          <div className="relative w-64 h-64 rounded-full overflow-hidden border-4 border-blue-400/40 mb-4">
-            <img
-              src={`http://localhost:5000/uploads/Profile/${profile}`}
-              alt="Profile"
-              className="w-full h-full object-cover"
-            />
-          </div>
+        {/* Profile Card */}
+        <div className={`${cardStyle} rounded-lg shadow-lg overflow-hidden`}>
+          <div className={`p-6 md:p-8 border-b ${borderColor}`}>
+            <div className="flex justify-between items-start">
+              <div className="flex items-center space-x-5 md:space-x-6">
+                <img
+                  src={`http://localhost:5000/uploads/Profile/${profile}`}
+                  alt="Profile"
+                  className="w-20 h-20 md:w-28 md:h-28 object-cover rounded-full border-2 border-gray-300 dark:border-gray-600 shadow-md"
+                />
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-bold">{Name}</h2>
+                  <p
+                    className={`text-lg md:text-xl ${subTextStyle} flex items-center space-x-2 mt-1`}
+                  >
+                    <Briefcase className="w-5 h-5" />
+                    <span>{Position}</span>
+                  </p>
+                </div>
+              </div>
 
-          <div className="space-y-2">
-            <h2 className="text-xl font-semibold text-blue-400">{Message}</h2>
-            <p className="text-sm opacity-80">ช่างมืออาชีพ พร้อมให้บริการ</p>
-          </div>
-        </div>
-
-        <div className="flex-1 p-10 space-y-8">
-          <div
-            className={`rounded-2xl p-6 shadow-md border ${borderSoft} ${cardBg} transition-all duration-300 hover:shadow-lg`}
-          >
-            <h2
-              className={`text-2xl font-semibold mb-4 border-b-2 pb-2 ${titleColor} border-current`}
-            >
-              ข้อมูลติดต่อ
-            </h2>
-            <div className="space-y-2 leading-relaxed">
-              <p>
-                {" "}
-                เบอร์โทรศัพท์ : <b>{phones}</b>
-              </p>
-              <p>ชื่อเล่น :</p>
-              <p>อีเมล : {email}</p>
-              <p>วันที่เริ่มงาน : </p>
-              <p>วันเดือนปีเกิด :</p>
-              <p>ตำแหน่ง :</p>
-              <p>เบอร์โทรติดต่อ :</p>
-              <p></p>
+              {/* Badge Button */}
+              <button className="flex items-center rounded-2xl bg-blue-500 py-2.5 px-3 border-b">
+                <BicepsFlexed className="w-5 h-5 text-white" />
+                <p className="ml-2 text-white">ช่างทึกทน</p>
+              </button>
             </div>
           </div>
 
-          <div
-            className={`rounded-2xl p-6 shadow-md border ${borderSoft} ${cardBg} transition-all duration-300 hover:shadow-lg`}
-          >
-            <h2
-              className={`text-2xl font-semibold mb-4 border-b-2 pb-2 ${theme === "dark" ? "text-yellow-300" : "text-yellow-500"
-                } border-current`}
-            >
-              ที่อยู่
-            </h2>
-            <div className="space-y-2 leading-relaxed">
-              <p> ตำแหน่ง: <b>{Position}</b></p>
-              <p> ประสบการณ์ทำงาน: {Start_data}</p>
-              {/* <p> เครื่องมือส่วนตัว: {skill.tools}</p>
-              <p>สัญญาจ้าง: {skill.contract}</p> */}
-              {/* <p> ประกันอุบัติเหตุ: {skill.insurance}</p>
-              <p> วันที่เริ่มงาน: <b>{skill.startDate}</b></p> */}
-            </div>
+          {/* Details */}
+          <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+            <section>
+              <h3
+                className={`text-lg font-semibold ${primaryColor} mb-4 pb-2 border-b ${borderColor}`}
+              >
+                Contact Information
+              </h3>
+              <div className="space-y-2">
+                <DetailItem Icon={Mail} label="Email Address" value={email} />
+                <DetailItem Icon={Phone} label="Phone Number" value={phones} />
+                <DetailItem
+                  Icon={MapPin}
+                  label="Current Address"
+                  value={Address}
+                />
+              </div>
+            </section>
+
+            <section>
+              <h3
+                className={`text-lg font-semibold ${primaryColor} mb-4 pb-2 border-b ${borderColor}`}
+              >
+                Work Details
+              </h3>
+              <div className="space-y-2">
+                <DetailItem Icon={UserCheck} label="Employee ID" value={ID} />
+                <DetailItem
+                  Icon={Calendar}
+                  label="Start Date"
+                  value={Start_data}
+                />
+              </div>
+            </section>
           </div>
         </div>
       </div>
