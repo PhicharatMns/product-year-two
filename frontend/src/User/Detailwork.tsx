@@ -71,7 +71,7 @@ export default function Detailwork() {
     }
   }, [loading]);
 
-  if (!job) return <div className="text-center py-10">ไม่พบข้อมูลงาน</div>;
+  if (!job) return(<div></div>)
 
   return (
     <div className={`w-max-380 p-5 mx-auto container 0 ${text}`}>

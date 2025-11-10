@@ -2,6 +2,7 @@ import { useTheme } from "@/components/theme-provider";
 import { useEffect, useState, useCallback } from "react";
 import { CiSearch } from "react-icons/ci";
 import { jwtDecode } from "jwt-decode";
+import { Link } from "react-router-dom";
 // import { Link } from "react-router-dom"; // --- 3. เราจะใช้ปุ่มเปิด Modal แทน Link ---
 
 interface Employee {
@@ -45,7 +46,7 @@ export default function GetPaper() {
   // --- State สำหรับ Modal "เบิกของ" ---
   const [OpendateItem, setOpendateItem] = useState(false);
   const [fadeItem, setFadeItem] = useState(false);
-  
+
   // --- 2. เพิ่ม State สำหรับรายการเบิกของ ---
   const [items, setItems] = useState<RequisitionItem[]>([]);
 
@@ -128,18 +129,13 @@ export default function GetPaper() {
   };
 
   const handleAddItem = () => {
-    setItems([
-      ...items,
-      { id: Date.now().toString(), name: "", quantity: "" },
-    ]);
+    setItems([...items, { id: Date.now().toString(), name: "", quantity: "" }]);
   };
 
   const handleDeleteItem = (id: string) => {
     // ไม่ต้องทำอะไรถ้าเหลือรายการเดียว (ปุ่มจะถูก disabled อยู่แล้ว)
     if (items.length <= 1) return;
-    setItems((currentItems) =>
-      currentItems.filter((item) => item.id !== id)
-    );
+    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
   };
 
   // --- ฟังก์ชันสำหรับ Modal "รายละเอียดงาน" ---
@@ -260,9 +256,9 @@ export default function GetPaper() {
               <p>{job.PhoneNumber || "-"}</p>
               <p>
                 {job.Date_of_acceptance_of_work
-                  ? new Date(
-                      job.Date_of_acceptance_of_work
-                    ).toLocaleDateString("th-TH")
+                  ? new Date(job.Date_of_acceptance_of_work).toLocaleDateString(
+                      "th-TH"
+                    )
                   : "-"}
               </p>
               <p>
@@ -271,18 +267,18 @@ export default function GetPaper() {
                   : "-"}
               </p>
               <div className="flex gap-2 mx-auto">
-                <button
-                  onClick={() => openJobModal(job)}
-                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-                  [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                    theme === "dark"
-                      ? "bg-yellow-500 hover:bg-yellow-600"
-                      : "bg-blue-500 hover:bg-blue-600"
-                  }`}
+                <Link
+                  to={`/user/Detailwork/${job._id}`}
+                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+               theme === "dark"
+                 ? "bg-yellow-500 hover:bg-yellow-600"
+                 : "bg-blue-500 hover:bg-blue-600"
+             }`}
                 >
                   รายละเอียดงาน
-                </button>
+                </Link>
                 <button
                   onClick={() => openItemModal(job)}
                   className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
@@ -424,9 +420,7 @@ export default function GetPaper() {
                     key={item.id} // --- ใช้ id ที่ไม่ซ้ำกันเป็น key ---
                     className={`grid grid-cols-4 gap-4 items-center py-3 border-b 
                     ${
-                      theme === "dark"
-                        ? "border-gray-700"
-                        : "border-gray-200"
+                      theme === "dark" ? "border-gray-700" : "border-gray-200"
                     }`}
                   >
                     {/* รายชื่อ */}
@@ -521,7 +515,6 @@ export default function GetPaper() {
               </div>
             </div>
 
-           
             <div
               className={`flex justify-end gap-4 border-t p-4 ${
                 theme === "dark" ? "border-gray-700" : "border-gray-200"
