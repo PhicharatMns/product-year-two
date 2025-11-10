@@ -30,11 +30,11 @@ export default function SidebarChief() {
 
   const items: SidebarItem[] = [
     { text: "Dashboard", icon: MdDashboard, link: "/chief/Dashboardchief" },
-    { text: "ใบงาน", icon: VscNewFile, link: "/chief/ใบงาน" },
+    { text: "ใบงาน", icon: VscNewFile, link: "/chief/getpaper" },
     {
       text: "ปฎิทิน",
       icon: AiTwotoneCalendar,
-      link: "/chief/รายการขอเบิกของ",
+      link: "/chief/CalendarChief",
     },
     {
       text: "รายการขอเบิกของ",

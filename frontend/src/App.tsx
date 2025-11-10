@@ -22,7 +22,7 @@ import MapAdmin from "./Admin/MapAdmin";
 
 // User Worker
 import UserLayout from "./User/UserLayout";
-
+import Detailwork from "./User/Detailwork";
 import Maps from "./User/Maps";
 import Suppiles from "./User/Supplies";
 import DashboardUser from "./User/DashboardUser";
@@ -49,8 +49,10 @@ import Getpaperexecutive from "./executive/Getpaperexecutive";
 // userChief
 import Dashboardchief from "./chief/Dashboardchief";
 import Chief from "./chief/Chief";
-
-import Detailwork from "./User/Detailwork";
+// import Detailwork from "./User/Detailwork";
+import CalendarChief from "./chief/CalendarChief";
+import DetailworkChief from "./chief/DetailworkChief";
+import GetPaper from "./chief/getpaper";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -98,8 +100,7 @@ const router = createBrowserRouter([
       { path: "Calendar", element: <Calendars /> },
       { path: "withdraw", element: <Withdraw /> },
       { path: 'Followtheprogress', element: <Followtheprogress /> },
-      { path: "Detailwork", element: <Detailwork />},
-      { path: "DetailItem", element: <DetailItem />},
+      { path: "DetailItem", element: <DetailItem /> },
     ],
   },
 
@@ -126,7 +127,11 @@ const router = createBrowserRouter([
         <Chief />
       </ProtectedRoute>
     ),
-    children: [{ path: "Dashboardchief", element: <Dashboardchief /> }],
+    children: [{ path: "Dashboardchief", element: <Dashboardchief /> },
+    { path: 'getpaper', element: <GetPaper /> },
+    { path: 'CalendarChief', element: <CalendarChief /> },
+    { path: "DetailworkChief/:id", element: <DetailworkChief /> },
+    ],
   },
 ]);
 
