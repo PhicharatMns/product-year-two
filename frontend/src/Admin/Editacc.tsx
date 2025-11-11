@@ -2,6 +2,7 @@ import { useTheme } from "@/components/theme-provider";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CiSearch } from "react-icons/ci";
+import { motion } from "framer-motion";
 
 interface Tradesman {
   _id?: string;
@@ -273,13 +274,14 @@ export default function Editacc() {
         </div>
 
         {filteredTradesmen.map((t, idx) => (
-          <div
-            key={t._id || idx}
-            className={`grid grid-cols-7 my-2 gap-5 pl-5 items-center border rounded-lg shadow-sm ${
-              theme === "dark"
-                ? "bg-gray-900 border-gray-700"
-                : "shadow-lg bg-blue-50/50"
-            }`}
+          <motion.div
+            key={t._id}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: idx * 0.05, ease: "easeOut" }}
+            className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center crounded-xl shadow-sm py-1 px-5 mt-2 ${
+              theme === 'dark' ? "bg-gray-900 border-gray-700" : "bg-gray-100"
+            } border`}
           >
             <img
               src={`http://localhost:5000/uploads/Profile/${
@@ -323,7 +325,7 @@ export default function Editacc() {
                 แก้ไข
               </button>
             </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
