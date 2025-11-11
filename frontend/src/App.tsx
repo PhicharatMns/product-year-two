@@ -18,7 +18,6 @@ import Profileadmin from "./Admin/Profileadmin";
 import Addwork from "./Admin/Addwork";
 import Notification from "./Admin/Notification";
 import SuppliesAdmin from "./Admin/SuppliesAdmin";
-import MapAdmin from "./Admin/MapAdmin";
 
 // User Worker
 import UserLayout from "./User/UserLayout";
@@ -78,7 +77,6 @@ const router = createBrowserRouter([
       { path: "addwork", element: <Addwork /> },
       { path: "notification", element: <Notification /> },
       { path: "suppliesAdmin", element: <SuppliesAdmin /> },
-      { path: "mapadmin", element: <MapAdmin /> },
     ],
   },
 

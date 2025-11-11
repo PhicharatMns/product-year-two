@@ -13,7 +13,6 @@ import { FaTools } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import { FaMapMarkedAlt } from "react-icons/fa";
 
-
 interface SidebarItem {
   text: string;
   icons: React.ComponentType<{ size?: number }>;
@@ -36,7 +35,6 @@ export default function Sidebaradmin() {
     { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "Searchpastjobs" },
     { text: "ส่งการแจ้งเตือน", icons: TbBellPlus, Link: "Notification" },
     { text: "จัดการวัสดุอุปกรณ์", icons: FaTools, Link: "SuppliesAdmin" },
-     { text: "แผนที่", icons: FaMapMarkedAlt, Link: "MapAdmin" },
     { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "Editacc" },
     { text: "ออกจากระบบ", icons: IoIosLogOut, onClick: handleLogout },
   ];
@@ -46,7 +44,6 @@ export default function Sidebaradmin() {
   const bg = theme === "dark" ? "bg-gray-900" : "bg-blue-100";
 
   return (
-
     <>
       {/* ปุ่มเปิดเมนูบนมือถือ */}
       <button
@@ -58,8 +55,9 @@ export default function Sidebaradmin() {
 
       {/* Sidebar */}
       <div
-        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white dark:text-gray-200 font-bold border-r transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0`}
+        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white dark:text-gray-200 font-bold border-r transition-transform duration-300 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`}
       >
         {/* Logo */}
         <div className="flex flex-col">
@@ -86,7 +84,8 @@ export default function Sidebaradmin() {
                     to={event.Link}
                     key={index}
                     className={({ isActive }) =>
-                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium text-neutral-0 transition duration-300 ${isActive ? "bg-yellow-500" : ""
+                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium text-neutral-0 transition duration-300 ${
+                        isActive ? "bg-yellow-500" : ""
                       }`
                     }
                     onClick={() => setOpen(false)}
@@ -97,7 +96,7 @@ export default function Sidebaradmin() {
                     </div>
 
                     {/* เนื้อหาภายใน NavLink */}
-                    <Icons size={24}/>
+                    <Icons size={24} />
                     <span className="relative z-10">{event.text}</span>
                   </NavLink>
                 );
@@ -147,6 +146,5 @@ export default function Sidebaradmin() {
         ></div>
       )}
     </>
-
   );
 }

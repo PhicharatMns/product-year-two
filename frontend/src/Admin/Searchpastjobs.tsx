@@ -14,6 +14,7 @@ import {
 import "leaflet-draw"; // ต้อง import แบบนี้เพื่อให้ L.Control.Draw ทำงาน
 import "leaflet-draw/dist/leaflet.draw.css"; // โหลด CSS ของ draw
 import L from "leaflet";
+import { motion } from "framer-motion";
 
 interface GeoPoint {
   type: "Point";
@@ -258,7 +259,7 @@ export default function Searchpastjobs() {
         coordinates: [lng, lat],
       };
 
-      // ✅ เซ็ต object โดยตรง ไม่ต้อง stringify
+      //  เซ็ต object โดยตรง ไม่ต้อง stringify
       setForm((f) => ({
         ...f,
         address: posObj,
@@ -320,7 +321,9 @@ export default function Searchpastjobs() {
               }`}
             >
               สร้าง{" "}
-              <span className={t ? "text-white" : "text-yellow-500"}>ใบงาน</span>
+              <span className={t ? "text-white" : "text-yellow-500"}>
+                ใบงาน
+              </span>
             </h2>
             <div className="flex flex-wrap gap-4 items-center">
               <button
@@ -373,8 +376,11 @@ export default function Searchpastjobs() {
           </div>
 
           {filtered.map((e, i) => (
-            <div
-              key={i}
+            <motion.div
+              key={e._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
               className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center crounded-xl shadow-sm py-1 px-5 mt-2 ${
                 t ? "bg-gray-900 border-gray-700" : "bg-blue-50/40"
               } border`}
@@ -447,7 +453,7 @@ export default function Searchpastjobs() {
                   </button>
                 </Link>
               </div>
-            </div>
+            </motion.div>
           ))}
 
           {/* Modal */}
@@ -476,8 +482,8 @@ export default function Searchpastjobs() {
                     Worksheet: "ชื่องาน",
                     Employer: "ชื่อผู้จ้าง",
                     Contact_number: "เบอร์ติดต่อ",
-                    responsible: "ผู้สร้างงาน",
-                    address: "ที่อยุ่",
+                    responsible: "เมล",
+                    address: "ที่อยุ่งาน  ",
                   }).map(([k, label]) => (
                     <div key={k} className="flex flex-col">
                       <label className={`mb-1 font-semibold ${cls.label}`}>

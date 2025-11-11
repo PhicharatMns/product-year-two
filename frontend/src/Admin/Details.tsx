@@ -235,9 +235,9 @@ export default function Details() {
 
   const { theme } = useTheme();
 
-  const text = theme === "dark" ? "text-white" : "text-gray-800";
-  const bg_border =
-    theme === "dark" ? "bg-gray-900" : "border-bule-200 shadow-lg";
+  // const text = theme === "dark" ? "text-white" : "text-gray-800";
+  // const bg_border =
+  //   theme === "dark" ? "bg-gray-900" : "border-bule-200 shadow-lg";
 
   return (
     <div
@@ -301,9 +301,10 @@ export default function Details() {
                 </div>
               );
           })}
+
           <div className="grid grid-cols-5 gap-4 mt-3">
             <div className="col-span-2">
-              <div className="w-full h-80 mb-1 p-5 rounded-2xl border ">
+              <div className="w-full h-90 mb-1 p-5 rounded-2xl border ">
                 <div
                   className={` items-center ${
                     theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -325,47 +326,58 @@ export default function Details() {
                 <div className="overflow-auto scrollbar-hide h-60">
                   {SelectedTradesmen.map((event, index) => {
                     return (
-                      <div
-                        key={index}
-                        className={`items-center  border  p-1 my-1 rounded-xl ${
-                          theme === "dark" ? "bg-gray-800" : "shadow-sm"
-                        }`}
+                      <motion.div
+                        key={event._id}
+                        initial={{ opacity: 0, y: 20 }} // เริ่มมองไม่เห็น + เลื่อนลง
+                        animate={{ opacity: 1, y: 0 }} // จบที่มองเห็น + ตำแหน่งปกติ
+                        transition={{
+                          duration: 0.5, // เวลา animation 0.5 วินาที
+                          delay: index * 0.50, // ทำให้แต่ละ item delay ตามลำดับ
+                          ease: "easeOut",
+                        }}
                       >
-                        <div className="items-center justify-between flex">
-                          <p className={`text-sm pl-2 font-semibold `}>
-                            การขอเบิกของ
-                          </p>
-                          <button
-                            onClick={() => handeDelete(event._id)}
-                            className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-black text-sm duration-300 
+                        <div
+                          key={index}
+                          className={`items-center  border  p-1 my-1 rounded-xl ${
+                            theme === "dark" ? "bg-gray-800" : "shadow-sm"
+                          }`}
+                        >
+                          <div className="items-center justify-between flex">
+                            <p className={`text-sm pl-2 font-semibold `}>
+                              การขอเบิกของ
+                            </p>
+                            <button
+                              onClick={() => handeDelete(event._id)}
+                              className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-black text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              active:translate-y-1 active:scale-x-110 active:scale-y-90  
               `}
-                          >
-                            <RiDeleteBin5Line fontSize={20} />
-                          </button>
-                        </div>
-                        <div className="flex gap-2">
-                          <img
-                            className="h-10 w-10 rounded-4xl bg-blue-500"
-                            src=""
-                            alt=""
-                          />
-                          <div className="text-sm flex flex-col gap-1">
-                            <p className={``}>
-                              <span className={`font-semibold `}>
-                                หัวหน้างาน:
-                              </span>{" "}
-                              ชื่อหัวหน้างาน
-                            </p>
-                            <p className={`truncate w-120 `}>
-                              <span className={`font-semibold `}>
-                                รายละเอียด:
-                              </span>{" "}
-                            </p>
+                            >
+                              <RiDeleteBin5Line fontSize={20} />
+                            </button>
+                          </div>
+                          <div className="flex gap-2">
+                            <img
+                              className="h-10 w-10 rounded-4xl bg-blue-500"
+                              src=""
+                              alt=""
+                            />
+                            <div className="text-sm flex flex-col gap-1">
+                              <p className={``}>
+                                <span className={`font-semibold `}>
+                                  หัวหน้างาน:
+                                </span>{" "}
+                                ชื่อหัวหน้างาน
+                              </p>
+                              <p className={`truncate w-120 `}>
+                                <span className={`font-semibold `}>
+                                  รายละเอียด:
+                                </span>{" "}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
                     );
                   })}
                 </div>
