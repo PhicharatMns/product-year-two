@@ -199,7 +199,7 @@ export default function GetPaper() {
               ${focused ? "w-72 shadow-lg" : "w-60 border-gray-300"}  
               ${theme === "dark"
                   ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
-                  : "border-b-purple-300 focus:ring-blue-400 bg-white text-gray-800"
+                  : " focus:ring-blue-400 bg-white text-gray-800"
                 }`}
             />
           </div>
