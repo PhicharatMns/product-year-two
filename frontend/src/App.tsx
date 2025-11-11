@@ -45,6 +45,8 @@ import DashboardExecutive from "./executive/DashboardExecutive";
 import Executive from "./executive/Executive";
 import MapWork from "./executive/MapWork";
 import Getpaperexecutive from "./executive/Getpaperexecutive";
+import ProfileExecutive from "./executive/ProfileExecutive";
+
 
 // userChief
 import Dashboardchief from "./chief/Dashboardchief";
@@ -115,6 +117,7 @@ const router = createBrowserRouter([
       { path: "DashboardExecutive", element: <DashboardExecutive /> },
       { path: "getpaperexecutive", element: <Getpaperexecutive /> },
       { path: "MapWork", element: <MapWork /> },
+      { path: "ProfileExecutive", element: <ProfileExecutive /> },
     ],
   },
 
