@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { motion } from "framer-motion";
 
 interface Employee {
   _id: string;
@@ -71,7 +72,7 @@ export default function Detailwork() {
     }
   }, [loading]);
 
-  if (!job) return(<div></div>)
+  if (!job) return <div></div>;
 
   return (
     <div className={`w-max-380 p-5 mx-auto container 0 ${text}`}>
@@ -131,11 +132,17 @@ export default function Detailwork() {
                 รายการติดต่อ / เบิกของ
               </div>
               <div>
-                <div
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.05,
+                    ease: "easeOut",
+                  }}
                   className={`items-center border p-1 my-1 rounded-xl ${
                     theme === "dark" ? "bg-gray-800" : "shadow-sm"
-                  }
-              `}
+                  }`}
                 >
                   <p className={`text-sm pl-2 font-semibold ${titleColor}`}>
                     การขอเบิกของ
@@ -162,7 +169,7 @@ export default function Detailwork() {
                       </p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               </div>
             </div>
 
