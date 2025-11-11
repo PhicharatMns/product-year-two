@@ -332,234 +332,127 @@ export default function Notification() {
                       ? "border-transparent text-gray-400 hover:text-gray-200"
                       : "border-transparent text-gray-500 hover:text-gray-800";
 
-                  return (
-                    <button // *** แก้ไข: เพิ่ม type="button" ***
-                      type="button"
-                      key={tabName}
-                      onClick={() => handleTabClick(tabName)}
-                      className={`py-3 px-4 -mb-px text-sm font-medium border-b-2 whitespace-nowrap ${
-                        isActive ? activeClasses : inactiveClasses
-                      }`}
-                    >
-                     {tabName}                   {" "}
-                    </button>
-                  );
-                })}
-              {" "}
-              </div>
-                            {/* Table Content "รายการเบิกของ" */}             {" "}
-              <div
-                className={`block w-full overflow-x-auto transition-opacity duration-300 ${
-                  tabFade ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                               {" "}
-                <table className="w-full text-left">
-                                   {" "}
-                  <thead
-                    className={`${
-                      theme === "dark" ? "bg-gray-800" : "bg-gray-50"
-                    }`}
-                  >
-                                       {" "}
-                    <tr>
-                                           {" "}
-                      <th
-                        className={`p-4 text-xs font-medium ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
-                        } uppercase`}
-                      >
-                                                ผู้ขอเบิก                      {" "}
-                      </th>
-                                           {" "}
-                      <th
-                        className={`p-4 text-xs font-medium ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
-                        } uppercase`}
-                      >
-                                                ประเภทงาน                      {" "}
-                        {/* *** แก้ไข: ลบ 'A' ที่เป็นตัวอักษรแปลกๆ ออก *** */} 
-                                           {" "}
-                      </th>
-                                           {" "}
-                      <th
-                        className={`p-4 text-xs font-medium ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
-                        } uppercase`}
-                      >
-                                                รายละเอียด                      {" "}
-                      </th>
-                                           {" "}
-                      <th
-                        className={`p-4 text-xs font-medium ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
-                        } uppercase`}
-                      >
-                                                วันที่                      {" "}
-                      </th>
-                                           {" "}
-                      <th
-                        className={`p-4 text-xs font-medium ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
-                        } uppercase`}
-                      ></th>
-                                         {" "}
-                    </tr>
-                                     {" "}
-                  </thead>
-                                   {" "}
-                  <tbody className={`divide-y ${border}`}>
-                                       {" "}
-                    {filteredItems.map((event, index) => (
-                      <tr
-                        key={index}
-                        className={`transition-colors ${hoverBg} cursor-pointer`}
-                        onClick={() => openMessAdmin(event)} // *** คลิกเพื่อเปิด Modal ***
-                      >
-                                               {" "}
-                        <td className="p-4 whitespace-nowrap">
-                                                   {" "}
-                          <div className="flex items-center gap-3">
-                                                       {" "}
-                            <Avatar name={event.name} Lname={event.Lname} />   
-                                                   {" "}
-                            <div>
-                                                           {" "}
-                              <p className="font-medium">
-                                                                {event.name}{" "}
-                                {event.Lname}                             {" "}
-                              </p>
-                                                           {" "}
-                              <p
-                                className={`text-sm ${
-                                  theme === "dark"
-                                    ? "text-gray-400"
-                                    : "text-gray-600"
-                                }`}
-                              >
-                                                               {" "}
-                                {event.Description}                             {" "}
-                              </p>
-                                                         {" "}
-                            </div>
-                                                     {" "}
-                          </div>
-                                                 {" "}
-                        </td>
-                                               {" "}
-                        <td className="p-4 whitespace-nowrap">
-                                                   {" "}
-                          <Badge color={getJobColor(event.job)}>
-                            {event.job}
-                          </Badge>
-                                                 {" "}
-                        </td>
-                                               {" "}
-                        <td className="p-4 whitespace-nowrap">
-                                                   {" "}
-                          {/* *** แก้ไข: ลบ 's' และ 'M' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                                                   {" "}
-                          <p className="font-medium truncate max-w-xs">
-                                                        {event.title}           
-                                         {" "}
-                          </p>
-                                                 {" "}
-                        </td>
-                                               {" "}
-                        <td className="p-4 whitespace-nowrap">
-                                                   {" "}
-                          <p
-                            className={`text-sm ${
-                              theme === "dark"
-                                ? "text-gray-400"
-                                : "text-gray-600"
-                            }`}
-                          >
-                                                        {event.time}           
-                                       {" "}
-                          </p>
-                                                 {" "}
-                        </td>
-                                               {" "}
-                        <td className="p-4 whitespace-nowrap">
-                                                   {" "}
-                          {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                                                   {" "}
-                          <button // *** แก้ไข: เพิ่ม type="button" ***
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              console.log("More clicked");
-                            }}
-                            className={`p-1 rounded-md ${
-                              theme === "dark"
-                                ? "hover:bg-gray-700"
-                                : "hover:bg-gray-200"
-                            }`}
-                          >
-                                                       {" "}
-                            <MoreHorizontal size={20} />                       
-                             {" "}
-                          </button>
-                                               {" "}
-                        </td>
-                                             {" "}
-                      </tr>
-                    ))}
-                                     {" "}
-                  </tbody>
-                                   {" "}
-                  {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}       
-                         {" "}
-                </table>
-                                {/* No Data Message */}               {" "}
-                {filteredItems.length === 0 && (
-                  <div className="p-10 text-center text-gray-500">
-                                       {" "}
-                    <p>
-                                           {" "}
-                      {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}   
-                                       {" "}
-                      {search
-                        ? `ไม่พบผลลัพธ์สำหรับ "${search}"`
-                        : `ไม่มีข้อมูลในหมวดหมู่ "${activeTab}"`}
-                                         {" "}
-                    </p>
-                                     {" "}
-                  </div>
-                )}
-                             {" "}
-              </div>
-                           {" "}
-              {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}           {" "}
-            </div>
-                       {" "}
-            {/* --- [ฝั่ง 2] รายงาน/ข้อความจากช่าง (lg:col-span-2) --- */}     
-                 {" "}
-            <div
-              className={`border ${border} col-span-1 lg:col-span-2 rounded-lg ${bg}`}
-            >
-                            {/* Card Header */}             {" "}
-              <div
-                className={`flex flex-col sm:flex-row justify-between items-center p-4 border-b ${border}`}
-              >
-                               {" "}
-                <p className="text-lg font-semibold mb-2 sm:mb-0">
-                                    รายงานจากช่าง                  {" "}
-                  <span
-                    className={`text-sm font-normal ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-600"
-                    } ml-2`}
-                  >
-                                       {" "}
-                    {/* *** แก้ไข: ลบ 'section' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                                        ({technicianMessages.length} ข้อความ)  
-                                   {" "}
-                  </span>
-                                 {" "}
-                </p>
-                               {" "}
-                {/*
+                  return (
+                    <button
+                      // *** แก้ไข: เพิ่ม type="button" ***
+                      type="button" 
+                      key={tabName}
+                      onClick={() => handleTabClick(tabName)}
+                      className={`py-3 px-4 -mb-px text-sm font-medium border-b-2 whitespace-nowrap ${
+                        isActive ? activeClasses : inactiveClasses
+                      }`}
+                    >
+                      {tabName}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Table Content "รายการเบิกของ" */}
+              <div 
+                className={`block w-full overflow-x-auto transition-opacity duration-300 ${
+                  tabFade ? "opacity-100" : "opacity-0"
+                }`}
+              >
+                <table className="w-full text-left">
+                  <thead
+                    className={`${theme === "dark" ? "bg-gray-800" : "bg-gray-50"}`}
+                  >
+                    <tr>
+                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                        ผู้ขอเบิก
+                      </th>
+                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                        ประเภทงาน
+                      {/* *** แก้ไข: ลบ 'A' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                      </th>
+                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                        รายละเอียด
+                      </th>
+                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                        วันที่
+                      </th>
+                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}></th>
+                    </tr>
+                  </thead>
+                  <tbody className={`divide-y ${border}`}>
+                    {filteredItems.map((event, index) => (
+                      <tr
+                        key={index}
+                        className={`transition-colors ${hoverBg} cursor-pointer`}
+                        onClick={() => openMessAdmin(event)} // *** คลิกเพื่อเปิด Modal ***
+                      >
+                        <td className="p-4 whitespace-nowrap">
+                          <div className="flex items-center gap-3">
+                            <Avatar name={event.name} Lname={event.Lname} />
+                            <div>
+                              <p className="font-medium">
+                                {event.name} {event.Lname}
+                              </p>
+                              <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                                {event.Description}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 whitespace-nowrap">
+                          <Badge color={getJobColor(event.job)}>{event.job}</Badge>
+                        </td>
+                        <td className="p-4 whitespace-nowrap">
+                          {/* *** แก้ไข: ลบ 's' และ 'M' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                          <p className="font-medium truncate max-w-xs">
+                            {event.title}
+                          </p>
+                        </td>
+                        <td className="p-4 whitespace-nowrap">
+                          <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                            {event.time}
+                        </p>
+                        </td>
+                        <td className="p-4 whitespace-nowrap">
+                          {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                          <button 
+                            // *** แก้ไข: เพิ่ม type="button" ***
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); console.log("More clicked"); }}
+                            className={`p-1 rounded-md ${theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-200"}`}
+                          >
+                            <MoreHorizontal size={20} />
+                          </button>
+                      </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                </table>
+
+                {/* No Data Message */}
+                {filteredItems.length === 0 && (
+                  <div className="p-10 text-center text-gray-500">
+                    <p>
+                      {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                      {search 
+                        ? `ไม่พบผลลัพธ์สำหรับ "${search}"` 
+                        : `ไม่มีข้อมูลในหมวดหมู่ "${activeTab}"`}
+                    </p>
+                  </div>
+                )}
+              </div>
+              {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+            </div>
+
+            {/* --- [ฝั่ง 2] รายงาน/ข้อความจากช่าง (lg:col-span-2) --- */}
+            <div className={`border ${border} col-span-1 lg:col-span-2 rounded-lg ${bg}`}>
+              {/* Card Header */}
+              <div className={`flex flex-col sm:flex-row justify-between items-center p-4 border-b ${border}`}>
+                <p className="text-lg font-semibold mb-2 sm:mb-0">
+                  รายงานจากช่าง
+                  <span className={`text-sm font-normal ${theme === "dark" ? "text-gray-400" : "text-gray-600"} ml-2`}>
+                    {/* *** แก้ไข: ลบ 'section' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                    ({technicianMessages.length} ข้อความ) 
+                  </span>
+                </p>
+                {/*
                 <button className="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
                   <Plus size={16} /> เขียนข้อความ
                 </button>
