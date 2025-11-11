@@ -16,19 +16,20 @@ router.get("/", async (req, res) => {
 // POST - เพิ่มช่าง
 router.post("/", async (req, res) => {
   try {
-    const { Name, Position, Phone_Number, Profile, employeeId, id } = req.body;
+    const { Name, Position, Phone_Number, Profile, employeeId, id, role } =
+      req.body;
 
-    //  หาว่าช่างคนนี้ เคยอยู่ในงานนี้มาก่อนหรือยัง
+    // หาว่าช่างคนนี้เคยอยู่ในงานนี้มาก่อนหรือยัง
     const existing = await OtherTradesman.findOne({ id, employeeId });
 
     if (existing) {
-      //  ถ้ามีอยู่แล้ว ให้เพิ่มค่า Jobs
+      // ถ้ามีอยู่แล้ว ให้เพิ่มค่า Jobs
       existing.Jobs += 1;
       await existing.save();
       return res.json(existing);
     }
 
-    //  ถ้ายังไม่มี ให้สร้างใหม่ (เพิ่มช่างเข้าใบงานนี้)
+    // ถ้ายังไม่มี ให้สร้างใหม่ (เพิ่มช่างเข้าใบงานนี้)
     const newTradesman = new OtherTradesman({
       Name,
       Position,
@@ -37,6 +38,7 @@ router.post("/", async (req, res) => {
       employeeId,
       id,
       Jobs: 1,
+      role: role || "worker", // default
     });
 
     const saved = await newTradesman.save();

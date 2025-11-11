@@ -13,6 +13,7 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import { motion } from "framer-motion";
 import { CiSearch } from "react-icons/ci";
+import { RiDeleteBin5Line } from "react-icons/ri";
 
 interface Tradesman {
   _id: string;
@@ -159,10 +160,12 @@ export default function DetailworkChief() {
   const [Search, setSearch] = useState<string>(""); //   string
   const [selectedPosition, setSelectedPosition] = useState<string>("ทั้งหมด");
   const [dataTradesman, setDataTradesman] = useState<Tradesman[]>([]);
-  const [jobCounts, setJobCounts] = useState<{ [key: string]: number }>({});
+  const [jobCounts] = useState<{ [key: string]: number }>({});
   const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradesman[]>([]);
   const [duplicateTradesman, setDuplicateTradesman] =
     useState<Tradesman | null>(null);
+  const [showOpenaddTradesman, setshowOpenaddTradesman] = useState(false);
+  const [duplicateFade, setDuplicateFade] = useState(false);
 
   const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
@@ -210,6 +213,11 @@ export default function DetailworkChief() {
     loadData();
   }, [id]);
 
+  const openshowOpenaddTradesman = () => {
+    setDuplicateFade(true);
+    setTimeout(() => setshowOpenaddTradesman(true), 50);
+  };
+
   const handleAddTradesman = async (tradesman: Tradesman) => {
     try {
       // ตรวจสอบ role
@@ -222,6 +230,7 @@ export default function DetailworkChief() {
       const isDuplicate = SelectedTradesmen.some((t) => t.id === tradesman._id);
       if (isDuplicate) {
         setDuplicateTradesman(tradesman);
+        openshowOpenaddTradesman(); // เปิด modal เตือน
         return;
       }
 
@@ -232,6 +241,7 @@ export default function DetailworkChief() {
         Phone_Number: tradesman.Phone_Number,
         Profile: tradesman.Profile,
         employeeId: id,
+        role: tradesman.role, // <-- เพิ่มตรงนี้
       };
 
       const res = await fetch("http://localhost:5000/api/otherTradesman", {
@@ -253,12 +263,18 @@ export default function DetailworkChief() {
     setTimeout(() => setMobled(false), 300); // รอให้ fade out เสร็จก่อนปิดจริง
   };
 
+  const classhowOpenaddTradesman = () => {
+    setDuplicateFade(false);
+    setTimeout(() => setshowOpenaddTradesman(false), 300);
+  };
+
   //  ดึงข้อมูล otherTradesman เฉพาะของงานนี้
   const fetchOtherTradesman = async () => {
     try {
       const res = await fetch(`http://localhost:5000/api/otherTradesman/${id}`);
       const data: Tradesman[] = await res.json();
-      setSelectedTradesmen(data); //  อัปเดต state ทันที
+      console.log(" ช่างที่โหลดมา:", data);
+      setSelectedTradesmen(data);
     } catch (err) {
       console.error("โหลด otherTradesman ล้มเหลว:", err);
     }
@@ -287,7 +303,7 @@ export default function DetailworkChief() {
   return (
     <div className={`w-max-380 p-5 mx-auto container ${text}`}>
       <div
-        className={`transition-opacity duration-700 ${
+        className={`transition-opacity duration-500 ${
           fade ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -355,11 +371,57 @@ export default function DetailworkChief() {
                     </div>
                   </button>
                 </div>
-                {SelectedTradesmen.map((t) => (
-                  <div key={t._id}>
-                    <p>{t.Name}</p>
-                  </div>
-                ))}
+                <div className="overflow-auto scrollbar-hide h-60">
+                  {SelectedTradesmen.filter(
+                    (event) => event.role?.toLowerCase() === "user"
+                  ).map((event, index) => (
+                    <motion.div
+                      key={event._id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: index * 0.5,
+                        ease: "easeOut",
+                      }}
+                    >
+                      <div
+                        className={`items-center border p-1 my-1 rounded-xl ${
+                          theme === "dark" ? "bg-gray-800" : "shadow-sm"
+                        }`}
+                      >
+                        <div className="items-center justify-between flex">
+                          <p className="text-sm pl-2 font-semibold">
+                            {event.Name}
+                          </p>
+                          <button
+                            className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-black text-sm duration-300 
+              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+              active:translate-y-1 active:scale-x-110 active:scale-y-90`}
+                          >
+                            <RiDeleteBin5Line fontSize={20} />
+                          </button>
+                        </div>
+                        <div className="flex gap-2">
+                          <img
+                            className="h-10 w-10 rounded-4xl bg-blue-500"
+                            src=""
+                            alt=""
+                          />
+                          <div className="text-sm flex flex-col gap-1">
+                            <p>
+                              <span className="font-semibold">หัวหน้างาน:</span>{" "}
+                              ชื่อหัวหน้างาน
+                            </p>
+                            <p className="truncate w-120">
+                              <span className="font-semibold">รายละเอียด:</span>
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
               </div>
 
               <div
@@ -459,10 +521,10 @@ export default function DetailworkChief() {
                 />
                 <input
                   placeholder="ค้นหาใบงาน..."
-                  // value={Search}
-                  // onChange={(e) => setSearch(e.target.value)}
-                  // onFocus={() => setFocused(true)}
-                  // onBlur={() => setFocused(false)}
+                  value={Search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onFocus={() => setFocused(true)}
+                  onBlur={() => setFocused(false)}
                   type="text"
                   className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
                                     ${
@@ -492,7 +554,7 @@ export default function DetailworkChief() {
                 <div key={dept.name} className="">
                   <div
                     className="relative cursor-pointer"
-                    // onClick={() => setSelectedPosition(dept.name)}
+                    onClick={() => setSelectedPosition(dept.name)}
                   >
                     <p
                       className={`truncate relative w-fit mx-auto after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full
@@ -515,10 +577,12 @@ export default function DetailworkChief() {
               {dataTradesman
                 .filter(
                   (t) =>
-                    (t.Position === "user" || t.role === "user") && // เฉพาะ Chief
+                    (t.Position === "user" || t.role === "user") &&
                     (selectedPosition === "ทั้งหมด" ||
-                      t.Position === selectedPosition) && // กรองตำแหน่ง
-                    t.Name.toLowerCase().includes(Search.toLowerCase()) //  ค้นหาชื่อ
+                      t.Position === selectedPosition) &&
+                    (t.Name ?? "")
+                      .toLowerCase()
+                      .includes((Search ?? "").toLowerCase())
                 )
                 .sort(
                   (a, b) => (jobCounts[a._id] ?? 0) - (jobCounts[b._id] ?? 0)
@@ -646,6 +710,45 @@ export default function DetailworkChief() {
                 <span className="absolute inset-0 overflow-hidden pointer-events-none">
                   <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
                 </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* เตือนก่อนลบ */}
+      {showOpenaddTradesman && duplicateTradesman && (
+        <div
+          className={`fixed inset-0 duration-100 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 ${
+            duplicateFade ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div
+            className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            }`}
+          >
+            <div className="flex items-center">
+              <p className="flex gap-1">
+                ช่าง{" "}
+                <span
+                  className={`${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
+                >
+                  {duplicateTradesman.Name}
+                </span>
+                <p>อยุ่ในระบบเเล้ว</p>
+              </p>
+
+              <button
+                className={`relative ml-auto overflow-hidden cursor-pointer rounded-md px-4 py-1 text-white text-sm duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90  bg-red-500
+              `}
+                onClick={classhowOpenaddTradesman}
+              >
+                ออก{" "}
               </button>
             </div>
           </div>

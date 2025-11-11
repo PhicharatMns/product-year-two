@@ -14,6 +14,7 @@ const otherTradesmanSchema = new mongoose.Schema({
     type: Number,
     default: 0, // เริ่มจาก 0
   },
+  role: String,
 });
 
 module.exports = mongoose.model("OtherTradesman", otherTradesmanSchema);
