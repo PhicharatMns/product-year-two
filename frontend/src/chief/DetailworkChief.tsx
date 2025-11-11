@@ -213,8 +213,8 @@ export default function DetailworkChief() {
   const handleAddTradesman = async (tradesman: Tradesman) => {
     try {
       // ตรวจสอบ role
-      if (tradesman.Position !== "chief" && tradesman.role !== "chief") {
-        alert("สามารถเพิ่มได้เฉพาะช่างที่เป็น Chief เท่านั้น");
+      if (tradesman.Position !== "user" && tradesman.role !== "user") {
+        alert("สามารถเพิ่มได้เฉพาะช่างที่เป็น user เท่านั้น");
         return;
       }
 
@@ -246,6 +246,11 @@ export default function DetailworkChief() {
     } catch (err) {
       console.error("เกิดข้อผิดพลาด:", err);
     }
+  };
+
+  const closeModal = () => {
+    setModalFade(false);
+    setTimeout(() => setMobled(false), 300); // รอให้ fade out เสร็จก่อนปิดจริง
   };
 
   //  ดึงข้อมูล otherTradesman เฉพาะของงานนี้
@@ -610,6 +615,7 @@ export default function DetailworkChief() {
                         <button
                           onClick={async () => {
                             await handleAddTradesman(event);
+                            closeModal();
                           }}
                           className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-2 text-white text-sm duration-300 
            [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
@@ -632,7 +638,10 @@ export default function DetailworkChief() {
                 theme === "dark" ? "border-gray-700" : "border-gray-200"
               }`}
             >
-              <button className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95">
+              <button
+                onClick={closeModal}
+                className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+              >
                 <span className="relative z-10">ยกเลิก</span>
                 <span className="absolute inset-0 overflow-hidden pointer-events-none">
                   <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
