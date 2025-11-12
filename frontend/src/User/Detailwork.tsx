@@ -66,7 +66,7 @@ export default function Detailwork() {
         credentials: "include",
       });
       const data: Tradesman[] = await res.json();
-      setDataTradesman(data);
+        (data);
     } catch (err) {
       console.error("โหลดข้อมูลช่างล้มเหลว:", err);
     }

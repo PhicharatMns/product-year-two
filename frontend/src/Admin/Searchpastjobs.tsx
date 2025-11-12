@@ -307,11 +307,11 @@ export default function Searchpastjobs() {
 
   return (
     <div
-      className={`transition-opacity duration-500 ${
+      className={`transition-opacity duration-500 container mx-auto p-5 max-w-380   ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="container mx-auto p-5 max-w-380  ">
+      <div className="">
         <div className={``}>
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
