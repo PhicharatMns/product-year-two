@@ -1,7 +1,13 @@
 import { useTheme } from "@/components/theme-provider";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Tooltip,
+  useMap,
+} from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { motion } from "framer-motion";
@@ -20,6 +26,22 @@ interface Employee {
   };
 }
 
+interface Tradesman {
+  _id: string;
+  Name: string;
+  Nickname: string;
+  ID: string;
+  Birthday: string;
+  Address: string;
+  Phone_Number: string;
+  Email: string;
+  Profile: string;
+  Position: string;
+  Start_data: string;
+  id: string;
+  role: string;
+}
+
 export default function Detailwork() {
   const { theme } = useTheme();
   const { id } = useParams<{ id: string }>();
@@ -27,12 +49,139 @@ export default function Detailwork() {
   const [loading, setLoading] = useState(true);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
   const [fade, setFade] = useState(false);
+  const [ setDataTradesman] = useState<Tradesman[]>([]);
+  const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradesman[]>([]);
+  const [userPos, setUserPos] = useState<[number, number] | null>(null);
 
   const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
   const text_color = theme === "dark" ? "text-white" : "text-black";
   const borderSoft = theme === "dark" ? "border-gray-700" : "border-gray-300";
   const titleColor = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+
+  // ดึงข้อมูลช่างทั้งหมด (Tradesman)
+  const fetchTradesman = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/login/all-tradesman", {
+        credentials: "include",
+      });
+      const data: Tradesman[] = await res.json();
+      setDataTradesman(data);
+    } catch (err) {
+      console.error("โหลดข้อมูลช่างล้มเหลว:", err);
+    }
+  };
+
+  //  ดึงข้อมูล otherTradesman เฉพาะของงานนี้
+  const fetchOtherTradesman = async () => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/otherTradesman/${id}`);
+      const data: Tradesman[] = await res.json();
+      setSelectedTradesmen(data);
+    } catch (err) {
+      console.error("โหลด otherTradesman ล้มเหลว:", err);
+    }
+  };
+
+  // 🔹 RoutingMachine Component (เร็วขึ้น)
+  const RoutingMachine = ({
+    userPos,
+    jobPos,
+  }: {
+    userPos: [number, number];
+    jobPos: [number, number];
+  }) => {
+    const map = useMap();
+
+    useEffect(() => {
+      if (!map) return;
+
+      const routingControl = (L as any).Routing.control({
+        waypoints: [
+          L.latLng(userPos[0], userPos[1]),
+          L.latLng(jobPos[0], jobPos[1]),
+        ],
+        lineOptions: { styles: [{ color: "orange", weight: 6, opacity: 0.8 }] },
+        addWaypoints: false,
+        draggableWaypoints: false,
+        createMarker: (i: number, wp: any) => {
+          const iconUrl =
+            i === 0
+              ? "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png"
+              : "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png";
+          return L.marker(wp.latLng, {
+            icon: L.icon({
+              iconUrl,
+              iconSize: [30, 45],
+              iconAnchor: [15, 45],
+              popupAnchor: [0, -40],
+            }),
+          }).bindPopup(i === 0 ? "ตำแหน่งของคุณ" : "ตำแหน่งงาน");
+        },
+      }).addTo(map);
+
+      // fitBounds แค่ครั้งเดียวหลัง routing พร้อม
+      routingControl.on("routesfound", () => {
+        if (!map._fitDone) {
+          const bounds = L.latLngBounds([userPos, jobPos]);
+          map.fitBounds(bounds, { padding: [20, 20], maxZoom: 10 });
+          map._fitDone = true;
+        }
+      });
+
+      return () => map.removeControl(routingControl);
+    }, [map, userPos, jobPos]);
+
+    return null;
+  };
+
+  // 🔹 แยก Map Component
+  const JobMap = ({
+    markerPos,
+    userPos,
+    jobWorksheet,
+  }: {
+    markerPos: [number, number];
+    userPos: [number, number];
+    jobWorksheet?: string;
+  }) => {
+    return (
+      <MapContainer
+        center={markerPos}
+        zoom={15}
+        className="w-full h-155 z-0 rounded-lg"
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <Marker
+          position={markerPos}
+          icon={L.icon({
+            iconUrl:
+              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+          })}
+        >
+          <Tooltip permanent direction="top" offset={[0, -40]}>
+            {jobWorksheet || "ชื่องาน"}
+          </Tooltip>
+        </Marker>
+        <Marker
+          position={userPos}
+          icon={L.icon({
+            iconUrl:
+              "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png",
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+          })}
+        >
+          <Tooltip permanent direction="top" offset={[0, -40]}>
+            ตำแหน่งคุณ
+          </Tooltip>
+        </Marker>
+        <RoutingMachine userPos={userPos} jobPos={markerPos} />
+      </MapContainer>
+    );
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -64,9 +213,46 @@ export default function Detailwork() {
     fetchJob();
   }, [id]);
 
+   //  โหลดข้อมูล + ตำแหน่ง
+    useEffect(() => {
+      if (!id) return;
+  
+      async function loadData() {
+        try {
+          const [res, position] = await Promise.all([
+            fetch("http://localhost:5000/api/employees"),
+            new Promise<GeolocationPosition>((resolve, reject) => {
+              navigator.geolocation.getCurrentPosition(resolve, reject);
+            }),
+          ]);
+  
+          const data: Employee[] = await res.json();
+          const selected = data.find((emp) => emp._id === id);
+          setJob(selected || null);
+  
+          if (selected?.address?.coordinates) {
+            const [lng, lat] = selected.address.coordinates;
+            setMarkerPos([lat, lng]);
+          } else {
+            setMarkerPos([13.7563, 100.5018]);
+          }
+  
+          setUserPos([position.coords.latitude, position.coords.longitude]);
+        } catch (err) {
+          console.error("Error loading data:", err);
+        } finally {
+          setLoading(false);
+          setFade(true);
+        }
+      }
+      loadData();
+    }, [id]);
+
   // เริ่ม fade-in หลังจากโหลดเสร็จ
   useEffect(() => {
     if (!loading) {
+      fetchTradesman();
+      fetchOtherTradesman();
       const timer = setTimeout(() => setFade(true), 100);
       return () => clearTimeout(timer);
     }
@@ -93,9 +279,18 @@ export default function Detailwork() {
         <div className={`mt-5 transition-all duration-300 rounded-2xl`}>
           <div className="grid grid-cols-2 gap-5">
             <div className={`border p-3 rounded-xl ${bg}`}>
-              <p>หัวหน้างาน: {job.Supervisor || "-"}</p>
-              <p>ตำแหน่ง: {"-"}</p>
-              <p>เบอร์ติดต่อ: {job.PhoneNumber || "-"}</p>
+              {SelectedTradesmen.map((event, index) => {
+                return (
+                  <div key={index}>
+                    {event.role.toLowerCase() == "chief" && (
+                      <div>
+                        หัวหน้างาน : {event.Name}
+                        <p>เบอร์ติดต่อ: {event.Phone_Number || "-"}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
               <p>
                 วันเริ่มงาน:{" "}
                 {job.Date_of_acceptance_of_work
@@ -184,27 +379,14 @@ export default function Detailwork() {
               >
                 แผนที่งาน
               </h2>
-              {markerPos && (
-                <MapContainer
-                  center={markerPos}
-                  zoom={15}
-                  className="w-full h-140 rounded-lg"
-                >
-                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                  <Marker
-                    position={markerPos}
-                    icon={L.icon({
-                      iconUrl:
-                        "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
-                      iconSize: [25, 41],
-                      iconAnchor: [12, 41],
-                    })}
-                  >
-                    <Tooltip permanent direction="top" offset={[0, -40]}>
-                      {job.Worksheet || "ชื่องาน"}
-                    </Tooltip>
-                  </Marker>
-                </MapContainer>
+              {loading || !markerPos || !userPos ? (
+                <div className="w-full  rounded-lg bg-gray-200 animate-pulse"></div>
+              ) : (
+                <JobMap
+                  markerPos={markerPos}
+                  userPos={userPos}
+                  jobWorksheet={job.Worksheet}
+                />
               )}
             </div>
           </div>

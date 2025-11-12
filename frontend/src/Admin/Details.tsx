@@ -356,6 +356,16 @@ export default function Details() {
                             >
                               <RiDeleteBin5Line fontSize={20} />
                             </button>
+                            {/* {event.role?.toLowerCase() !== "user" && (
+                              <button
+                                onClick={() => handeDelete(event._id)}
+                                className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-black text-sm duration-300 
+    [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+    active:translate-y-1 active:scale-x-110 active:scale-y-90`}
+                              >
+                                <RiDeleteBin5Line fontSize={20} />
+                              </button>
+                            )} */}
                           </div>
                           <div className="flex gap-2">
                             <img
