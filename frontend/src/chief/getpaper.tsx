@@ -4,6 +4,7 @@ import { CiSearch } from "react-icons/ci";
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
 // import { Link } from "react-router-dom"; // --- 3. เราจะใช้ปุ่มเปิด Modal แทน Link ---
+import { motion } from "framer-motion";
 
 interface Employee {
   _id: string;
@@ -165,20 +166,23 @@ export default function GetPaper() {
 
   return (
     <div
-      className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"
-        }`}
+      className={`transition-opacity duration-700 ${
+        fade ? "opacity-100" : "opacity-0"
+      }`}
     >
       <div className="max-w-380 p-5 mx-auto container">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <p
-            className={`text-3xl font-extrabold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-              }`}
+            className={`text-3xl font-extrabold ${
+              theme === "dark" ? "text-yellow-500" : "text-blue-500"
+            }`}
           >
             ใบ
             <span
-              className={`${theme === "dark" ? "text-white" : "text-yellow-500"
-                }`}
+              className={`${
+                theme === "dark" ? "text-white" : "text-yellow-500"
+              }`}
             >
               งาน
             </span>
@@ -197,10 +201,11 @@ export default function GetPaper() {
               type="text"
               className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
               ${focused ? "w-72 shadow-lg" : "w-60 border-gray-300"}  
-              ${theme === "dark"
+              ${
+                theme === "dark"
                   ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
-                  : "border-b-purple-300 focus:ring-blue-400 bg-white text-gray-800"
-                }`}
+                  : " focus:ring-blue-400 bg-white text-gray-800"
+              }`}
             />
           </div>
         </div>
@@ -219,9 +224,16 @@ export default function GetPaper() {
 
         {/* ข้อมูลใบงาน */}
         {filtered.length > 0 ? (
-          filtered.map((job) => (
-            <div
-              key={job._id}
+          filtered.map((job, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.05,
+                ease: "easeOut",
+              }}
               className={`grid grid-cols-6 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
             >
               <p className="truncate">{job.Worksheet || "-"}</p>
@@ -230,8 +242,8 @@ export default function GetPaper() {
               <p>
                 {job.Date_of_acceptance_of_work
                   ? new Date(job.Date_of_acceptance_of_work).toLocaleDateString(
-                    "th-TH"
-                  )
+                      "th-TH"
+                    )
                   : "-"}
               </p>
               <p>
@@ -241,13 +253,15 @@ export default function GetPaper() {
               </p>
               <div className="flex gap-2 mx-auto">
                 <Link
-                  to={`/chief/DetailworkChief/${job._id}`} replace={false}
+                  to={`/chief/DetailworkChief/${job._id}`}
+                  replace={false}
                   className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${theme === "dark"
-                      ? "bg-yellow-500 hover:bg-yellow-600"
-                      : "bg-blue-500 hover:bg-blue-600"
-                    }`}
+             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+               theme === "dark"
+                 ? "bg-yellow-500 hover:bg-yellow-600"
+                 : "bg-blue-500 hover:bg-blue-600"
+             }`}
                 >
                   รายละเอียดงาน
                 </Link>
@@ -255,20 +269,22 @@ export default function GetPaper() {
                   onClick={() => openItemModal(job)}
                   className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
                   [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${theme === "dark"
+                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                    theme === "dark"
                       ? "bg-yellow-500 hover:bg-yellow-600"
                       : "bg-blue-500 hover:bg-blue-600"
-                    }`}
+                  }`}
                 >
                   เบิกของ
                 </button>
               </div>
-            </div>
+            </motion.div>
           ))
         ) : (
           <div
-            className={`text-center py-5 font-semibold ${theme === "dark" ? "text-gray-400" : "text-gray-600"
-              }`}
+            className={`text-center py-5 font-semibold ${
+              theme === "dark" ? "text-gray-400" : "text-gray-600"
+            }`}
           >
             ไม่พบใบงานของคุณ ในเวลานี่
           </div>
@@ -289,8 +305,9 @@ export default function GetPaper() {
           >
             {/* Modal Header */}
             <div
-              className={`flex gap-2 border-b px-6 py-4 text-2xl font-semibold ${theme === "dark" ? "border-gray-700" : "border-gray-200"
-                }`}
+              className={`flex gap-2 border-b px-6 py-4 text-2xl font-semibold ${
+                theme === "dark" ? "border-gray-700" : "border-gray-200"
+              }`}
             >
               <p
                 className={
@@ -309,10 +326,11 @@ export default function GetPaper() {
               {/* หัวตาราง */}
               <div
                 className={`grid grid-cols-4 text-center p-2 rounded-t-lg font-semibold shadow-sm 
-  ${theme === "dark"
-                    ? "bg-gray-900 text-yellow-400 border-b border-gray-700"
-                    : "bg-blue-50 text-blue-600 border-b border-blue-200"
-                  }`}
+  ${
+    theme === "dark"
+      ? "bg-gray-900 text-yellow-400 border-b border-gray-700"
+      : "bg-blue-50 text-blue-600 border-b border-blue-200"
+  }`}
               >
                 <div className="col-span-2">รายชื่อ</div>
                 <div>จำนวน</div>
@@ -325,8 +343,9 @@ export default function GetPaper() {
                   <div
                     key={index} // --- ใช้ id ที่ไม่ซ้ำกันเป็น key ---
                     className={`grid grid-cols-4 gap-4 items-center py-3 border-b 
-                    ${theme === "dark" ? "border-gray-700" : "border-gray-200"
-                      }`}
+                    ${
+                      theme === "dark" ? "border-gray-700" : "border-gray-200"
+                    }`}
                   >
                     {/* รายชื่อ */}
                     <div className="col-span-2">
@@ -338,10 +357,11 @@ export default function GetPaper() {
                           handleItemChange(item.id, "name", e.target.value)
                         } // --- เชื่อม onChange ---
                         className={`w-full p-2 rounded-lg border focus:ring-2 outline-none transition-all duration-200 
-          ${theme === "dark"
-                            ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-                            : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-                          }`}
+          ${
+            theme === "dark"
+              ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
+              : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
+          }`}
                       />
                     </div>
 
@@ -356,10 +376,11 @@ export default function GetPaper() {
                           handleItemChange(item.id, "quantity", e.target.value)
                         } // --- เชื่อม onChange ---
                         className={`w-full p-2 rounded-lg border focus:ring-2 outline-none transition-all duration-200 
-          ${theme === "dark"
-                            ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-                            : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-                          }`}
+          ${
+            theme === "dark"
+              ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
+              : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
+          }`}
                       />
                     </div>
 
@@ -379,15 +400,17 @@ export default function GetPaper() {
                         //   ลบ
                         className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-5 py-2 text-white text-sm duration-300 
                   [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${items.length <= 1
-                            ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
-                            : theme === "dark"
-                              ? "hover:text-white"
-                              : "hover:text-white"
-                          } ${theme === "dark"
+                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                    items.length <= 1
+                      ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
+                      : theme === "dark"
+                      ? "hover:text-white"
+                      : "hover:text-white"
+                  } ${
+                          theme === "dark"
                             ? "bg-red-500 hover:bg-red-600"
                             : "bg-red-500 hover:bg-red-600"
-                          }`}
+                        }`}
                       >
                         ลบ
                       </button>
@@ -400,11 +423,13 @@ export default function GetPaper() {
               <div className="flex justify-start">
                 <button
                   onClick={handleAddItem}
-                  className={`py-1 px-3 rounded-lg hover:scale-110 text-sm font-medium transition-all duration-200 ${theme === "dark"
+                  className={`py-1 px-3 rounded-lg hover:scale-110 text-sm font-medium transition-all duration-200 ${
+                    theme === "dark"
                       ? "text-yellow-500 hover:bg-yellow-500 hover:text-gray-900"
                       : "text-blue-500 hover:bg-blue-500 hover:text-white"
-                    } border ${theme === "dark" ? "border-yellow-500" : "border-blue-500"
-                    }`}
+                  } border ${
+                    theme === "dark" ? "border-yellow-500" : "border-blue-500"
+                  }`}
                 >
                   + เพิ่มรายการ
                 </button>
@@ -413,23 +438,26 @@ export default function GetPaper() {
               {/* หมายเหตุ */}
               <div className="pt-2">
                 <p
-                  className={`text-lg mb-1 font-semibold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    }`}
+                  className={`text-lg mb-1 font-semibold ${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
                 >
                   หมายเหตุ
                 </p>
                 <textarea
-                  className={`border w-full px-2 py-2 rounded-lg h-24 resize-none focus:ring-2 outline-none duration-200 ${theme === "dark"
+                  className={`border w-full px-2 py-2 rounded-lg h-24 resize-none focus:ring-2 outline-none duration-200 ${
+                    theme === "dark"
                       ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
                       : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-                    }`}
+                  }`}
                 />
               </div>
             </div>
 
             <div
-              className={`flex justify-end gap-4 border-t p-4 ${theme === "dark" ? "border-gray-700" : "border-gray-200"
-                }`}
+              className={`flex justify-end gap-4 border-t p-4 ${
+                theme === "dark" ? "border-gray-700" : "border-gray-200"
+              }`}
             >
               <button
                 onClick={closeopenItemModal}
@@ -441,8 +469,9 @@ export default function GetPaper() {
                 </span>
               </button>
               <button
-                className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                  }`}
+                className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                }`}
               >
                 <span className="relative z-10">ยืนยัน</span>
                 <span className="absolute inset-0 overflow-hidden pointer-events-none">

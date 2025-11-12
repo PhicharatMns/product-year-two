@@ -25,7 +25,7 @@ export default function AdminLayout() {
         <Sidebaradmin />
       </div>
 
-      <div className="flex-1 p-6">
+      <div className="flex-1">
         <Outlet context={{ openMessAdmin }} />
       </div>
 

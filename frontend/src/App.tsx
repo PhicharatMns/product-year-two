@@ -18,7 +18,6 @@ import Profileadmin from "./Admin/Profileadmin";
 import Addwork from "./Admin/Addwork";
 import Notification from "./Admin/Notification";
 import SuppliesAdmin from "./Admin/SuppliesAdmin";
-import MapAdmin from "./Admin/MapAdmin";
 
 // User Worker
 import UserLayout from "./User/UserLayout";
@@ -45,6 +44,8 @@ import DashboardExecutive from "./executive/DashboardExecutive";
 import Executive from "./executive/Executive";
 import MapWork from "./executive/MapWork";
 import Getpaperexecutive from "./executive/Getpaperexecutive";
+import ProfileExecutive from "./executive/ProfileExecutive";
+
 
 // userChief
 import Dashboardchief from "./chief/Dashboardchief";
@@ -78,7 +79,6 @@ const router = createBrowserRouter([
       { path: "addwork", element: <Addwork /> },
       { path: "notification", element: <Notification /> },
       { path: "suppliesAdmin", element: <SuppliesAdmin /> },
-      { path: "mapadmin", element: <MapAdmin /> },
     ],
   },
 
@@ -116,6 +116,7 @@ const router = createBrowserRouter([
       { path: "DashboardExecutive", element: <DashboardExecutive /> },
       { path: "getpaperexecutive", element: <Getpaperexecutive /> },
       { path: "MapWork", element: <MapWork /> },
+      { path: "ProfileExecutive", element: <ProfileExecutive /> },
     ],
   },
 
