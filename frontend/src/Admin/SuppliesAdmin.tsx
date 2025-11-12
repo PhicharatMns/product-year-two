@@ -8,7 +8,7 @@ import {
   Plus, 
   X, 
   Minus,
-  Package,        // New
+        // New
   Warehouse,      // New
   Shapes,         // New
   TriangleAlert   // New
@@ -432,9 +432,11 @@ export default function InventoryDashboard() {
   const pageBg = theme === "dark" ? "bg-gray-900" : "bg-gray-100";
   const cardBg = theme === "dark" ? "bg-gray-800" : "bg-white";
   const text = theme === "dark" ? "text-white" : "text-gray-300";
-  const titleText = theme === "dark" ? "text-white" : "text-gray-900";
+  const titleText = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const border = theme === "dark" ? "border-gray-700" : "border-gray-200";
   const hoverBg = theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-50";
+  const span = theme === "dark" ? "text-blue-500" : "text-yellow-500";
+  
 
   // --- Effects (เหมือนเดิม) ---
   useEffect(() => {
@@ -610,9 +612,9 @@ export default function InventoryDashboard() {
         
         {/* 1. Header */}
         <div className="mb-6">
-          <h1 className={`text-3xl font-bold ${titleText}`}>
-            คลังวัสดุและอุปกรณ์
-          </h1>
+          <p className={`text-3xl font-bold text-blue-500 ${titleText}  `}>
+            คลังวัสดุและ<span className={` ${span}`}>อุปกรณ์</span>
+          </p>
           <p className="text-sm text-gray-400 mt-1">
             ภาพรวมและจัดการสต็อกวัสดุทั้งหมด
           </p>
@@ -742,11 +744,11 @@ export default function InventoryDashboard() {
           </div>
           
           {/* 3.2 Right Column (Sidebar) */}
-          <div className="lg:col-span-1 flex flex-col gap-6">
+          <div className="lg:col-span-1 flex flex-col gap-6"> 
             
             {/* Quick Actions Card */}
             <div className={`${cardBg} border  ${border} rounded-lg shadow-sm p-4`}>
-              <h3 className="text-md  text-black font-semibold mb-3">ดำเนินการด่วน</h3>
+              <h3 className={`text-md  ${titleText} text-black font-semibold mb-3`}>ดำเนินการด่วน</h3>
               <button
                     type="button"
                     onClick={handleShowAddForm}

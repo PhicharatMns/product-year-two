@@ -339,239 +339,49 @@ export default function Notification() {
                 })}
               </div>
 
-              {/* Table Content "รายการเบิกของ" */}
-              <div
-                className={`block w-full overflow-x-auto transition-opacity duration-300 ${tabFade ? "opacity-100" : "opacity-0"
-                  }`}
-              >
-                <table className="">
-                  {/* <thead
-                    className={`${theme === "dark" ? "bg-gray-800" : "bg-gray-50"}`}
-                  >
-                    <tr>
-                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                        ผู้ขอเบิก
-                      </th>
-                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                        ประเภทงาน
-                        {/* *** แก้ไข: ลบ 'A' ที่เป็นตัวอักษรแปลกๆ ออก *** *
-                      </th>
-                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                        รายละเอียด
-                      </th>
-                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                        วันที่
-                      </th>
-                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}></th>
-                    </tr>
-                  </thead> */}
-                  <div className="grid grid-cols-5 px-5  gap-5">
-                    <p className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                      ผู้ขอเบิก
-                    </p>
-                    <p className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                      ประเภทงาน
-
-                    </p>
-                    <p className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                      รายละเอียด
-                    </p>
-                    <p className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                      วันที่
-                    </p>
-                    <p className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>รายละเอียด</p>
-                  </div>
-                  <tbody className={`divide-y   ${border}`}>
-                    {filteredItems.map((event, index) => (
-                      <motion.div
-                        key={index}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
-                        className={`grid grid-cols-5 items-center crounded-xl shadow-sm py-1 px-5 mt-2 ${theme === 'dark' ? "bg-gray-900 border-gray-700" : "bg-blue-50/40"
-                          } border`}
-                      >
-                        <td className="p-4 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <Avatar name={event.name} Lname={event.Lname} />
-                            <div>
-                              <p className="font-medium">
-                                {event.name} {event.Lname}
-                              </p>
-                              <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                                {event.Description}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="p-4 whitespace-nowrap">
-                          <Badge color={getJobColor(event.job)}>{event.job}</Badge>
-                        </td>
-                        <td className="p-4 whitespace-nowrap">
-                          {/* *** แก้ไข: ลบ 's' และ 'M' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                          <p className="font-medium truncate max-w-xs">
-                            {event.title}
-                          </p>
-                        </td>
-                        <td className="p-4 whitespace-nowrap">
-                          <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                            {event.time}
-                          </p>
-                        </td>
-                        <td className="p-4 whitespace-nowrap">
-                          {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                          <button
-                            // *** แก้ไข: เพิ่ม type="button" ***
-                            type="button"
-                            onClick={(e) => { e.stopPropagation(); console.log("More clicked"); }}
-                            className={`p-1 rounded-md ${theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-200"}`}
-                          >
-                            <MoreHorizontal size={20} />
-                          </button>
-                        </td>
-                      </motion.div>
-                    ))}
-                  </tbody>
-                  {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                </table>
-
-                {/* No Data Message */}
-                {filteredItems.length === 0 && (
-                  <div className="p-10 text-center text-gray-500">
-                    <p>
-                      {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                      {search
-                        ? `ไม่พบผลลัพธ์สำหรับ "${search}"`
-                        : `ไม่มีข้อมูลในหมวดหมู่ "${activeTab}"`}
-                    </p>
-                  </div>
-                )}
+              <div className="border">
+                {/* Table Content "รายการเบิกของ" */}
+                <div className='grid grid-cols-4 p-2 pl-10  m-2'>
+                  {[
+                    'ผู้ขอเบิก',
+                    'ประเภทงาน',
+                    'รายละเอียดงาน',
+                    'วันที่',
+                  ].map((event, index) => {
+                    return (
+                      <div key={index}>
+                        {event}
+                      </div>
+                    )
+                  })}
+                </div>
               </div>
-              {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.05, ease: "easeOut" }}
+                className="grid grid-cols-4 items-center text-sm p-2 pl-10 border rounded-xl m-2">
+                <div className="flex items-center gap-3" >
+                  <img className="w-10 h-10 rounded-4xl bg-yellow-500" src="" alt="" />
+                  <div className="flex-col">
+                    <p>5</p>
+                    <p>5</p>
+                  </div>
+                </div>
+                <div className="bg-yellow-500 w-fit rounded-xl p-1 text-white px-1">
+                  <p className="text-xs">ซื้อไฟฟ้าใหม่</p>
+                </div>
+                <div>
+                  รายละเอียด
+                </div>
+                <div>
+                  วันที่
+                </div>
+              </motion.div>
             </div>
 
-            {/* --- [ฝั่ง 2] รายงาน/ข้อความจากช่าง (lg:col-span-2) --- */}
-            <div className={`border ${border} col-span-1 lg:col-span-2 rounded-lg ${bg}`}>
-              {/* Card Header */}
-              <div className={`flex flex-col sm:flex-row justify-between items-center p-4 border-b ${border}`}>
-                <p className="text-lg font-semibold mb-2 sm:mb-0">
-                  รายงานจากช่าง
-                  <span className={`text-sm font-normal ${theme === "dark" ? "text-gray-400" : "text-gray-600"} ml-2`}>
-                    {/* *** แก้ไข: ลบ 'section' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                    ({technicianMessages.length} ข้อความ)
-                  </span>
-                </p>
-                {/**/}
-                {" "}
-              </div>
-              {/* Table Container "ข้อความจากช่าง" */}
-              {" "}
-              <div className="block w-full overflow-x-auto">
-                {" "}
-                <table className="w-full text-left">
-                  {" "}
-                  <thead
-                    className={`${theme === "dark" ? "bg-gray-800" : "bg-gray-50"
-                      }`}
-                  >
-                    {" "}
-                    <tr>
-                      {" "}
-                      <th
-                        className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"
-                          } uppercase`}
-                      >
-                        ช่างเทคนิค
-                      </th>
-                      {" "}
-                      <th
-                        className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"
-                          } uppercase`}
-                      >
-                        เรื่อง / ข้อความ
-                      </th>
-                      {" "}
-                      <th
-                        className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"
-                          } uppercase`}
-                      >
-                        วันที่
-                      </th>
-                      {" "}
-                    </tr>
-                    {" "}
-                  </thead>
-                  {" "}
-                  <tbody className={`divide-y ${border}`}>
-                    {" "}
-                    {technicianMessages.map((msg, index) => (
-                      <tr
-                        key={index}
-                        className={`transition-colors ${hoverBg} cursor-pointer`}
-                        onClick={() => handleMessageClick(msg)} // *** คลิกเพื่อเปิด Modal ***
-                      >
-                        {" "}
-                        <td className="p-4 whitespace-nowrap">
-                          {" "}
-                          <div className="flex items-center gap-3">
-                            {" "}
-                            <Avatar
-                              name={msg.name.split(" ")[0]}
-                              Lname={msg.name.split(" ")[1] || ""}
-                            />
-                            {" "}
-                            <div>
-                              {" "}
-                              <p className="font-medium">{msg.name}</p>
-                              {" "}
-                            </div>
-                            {" "}
-                          </div>
-                          {" "}
-                        </td>
-                        {" "}
-                        <td className="p-4">
-                          {" "}
-                          <p className="font-medium truncate max-w-xs">
-                            {msg.report}
-                          </p>
-                          {" "}
-                          <p
-                            className={`text-sm ${theme === "dark"
-                              ? "text-gray-400"
-                              : "text-gray-600"
-                              } truncate max-w-xs`}
-                          >
-                            {msg.detail}
-                          </p>
-                          {" "}
-                        </td>
-                        {" "}
-                        <td className="p-4 whitespace-nowrap">
-                          {" "}
-                          <p
-                            className={`text-sm ${theme === "dark"
-                              ? "text-gray-400"
-                              : "text-gray-600"
-                              }`}
-                          >
-                            {msg.date}
-                          </p>
-                          {" "}
-                        </td>
-                        {" "}
-                      </tr>
-                    ))}
-                    {" "}
-                  </tbody>
-                  {" "}
-                  {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                  {" "}
-                </table>
-                {" "}
-              </div>
-              {" "}
-            </div>
+            {/* รอเเก้ */}
             {" "}
           </div>{" "}
           {/* --- สิ้นสุด Grid Layout Wrapper --- */}
