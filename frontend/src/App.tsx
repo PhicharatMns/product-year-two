@@ -45,6 +45,7 @@ import Executive from "./executive/Executive";
 import MapWork from "./executive/MapWork";
 import Getpaperexecutive from "./executive/Getpaperexecutive";
 import ProfileExecutive from "./executive/ProfileExecutive";
+import Team from "./executive/Team";
 
 
 // userChief
@@ -117,6 +118,7 @@ const router = createBrowserRouter([
       { path: "getpaperexecutive", element: <Getpaperexecutive /> },
       { path: "MapWork", element: <MapWork /> },
       { path: "ProfileExecutive", element: <ProfileExecutive /> },
+      {path: "Team", element: <Team />},
     ],
   },
 
