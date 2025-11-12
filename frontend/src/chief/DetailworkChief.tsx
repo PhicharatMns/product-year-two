@@ -1,11 +1,9 @@
 import { useTheme } from "@/components/theme-provider";
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Tooltip, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Tooltip } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
-
 
 interface Employee {
     _id: string;
@@ -28,47 +26,12 @@ export default function DetailworkChief() {
     const [loading, setLoading] = useState(true);
     const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
     const [fade, setFade] = useState(false);
-    const [userPos, setUserPos] = useState<[number, number] | null>(null); // ตำแหน่งผู้ใช้
-    
 
     const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm";
     const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
     const text_color = theme === "dark" ? "text-white" : "text-black";
     const borderSoft = theme === "dark" ? "border-gray-700" : "border-gray-300";
     const titleColor = theme === "dark" ? "text-yellow-500" : "text-blue-500";
-
-    // Component Routing
-    function RoutingMachine({ userPos, jobPos }: { userPos: [number, number]; jobPos: [number, number] }) {
-        const map = useMap();
-
-        useEffect(() => {
-            if (!map) return;
-
-            const routingControl = (L as any).Routing.control({
-                waypoints: [L.latLng(userPos[0], userPos[1]), L.latLng(jobPos[0], jobPos[1])],
-                lineOptions: { styles: [{ color: "orange", weight: 5 }] },
-                show: false,
-                addWaypoints: false,
-                draggableWaypoints: false,
-                createMarker: (i: number, wp: any) => {
-                    return L.marker(wp.latLng, {
-                        icon: L.icon({
-                            iconUrl:
-                                i === 0
-                                    ? "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-blue.png"
-                                    : "https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-orange.png",
-                            iconSize: [25, 41],
-                            iconAnchor: [12, 41],
-                        }),
-                    });
-                },
-            }).addTo(map);
-
-            return () => map.removeControl(routingControl);
-        }, [map, userPos, jobPos]);
-
-        return null;
-    }
 
     useEffect(() => {
         if (!id) return;
@@ -99,15 +62,6 @@ export default function DetailworkChief() {
         };
         fetchJob();
     }, [id]);
-
-    // ดึงตำแหน่งผู้ใช้
-    useEffect(() => {
-        if (!navigator.geolocation) return;
-        navigator.geolocation.getCurrentPosition(
-            (pos) => setUserPos([pos.coords.latitude, pos.coords.longitude]),
-            (err) => console.error("Cannot get user position:", err)
-        );
-    }, []);
 
     // เริ่ม fade-in หลังจากโหลดเสร็จ
     useEffect(() => {
@@ -167,13 +121,13 @@ export default function DetailworkChief() {
                     <div className="grid grid-cols-5 gap-4 mt-3">
                         <div className=" col-span-2">
                             <div
-                                className={`w-full h-80 mb-1 p-5 rounded-2xl border  ${bg} ${borderSoft} text-gray-600`}
+                                className={`w-full h-80 mb-1 p-3 rounded-2xl border  ${bg} ${borderSoft} text-gray-600`}
                             >
                                 <div
                                     className={`${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                                        }  mb-3 border-b pb-3 flex justify-between`}
+                                        } text-xl font-semibold mb-3 border-b pb-3 flex justify-between`}
                                 >
-                                    <p className="text-xl font-semibold">  รายชื่อช่าง</p>
+                                    <p>  รายชื่อช่าง</p>
                                     <button
 
                                         className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-4 font-medium text-neutral-0 transition duration-300  text-white ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
@@ -248,7 +202,11 @@ export default function DetailworkChief() {
                                 แผนที่งาน
                             </h2>
                             {markerPos && (
-                                <MapContainer center={markerPos} zoom={15} className="w-full h-166 rounded-lg">
+                                <MapContainer
+                                    center={markerPos}
+                                    zoom={15}
+                                    className="w-full h-166  rounded-lg"
+                                >
                                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                     <Marker
                                         position={markerPos}
@@ -263,9 +221,6 @@ export default function DetailworkChief() {
                                             {job.Worksheet || "ชื่องาน"}
                                         </Tooltip>
                                     </Marker>
-
-                                    {/* Routing */}
-                                    {userPos && <RoutingMachine userPos={userPos} jobPos={markerPos} />}
                                 </MapContainer>
                             )}
                         </div>
