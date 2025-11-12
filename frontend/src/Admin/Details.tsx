@@ -138,12 +138,13 @@ export default function Details() {
       }
 
       const payload = {
-        id: tradesman._id, //  เพิ่มไอดีของช่าง
+        id: tradesman._id,
         Name: tradesman.Name,
         Position: tradesman.Position,
         Phone_Number: tradesman.Phone_Number,
         Profile: tradesman.Profile,
-        employeeId: id, // ผูกกับงานปัจจุบัน
+        employeeId: id,
+        role: tradesman.role, // <-- เพิ่มตรงนี้
       };
 
       const res = await fetch("http://localhost:5000/api/otherTradesman", {
@@ -332,7 +333,7 @@ export default function Details() {
                         animate={{ opacity: 1, y: 0 }} // จบที่มองเห็น + ตำแหน่งปกติ
                         transition={{
                           duration: 0.5, // เวลา animation 0.5 วินาที
-                          delay: index * 0.50, // ทำให้แต่ละ item delay ตามลำดับ
+                          delay: index * 0.5, // ทำให้แต่ละ item delay ตามลำดับ
                           ease: "easeOut",
                         }}
                       >
@@ -344,7 +345,7 @@ export default function Details() {
                         >
                           <div className="items-center justify-between flex">
                             <p className={`text-sm pl-2 font-semibold `}>
-                              การขอเบิกของ
+                              {event.Name}
                             </p>
                             <button
                               onClick={() => handeDelete(event._id)}
@@ -355,6 +356,16 @@ export default function Details() {
                             >
                               <RiDeleteBin5Line fontSize={20} />
                             </button>
+                            {/* {event.role?.toLowerCase() !== "user" && (
+                              <button
+                                onClick={() => handeDelete(event._id)}
+                                className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-black text-sm duration-300 
+    [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+    active:translate-y-1 active:scale-x-110 active:scale-y-90`}
+                              >
+                                <RiDeleteBin5Line fontSize={20} />
+                              </button>
+                            )} */}
                           </div>
                           <div className="flex gap-2">
                             <img
@@ -574,7 +585,7 @@ export default function Details() {
                       (t.Position === "chief" || t.role === "chief") && // เฉพาะ Chief
                       (selectedPosition === "ทั้งหมด" ||
                         t.Position === selectedPosition) && // กรองตำแหน่ง
-                      t.Name.toLowerCase().includes(Search.toLowerCase()) // 🔍 ค้นหาชื่อ
+                      t.Name.toLowerCase().includes(Search.toLowerCase()) //  ค้นหาชื่อ
                   )
                   .sort(
                     (a, b) => (jobCounts[a._id] ?? 0) - (jobCounts[b._id] ?? 0)

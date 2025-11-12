@@ -3,10 +3,9 @@ import { useOutletContext } from "react-router-dom";
 import { useEffect, useState, useRef } from "react";
 import type { ReactNode } from "react";
 
-// นำเข้าไอคอน (ต้องติดตั้ง lucide-react)
 // *** แก้ไข: เพิ่ม MoreHorizontal กลับเข้ามา ***
 import { Search, MoreHorizontal } from "lucide-react";
-
+import { motion } from "framer-motion";
 // --- Types (กลับไปใช้แบบดั้งเดิม) ---
 
 // *** 1. Type สำหรับ "รายการเบิกของ" ***
@@ -121,7 +120,7 @@ const Avatar = ({ name, Lname }: AvatarProps) => {
     <div
       className={`flex-shrink-0 h-10 w-10 rounded-full ${bg} ${text} flex items-center justify-center font-semibold`}
     >
-            {getInitials(name, Lname)}   {" "}
+      {getInitials(name, Lname)}   {" "}
     </div>
   );
 };
@@ -145,7 +144,7 @@ const Badge = ({ children, color = "gray" }: BadgeProps) => {
     <span
       className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${colorClasses}`}
     >
-            {children}   {" "}
+      {children}   {" "}
     </span>
   );
 };
@@ -163,11 +162,11 @@ export default function Notification() {
   const [Focused, setFocused] = useState(false);
   const [tabFade, setTabFade] = useState(true);
   const tabAnimationTimeout = useRef<number | null>(null); // --- Theme Styles ---
-  
+
   const bg = theme === "dark" ? "bg-gray-900" : "bg-gray-100";
   const text = theme === "dark" ? "text-white" : "text-gray-800";
   const border = theme === "dark" ? "border-gray-700" : "border-gray-200";
-  const hoverBg = theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-50"; 
+  const hoverBg = theme === "dark" ? "hover:bg-gray-800" : "hover:bg-gray-50";
 
   useEffect(() => {
     const timer = setTimeout(() => setFade(true), 50);
@@ -236,66 +235,60 @@ export default function Notification() {
 
   return (
     <div
-      className={`transition-opacity duration-700 ${
-        fade ? "opacity-100" : "opacity-0"
-      }`}
-    >
-           {" "}
-      <div className={`p-5 mx-auto container max-w-full ${text}`}>
-               {" "}
+      className={`transition-opacity p-5 mx-auto container duration-700 w-380 ${fade ? "opacity-100" : "opacity-0"
+        }`}
+    >{" "}
+      <div className={` ${text}`}>
+        {" "}
         <div className="mb-5">
-                    {/* --- Header --- */}         {" "}
+          {/* --- Header --- */}
           <p
-            className={`text-3xl font-extrabold ${
-              theme === "dark" ? "text-yellow-500" : "text-blue-500"
-            }`}
-          >
-                        การแจ้งเตือน            {" "}
-            <span
-              className={`${
-                theme === "dark" ? "text-white" : "text-yellow-500"
+            className={`text-3xl font-bold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
               }`}
+          >
+            การแจ้งเตือน
+            <span
+              className={`${theme === "dark" ? "text-white" : "text-yellow-500"
+                }`}
             >
-                            & ข้อความ            {" "}
+              & ข้อความ
             </span>
-                     {" "}
+            {" "}
           </p>
-                           {" "}
+          {" "}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 my-5">
-                        {/* --- [ฝั่ง 1] รายการเบิกของ (lg:col-span-3) --- */} 
-                     {" "}
+            {/* --- [ฝั่ง 1] รายการเบิกของ (lg:col-span-3) --- */}
+            {" "}
             <div
-              className={`border ${border} col-span-1 lg:col-span-3 rounded-lg ${bg}`}
+              className={`border ${border} col-span-1 h-220 lg:col-span-3 rounded-lg ${bg}`}
             >
-                                          {/* Card Header & Search */}         
-                 {" "}
+              {/* Card Header & Search */}
+              {" "}
               <div
                 className={`flex flex-col sm:flex-row justify-between items-center p-4 border-b ${border}`}
               >
-                               {" "}
+                {" "}
                 <p className="text-lg font-semibold mb-2 sm:mb-0">
-                                    รายการเบิกของ                  {" "}
+                  รายการเบิกของ
                   <span
-                    className={`text-sm font-normal ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-600"
-                    } ml-2`}
+                    className={`text-sm font-normal ${theme === "dark" ? "text-gray-400" : "text-gray-600"
+                      } ml-2`}
                   >
-                                        ({filteredItems.length} รายการ)        
-                             {" "}
+                    ({filteredItems.length} รายการ)
+                    {" "}
                   </span>
-                                 {" "}
+                  {" "}
                 </p>
-                               {" "}
+                {" "}
                 <div className="flex items-center gap-2">
-                                   {" "}
+                  {" "}
                   <div className="relative">
-                                       {" "}
+                    {" "}
                     <Search
-                      className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
-                      }`}
+                      className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        }`}
                     />
-                                       {" "}
+                    {" "}
                     <input
                       onFocus={() => setFocused(true)}
                       onBlur={() => setFocused(false)}
@@ -303,24 +296,23 @@ export default function Notification() {
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                       className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 
-                      ${
-                        theme === "dark"
+ ${theme === "dark"
                           ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border border-gray-600"
                           : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border border-blue-300" // *** แก้ไข: ลบ 'e' ที่เป็นตัวอักษรแปลกๆ ออก ***
-                      }
-                      ${Focused ? "w-72" : "w-60"}`}
+                        }
+ ${Focused ? "w-72" : "w-60"}`}
                     />
-                                     {" "}
+                    {" "}
                   </div>
-                                 {" "}
+                  {" "}
                 </div>
-                             {" "}
+                {" "}
               </div>
-                            {/* Tabs */}             {" "}
+
               <div
                 className={`flex h-15 items-center border-b ${border} overflow-x-auto`}
               >
-                               {" "}
+                {" "}
                 {tabs.map((tabName) => {
                   const isActive = activeTab === tabName;
                   const activeClasses =
@@ -332,254 +324,261 @@ export default function Notification() {
                       ? "border-transparent text-gray-400 hover:text-gray-200"
                       : "border-transparent text-gray-500 hover:text-gray-800";
 
-                  return (
-                    <button
-                      // *** แก้ไข: เพิ่ม type="button" ***
-                      type="button" 
-                      key={tabName}
-                      onClick={() => handleTabClick(tabName)}
-                      className={`py-3 px-4 -mb-px text-sm font-medium border-b-2 whitespace-nowrap ${
-                        isActive ? activeClasses : inactiveClasses
-                      }`}
-                    >
-                      {tabName}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Table Content "รายการเบิกของ" */}
-              <div 
-                className={`block w-full overflow-x-auto transition-opacity duration-300 ${
-                  tabFade ? "opacity-100" : "opacity-0"
-                }`}
-              >
-                <table className="w-full text-left">
-                  <thead
-                    className={`${theme === "dark" ? "bg-gray-800" : "bg-gray-50"}`}
-                  >
-                    <tr>
-                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                        ผู้ขอเบิก
-                      </th>
-                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                        ประเภทงาน
-                      {/* *** แก้ไข: ลบ 'A' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                      </th>
-                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                        รายละเอียด
-                      </th>
-                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
-                        วันที่
-                      </th>
-                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}></th>
-                    </tr>
-                  </thead>
-                  <tbody className={`divide-y ${border}`}>
-                    {filteredItems.map((event, index) => (
-                      <tr
-                        key={index}
-                        className={`transition-colors ${hoverBg} cursor-pointer`}
-                        onClick={() => openMessAdmin(event)} // *** คลิกเพื่อเปิด Modal ***
-                      >
-                        <td className="p-4 whitespace-nowrap">
-                          <div className="flex items-center gap-3">
-                            <Avatar name={event.name} Lname={event.Lname} />
-                            <div>
-                              <p className="font-medium">
-                                {event.name} {event.Lname}
-                              </p>
-                              <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                                {event.Description}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="p-4 whitespace-nowrap">
-                          <Badge color={getJobColor(event.job)}>{event.job}</Badge>
-                        </td>
-                        <td className="p-4 whitespace-nowrap">
-                          {/* *** แก้ไข: ลบ 's' และ 'M' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                          <p className="font-medium truncate max-w-xs">
-                            {event.title}
-                          </p>
-                        </td>
-                        <td className="p-4 whitespace-nowrap">
-                          <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-                            {event.time}
-                        </p>
-                        </td>
-                        <td className="p-4 whitespace-nowrap">
-                          {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                          <button 
-                            // *** แก้ไข: เพิ่ม type="button" ***
-                            type="button"
-                            onClick={(e) => { e.stopPropagation(); console.log("More clicked"); }}
-                            className={`p-1 rounded-md ${theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-200"}`}
-                          >
-                            <MoreHorizontal size={20} />
-                          </button>
-                      </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                </table>
-
-                {/* No Data Message */}
-                {filteredItems.length === 0 && (
-                  <div className="p-10 text-center text-gray-500">
-                    <p>
-                      {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                      {search 
-                        ? `ไม่พบผลลัพธ์สำหรับ "${search}"` 
-                        : `ไม่มีข้อมูลในหมวดหมู่ "${activeTab}"`}
-                    </p>
-                  </div>
-                )}
-              </div>
-              {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-            </div>
-
-            {/* --- [ฝั่ง 2] รายงาน/ข้อความจากช่าง (lg:col-span-2) --- */}
-            <div className={`border ${border} col-span-1 lg:col-span-2 rounded-lg ${bg}`}>
-              {/* Card Header */}
-              <div className={`flex flex-col sm:flex-row justify-between items-center p-4 border-b ${border}`}>
-                <p className="text-lg font-semibold mb-2 sm:mb-0">
-                  รายงานจากช่าง
-                  <span className={`text-sm font-normal ${theme === "dark" ? "text-gray-400" : "text-gray-600"} ml-2`}>
-                    {/* *** แก้ไข: ลบ 'section' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
-                    ({technicianMessages.length} ข้อความ) 
-                  </span>
-                </p>
-                {/*
-                <button className="flex items-center gap-1.5 px-3 py-2 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">
-                  <Plus size={16} /> เขียนข้อความ
-                </button>
-                */}
-                             {" "}
+                  return (
+                    <button
+                      // *** แก้ไข: เพิ่ม type="button" ***
+                      type="button"
+                      key={tabName}
+                      onClick={() => handleTabClick(tabName)}
+                      className={`py-3 px-4 -mb-px text-sm font-medium border-b-2 whitespace-nowrap ${isActive ? activeClasses : inactiveClasses
+                        }`}
+                    >
+                      {tabName}
+                    </button>
+                  );
+                })}
               </div>
-                            {/* Table Container "ข้อความจากช่าง" */}           
-               {" "}
-              <div className="block w-full overflow-x-auto">
-                               {" "}
-                <table className="w-full text-left">
-                                   {" "}
-                  <thead
-                    className={`${
-                      theme === "dark" ? "bg-gray-800" : "bg-gray-50"
-                    }`}
+
+              {/* Table Content "รายการเบิกของ" */}
+              <div
+                className={`block w-full overflow-x-auto transition-opacity duration-300 ${tabFade ? "opacity-100" : "opacity-0"
+                  }`}
+              >
+                <table className="">
+                  {/* <thead
+                    className={`${theme === "dark" ? "bg-gray-800" : "bg-gray-50"}`}
                   >
-                                       {" "}
                     <tr>
-                                           {" "}
+                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                        ผู้ขอเบิก
+                      </th>
+                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                        ประเภทงาน
+                        {/* *** แก้ไข: ลบ 'A' ที่เป็นตัวอักษรแปลกๆ ออก *** *
+                      </th>
+                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                        รายละเอียด
+                      </th>
+                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                        วันที่
+                      </th>
+                      <th className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}></th>
+                    </tr>
+                  </thead> */}
+                  <div className="grid grid-cols-5 px-5  gap-5">
+                    <p className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                      ผู้ขอเบิก
+                    </p>
+                    <p className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                      ประเภทงาน
+
+                    </p>
+                    <p className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                      รายละเอียด
+                    </p>
+                    <p className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>
+                      วันที่
+                    </p>
+                    <p className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"} uppercase`}>รายละเอียด</p>
+                  </div>
+                  <tbody className={`divide-y   ${border}`}>
+                    {filteredItems.map((event, index) => (
+                      <motion.div
+                        key={index}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: index * 0.05, ease: "easeOut" }}
+                        className={`grid grid-cols-5 items-center crounded-xl shadow-sm py-1 px-5 mt-2 ${theme === 'dark' ? "bg-gray-900 border-gray-700" : "bg-blue-50/40"
+                          } border`}
+                      >
+                        <td className="p-4 whitespace-nowrap">
+                          <div className="flex items-center gap-3">
+                            <Avatar name={event.name} Lname={event.Lname} />
+                            <div>
+                              <p className="font-medium">
+                                {event.name} {event.Lname}
+                              </p>
+                              <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                                {event.Description}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="p-4 whitespace-nowrap">
+                          <Badge color={getJobColor(event.job)}>{event.job}</Badge>
+                        </td>
+                        <td className="p-4 whitespace-nowrap">
+                          {/* *** แก้ไข: ลบ 's' และ 'M' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                          <p className="font-medium truncate max-w-xs">
+                            {event.title}
+                          </p>
+                        </td>
+                        <td className="p-4 whitespace-nowrap">
+                          <p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+                            {event.time}
+                          </p>
+                        </td>
+                        <td className="p-4 whitespace-nowrap">
+                          {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                          <button
+                            // *** แก้ไข: เพิ่ม type="button" ***
+                            type="button"
+                            onClick={(e) => { e.stopPropagation(); console.log("More clicked"); }}
+                            className={`p-1 rounded-md ${theme === "dark" ? "hover:bg-gray-700" : "hover:bg-gray-200"}`}
+                          >
+                            <MoreHorizontal size={20} />
+                          </button>
+                        </td>
+                      </motion.div>
+                    ))}
+                  </tbody>
+                  {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                </table>
+
+                {/* No Data Message */}
+                {filteredItems.length === 0 && (
+                  <div className="p-10 text-center text-gray-500">
+                    <p>
+                      {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                      {search
+                        ? `ไม่พบผลลัพธ์สำหรับ "${search}"`
+                        : `ไม่มีข้อมูลในหมวดหมู่ "${activeTab}"`}
+                    </p>
+                  </div>
+                )}
+              </div>
+              {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+            </div>
+
+            {/* --- [ฝั่ง 2] รายงาน/ข้อความจากช่าง (lg:col-span-2) --- */}
+            <div className={`border ${border} col-span-1 lg:col-span-2 rounded-lg ${bg}`}>
+              {/* Card Header */}
+              <div className={`flex flex-col sm:flex-row justify-between items-center p-4 border-b ${border}`}>
+                <p className="text-lg font-semibold mb-2 sm:mb-0">
+                  รายงานจากช่าง
+                  <span className={`text-sm font-normal ${theme === "dark" ? "text-gray-400" : "text-gray-600"} ml-2`}>
+                    {/* *** แก้ไข: ลบ 'section' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                    ({technicianMessages.length} ข้อความ)
+                  </span>
+                </p>
+                {/**/}
+                {" "}
+              </div>
+              {/* Table Container "ข้อความจากช่าง" */}
+              {" "}
+              <div className="block w-full overflow-x-auto">
+                {" "}
+                <table className="w-full text-left">
+                  {" "}
+                  <thead
+                    className={`${theme === "dark" ? "bg-gray-800" : "bg-gray-50"
+                      }`}
+                  >
+                    {" "}
+                    <tr>
+                      {" "}
                       <th
-                        className={`p-4 text-xs font-medium ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
-                        } uppercase`}
+                        className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"
+                          } uppercase`}
                       >
                         ช่างเทคนิค
                       </th>
-                                           {" "}
+                      {" "}
                       <th
-                        className={`p-4 text-xs font-medium ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
-                        } uppercase`}
+                        className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"
+                          } uppercase`}
                       >
                         เรื่อง / ข้อความ
                       </th>
-                                           {" "}
+                      {" "}
                       <th
-                        className={`p-4 text-xs font-medium ${
-                          theme === "dark" ? "text-gray-400" : "text-gray-600"
-                        } uppercase`}
+                        className={`p-4 text-xs font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"
+                          } uppercase`}
                       >
                         วันที่
                       </th>
-                                         {" "}
+                      {" "}
                     </tr>
-                                     {" "}
+                    {" "}
                   </thead>
-                                   {" "}
+                  {" "}
                   <tbody className={`divide-y ${border}`}>
-                                       {" "}
+                    {" "}
                     {technicianMessages.map((msg, index) => (
                       <tr
                         key={index}
                         className={`transition-colors ${hoverBg} cursor-pointer`}
                         onClick={() => handleMessageClick(msg)} // *** คลิกเพื่อเปิด Modal ***
                       >
-                                               {" "}
+                        {" "}
                         <td className="p-4 whitespace-nowrap">
-                                                   {" "}
+                          {" "}
                           <div className="flex items-center gap-3">
-                                                       {" "}
+                            {" "}
                             <Avatar
                               name={msg.name.split(" ")[0]}
                               Lname={msg.name.split(" ")[1] || ""}
                             />
-                                                       {" "}
+                            {" "}
                             <div>
-                                                           {" "}
-                              <p className="font-medium">{msg.name}</p>         
-                                               {" "}
+                              {" "}
+                              <p className="font-medium">{msg.name}</p>
+                              {" "}
                             </div>
-                                                     {" "}
+                            {" "}
                           </div>
-                                                 {" "}
+                          {" "}
                         </td>
-                                               {" "}
+                        {" "}
                         <td className="p-4">
-                                                   {" "}
+                          {" "}
                           <p className="font-medium truncate max-w-xs">
                             {msg.report}
                           </p>
-                                                   {" "}
+                          {" "}
                           <p
-                            className={`text-sm ${
-                              theme === "dark"
-                                ? "text-gray-400"
-                                : "text-gray-600"
-                            } truncate max-w-xs`}
+                            className={`text-sm ${theme === "dark"
+                              ? "text-gray-400"
+                              : "text-gray-600"
+                              } truncate max-w-xs`}
                           >
                             {msg.detail}
                           </p>
-                                                 {" "}
+                          {" "}
                         </td>
-                                               {" "}
+                        {" "}
                         <td className="p-4 whitespace-nowrap">
-                                                   {" "}
+                          {" "}
                           <p
-                            className={`text-sm ${
-                              theme === "dark"
-                                ? "text-gray-400"
-                                : "text-gray-600"
-                            }`}
+                            className={`text-sm ${theme === "dark"
+                              ? "text-gray-400"
+                              : "text-gray-600"
+                              }`}
                           >
                             {msg.date}
                           </p>
-                                                 {" "}
+                          {" "}
                         </td>
-                                             {" "}
+                        {" "}
                       </tr>
                     ))}
-                                     {" "}
+                    {" "}
                   </tbody>
-                                   {" "}
-                  {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}       
-                       {" "}
+                  {" "}
+                  {/* *** แก้ไข: ลบ 's' ที่เป็นตัวอักษรแปลกๆ ออก *** */}
+                  {" "}
                 </table>
-                             {" "}
+                {" "}
               </div>
-                         {" "}
+              {" "}
             </div>
-                                 {" "}
+            {" "}
           </div>{" "}
-          {/* --- สิ้นสุด Grid Layout Wrapper --- */}       {" "}
+          {/* --- สิ้นสุด Grid Layout Wrapper --- */}
         </div>
-             {" "}
+        {" "}
       </div>
-         {" "}
-    </div>
+      {" "}
+    </div >
   );
 }

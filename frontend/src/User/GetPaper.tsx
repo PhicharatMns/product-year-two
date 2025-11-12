@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { CiSearch } from "react-icons/ci";
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 interface Employee {
   _id: string;
@@ -45,9 +46,6 @@ export default function GetPaper() {
   const [fadeItem, setFadeItem] = useState(false);
   const [items, setItems] = useState<RequisitionItem[]>([]);
 
-  const [opendateJob, setOpendateJob] = useState(false);
-  const [FadedataJob, setFadedataJob] = useState(false);
-
   const token = localStorage.getItem("token");
   const decoded: JwtPayload | null = token
     ? jwtDecode<JwtPayload>(token)
@@ -87,12 +85,12 @@ export default function GetPaper() {
   }, [token, currentUserId]);
 
   // =========================================================
-  // === ⭐️ 1. อัปเดต: ให้มี 5 รายการคงที่เมื่อเปิด Modal ===
+  // ===  1. อัปเดต: ให้มี 5 รายการคงที่เมื่อเปิด Modal ===
   // =========================================================
   const openItemModal = (job: Employee) => {
     setSelectedJob(job);
 
-    // --- ⭐️ สร้าง 5 รายการคงที่ ---
+    // ---  สร้าง 5 รายการคงที่ ---
     const initialItems = Array.from({ length: 5 }, (_, i) => ({
       id: `${Date.now()}-${i}`, // สร้าง ID ที่ไม่ซ้ำกัน
       name: "",
@@ -114,7 +112,7 @@ export default function GetPaper() {
     }, 300);
   };
 
-  // --- ⭐️ 2. อัปเดต: จัดการ state `items` (ลบ handleAddItem, handleDeleteItem) ---
+  // ---  2. อัปเดต: จัดการ state `items` (ลบ handleAddItem, handleDeleteItem) ---
   const handleItemChange = (
     id: string,
     field: "name" | "quantity",
@@ -128,24 +126,6 @@ export default function GetPaper() {
         item.id === id ? { ...item, [field]: value } : item
       )
     );
-  };
-
-  // --- (ลบ handleAddItem และ handleDeleteItem ออก) ---
-
-  // --- ฟังก์ชันสำหรับ Modal "รายละเอียดงาน" ---
-  const openJobModal = (job: Employee) => {
-    setSelectedJob(job);
-    setOpendateJob(true);
-    setFadedataJob(false);
-    setTimeout(() => setFadedataJob(true), 50);
-  };
-
-  const closeJobModal = () => {
-    setFadedataJob(false);
-    setTimeout(() => {
-      setOpendateJob(false);
-      setSelectedJob(null);
-    }, 300);
   };
 
   useEffect(() => {
@@ -176,9 +156,6 @@ export default function GetPaper() {
       : "bg-gray-100 border-gray-300";
 
   const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
-
-  const text_color = theme === "dark" ? "text-yellow-500" : "text-blue-500";
-  const haedtext = theme === "dark" ? "text-white" : "text-yellow-500";
 
   return (
     <div
@@ -240,9 +217,16 @@ export default function GetPaper() {
 
         {/* ข้อมูลใบงาน */}
         {filtered.length > 0 ? (
-          filtered.map((job) => (
-            <div
-              key={job._id}
+          filtered.map((job, index) => (
+            <motion.div
+              key={index}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.5,
+                delay: index * 0.05,
+                ease: "easeOut",
+              }}
               className={`grid grid-cols-6 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
             >
               <p className="truncate">{job.Worksheet || "-"}</p>
@@ -286,7 +270,7 @@ export default function GetPaper() {
                   เบิกของ
                 </button>
               </div>
-            </div>
+            </motion.div>
           ))
         ) : (
           <div
