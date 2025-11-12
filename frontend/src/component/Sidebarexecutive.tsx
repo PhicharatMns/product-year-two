@@ -9,7 +9,7 @@ import { VscNewFile } from "react-icons/vsc";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
-import { FaTools } from "react-icons/fa";
+import { AiOutlineTeam } from "react-icons/ai";
 import { NavLink } from "react-router-dom";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { AiTwotoneCalendar } from "react-icons/ai";
@@ -49,7 +49,7 @@ export default function Sidebarexecutive() {
       icon: RiFilePaper2Line,
       link: "/executive/Getpaperexecutive",
     },
-    { text: "ทีมงาน", icon: AiTwotoneCalendar, link: "/executive/Calendar" },
+    { text: "ทีมงาน", icon: AiOutlineTeam , link: "/executive/Team" },
     { text: "แผนที่", icon: FaMapMarkedAlt, link: "/executive/MapWork" },
     { text: "ออกจากระบบ", icon: IoIosLogOut, onClick: handleLogout },
   ];

@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { CiSearch } from "react-icons/ci";
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+// import { Link } from "react-router-dom"; // --- 3. เราจะใช้ปุ่มเปิด Modal แทน Link ---
 
 interface Employee {
   _id: string;
@@ -27,10 +27,11 @@ interface JwtPayload {
   id: string;
 }
 
+// --- 1. เพิ่ม Interface สำหรับรายการเบิกของ ---
 interface RequisitionItem {
   id: string;
   name: string;
-  quantity: string;
+  quantity: string; // ใช้ string เพื่อความง่ายในการจัดการ input, ค่อยแปลงเป็น number ตอน submit
 }
 
 export default function GetPaper() {
@@ -42,9 +43,16 @@ export default function GetPaper() {
   const [filtered, setFiltered] = useState<Employee[]>([]);
   const [selectedJob, setSelectedJob] = useState<Employee | null>(null);
 
+  // --- State สำหรับ Modal "เบิกของ" ---
   const [OpendateItem, setOpendateItem] = useState(false);
   const [fadeItem, setFadeItem] = useState(false);
+
+  // --- 2. เพิ่ม State สำหรับรายการเบิกของ ---
   const [items, setItems] = useState<RequisitionItem[]>([]);
+
+  // --- State สำหรับ Modal "รายละเอียดงาน" ---
+  const [opendateJob, setOpendateJob] = useState(false);
+  const [FadedataJob, setFadedataJob] = useState(false);
 
   const token = localStorage.getItem("token");
   const decoded: JwtPayload | null = token
@@ -84,20 +92,11 @@ export default function GetPaper() {
     }
   }, [token, currentUserId]);
 
-  // =========================================================
-  // ===  1. อัปเดต: ให้มี 5 รายการคงที่เมื่อเปิด Modal ===
-  // =========================================================
+  // --- ฟังก์ชันสำหรับ Modal "เบิกของ" (อัปเดต) ---
   const openItemModal = (job: Employee) => {
     setSelectedJob(job);
-
-    // ---  สร้าง 5 รายการคงที่ ---
-    const initialItems = Array.from({ length: 5 }, (_, i) => ({
-      id: `${Date.now()}-${i}`, // สร้าง ID ที่ไม่ซ้ำกัน
-      name: "",
-      quantity: "",
-    }));
-    setItems(initialItems);
-
+    // --- 4. ตั้งค่าเริ่มต้นให้มี 1 รายการ ---
+    setItems([{ id: Date.now().toString(), name: "", quantity: "" }]);
     setOpendateItem(true);
     setFadeItem(false);
     setTimeout(() => setFadeItem(true), 50);
@@ -108,16 +107,17 @@ export default function GetPaper() {
     setTimeout(() => {
       setOpendateItem(false);
       setSelectedJob(null);
-      setItems([]); // ล้างค่า items เมื่อปิด
+      setItems([]); // --- 4. ล้างค่า items เมื่อปิด ---
     }, 300);
   };
 
-  // ---  2. อัปเดต: จัดการ state `items` (ลบ handleAddItem, handleDeleteItem) ---
+  // --- 3. เพิ่มฟังก์ชันสำหรับจัดการรายการเบิกของ ---
   const handleItemChange = (
     id: string,
     field: "name" | "quantity",
     value: string
   ) => {
+    // ป้องกันการใส่ค่าน้อยกว่า 0 สำหรับจำนวน
     if (field === "quantity" && Number(value) < 0) {
       return;
     }
@@ -126,6 +126,32 @@ export default function GetPaper() {
         item.id === id ? { ...item, [field]: value } : item
       )
     );
+  };
+
+  const handleAddItem = () => {
+    setItems([...items, { id: Date.now().toString(), name: "", quantity: "" }]);
+  };
+
+  const handleDeleteItem = (id: string) => {
+    // ไม่ต้องทำอะไรถ้าเหลือรายการเดียว (ปุ่มจะถูก disabled อยู่แล้ว)
+    if (items.length <= 1) return;
+    setItems((currentItems) => currentItems.filter((item) => item.id !== id));
+  };
+
+  // --- ฟังก์ชันสำหรับ Modal "รายละเอียดงาน" ---
+  const openJobModal = (job: Employee) => {
+    setSelectedJob(job);
+    setOpendateJob(true);
+    setFadedataJob(false);
+    setTimeout(() => setFadedataJob(true), 50);
+  };
+
+  const closeJobModal = () => {
+    setFadedataJob(false);
+    setTimeout(() => {
+      setOpendateJob(false);
+      setSelectedJob(null);
+    }, 300);
   };
 
   useEffect(() => {
@@ -156,6 +182,9 @@ export default function GetPaper() {
       : "bg-gray-100 border-gray-300";
 
   const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
+
+  const text_color = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+  const haedtext = theme === "dark" ? "text-white" : "text-yellow-500";
 
   return (
     <div
@@ -193,12 +222,12 @@ export default function GetPaper() {
               onBlur={() => setFocused(false)}
               type="text"
               className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
-                ${focused ? "w-72 shadow-lg" : "w-60 border-gray-300"}  
-                ${
-                  theme === "dark"
-                    ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
-                    : "border-b-purple-300 focus:ring-blue-400 bg-white text-gray-800"
-                }`}
+              ${focused ? "w-72 shadow-lg" : "w-60 border-gray-300"}  
+              ${
+                theme === "dark"
+                  ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
+                  : "border-b-purple-300 focus:ring-blue-400 bg-white text-gray-800"
+              }`}
             />
           </div>
         </div>
@@ -217,16 +246,9 @@ export default function GetPaper() {
 
         {/* ข้อมูลใบงาน */}
         {filtered.length > 0 ? (
-          filtered.map((job, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.05,
-                ease: "easeOut",
-              }}
+          filtered.map((job) => (
+            <div
+              key={job._id}
               className={`grid grid-cols-6 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
             >
               <p className="truncate">{job.Worksheet || "-"}</p>
@@ -248,29 +270,29 @@ export default function GetPaper() {
                 <Link
                   to={`/user/Detailwork/${job._id}`}
                   className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
-                    [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                    active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                      theme === "dark"
-                        ? "bg-yellow-500 hover:bg-yellow-600"
-                        : "bg-blue-500 hover:bg-blue-600"
-                    }`}
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+               theme === "dark"
+                 ? "bg-yellow-500 hover:bg-yellow-600"
+                 : "bg-blue-500 hover:bg-blue-600"
+             }`}
                 >
                   รายละเอียดงาน
                 </Link>
                 <button
                   onClick={() => openItemModal(job)}
                   className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-                    [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                    active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                      theme === "dark"
-                        ? "bg-yellow-500 hover:bg-yellow-600"
-                        : "bg-blue-500 hover:bg-blue-600"
-                    }`}
+                  [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                    theme === "dark"
+                      ? "bg-yellow-500 hover:bg-yellow-600"
+                      : "bg-blue-500 hover:bg-blue-600"
+                  }`}
                 >
                   เบิกของ
                 </button>
               </div>
-            </motion.div>
+            </div>
           ))
         ) : (
           <div
@@ -282,6 +304,14 @@ export default function GetPaper() {
           </div>
         )}
       </div>
+
+    
+ 
+
+      {/* =========================================================
+              MODAL 2: ฟอร์มเบิกของ (โค้ดที่อัปเดตแล้ว)
+              =========================================================
+      */}
       {OpendateItem && selectedJob && (
         <div
           className={`fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50 
@@ -292,7 +322,7 @@ export default function GetPaper() {
           >
             {/* Modal Header */}
             <div
-              className={`flex gap-2  px-6 py-4 text-2xl font-semibold ${
+              className={`flex gap-2 border-b px-6 py-4 text-2xl font-semibold ${
                 theme === "dark" ? "border-gray-700" : "border-gray-200"
               }`}
             >
@@ -310,11 +340,9 @@ export default function GetPaper() {
 
             {/* Modal Body (Scrollable) */}
             <div className="flex-grow overflow-y-auto p-6 space-y-4">
-              {/* ========================================================= */}
-              {/* === ⭐️ 3. อัปเดต: ปรับ Layout (หัวตาราง) === */}
-              {/* ========================================================= */}
+              {/* หัวตาราง */}
               <div
-                className={`grid grid-cols-3 text-center p-2 rounded-t-lg font-semibold shadow-sm 
+                className={`grid grid-cols-4 text-center p-2 rounded-t-lg font-semibold shadow-sm 
   ${
     theme === "dark"
       ? "bg-gray-900 text-yellow-400 border-b border-gray-700"
@@ -323,34 +351,28 @@ export default function GetPaper() {
               >
                 <div className="col-span-2">รายชื่อ</div>
                 <div>จำนวน</div>
-                {/* (ลบ "ลบ" ออก) */}
+                <div className="pl-6"> ลบ</div>
               </div>
 
-              {/* --- map รายการ 5 รายการ --- */}
-              <div
-                className={`transition-all duration-300 h-90 overflow-auto rounded-lg ${
-                  theme === "dark" ? "border-gray-700" : "border-gray-300"
-                }`}
-              >
+              {/* --- 5. เปลี่ยนมา map จาก state `items` --- */}
+              <div className="transition-all duration-300">
                 {items.map((item, index) => (
                   <div
-                    key={item.id}
-                    // --- ⭐️ 3. อัปเดต: ปรับ Layout (รายการ) ---
-                    className={`grid grid-cols-3 gap-4 items-center py-3 px-4  ${
+                    key={index} // --- ใช้ id ที่ไม่ซ้ำกันเป็น key ---
+                    className={`grid grid-cols-4 gap-4 items-center py-3 border-b 
+                    ${
                       theme === "dark" ? "border-gray-700" : "border-gray-200"
-                    }
-                    ${index === items.length - 1 ? "border-b-0" : ""} 
-                    `}
+                    }`}
                   >
                     {/* รายชื่อ */}
                     <div className="col-span-2">
                       <input
                         type="text"
                         placeholder="ชื่ออุปกรณ์..."
-                        value={item.name}
+                        value={item.name} // --- เชื่อม value ---
                         onChange={(e) =>
                           handleItemChange(item.id, "name", e.target.value)
-                        }
+                        } // --- เชื่อม onChange ---
                         className={`w-full p-2 rounded-lg border focus:ring-2 outline-none transition-all duration-200 
           ${
             theme === "dark"
@@ -364,12 +386,12 @@ export default function GetPaper() {
                     <div>
                       <input
                         type="number"
-                        min="0"
+                        min="0" // --- ใส่ min เพื่อไม่ให้ติดลบ ---
                         placeholder="จำนวน"
-                        value={item.quantity}
+                        value={item.quantity} // --- เชื่อม value ---
                         onChange={(e) =>
                           handleItemChange(item.id, "quantity", e.target.value)
-                        }
+                        } // --- เชื่อม onChange ---
                         className={`w-full p-2 rounded-lg border focus:ring-2 outline-none transition-all duration-200 
           ${
             theme === "dark"
@@ -379,17 +401,61 @@ export default function GetPaper() {
                       />
                     </div>
 
-                    {/* --- ⭐️ 3. (ลบปุ่ม "ลบ" ออก) --- */}
+                    {/* ปุ่มลบ */}
+                    <div className="text-center">
+                      <button
+                        onClick={() => handleDeleteItem(item.id)} // --- เชื่อม onClick ---
+                        //   disabled={items.length <= 1} // --- Disable ปุ่ม ถ้าเหลือรายการเดียว ---
+                        //   className={`text-sm font-medium bg-red-500 w-20 h-10 hover:scale-105 duration-200 text-white rounded-2xl  ${
+                        //     items.length <= 1
+                        //       ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
+                        //       : theme === "dark"
+                        //       ? "hover:text-white"
+                        //       : "hover:text-white"
+                        //   }`}
+                        // >
+                        //   ลบ
+                        className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-5 py-2 text-white text-sm duration-300 
+                  [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                    items.length <= 1
+                      ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
+                      : theme === "dark"
+                      ? "hover:text-white"
+                      : "hover:text-white"
+                  } ${
+                          theme === "dark"
+                            ? "bg-red-500 hover:bg-red-600"
+                            : "bg-red-500 hover:bg-red-600"
+                        }`}
+                      >
+                        ลบ
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
 
-              {/* --- ⭐️ 4. (ลบปุ่ม "เพิ่มรายการ" ออก) --- */}
+              {/* --- 5. ปุ่มเพิ่มรายการ --- */}
+              <div className="flex justify-start">
+                <button
+                  onClick={handleAddItem}
+                  className={`py-1 px-3 rounded-lg hover:scale-110 text-sm font-medium transition-all duration-200 ${
+                    theme === "dark"
+                      ? "text-yellow-500 hover:bg-yellow-500 hover:text-gray-900"
+                      : "text-blue-500 hover:bg-blue-500 hover:text-white"
+                  } border ${
+                    theme === "dark" ? "border-yellow-500" : "border-blue-500"
+                  }`}
+                >
+                  + เพิ่มรายการ
+                </button>
+              </div>
 
               {/* หมายเหตุ */}
-              <div className=" px-4 -mt-10 ">
+              <div className="pt-2">
                 <p
-                  className={`text-lg  mb-1 font-semibold ${
+                  className={`text-lg mb-1 font-semibold ${
                     theme === "dark" ? "text-yellow-500" : "text-blue-500"
                   }`}
                 >
