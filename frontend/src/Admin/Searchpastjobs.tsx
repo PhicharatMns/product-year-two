@@ -82,6 +82,7 @@ export default function Searchpastjobs() {
   const [OpenMap, setOpenMap] = useState(false);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
   const [Focused, setFocused] = useState(false);
+  const [Focusedpopup, setFocusedpopup] = useState(false);
   const [messageDelete, setMessageDelete] = useState("");
   const [showTrash, setShowTrash] = useState(false);
 
@@ -327,6 +328,10 @@ export default function Searchpastjobs() {
     const timer = setTimeout(() => setFade(true), 100);
     return () => clearTimeout(timer);
   }, []);
+
+  const bg = theme === "dark" ? "bg-gray-900" : " shadow-sm bg-white";
+  const bgborder = theme === "dark" ? "bg-gray-800" : "bg-gray-50";
+  const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
 
   return (
     <div
@@ -758,7 +763,62 @@ export default function Searchpastjobs() {
       </div>
       {showTrash && (
         <div className="inset-0 z-50 fixed flex justify-center items-center backdrop-blur-sm bg-black/40">
-          <div className="rounded-2xl w-[900px] h-200 shadow-2xl border"></div>
+          <div
+            className={`rounded-2xl w-[900px] h-200 shadow-2xl border ${bg} `}
+          >
+            <div className="flex justify-between border-b px-6 py-4 ">
+              <p
+                className={` text-2xl  font-semibold  ${
+                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                }`}
+              >
+                ถังขยะ
+                <span
+                  className={`${
+                    theme === "dark" ? "text-white" : "text-yellow-500"
+                  }`}
+                >
+                  ไฟล์งาน
+                </span>
+              </p>
+
+              <div className="relative">
+                <CiSearch
+                  className={`absolute left-3 top-1/2 -translate-y-1/2 transition-all duration-300`}
+                />
+                <input
+                  placeholder="ค้นหาใบงาน..."
+                  onChange={(e) => setSearch(e.target.value)}
+                  onFocus={() => setFocusedpopup(true)}
+                  onBlur={() => setFocusedpopup(false)}
+                  type="text"
+                  className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
+                              ${
+                                Focusedpopup
+                                  ? "w-72 shadow-lg"
+                                  : "w-60 border-gray-300"
+                              }  
+                              ${
+                                theme === "dark"
+                                  ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
+                                  : " focus:ring-blue-400 bg-white text-gray-800"
+                              }`}
+                />
+              </div>
+            </div>
+            {/* ข้อมูล */}
+            <div className="grid grid-cols-4 gap-5 py-3 mb-3 border-b px-6">
+              {["งาน", "สาเหตุการลบ", "ลบวันที่", "รายละเอียดงาน"].map(
+                (e, i) => {
+                  return (
+                    <div className={`${texthead}`}>
+                      <p className="font-semibold">{e}</p>
+                    </div>
+                  );
+                }
+              )}
+            </div>
+          </div>
         </div>
       )}
     </div>
