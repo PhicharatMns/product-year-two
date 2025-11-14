@@ -33,7 +33,6 @@ import DetailItem from "./User/Detailitem";
 import Profile from "./User/Profile";
 
 
-
 // Auth
 import Login from "./sighup/Login";
 import Register from "./sighup/Register";
@@ -56,8 +55,9 @@ import CalendarChief from "./chief/CalendarChief";
 import DetailworkChief from "./chief/DetailworkChief";
 import GetPaper from "./chief/getpaper";
 import ItemChief from "./chief/ItemChief";
-import Messeger from "./chief/messeger";
+
 import EditUser from "./chief/EditUser";
+import Messeger from "./chief/Messeger";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -122,7 +122,7 @@ const router = createBrowserRouter([
       { path: "MapWork", element: <MapWork /> },
       { path: "ProfileExecutive", element: <ProfileExecutive /> },
       {path: "Team", element: <Team />},
-      {path: "Messeger", element: <Messeger />},
+      // {path: "Messeger", element: <Messeger />},
     ],
   },
 

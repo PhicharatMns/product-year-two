@@ -34,6 +34,7 @@ interface Employee {
   description: string;
   Status?: string;
   image: File | null;
+  messageDelete: string;
 }
 // ฟอร์มเพิ่ม/แก้ไขงาน
 interface FormState extends Omit<Employee, "_id"> {
@@ -53,6 +54,7 @@ const defaultForm: FormState = {
   description: "",
   Status: "Active",
   image: null,
+  messageDelete: "",
 };
 
 //  Table Headers
@@ -85,6 +87,7 @@ export default function Searchpastjobs() {
   const [Focusedpopup, setFocusedpopup] = useState(false);
   const [messageDelete, setMessageDelete] = useState("");
   const [showTrash, setShowTrash] = useState(false);
+  const [searchpopup, setSearchpopup] = useState("");
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
@@ -192,6 +195,7 @@ export default function Searchpastjobs() {
         description: e.description,
         Status: e.Status || "Active",
         image: null,
+        messageDelete: e.messageDelete,
       });
       setEditId(e._id);
     } else {
@@ -219,6 +223,17 @@ export default function Searchpastjobs() {
   const clasOpendate = () => {
     setAnim(false);
     setTimeout(() => setopendatele(false), 300);
+  };
+
+  const Opendatelepopup = () => {
+    setShowTrash(true); // mount modal
+    setAnim(false); // เริ่มที่ opacity-0
+    setTimeout(() => setAnim(true), 20); // ทำให้ค่อยๆ ขึ้น
+  };
+
+  const OpenFilepopupDate = () => {
+    setAnim(false); // fade out ก่อน
+    setTimeout(() => setShowTrash(false), 300); // แล้วค่อย unmount
   };
 
   // ฟิลเตอร์ข้อมูลตามคำค้นหา
@@ -355,7 +370,7 @@ export default function Searchpastjobs() {
             </h2>
             <div className="flex flex-wrap gap-4 items-center">
               <button
-                onClick={() => setShowTrash(true)}
+                onClick={Opendatelepopup}
                 className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white bg-red-500`}
               >
                 ถังขยะ
@@ -712,7 +727,9 @@ export default function Searchpastjobs() {
           )}
           {/* เปิดMap */}
           {OpenMap && (
-            <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
+            <div
+              className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm `}
+            >
               <div className="w-300 h-190 p-5 bg-gray-800 rounded-lg">
                 <MapContainer
                   center={defaultCenter}
@@ -762,7 +779,11 @@ export default function Searchpastjobs() {
         </div>
       </div>
       {showTrash && (
-        <div className="inset-0 z-50 fixed flex justify-center items-center backdrop-blur-sm bg-black/40">
+        <div
+          className={`inset-0 z-50 fixed flex justify-center items-center transition-all duration-300 backdrop-blur-sm bg-black/40 ${
+            anim ? "opacity-100" : "opacity-0"
+          }`}
+        >
           <div
             className={`rounded-2xl w-[900px] h-200 shadow-2xl border ${bg} `}
           >
@@ -788,7 +809,9 @@ export default function Searchpastjobs() {
                 />
                 <input
                   placeholder="ค้นหาใบงาน..."
-                  onChange={(e) => setSearch(e.target.value)}
+                  // onChange={(e) => setSearch(e.target.value)}
+                  value={searchpopup}
+                  onChange={(e) => setSearchpopup(e.target.value)}
                   onFocus={() => setFocusedpopup(true)}
                   onBlur={() => setFocusedpopup(false)}
                   type="text"
@@ -807,16 +830,58 @@ export default function Searchpastjobs() {
               </div>
             </div>
             {/* ข้อมูล */}
-            <div className="grid grid-cols-4 gap-5 py-3 mb-3 border-b px-6">
-              {["งาน", "สาเหตุการลบ", "ลบวันที่", "รายละเอียดงาน"].map(
-                (e, i) => {
+            <div className="px-6 border-b">
+              <div className="grid grid-cols-4 gap-5 py-3  px-6">
+                {["งาน", "สาเหตุการลบ", "ลบวันที่", "รายละเอียดงาน"].map(
+                  (e, i) => {
+                    return (
+                      <div key={i} className={`${texthead}`}>
+                        <p className="font-semibold">{e}</p>
+                      </div>
+                    );
+                  }
+                )}
+              </div>
+            </div>
+            <div className="px-6 h-150 border-b my-4 overflow-y-auto scrollbar-hide">
+              {data
+                .filter((t) => t.Status === "Delete") // แสดงเฉพาะ Delete
+                .filter(
+                  (e) =>
+                    (e.Worksheet ?? "")
+                      .toLowerCase()
+                      .includes(searchpopup.toLowerCase()) ||
+                    (e.messageDelete ?? "")
+                      .toLowerCase()
+                      .includes(searchpopup.toLowerCase()) ||
+                    (e.Status ?? "")
+                      .toLowerCase()
+                      .includes(searchpopup.toLowerCase())
+                )
+                .map((e, i) => {
                   return (
-                    <div className={`${texthead}`}>
-                      <p className="font-semibold">{e}</p>
+                    <div
+                      className="grid grid-cols-4 gap-5 py-3 rounded-lg  border mb-3  px-6"
+                      key={i}
+                    >
+                      <div>{e.Worksheet}</div>
+                      <div>{e.messageDelete}</div>
+                      <div>{e.Status}</div>
+                      <div>{e.Status}</div>
                     </div>
                   );
-                }
-              )}
+                })}
+            </div>
+            <div className="flex justify-end pr-4">
+              <button
+                onClick={OpenFilepopupDate}
+                className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+              >
+                <span className="relative z-10">ยกเลิก</span>
+                <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
+                </span>
+              </button>
             </div>
           </div>
         </div>
