@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 
 const AddItemForm = () => {
   const { theme } = useTheme();
-  const texthead = theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'
+  const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const bg = theme === "dark" ? "bg-gray-900" : " shadow-sm bg-white";
 
   const menuList = [
@@ -86,9 +86,9 @@ const data = [
 const Showlist = () => {
   const [Focused, setFocused] = useState(false);
   const { theme } = useTheme();
-  const texthead = theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'
+  const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const bg = theme === "dark" ? "bg-gray-900" : " shadow-sm bg-white";
-  const bgborder = theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'
+  const bgborder = theme === "dark" ? "bg-gray-800" : "bg-gray-50";
 
   return (
     <div className={`border rounded-lg h-175 ${bg}`}>
@@ -105,8 +105,9 @@ const Showlist = () => {
           <div className="relative">
             {" "}
             <Search
-              className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${theme === "dark" ? "text-gray-400" : "text-gray-500"
-                }`}
+              className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${
+                theme === "dark" ? "text-gray-400" : "text-gray-500"
+              }`}
             />{" "}
             <input
               onFocus={() => setFocused(true)}
@@ -114,10 +115,11 @@ const Showlist = () => {
               placeholder="ค้นหา..."
               // onChange={(e) => setSearch(e.target.value)}
               className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 
- ${theme === "dark"
-                  ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border border-gray-600"
-                  : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border border-blue-300" // *** แก้ไข: ลบ 'e' ที่เป็นตัวอักษรแปลกๆ ออก ***
-                }
+ ${
+   theme === "dark"
+     ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border border-gray-600"
+     : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border border-blue-300" // *** แก้ไข: ลบ 'e' ที่เป็นตัวอักษรแปลกๆ ออก ***
+ }
  ${Focused ? "w-72" : "w-60"}`}
             />{" "}
           </div>{" "}
@@ -131,8 +133,9 @@ const Showlist = () => {
               return (
                 <div
                   key={i}
-                  className={`${i === 0 || i === 1 ? "col-span-2" : "col-span-1"
-                    }`}
+                  className={`${
+                    i === 0 || i === 1 ? "col-span-2" : "col-span-1"
+                  }`}
                 >
                   <p>{e}</p>
                 </div>
@@ -149,7 +152,7 @@ const Showlist = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{
               duration: 0.5,
-              delay: i * 0.1,
+              delay: i * 0.2,
               ease: "easeOut",
             }}
             className={`grid grid-cols-7 pl-5 text-sm py-4 m-2 border rounded-lg  ${bgborder} `}
@@ -166,36 +169,43 @@ const Showlist = () => {
   );
 };
 
-interface ButtonAddItemProps {
-  setOpenShowProgress: React.Dispatch<React.SetStateAction<boolean>>;
-}
+type ButtonaddItemType = {
+  onOpen: () => void;
+};
 
-const ButtonaddItem: React.FC<ButtonAddItemProps> = ({ setOpenShowProgress }) => {
+const ButtonaddItem: React.FC<ButtonaddItemType> = ({ onOpen }) => {
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-900" : " shadow-sm bg-white";
 
   return (
     <div className={` h-fit border p-5 rounded-lg ${bg} `}>
-      <p className={`${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'} text-lg font-semibold`}>เพิ่มวัสดุใหม่</p>
+      <p
+        className={`${
+          theme === "dark" ? "text-yellow-500" : "text-blue-500"
+        } text-lg font-semibold`}
+      >
+        เพิ่มวัสดุใหม่
+      </p>
       <button
-        onClick={() => setOpenShowProgress(true)}
+        onClick={onOpen}
         className={`relative overflow-hidden rounded-md cursor-pointer px-2 w-f py-1 text-white text-sm duration-300 w-full mt-2
                [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${theme === "dark"
-            ? "bg-yellow-600 hover:bg-yellow-700"
-            : "bg-blue-700 hover:bg-blue-800"
-          }`}
+               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
+                 theme === "dark"
+                   ? "bg-yellow-600 hover:bg-yellow-700"
+                   : "bg-blue-700 hover:bg-blue-800"
+               }`}
       >
         รายละเอียด
       </button>
     </div>
-  )
-}
+  );
+};
 
 const ShowProgress = () => {
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-900" : " shadow-sm bg-white";
-  const texthead = theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'
+  const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
 
   return (
     <div className={`border h-143 rounded-lg p-4 ${bg}`}>
@@ -206,46 +216,73 @@ const ShowProgress = () => {
       <div className="w-full border p-2 rounded-lg ">Progress</div>
       <div className="mt-2 text-sm">
         {[
-          { name: 'ไฟ้า', num: 14 },
-          { name: 'ไฟ้า', num: 14 },
-          { name: 'ไฟ้า', num: 14 },
+          { name: "ไฟ้า", num: 14 },
+          { name: "ไฟ้า", num: 14 },
+          { name: "ไฟ้า", num: 14 },
         ].map((event, index) => {
           return (
             <div className="my-2 flex gap-2" key={index}>
               <p>{event.name}</p>
               <p>{event.num} %</p>
             </div>
-          )
+          );
         })}
       </div>
     </div>
-  )
-}
+  );
+};
 
-const ShowaletProgress = () => {
+type ShowaletProgressProps = {
+  onClose: () => void; // บอกว่า onClose เป็นฟังก์ชันที่ไม่มี parameter และไม่คืนค่า
+};
+const ShowaletProgress: React.FC<ShowaletProgressProps> = ({ onClose }) => {
   const { theme } = useTheme();
+  const bg = theme === "dark" ? "bg-gray-900" : " shadow-sm bg-white";
+
+  const [visible, setVisible] = useState(false);
+
+  // เปิด modal ค่อยๆ โผล่
+  useEffect(() => {
+    const timer = setTimeout(() => setVisible(true), 50);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleClose = () => {
+    setVisible(false);
+    setTimeout(onClose, 500);
+  };
 
   return (
-    <div className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity `}
+    <div
+      className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
+        visible ? "opacity-100" : "opacity-0"
+      }`}
     >
-      <div className="w-220 h-110 rounded-2xl p-8 border">
+      <div className={`w-220 h-110 rounded-2xl p-8 border ${bg}`}>
         <p className="text-2xl font-bold mb-6 border-b pb-3">เพิ่มวัสดุใหม่</p>
         <div className="grid grid-cols-2 gap-5">
-          {['รหัสวัสดุ', 'ชื่อวัสดุ', 'หมวดหมู้', 'จํานวน', 'หน่วยนับ'].map((e, i) => {
-            return (
-              <div key={i} className={`${i === 4 ? 'col-span-2' : 'col-span-1'}`}>
-                <p className="mb-1">{e}</p>
-                <input
-                  type="text"
-                  className={`border w-full p-2 rounded-lg focus:ring-2 focus:outline-none ${i === 4 ? 'col-span-2' : ''}`}
-                />
-              </div>
-            )
-          })}
+          {["รหัสวัสดุ", "ชื่อวัสดุ", "หมวดหมู้", "จํานวน", "หน่วยนับ"].map(
+            (e, i) => {
+              return (
+                <div
+                  key={i}
+                  className={`${i === 4 ? "col-span-2" : "col-span-1"}`}
+                >
+                  <p className="mb-1">{e}</p>
+                  <input
+                    type="text"
+                    className={`border w-full p-2 rounded-lg focus:ring-2 focus:outline-none ${
+                      i === 4 ? "col-span-2" : ""
+                    }`}
+                  />
+                </div>
+              );
+            }
+          )}
         </div>
         <div className="flex justify-end gap-4 border-t pt-4 mt-4">
           <button
-            // onClick={closeModal}
+            onClick={handleClose}
             className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
           >
             <span className="relative z-10">ยกเลิก</span>
@@ -255,8 +292,9 @@ const ShowaletProgress = () => {
           </button>
 
           <button
-            className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-              }`}
+            className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+              theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+            }`}
           >
             <span className="relative z-10">ยืนยัน</span>
             <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -266,20 +304,24 @@ const ShowaletProgress = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default function SuppliesAdmin() {
-  const [OpenShowProgress, setOpenShowProgress] = useState(false)
   const [fade, setFade] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
-    const item = setTimeout(() => setFade(true), 100)
-    return () => clearTimeout(item)
+    const item = setTimeout(() => setFade(true), 100);
+    return () => clearTimeout(item);
   }, []);
 
   return (
-    <div className={`max-w-380 p-5 container mx-auto duration-300 ${fade ? 'opacity-100' : 'opacity-0'}`}>
+    <div
+      className={`max-w-380 p-5 container mx-auto duration-300 ${
+        fade ? "opacity-100" : "opacity-0"
+      }`}
+    >
       <div>
         <p className="text-3xl font-bold">
           {" "}
@@ -293,16 +335,13 @@ export default function SuppliesAdmin() {
           <Showlist />
         </div>
         <div className="col-span-2">
-          <ButtonaddItem setOpenShowProgress={setOpenShowProgress} />
+          <ButtonaddItem onOpen={() => setShowModal(true)} />
           <div className="mt-5">
             <ShowProgress />
           </div>
         </div>
       </div>
-      {OpenShowProgress && (
-        <ShowaletProgress />
-      )}
-
+      {showModal && <ShowaletProgress onClose={() => setShowModal(false)} />}
     </div>
   );
 }

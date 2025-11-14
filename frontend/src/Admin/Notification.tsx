@@ -18,6 +18,7 @@ export default function Notification() {
   const texthead = theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'
   const border = theme === "dark" ? "border-gray-700" : "border-gray-200";
   const bgborder = theme === 'dark' ? 'bg-gray-800' : 'bg-gray-50'
+  
   useEffect(() => {
     const timer = setTimeout(() => setFade(true), 50);
     return () => {

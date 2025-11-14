@@ -82,6 +82,8 @@ export default function Searchpastjobs() {
   const [OpenMap, setOpenMap] = useState(false);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
   const [Focused, setFocused] = useState(false);
+  const [messageDelete, setMessageDelete] = useState("");
+  const [showTrash, setShowTrash] = useState(false);
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
@@ -138,14 +140,36 @@ export default function Searchpastjobs() {
   };
 
   // ลบ employees
-  const handleDelete = async (id: string) => {
+  // const handleDelete = async (id: string) => {
+  //   try {
+  //     await fetch(`http://localhost:5000/api/employees/${id}`, {
+  //       method: "DELETE",
+  //     });
+  //     fetchData();
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
+
+  const handleDelete = async (id: string, messageDelete: string) => {
     try {
-      await fetch(`http://localhost:5000/api/employees/${id}`, {
-        method: "DELETE",
+      const res = await fetch(`http://localhost:5000/api/employees/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Status: "Delete",
+          messageDelete: messageDelete,
+        }),
       });
-      fetchData();
+
+      if (!res.ok) throw new Error("Failed to update status");
+
+      // รีเฟรช list งานหลังอัพเดต
+      fetchData(); // ดึงข้อมูลใหม่จาก backend
     } catch (err) {
-      console.error(err);
+      console.error("Error deleting employee:", err);
     }
   };
 
@@ -186,11 +210,10 @@ export default function Searchpastjobs() {
   //setAnim delate Employee
   const Opendatele_function = (e: Employee) => {
     setDeleteTarget(e); // เก็บงานที่จะลบ
-    setopendatele(true); // เปิด modal ก่อน
-    setAnim(false); // เริ่มจาก anim = false
-    setTimeout(() => setAnim(true), 0); // trigger animation หลัง modal render
+    setopendatele(true); // เปิด modal
+    setAnim(false); // เริ่ม animation
+    setTimeout(() => setAnim(true), 0); // trigger animation
   };
-
   //setAnim delate Employee
   const clasOpendate = () => {
     setAnim(false);
@@ -327,12 +350,21 @@ export default function Searchpastjobs() {
             </h2>
             <div className="flex flex-wrap gap-4 items-center">
               <button
+                onClick={() => setShowTrash(true)}
+                className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white bg-red-500`}
+              >
+                ถังขยะ
+                <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
+                  <div className="relative h-full w-8 bg-white/50"></div>
+                </div>
+              </button>
+              <button
                 onClick={() => openModal()}
                 className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white ${
                   theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
                 }`}
               >
-                เพิ่มช่าง
+                เพิ่มใบงาน
                 <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
                   <div className="relative h-full w-8 bg-white/50"></div>
                 </div>
@@ -375,86 +407,92 @@ export default function Searchpastjobs() {
             ))}
           </div>
 
-          {filtered.map((e, i) => (
-            <motion.div
-              key={e._id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: i * 0.05, ease: "easeOut" }}
-              className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center crounded-xl shadow-sm py-1 px-5 mt-2 ${
-                t ? "bg-gray-900 border-gray-700" : "bg-blue-50/40"
-              } border`}
-            >
-              {(
-                [
-                  "Worksheet",
-                  "Employer",
-                  "Contact_number",
-                ] as (keyof Employee)[]
-              ).map((k) => (
-                <p key={k} className="hidden lg:block truncate">
-                  {e[k] instanceof File ? e[k].name : e[k] ?? ""}
+          {/* แสดงเฉพาะงานที่ Status = Active */}
+          {/* แสดงเฉพาะงานที่ Status = Active */}
+          {filtered
+            .filter((e) => e.Status === "Active")
+            .map((e, i) => (
+              <motion.div
+                key={e._id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.5,
+                  delay: i * 0.2,
+                  ease: "easeOut",
+                }}
+                className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${
+                  t ? "bg-gray-900 border-gray-700" : "bg-gray-100"
+                }`}
+              >
+                {/* ชื่อ คต. */}
+                {(
+                  [
+                    "Worksheet",
+                    "Employer",
+                    "Contact_number",
+                  ] as (keyof Employee)[]
+                ).map((k) => (
+                  <p key={k} className="hidden lg:block truncate">
+                    {e[k] instanceof File ? e[k].name : e[k] ?? ""}
+                  </p>
+                ))}
+
+                {/* สถานะ Active */}
+                <p className="hidden lg:block truncate text-yellow-500">
+                  {e.Status}
                 </p>
-              ))}
 
-              <p className="hidden lg:block truncate text-yellow-500">
-                {e.Status ?? ""}
-              </p>
+                {/* วันที่ */}
+                {(
+                  [
+                    "Date_of_acceptance_of_work",
+                    "Closing_date",
+                  ] as (keyof Employee)[]
+                ).map((k) => (
+                  <p key={k} className="hidden lg:block truncate">
+                    {typeof e[k] === "string"
+                      ? e[k].split("T")[0]
+                      : e[k] instanceof Date
+                      ? e[k].toISOString().split("T")[0]
+                      : ""}
+                  </p>
+                ))}
 
-              {(
-                [
-                  "Date_of_acceptance_of_work",
-                  "Closing_date",
-                ] as (keyof Employee)[]
-              ).map((k) => (
-                <p key={k} className="hidden lg:block truncate">
-                  {typeof e[k] === "string" ? e[k].split("T")[0] : ""}
-                </p>
-              ))}
-
-              <div className="gap-1 flex justify-center">
-                {/* ปุ่มลบ */}
-                <button
-                  //onClick={() => handleDelete(e._id)}
-                  onClick={() => Opendatele_function(e)}
-                  className="relative overflow-hidden cursor-pointer  rounded-md bg-red-500 px-2 py-1 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 hover:bg-red-600"
-                >
-                  ลบ
-                </button>
-
-                {/* ปุ่มแก้ไข */}
-                <button
-                  onClick={() => openModal(e)}
-                  className={` relative overflow-hidden cursor-pointer rounded-md  px-2 py-1 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-               theme === "dark"
-                 ? "bg-yellow-500 hover:bg-yellow-600"
-                 : "bg-blue-500 hover:bg-blue-600"
-             }`}
-                >
-                  แก้ไข
-                </button>
-
-                {/* ปุ่มรายละเอียด */}
-                <Link to={`/Details/${e._id}`}>
+                {/* ปุ่มต่าง ๆ */}
+                <div className="gap-1 flex justify-center">
                   <button
-                    className={`relative overflow-hidden rounded-md cursor-pointer px-2 py-1 text-white text-sm duration-300 
-               [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
-                 theme === "dark"
-                   ? "bg-yellow-600 hover:bg-yellow-700"
-                   : "bg-blue-700 hover:bg-blue-800"
-               }`}
+                    onClick={() => Opendatele_function(e)}
+                    className="rounded-md bg-red-500 px-2 py-1 text-white text-sm hover:bg-red-600 duration-300"
                   >
-                    รายละเอียด
+                    ลบ
                   </button>
-                </Link>
-              </div>
-            </motion.div>
-          ))}
+
+                  <button
+                    onClick={() => openModal(e)}
+                    className={`rounded-md px-2 py-1 text-white text-sm duration-300 ${
+                      theme === "dark"
+                        ? "bg-yellow-500 hover:bg-yellow-600"
+                        : "bg-blue-500 hover:bg-blue-600"
+                    }`}
+                  >
+                    แก้ไข
+                  </button>
+
+                  <Link to={`/Details/${e._id}`}>
+                    <button
+                      className={`rounded-md px-2 py-1 text-white text-sm duration-300 ${
+                        theme === "dark"
+                          ? "bg-yellow-600 hover:bg-yellow-700"
+                          : "bg-blue-700 hover:bg-blue-800"
+                      }`}
+                    >
+                      รายละเอียด
+                    </button>
+                  </Link>
+                </div>
+              </motion.div>
+            ))}
 
           {/* Modal */}
           {showModal && (
@@ -584,7 +622,7 @@ export default function Searchpastjobs() {
               }`}
             >
               <div
-                className={`rounded-2xl shadow-2xl p-5 w-120  max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+                className={`rounded-2xl shadow-2xl p-5 w-120 max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
                   anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
                 } ${
                   theme === "dark"
@@ -592,36 +630,74 @@ export default function Searchpastjobs() {
                     : "bg-white text-gray-900"
                 }`}
               >
-                <div className="flex items-center gap-1">
-                  <p
-                    className={`font-semibold ${
-                      theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                <div className="flex flex-col gap-4">
+                  {/* หัวข้อ */}
+                  <div className="flex items-center gap-1">
+                    <p
+                      className={`font-semibold text-lg ${
+                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      }`}
+                    >
+                      ลบงาน :
+                    </p>
+                    <span>{deleteTarget.Worksheet}</span>
+                  </div>
+
+                  {/* หมายเหตุเตือนก่อนลบ */}
+                  <div
+                    className={`p-3 rounded-lg text-sm ${
+                      theme === "dark"
+                        ? "bg-red-900/30 text-red-300"
+                        : "bg-red-100 text-red-600"
                     }`}
                   >
-                    {" "}
-                    ลบงาน :
-                  </p>
-                  <span>{deleteTarget.Worksheet}</span>
-                  <div className="flex gap-2 ml-auto  items-center ">
+                    การลบงานนี้จะทำให้ระบบ ย้ายงานไปเก็บไว้ในถังขยะ งานจะ
+                    ไม่แสดงในรายการหลัก อีกต่อไป แต่ ยังสามารถกู้คืนได้ในภายหลัง
+                    หากต้องการ
+                  </div>
+
+                  {/* ช่องพิมพ์เหตุผล */}
+                  <div className="flex flex-col gap-1">
+                    <label className="font-medium">
+                      กรุณาระบุเหตุผลที่ต้องการลบงานนี้:
+                    </label>
+                    <textarea
+                      value={messageDelete}
+                      onChange={(e) => setMessageDelete(e.target.value)}
+                      placeholder="พิมพ์เหตุผลที่ต้องการลบ..."
+                      className={`border rounded-lg p-3 h-28 outline-none transition ${
+                        theme === "dark"
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "bg-white border-gray-300 text-gray-900"
+                      }`}
+                    />
+                  </div>
+
+                  {/* ปุ่ม */}
+                  <div className="flex gap-2 justify-end mt-2">
                     <button
                       onClick={clasOpendate}
-                      className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                      className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
                     >
                       <span className="relative z-10">ยกเลิก</span>
-                      <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                        <span className="absolute left-0 top-0 w-0 h-full bg-gray-200  transition-all duration-500 group-hover:w-full"></span>
+                      <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
                       </span>
                     </button>
+
                     <button
                       onClick={() => {
-                        handleDelete(deleteTarget._id); // ลบงาน
-                        clasOpendate(); // ปิด modal
+                        if (deleteTarget) {
+                          handleDelete(deleteTarget._id, messageDelete);
+                          setMessageDelete("");
+                          clasOpendate(); // ปิด modal
+                        }
                       }}
                       className="group relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
                     >
                       <span className="relative z-10">ลบ</span>
-                      <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                        <span className="absolute left-0 top-0 w-0 h-full bg-red-600  transition-all duration-500 group-hover:w-full"></span>
+                      <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <span className="absolute left-0 top-0 w-0 h-full bg-red-600 transition-all duration-500 group-hover:w-full"></span>
                       </span>
                     </button>
                   </div>
@@ -680,6 +756,11 @@ export default function Searchpastjobs() {
           )}
         </div>
       </div>
+      {showTrash && (
+        <div className="inset-0 z-50 fixed flex justify-center items-center backdrop-blur-sm bg-black/40">
+          <div className="rounded-2xl w-[900px] h-200 shadow-2xl border"></div>
+        </div>
+      )}
     </div>
   );
 }

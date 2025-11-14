@@ -26,6 +26,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       Closing_date,
       description,
       Status,
+      messageDelete
     } = req.body;
 
     const image = req.file ? req.file.filename : undefined;
@@ -51,6 +52,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       description,
       image,
       Status,
+      messageDelete,
     });
 
     await employee.save();
@@ -97,12 +99,13 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       Employer,
       Contact_number,
       address,
-      area, // <-- เพิ่ม
+      area,
       responsible,
       Date_of_acceptance_of_work,
       Closing_date,
       description,
       Status,
+      messageDelete, // <-- เพิ่ม
     } = req.body;
 
     // ถ้ามีไฟล์ใหม่ → ลบไฟล์เก่า
@@ -132,17 +135,19 @@ router.put("/:id", upload.single("image"), async (req, res) => {
       parsedArea = emp.area;
     }
 
+    // อัพเดต fields
     emp.Worksheet = Worksheet ?? emp.Worksheet;
     emp.Employer = Employer ?? emp.Employer;
     emp.Contact_number = Contact_number ?? emp.Contact_number;
     emp.address = parsedAddress;
-    emp.area = parsedArea; // <-- อัพเดต area
+    emp.area = parsedArea;
     emp.responsible = responsible ?? emp.responsible;
     emp.Date_of_acceptance_of_work =
       Date_of_acceptance_of_work ?? emp.Date_of_acceptance_of_work;
     emp.Closing_date = Closing_date ?? emp.Closing_date;
     emp.description = description ?? emp.description;
     emp.Status = Status ?? emp.Status;
+    emp.messageDelete = messageDelete ?? emp.messageDelete; // <-- แก้ตรงนี้
 
     await emp.save();
     res.json(emp);

@@ -11,7 +11,6 @@ import { IoClose } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { FaTools } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
-import { FaMapMarkedAlt } from "react-icons/fa";
 
 interface SidebarItem {
   text: string;
