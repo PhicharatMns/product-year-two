@@ -14,6 +14,7 @@ const employeeSchema = new mongoose.Schema({
   description: String,
   image: String,
   Status: String,
+  messageDelete: String,
 });
 
 module.exports = mongoose.model("employee", employeeSchema);

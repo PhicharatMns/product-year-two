@@ -157,17 +157,18 @@ export default function Editacc() {
   // ปิด modal
   const closeAddEmployee = () => {
     setAmin(false); // เริ่ม fade-out
-    setSelectedDelete(null); // ล้างค่า
-    setTimeout(() => setShowModal(false), 300); // ซ่อน modal หลัง fade-out
+    setTimeout(() => {
+      setShowModal(false); // ซ่อน modal หลัง fade-out
+      setSelectedDelete(null); // ล้างค่า
+    }, 300); // ต้องตรงกับ duration ของ CSS transition
   };
 
   // เปิด modal
   const openDeleteModal = (t: Tradesman) => {
     setSelectedDelete(t);
     setopenDelete(true); // render modal
-    setTimeout(() => setAmin(true), 50); // fade-in
+    setTimeout(() => setAmin(true), 50); // fade-in หลัง render
   };
-
   //ยืนยันการลบ
   const handleConfirmDelete = async () => {
     if (!selectedDelete) return;
@@ -279,8 +280,8 @@ export default function Editacc() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: idx * 0.05, ease: "easeOut" }}
-            className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center crounded-xl shadow-sm py-1 px-5 mt-2 ${
-              theme === 'dark' ? "bg-gray-900 border-gray-700" : "bg-gray-100"
+            className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center  pl-5 shadow-sm py-1  mt-2 ${
+              theme === "dark" ? "bg-gray-900 border-gray-700" : "bg-gray-100"
             } border`}
           >
             <img
@@ -462,11 +463,12 @@ export default function Editacc() {
           }`}
         >
           <div
-            className={`rounded-2xl shadow-2xl p-5 w-120 flex items-center gap-4 transition-transform duration-300 ${
+            className={`rounded-2xl shadow-2xl p-5 h-100 w-120  items-center gap-4 transition-transform duration-300 ${
               Anim ? "scale-100" : "scale-90"
             } ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}
           >
-            <div className="flex gap-2  items-center ">
+            <p className="text-lg font-bold">ยืนยันการลบ</p>
+            {/* <div className="flex gap-2  items-center ">
               <p
                 className={`font-semibold ${
                   theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -475,9 +477,23 @@ export default function Editacc() {
                 ต้องการลบ คุณ{" "}
               </p>
               <span>{selectedDelete.Name}</span>
+            </div> */}
+            <div className="border-b h-70 mb-5">
+              <img
+                className="border rounded-full mx-auto object-cover mb-5 bg-yellow-500 w-35 h-35"
+                src={`http://localhost:5000/uploads/Profile/${
+                  selectedDelete.Profile || "default.png"
+                }`}
+                alt={selectedDelete.Name || "Profile"}
+              />
+              <div className=" w-fit text-light mx-auto">
+                <p>ID : {selectedDelete._id}</p>
+                <p>นาย : {selectedDelete.Name}</p>
+                <p>ตําเเหน่ง : {selectedDelete.role}</p>
+                <p>สายงาน : {selectedDelete.Profile}</p>
+              </div>
             </div>
-            {/* ลบและยกเลิก */}
-            <div className="flex gap-2 my-1 ml-auto">
+            <div className="flex gap-2 justify-end">
               <button
                 onClick={closeAddEmployee}
                 className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
@@ -491,7 +507,7 @@ export default function Editacc() {
                 onClick={handleConfirmDelete}
                 className="group relative   overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
               >
-                <span className="relative z-10">ลบ</span>
+                <span className="relative z-10">ยืนยัน</span>
                 <span className="absolute inset-0 overflow-hidden  pointer-events-none">
                   <span className="absolute left-0 top-0 w-0 h-full bg-red-600  transition-all duration-500 group-hover:w-full"></span>
                 </span>
