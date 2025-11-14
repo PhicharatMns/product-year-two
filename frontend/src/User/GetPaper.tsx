@@ -40,7 +40,7 @@ export default function GetPaper() {
   const [focused, setFocused] = useState(false);
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [search, setSearch] = useState("");
-  const [filtered, setFiltered] = useState<Employee[]>([]);
+  const [filtered, setFiltered] = useState<Employee[]>([]); 
   const [selectedJob, setSelectedJob] = useState<Employee | null>(null);
 
   // --- State สำหรับ Modal "เบิกของ" ---
@@ -96,7 +96,13 @@ export default function GetPaper() {
   const openItemModal = (job: Employee) => {
     setSelectedJob(job);
     // --- 4. ตั้งค่าเริ่มต้นให้มี 1 รายการ ---
-    setItems([{ id: Date.now().toString(), name: "", quantity: "" }]);
+    setItems(
+      Array.from({ length: 5 }, (_, i) => ({
+        id: (Date.now() + i).toString(),
+        name: "",
+        quantity: "",
+      }))
+    );
     setOpendateItem(true);
     setFadeItem(false);
     setTimeout(() => setFadeItem(true), 50);
@@ -304,9 +310,6 @@ export default function GetPaper() {
           </div>
         )}
       </div>
-
-    
- 
 
       {/* =========================================================
               MODAL 2: ฟอร์มเบิกของ (โค้ดที่อัปเดตแล้ว)

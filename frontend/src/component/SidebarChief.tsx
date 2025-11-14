@@ -8,6 +8,9 @@ import { useTheme } from "@/components/theme-provider";
 import axios from "axios";
 import { VscNewFile } from "react-icons/vsc";
 import { AiTwotoneCalendar } from "react-icons/ai";
+import { FaListCheck } from "react-icons/fa6";
+import { LuMessageSquareText } from "react-icons/lu";
+import { TbUserEdit } from "react-icons/tb";
 
 interface SidebarItem {
   text: string;
@@ -36,13 +39,11 @@ export default function SidebarChief() {
       icon: AiTwotoneCalendar,
       link: "/chief/CalendarChief",
     },
-    {
-      text: "รายการขอเบิกของ",
-      icon: AiTwotoneCalendar,
-      link: "/chief/รายการขอเบิกของ",
-    },
-    { text: "จัดการบัญชี", icon: MdDashboard, link: "/chief/จัดการบัญชี" },
-    { text: "ข้อความ", icon: MdDashboard, link: "/chief/ข้อความ" },
+   
+    { text: "จัดการบัญชี", icon: TbUserEdit, link: "/chief/edituser" },
+    { text: "ข้อความ", icon:  LuMessageSquareText, link: "/chief/messeger" },
+    { text: "รายการเบิกของ", icon: FaListCheck, link: "/chief/ItemChief" },
+
     { text: "ออกจากระบบ", icon: IoLogOutOutline, onClick: handleLogout },
   ];
 

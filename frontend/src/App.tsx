@@ -55,6 +55,9 @@ import Chief from "./chief/Chief";
 import CalendarChief from "./chief/CalendarChief";
 import DetailworkChief from "./chief/DetailworkChief";
 import GetPaper from "./chief/getpaper";
+import ItemChief from "./chief/ItemChief";
+import Messeger from "./chief/messeger";
+import EditUser from "./chief/EditUser";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -119,6 +122,7 @@ const router = createBrowserRouter([
       { path: "MapWork", element: <MapWork /> },
       { path: "ProfileExecutive", element: <ProfileExecutive /> },
       {path: "Team", element: <Team />},
+      {path: "Messeger", element: <Messeger />},
     ],
   },
 
@@ -134,6 +138,10 @@ const router = createBrowserRouter([
     { path: 'getpaper', element: <GetPaper /> },
     { path: 'CalendarChief', element: <CalendarChief /> },
     { path: "DetailworkChief/:id", element: <DetailworkChief /> },
+    { path: "ItemChief", element: <ItemChief/> },
+    { path: "messeger", element: <Messeger /> },
+    { path: "edituser", element: <EditUser /> },
+
     ],
   },
 ]);
