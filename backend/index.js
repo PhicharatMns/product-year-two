@@ -8,6 +8,7 @@ const tradesmanRouter = require("./routes/tradesman");
 const employeeRouter = require("./routes/employee");
 const otherTradesmanRouter = require("./routes/otherTradesman");
 const loginRouter = require("./routes/login");
+const item = require("./routes/iteme");
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.use("/api/tradesman", tradesmanRouter);
 app.use("/api/employees", employeeRouter);
 app.use("/api/otherTradesman", otherTradesmanRouter);
 app.use("/api/login", loginRouter);
+app.use("/api/item" , item);
 
 app.listen(5000, "localhost", () => {
   console.log("Server running at http://localhost:5000");

@@ -188,14 +188,14 @@ export default function Editacc() {
 
   const inputClass = `border w-full focus:ring-2 outline-none p-2 rounded-lg  mt-2 ${
     theme === "dark"
-      ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-      : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800"
+      ? "border-gray-600 duration-300 bg-gray-700 focus:ring-yellow-400  text-white"
+      : " focus:ring-blue-400 duration-300 text-gray-800 bg-gray-50"
   }`;
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-700";
 
   return (
     <div
-      className={`w-max-380  container duration-300 p-5 mx-auto pt-10 ${
+      className={`w-max-380  container duration-300 p-5 mx-auto  ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
