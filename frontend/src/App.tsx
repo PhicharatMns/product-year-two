@@ -57,6 +57,7 @@ import GetPaper from "./chief/getpaper";
 import ItemChief from "./chief/ItemChief";
 import Messeger from "./chief/Messeger";
 import EditUser from "./chief/EditUser";
+import ProfileChief from "./chief/ProfileChief";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
