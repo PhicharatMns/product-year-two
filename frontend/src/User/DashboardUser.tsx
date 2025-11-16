@@ -13,7 +13,6 @@ import { animate, motion, useMotionValue, useTransform } from "motion/react";
 import { useEffect, useState } from "react";
 
 export default function DashboardUser() {
-
   // #region Sample data
   const monthlyData = [
     {
@@ -185,14 +184,8 @@ export default function DashboardUser() {
                   </p>
                   <div className="text-sm text-white">
                     <button
-                      role="link"
-                      className={`relative cursor-pointer bg-[length:100%_2px,0_2px] bg-[position:100%_100%,0_100%] 
-                 bg-no-repeat transition-[background-size,color] duration-500 hover:bg-[0_2px,100%_2px] 
-                 rounded-md ${
-                   theme === "dark"
-                     ? "hover:text-purple-600 bg-[linear-gradient(#ffffff,#ffffff),linear-gradient(#7c3aed,#7c3aed)]" // ม่วงเข้มตัดเหลือง
-                     : "hover:text-yellow-500 bg-[linear-gradient(#ffffff,#ffffff),linear-gradient(#facc15,#facc15)]" // น้ำเงินเข้มตัดเหลือง
-                 }`}
+                      className={`relative cursor-pointer after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:translate-y-1  after:opacity-0 after:transition after:duration-150 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100 
+                    ${theme === "dark" ? "after:bg-white" : "after:bg-white"}`}
                     >
                       รายละเอียด
                     </button>
