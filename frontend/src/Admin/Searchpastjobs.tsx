@@ -458,7 +458,9 @@ export default function Searchpastjobs() {
                   delay: i * 0.2,
                   ease: "easeOut",
                 }}
-                className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
+                className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${
+                  theme === "dark" ? "bg-gray-900" : "bg-gray-100"
+                }`}
               >
                 {/* ชื่อ คต. */}
                 {(
@@ -565,9 +567,7 @@ export default function Searchpastjobs() {
                     address: "ที่อยุ่งาน  ",
                   }).map(([k, label]) => (
                     <div key={k} className="flex flex-col">
-                      <label className={`mb-1  ${cls.label}`}>
-                        {label}
-                      </label>
+                      <label className={`mb-1  ${cls.label}`}>{label}</label>
 
                       {k === "address" ? (
                         <button

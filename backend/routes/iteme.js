@@ -33,4 +33,43 @@ router.get("/all-items", async (req, res) => {
   }
 });
 
+// PUT: แก้ไขรายการตาม id
+router.put("/update-item/:id", async (req, res) => {
+  try {
+    const { name, category, number, counting } = req.body;
+    const updatedItem = await Item.findByIdAndUpdate(
+      req.params.id,
+      { name, category, number, counting },
+      { new: true } // คืนค่า document ที่อัปเดตแล้ว
+    );
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: "ไม่พบรายการนี้" });
+    }
+
+    res.status(200).json(updatedItem);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในการแก้ไขข้อมูล" });
+  }
+});
+
+// DELETE: ลบรายการตาม id
+router.delete("/delete-item/:id", async (req, res) => {
+  try {
+    const deletedItem = await Item.findByIdAndDelete(req.params.id);
+
+    if (!deletedItem) {
+      return res.status(404).json({ message: "ไม่พบรายการนี้" });
+    }
+
+    res
+      .status(200)
+      .json({ message: "ลบรายการเรียบร้อยแล้ว", item: deletedItem });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดในการลบข้อมูล" });
+  }
+});
+
 module.exports = router;
