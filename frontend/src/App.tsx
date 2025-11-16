@@ -55,7 +55,7 @@ import CalendarChief from "./chief/CalendarChief";
 import DetailworkChief from "./chief/DetailworkChief";
 import GetPaper from "./chief/getpaper";
 import ItemChief from "./chief/ItemChief";
-import Messeger from "./chief/messeger";
+import Messeger from "./chief/Messeger";
 import EditUser from "./chief/EditUser";
 
 const router = createBrowserRouter([
