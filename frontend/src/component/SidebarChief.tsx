@@ -154,7 +154,7 @@ export default function SidebarChief() {
         {/* Profile + Theme */}
         <div>
           <ThemeSwitcher />
-          <Link to="Profile" className="mt-auto">
+          <Link to="ProfileChief" className="mt-auto">
             <div className="border-t border-blue-600 bg-blue-900 h-20 flex items-center gap-4 cursor-pointer px-2 hover:bg-blue-700 duration-300">
               <img
                 src="https://i.pinimg.com/736x/f7/94/54/f79454c439ea58e65d2bb675a1faf77b.jpg"

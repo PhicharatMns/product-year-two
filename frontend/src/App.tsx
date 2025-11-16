@@ -55,9 +55,8 @@ import CalendarChief from "./chief/CalendarChief";
 import DetailworkChief from "./chief/DetailworkChief";
 import GetPaper from "./chief/getpaper";
 import ItemChief from "./chief/ItemChief";
-
-import EditUser from "./chief/EditUser";
 import Messeger from "./chief/Messeger";
+import EditUser from "./chief/EditUser";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -141,6 +140,8 @@ const router = createBrowserRouter([
     { path: "ItemChief", element: <ItemChief/> },
     { path: "messeger", element: <Messeger /> },
     { path: "edituser", element: <EditUser /> },
+    { path: "ProfileChief", element: <ProfileChief /> },
+
 
     ],
   },
