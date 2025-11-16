@@ -170,7 +170,7 @@ const StatCard = ({ title, value, icon, colorClass, theme }: StatCardProps) => {
 
 // --- Main Component (ปรับปรุงใหม่ทั้งหมด) ---
 
-export default function MessageDashboard() { // เปลี่ยนชื่อ
+export default function Messeger() { // เปลี่ยนชื่อ
   // --- Hooks & Context ---
   const { theme } = useTheme();
 

@@ -34,6 +34,7 @@ interface Employee {
   description: string;
   Status?: string;
   image: File | null;
+  messageDelete: string;
 }
 // ฟอร์มเพิ่ม/แก้ไขงาน
 interface FormState extends Omit<Employee, "_id"> {
@@ -53,6 +54,7 @@ const defaultForm: FormState = {
   description: "",
   Status: "Active",
   image: null,
+  messageDelete: "",
 };
 
 //  Table Headers
@@ -82,14 +84,17 @@ export default function Searchpastjobs() {
   const [OpenMap, setOpenMap] = useState(false);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
   const [Focused, setFocused] = useState(false);
+  const [Focusedpopup, setFocusedpopup] = useState(false);
   const [messageDelete, setMessageDelete] = useState("");
   const [showTrash, setShowTrash] = useState(false);
+  const [searchpopup, setSearchpopup] = useState("");
+  const [opendatefilepopup, setopendatefilepopup] = useState(fade);
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
     input: t
-      ? "border-gray-600 focus:ring-yellow-400 bg-gray-700 text-white"
-      : "border-blue-300 focus:ring-blue-400 bg-white text-gray-800",
+      ? "border-gray-600 duration-300 bg-gray-700 focus:ring-yellow-400  text-white"
+      : " focus:ring-blue-400 duration-300 text-gray-800 bg-gray-50",
   };
 
   //ดึงข้อมูล employees
@@ -140,16 +145,17 @@ export default function Searchpastjobs() {
   };
 
   // ลบ employees
-  // const handleDelete = async (id: string) => {
-  //   try {
-  //     await fetch(`http://localhost:5000/api/employees/${id}`, {
-  //       method: "DELETE",
-  //     });
-  //     fetchData();
-  //   } catch (err) {
-  //     console.error(err);
-  //   }
-  // };
+  const Deleteflie = async (id: string) => {
+    try {
+      const res = await fetch(`http://localhost:5000/api/employees/${id}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) throw new Error("Failed to delete");
+      fetchData(); // รีเฟรชข้อมูล
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleDelete = async (id: string, messageDelete: string) => {
     try {
@@ -191,6 +197,7 @@ export default function Searchpastjobs() {
         description: e.description,
         Status: e.Status || "Active",
         image: null,
+        messageDelete: e.messageDelete,
       });
       setEditId(e._id);
     } else {
@@ -218,6 +225,32 @@ export default function Searchpastjobs() {
   const clasOpendate = () => {
     setAnim(false);
     setTimeout(() => setopendatele(false), 300);
+  };
+
+  const Opendatelepopup = () => {
+    setShowTrash(true); // mount modal
+    setAnim(false); // เริ่มที่ opacity-0
+    setTimeout(() => setAnim(true), 20); // ทำให้ค่อยๆ ขึ้น
+  };
+
+  const OpenFilepopupDate = () => {
+    setAnim(false); // fade out ก่อน
+    setTimeout(() => setShowTrash(false), 300); // แล้วค่อย unmount
+  };
+
+  const openclasdatefilePopup = () => {
+    setAnim(false);
+    setTimeout(() => setopendatefilepopup(false), 300);
+  };
+
+  const clasdatefilePopup = (e: Employee) => {
+    setDeleteTarget(e); // เก็บ Employee ที่จะลบ
+    setAnim(false);
+    setShowTrash(false); // ปิด modal เก่า
+    setTimeout(() => {
+      setopendatefilepopup(true); // เปิด modal ลบจริง
+      setTimeout(() => setAnim(true), 10); // trigger animation
+    }, 20);
   };
 
   // ฟิลเตอร์ข้อมูลตามคำค้นหา
@@ -328,6 +361,10 @@ export default function Searchpastjobs() {
     return () => clearTimeout(timer);
   }, []);
 
+  const bg = theme === "dark" ? "bg-gray-800" : " shadow-sm bg-white";
+  const bgborder = theme === "dark" ? "bg-gray-700" : "bg-gray-50";
+  const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+
   return (
     <div
       className={`transition-opacity duration-500 container mx-auto p-5 max-w-380   ${
@@ -350,7 +387,7 @@ export default function Searchpastjobs() {
             </h2>
             <div className="flex flex-wrap gap-4 items-center">
               <button
-                onClick={() => setShowTrash(true)}
+                onClick={Opendatelepopup}
                 className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white bg-red-500`}
               >
                 ถังขยะ
@@ -380,7 +417,7 @@ export default function Searchpastjobs() {
                   placeholder="ค้นหา..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 
+                  className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 border
                     ${
                       theme === "dark"
                         ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
@@ -421,9 +458,7 @@ export default function Searchpastjobs() {
                   delay: i * 0.2,
                   ease: "easeOut",
                 }}
-                className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${
-                  t ? "bg-gray-900 border-gray-700" : "bg-gray-100"
-                }`}
+                className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${theme === 'dark' ? 'bg-gray-800' : 'bg-gray-100'}`}
               >
                 {/* ชื่อ คต. */}
                 {(
@@ -463,29 +498,35 @@ export default function Searchpastjobs() {
                 <div className="gap-1 flex justify-center">
                   <button
                     onClick={() => Opendatele_function(e)}
-                    className="rounded-md bg-red-500 px-2 py-1 text-white text-sm hover:bg-red-600 duration-300"
+                    className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             hover:bg-red-600 active:-translate-y-1 active:scale-x-90 active:scale-y-110"
                   >
                     ลบ
                   </button>
 
                   <button
                     onClick={() => openModal(e)}
-                    className={`rounded-md px-2 py-1 text-white text-sm duration-300 ${
-                      theme === "dark"
-                        ? "bg-yellow-500 hover:bg-yellow-600"
-                        : "bg-blue-500 hover:bg-blue-600"
-                    }`}
+                    className={`relative overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+              active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                theme === "dark"
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
                   >
                     แก้ไข
                   </button>
 
                   <Link to={`/Details/${e._id}`}>
                     <button
-                      className={`rounded-md px-2 py-1 text-white text-sm duration-300 ${
-                        theme === "dark"
-                          ? "bg-yellow-600 hover:bg-yellow-700"
-                          : "bg-blue-700 hover:bg-blue-800"
-                      }`}
+                      className={`relative overflow-hidden cursor-pointer rounded-md  px-2 py-1 text-white text-sm shadow-md transition-all duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+              active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                theme === "dark"
+                  ? "bg-yellow-600 hover:bg-yellow-700"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
                     >
                       รายละเอียด
                     </button>
@@ -524,7 +565,7 @@ export default function Searchpastjobs() {
                     address: "ที่อยุ่งาน  ",
                   }).map(([k, label]) => (
                     <div key={k} className="flex flex-col">
-                      <label className={`mb-1 font-semibold ${cls.label}`}>
+                      <label className={`mb-1  ${cls.label}`}>
                         {label}
                       </label>
 
@@ -707,7 +748,9 @@ export default function Searchpastjobs() {
           )}
           {/* เปิดMap */}
           {OpenMap && (
-            <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm">
+            <div
+              className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm `}
+            >
               <div className="w-300 h-190 p-5 bg-gray-800 rounded-lg">
                 <MapContainer
                   center={defaultCenter}
@@ -757,8 +800,220 @@ export default function Searchpastjobs() {
         </div>
       </div>
       {showTrash && (
-        <div className="inset-0 z-50 fixed flex justify-center items-center backdrop-blur-sm bg-black/40">
-          <div className="rounded-2xl w-[900px] h-200 shadow-2xl border"></div>
+        <div
+          className={`inset-0 z-50 fixed flex justify-center items-center transition-all duration-300 backdrop-blur-sm bg-black/40 ${
+            anim ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div
+            className={`rounded-2xl w-[900px] h-200 shadow-2xl border ${bg}
+    transition-all duration-300 transform
+    ${
+      anim
+        ? "opacity-100 scale-100 translate-y-0"
+        : "opacity-0 scale-95 translate-y-5"
+    }
+  `}
+          >
+            <div className="flex justify-between border-b px-6 py-4 ">
+              <p
+                className={` text-2xl  font-semibold  ${
+                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                }`}
+              >
+                ถังขยะ
+                <span
+                  className={`${
+                    theme === "dark" ? "text-white" : "text-yellow-500"
+                  }`}
+                >
+                  ไฟล์งาน
+                </span>
+              </p>
+
+              <div className="relative">
+                <CiSearch
+                  className={`absolute left-3 top-1/2 -translate-y-1/2 transition-all duration-300`}
+                />
+                <input
+                  placeholder="ค้นหาใบงาน..."
+                  // onChange={(e) => setSearch(e.target.value)}
+                  value={searchpopup}
+                  onChange={(e) => setSearchpopup(e.target.value)}
+                  onFocus={() => setFocusedpopup(true)}
+                  onBlur={() => setFocusedpopup(false)}
+                  type="text"
+                  className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 border
+                    ${
+                      theme === "dark"
+                        ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
+                        : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+                    }}
+                    ${Focusedpopup ? "w-72" : "w-60"} ${cls.input}`}
+                />
+              </div>
+            </div>
+            {/* ข้อมูล */}
+            <div className="px-6 border-b">
+              <div className="grid grid-cols-5 gap-5 py-3  px-6">
+                {[
+                  "งาน",
+                  "สาเหตุการลบ",
+                  "ลบวันที่",
+                  "ลบงาน",
+                  "รายละเอียดงาน",
+                ].map((e, i) => {
+                  return (
+                    <div
+                      key={i}
+                      className={`${i === 4 ? "text-center" : ""} ${texthead}`}
+                    >
+                      <p className="font-semibold">{e}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div className="px-6 h-150 border-b my-4 overflow-y-auto scrollbar-hide">
+              {data
+                .filter((t) => t.Status === "Delete") // แสดงเฉพาะ Delete
+                .filter(
+                  (e) =>
+                    (e.Worksheet ?? "")
+                      .toLowerCase()
+                      .includes(searchpopup.toLowerCase()) ||
+                    (e.messageDelete ?? "")
+                      .toLowerCase()
+                      .includes(searchpopup.toLowerCase()) ||
+                    (e.Status ?? "")
+                      .toLowerCase()
+                      .includes(searchpopup.toLowerCase())
+                )
+                .map((e, i) => {
+                  return (
+                    <div
+                      className={`grid grid-cols-5 gap-5 rounded-lg py-2  border mb-3 items-center  px-6 ${bgborder}`}
+                      key={i}
+                    >
+                      <div>{e.Worksheet}</div>
+                      <div>{e.messageDelete}</div>
+                      <div>{e.Status}</div>
+                      <div className="">
+                        <button
+                          // onClick={() => Deleteflie(e?._id)}
+                          onClick={() => clasdatefilePopup(e)} // ส่ง employee เข้าไป
+                          className="relative overflow-hidden w-fit cursor-pointer rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
+             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+             hover:bg-red-600 active:-translate-y-1 active:scale-x-90 active:scale-y-110"
+                        >
+                          ลบงาน
+                        </button>
+                      </div>
+
+                      <Link to={`/Details/${e._id}`}>
+                        <div className="mx-auto w-fit">
+                          <button
+                            className={`relative overflow-hidden rounded-md cursor-pointer w-fit px-3 w-f py-1 text-white text-sm duration-300 
+               [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
+                 theme === "dark"
+                   ? "bg-yellow-600 hover:bg-yellow-700"
+                   : "bg-blue-700 hover:bg-blue-800"
+               }`}
+                          >
+                            รายละเอียด
+                          </button>
+                        </div>
+                      </Link>
+                    </div>
+                  );
+                })}
+            </div>
+            <div className="flex justify-end pr-4">
+              <button
+                onClick={OpenFilepopupDate}
+                className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+              >
+                <span className="relative z-10">ยกเลิก</span>
+                <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* ลบจริง */}
+      {opendatefilepopup && (
+        <div
+          className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${
+            anim ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div
+            className={`rounded-2xl shadow-2xl p-5 w-120 max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+              anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
+            } ${
+              theme === "dark"
+                ? "bg-gray-800 text-white"
+                : "bg-white text-gray-900"
+            }`}
+          >
+            <div className="flex flex-col gap-4">
+              {/* หัวข้อ */}
+              <div className="flex items-center gap-1">
+                <p
+                  className={`font-semibold text-lg ${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
+                >
+                  ลบงานนี้
+                </p>
+              </div>
+
+              {/* หมายเหตุเตือนก่อนลบ */}
+              <div
+                className={`p-3 rounded-lg text-sm ${
+                  theme === "dark"
+                    ? "bg-red-900/30 text-red-300"
+                    : "bg-red-100 text-red-600"
+                }`}
+              >
+                การลบภาวะนี้จะทำให้ข้อมูลหายไปทันที และไม่สามารถกู้คืนได้
+              </div>
+
+              {/* ปุ่ม */}
+              <div className="flex gap-2 justify-end mt-2">
+                <button
+                  onClick={openclasdatefilePopup}
+                  className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                >
+                  <span className="relative z-10">ยกเลิก</span>
+                  <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    if (deleteTarget?._id) {
+                      Deleteflie(deleteTarget._id);
+                      setMessageDelete(""); // เคลียร์ textarea
+                      openclasdatefilePopup(); // ปิด modal หลังลบ
+                    } else {
+                      console.warn("No target selected!");
+                    }
+                  }}
+                  className="group relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                >
+                  <span className="relative z-10">ลบ</span>
+                  <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <span className="absolute left-0 top-0 w-0 h-full bg-red-600 transition-all duration-500 group-hover:w-full"></span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
