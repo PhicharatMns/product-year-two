@@ -1,20 +1,16 @@
-// *** แก้ไข: เพิ่มไอคอนสำหรับ Stat Cards ***
-import { Warehouse, Shapes, TriangleAlert, Search } from "lucide-react";
-import { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { useEffect, useState, useRef, ChangeEvent, FormEvent } from "react";
 import type { ReactNode } from "react";
 
-// *** แก้ไข: เพิ่มไอคอนสำหรับ Stat Cards ***
+// *** แก้ไข: รวม imports ไอคอนที่ซ้ำซ้อน และลบ 'Package' ที่ไม่ได้ใช้ออก ***
 import { 
-  Search, 
-  Plus, 
-  X, 
-  Minus,
-  Package,        // New
-  Warehouse,      // New
-  Shapes,         // New
-  TriangleAlert   // New
+  Search, 
+  Plus, 
+  X, 
+  Minus,
+  Warehouse,
+  Shapes,
+  TriangleAlert
 } from "lucide-react";
 
 // --- Types ---
@@ -36,7 +32,7 @@ type CategorySummary = {
 const initialInventoryItems: InventoryItem[] = [
   { id: "A001", name: "สายเคเบิล VAF 2x2.5", category: "ไฟฟ้า", stock: 80, unit: "เมตร", lastRestock: "01/10/68" },
   { id: "A002", name: "หลอดไฟ LED 12W", category: "ไฟฟ้า", stock: 150, unit: "หลอด", lastRestock: "03/10/68" },
-  // ... (ข้อมูล mock data อื่นๆ เหมือนเดิม) ...
+  // ... (ข้อมูล mock data อื่นๆ เหมือนเดิม) ...
   { id: "B001", name: "ท่อ PVC 1/2\"", category: "ประปา", stock: 45, unit: "เส้น", lastRestock: "05/10/68" },
   { id: "B002", name: "ก๊อกน้ำ", category: "ประปา", stock: 15, unit: "อัน", lastRestock: "01/10/68" },
   { id: "C001", name: "ไขควงชุด", category: "เครื่องมือ", stock: 20, unit: "ชุด", lastRestock: "07/10/68" },
@@ -68,7 +64,7 @@ const Badge = ({ children, color = "gray" }: BadgeProps) => {
     gray: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
   }[color];
   return (
-    <span className={`inline-flex items-center rounded-full  px-2.5 py-0.5 text-xs font-medium ${colorClasses}`}>
+    <span className={`inline-flex items-center justify-center rounded-full min-w-20 px-2.5 py-0.5 text-xs font-medium ${colorClasses}`}>
       {children}
     </span>
   );
@@ -86,63 +82,72 @@ const colorMap: Record<ColorName, { light: string, dark: string }> = {
   gray: { light: "bg-gray-600", dark: "bg-gray-500" },
 };
 
-// 3. OverallGithubBar (เหมือนเดิม - ตามที่แก้ไขล่าสุด)
+// 3. OverallGithubBar (แก้ไข)
 type OverallGithubBarProps = {
   summaryData: CategorySummary[];
   getCategoryColor: (category: string) => ColorName;
   theme: string | undefined;
 };
 
-const ShowProgress = () => {
-  const { theme } = useTheme();
-  const bg = theme === "dark" ? "bg-gray-900" : " shadow-sm bg-white";
-  const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+// --- แก้ไข: เปลี่ยนชื่อ ShowProgress เป็น OverallGithubBar และรับ props ---
+const OverallGithubBar = ({ 
+  summaryData, 
+  getCategoryColor, 
+  theme 
+}: OverallGithubBarProps) => {
 
-  return (
+  // --- แก้ไข: คำนวณค่าจาก props ที่ได้รับมา ---
+  const grandTotalStock = summaryData.reduce((sum, item) => sum + item.totalStock, 0);
+  const categoryCount = summaryData.length;
+
+  return (
     // หมายเหตุ: ลบ p-4 ด้านนอกสุดออก เพราะการ์ดแม่จะมี padding ให้
-    <div className="h-110">
-      <h3 className="text-md font-semibold mb-2">ภาพรวมสัดส่วนสต็อก</h3>
-      <div className=" items-center gap-4 mb-3">
-        <span className={`text-sm flex-shrink-0 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-          {categoryCount} หมวดหมู่
-        </span>
-        <div className="flex w-full h-3 rounded-full overflow-hidden">
-          {summaryData.map((summary, index) => {
-            const percentage = (summary.totalStock / grandTotalStock) * 100;
-            const colorName = getCategoryColor(summary.category);
-            const bgColor = theme === "dark" ? colorMap[colorName].dark : colorMap[colorName].light;
-            return (
-              <div
-                key={index}
-                className={`${bgColor} transition-all duration-300`}
-                style={{ width: `${percentage}%` }}
-                title={`${summary.category}: ${summary.totalStock} ชิ้น (${percentage.toFixed(1)}%)`}
-              ></div>
-            );
-          })}
-        </div>
-      </div>
-      <div className="flex flex-col gap-1 gap-x-4 gap-y-2 text-sm">
-        {summaryData.map((summary, index) => {
-          const colorName = getCategoryColor(summary.category);
-          const bgColor = theme === "dark" ? colorMap[colorName].dark : colorMap[colorName].light;
-          const percentage = (summary.totalStock / grandTotalStock) * 100;
-          return (
-            <div key={index} className="flex items-center gap-2">
-              <span className={`w-3 h-3 rounded-full ${bgColor}`}></span>
-              <span className="font-medium">{summary.category}</span>
-              <span className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
-                {percentage.toFixed(1)}%
-              </span>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+    <div className="h-110">
+      <h3 className="text-md font-semibold mb-2">ภาพรวมสัดส่วนสต็อก</h3>
+      <div className=" items-center gap-4 mb-3">
+        <span className={`text-sm flex-shrink-0 ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+          {categoryCount} หมวดหมู่
+        </span>
+        <div className="flex w-full h-3 rounded-full overflow-hidden">
+          {summaryData.map((summary, index) => {
+            // --- แก้ไข: ป้องกันการหารด้วย 0 ---
+            const percentage = grandTotalStock > 0 ? (summary.totalStock / grandTotalStock) * 100 : 0;
+            const colorName = getCategoryColor(summary.category);
+            const bgColor = theme === "dark" ? colorMap[colorName].dark : colorMap[colorName].light;
+            return (
+              <div
+                key={index}
+                className={`${bgColor} transition-all duration-300`}
+                style={{ width: `${percentage}%` }}
+                title={`${summary.category}: ${summary.totalStock} ชิ้น (${percentage.toFixed(1)}%)`}
+              ></div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="flex flex-col gap-1 gap-x-4 gap-y-2 text-sm">
+        {summaryData.map((summary, index) => {
+          const colorName = getCategoryColor(summary.category);
+          const bgColor = theme === "dark" ? colorMap[colorName].dark : colorMap[colorName].light;
+          // --- แก้ไข: ป้องกันการหารด้วย 0 ---
+          const percentage = grandTotalStock > 0 ? (summary.totalStock / grandTotalStock) * 100 : 0;
+          return (
+            <div key={index} className="flex items-center gap-2">
+              <span className={`w-3 h-3 rounded-full ${bgColor}`}></span>
+              <span className="font-medium">{summary.category}</span>
+              <span className={theme === "dark" ? "text-gray-400" : "text-gray-600"}>
+                {percentage.toFixed(1)}%
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
 };
 
-// 4. AddItemForm (แก้ไข)
+
+// 4. AddItemForm (เหมือนเดิม)
 type AddItemFormProps = {
   categories: string[];
   onSubmit: (e: FormEvent) => void;
@@ -162,7 +167,7 @@ const AddItemForm = ({
   const inputClass = `w-full px-3 py-2 rounded-md ${theme === 'dark' ? 'bg-gray-700 border-gray-600 text-white focus:ring-yellow-500' : 'bg-white border-gray-300 text-gray-900 focus:ring-blue-500'} border focus:outline-none focus:ring-2`;
   const labelClass = `block text-sm font-medium mb-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`;
   return (
-    <form onSubmit={onSubmit} className="p-6 z-10  ">
+    <form onSubmit={onSubmit} className="p-6 z-10  ">
       <h3 className="text-lg text-black font-semibold mb-4">เพิ่มวัสดุใหม่</h3>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
         <div>
@@ -200,7 +205,7 @@ const AddItemForm = ({
           type="submit"
           className={`flex items-center gap-1.5 px-4 py-2 text-sm rounded-md transition-colors ${theme === 'dark' ? 'bg-yellow-500 text-gray-900 hover:bg-yellow-400' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
         > 
-          {/* ^^^ นี่คือจุดที่แก้ไข: ลบ '... 17 lines skipped ...' ออกไปแล้ว ^^^ */}
+          {/* ^^^ นี่คือจุดที่แก้ไข: ลบ '... 17 lines skipped ...' ออกไปแล้ว ^^^ */}
           <Plus size={16} />
           เพิ่มวัสดุ
         </button>
@@ -375,32 +380,32 @@ const RequisitionModal = ({
 
 // *** 7. StatCard Component (ใหม่) ***
 type StatCardProps = {
-  title: string;
-  value: string | number;
-  icon: ReactNode;
-  colorClass: string; // เช่น "text-blue-500"
-  theme: string | undefined;
+  title: string;
+  value: string | number;
+  icon: ReactNode;
+  colorClass: string; // เช่น "text-blue-500"
+  theme: string | undefined;
 }
 
 const StatCard = ({ title, value, icon, colorClass, theme }: StatCardProps) => {
-  const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
-  const border = theme === "dark" ? "border-gray-700" : "border-gray-200";
+  const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
+  const border = theme === "dark" ? "border-gray-700" : "border-gray-200";
 
-  return (
-    // กรอบข้อ ข้อมูลกล่องๆ
- <div className={`flex items-center w-full p-4 rounded-lg shadow-sm border ${bg} ${border}`}>
-  <div className={`p-3 rounded-full ${colorClass} bg-opacity-10 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'}`}>
-    {icon}
-  </div>
-  <div className="ml-4">
-    <p className={`text-sm font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-      {title}
-    </p>
-    <p className={`text-2xl font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
-      {value}
-    </p>
-    
-  </div>
+  return (
+    // กรอบข้อ ข้อมูลกล่องๆ
+ <div className={`flex items-center w-full p-4 rounded-lg shadow-sm border ${bg} ${border}`}>
+  <div className={`p-3 rounded-full ${colorClass} bg-opacity-10 ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-100'}`}>
+    {icon}
+  </div>
+  <div className="ml-4">
+    <p className={`text-sm font-medium ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
+      {title}
+    </p>
+    <p className={`text-2xl font-semibold ${theme === "dark" ? "text-white" : "text-gray-900"}`}>
+      {value}
+    </p>
+    
+  </div>
 </div>
 
 );
@@ -474,38 +479,38 @@ export default function InventoryDashboard() {
       );
     });
 
-  // *** (ใหม่) คำนวณข้อมูลสำหรับ Stat Cards ***
-  const totalUniqueItems = inventoryItems.length;
-  const totalStockCount = inventoryItems.reduce((sum, item) => sum + item.stock, 0);
-  const categoryCount = categories.length;
-  // (สมมติว่า "ใกล้หมด" คือน้อยกว่าหรือเท่ากับ 10)
-  const lowStockItemsCount = inventoryItems.filter(item => item.stock <= 10).length;
+  // *** (ใหม่) คำนวณข้อมูลสำหรับ Stat Cards ***
+  const totalUniqueItems = inventoryItems.length;
+  const totalStockCount = inventoryItems.reduce((sum, item) => sum + item.stock, 0); // ตัวแปรนี้ไม่ได้ใช้ แต่เก็บไว้เผื่อ
+  const categoryCount = categories.length;
+  // (สมมติว่า "ใกล้หมด" คือน้อยกว่าหรือเท่ากับ 10)
+  const lowStockItemsCount = inventoryItems.filter(item => item.stock <= 10).length;
 
-  const stats = [
-  
-     { 
-      title: "รายการทั้งหมด", 
-      value: totalUniqueItems, 
-      icon: <Warehouse size={24} />, 
-      colorClass: theme === 'dark' ? "text-blue-400" : "text-blue-600" 
-      
-    },
-    { 
-      title: "หมวดหมู่", 
-      value: categoryCount, 
-      icon: <Shapes size={24} />, 
-      colorClass: theme === 'dark' ? "text-purple-400" : "text-purple-600" 
-      
-    },
-      { 
-      title: "ใกล้หมด", 
-      value: lowStockItemsCount, 
-      icon: <TriangleAlert size={24} />, 
-      colorClass: theme === 'dark' ? "text-red-400" : "text-red-600" 
-      
-    },
-    
-  ];
+  const stats = [
+  
+     { 
+      title: "รายการทั้งหมด", 
+      value: totalUniqueItems, 
+      icon: <Warehouse size={24} />, 
+      colorClass: theme === 'dark' ? "text-blue-400" : "text-blue-600" 
+      
+    },
+    { 
+      title: "หมวดหมู่", 
+      value: categoryCount, 
+      icon: <Shapes size={24} />, 
+      colorClass: theme === 'dark' ? "text-purple-400" : "text-purple-600" 
+      
+    },
+      { 
+      title: "ใกล้หมด", 
+      value: lowStockItemsCount, 
+      icon: <TriangleAlert size={24} />, 
+      colorClass: theme === 'dark' ? "text-red-400" : "text-red-600" 
+      
+    },
+    
+  ];
 
   // --- Handlers (เหมือนเดิม) ---
 
@@ -552,7 +557,7 @@ export default function InventoryDashboard() {
   const handleSubmitAdd = (e: FormEvent) => {
     e.preventDefault();
     if (!newItem.name || !newItem.unit || !newItem.id) {
-      // ใช้ Alert ชั่วคราว (ตามโค้ดเดิม)
+      // หมายเหตุ: ควรเปลี่ยนเป็น custom modal แทน alert() ในอนาคต
       alert("กรุณากรอกข้อมูลให้ครบ (ID, ชื่อ, หน่วย)");
       return;
     }
@@ -581,7 +586,7 @@ export default function InventoryDashboard() {
     setWithdrawQuantity("1");
   };
 
-  const handleSubmitWithdraw = (e: FormEvent) => {
+ const handleSubmitWithdraw = (e: FormEvent) => {
     e.preventDefault();
     if (!selectedItem) return;
 
@@ -611,48 +616,48 @@ export default function InventoryDashboard() {
   return (
     <div className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"} ${pageBg} ${text} min-h-screen`}>
       <div className={` max-w-380 h-screen transition-opacity duration-300 p-5 mx-auto container`}>
-        
-        {/* 1. Header */}
-        <div className="mb-6">
+        
+        {/* 1. Header */}
+        <div className="mb-6">
           <h1 className={`text-3xl font-bold ${titleText}`}>
             คลังวัสดุและอุปกรณ์
           </h1>
-          <p className="text-sm text-gray-400 mt-1">
-            ภาพรวมและจัดการสต็อกวัสดุทั้งหมด
-          </p>
-        </div>
+          <p className="text-sm text-gray-400 mt-1">
+            ภาพรวมและจัดการสต็อกวัสดุทั้งหมด
+          </p>
+        </div>
 
-        {/* 2. Stat Cards (KPIs) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-          {stats.map((stat) => (
-            <StatCard 
-              key={stat.title}
-              title={stat.title}
-              value={stat.value}
-              icon={stat.icon}
-              colorClass={stat.colorClass}
-              theme={theme}
-            />
-          ))}
-        </div>
+        {/* 2. Stat Cards (KPIs) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          {stats.map((stat) => (
+            <StatCard 
+              key={stat.title}
+              title={stat.title}
+              value={stat.value}
+              icon={stat.icon}
+              colorClass={stat.colorClass}
+              theme={theme}
+            />
+          ))}
+        </div>
 
-        {/* 3. Main Content (2-Column Layout) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
-          {/* 3.1 Left Column (Main Table) */}
-          <div className={`lg:col-span-2  ${cardBg} border ${border} rounded-lg shadow-sm`}>
-            {/* Card Header: Search + Tabs */}
-            <div className={`p-5 border-b ${border}`}>
-              <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-                {/* Search Bar */}
-               
-                {/* Tabs */}
-                <div className={`flex items-center  pb-2 md:pb-0`}>
+        {/* 3. Main Content (2-Column Layout) */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* 3.1 Left Column (Main Table) */}
+          <div className={`lg:col-span-2  ${cardBg} border ${border} rounded-lg shadow-sm`}>
+            {/* Card Header: Search + Tabs */}
+            <div className={`p-5 border-b ${border}`}>
+              <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+                {/* Search Bar */}
+               
+                {/* Tabs */}
+                <div className={`flex items-center  pb-2 md:pb-0`}>
                   {tabs.map((tabName) => {
                     const isActive = activeTab === tabName;
                     const activeClasses = theme === "dark" ? "bg-yellow-500 text-gray-900" : "bg-blue-600 text-white";
                     const inactiveClasses = theme === "dark" ? "bg-gray-700 text-gray-300 hover:bg-gray-600" : "bg-gray-200 text-gray-700 hover:bg-gray-300";
-                    return (
+                   return (
                       <button
                         type="button"
                         key={tabName}
@@ -664,7 +669,7 @@ export default function InventoryDashboard() {
                     );
                   })}
                 </div>
- <div className="relative  w-50">
+ <div className="relative  w-50">
                     <Search
                       className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}
                     />
@@ -677,10 +682,10 @@ export default function InventoryDashboard() {
                       className={`pl-10 pr-3 py-2 rounded-md transition-all duration-300 w-full md:w-50
                        ${theme === "dark" ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-500 border border-gray-600" : "bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 border border-gray-300"}`}
                     />
-                </div>
-              </div>
-            </div>
-            
+                </div>
+              </div>
+            </div>
+            
               {/* Table Container */}
                 <div className={`block w-full overflow-x-auto overflow-y-auto max-h-130 transition-opacity duration-300 ${tabFade ? "opacity-100" : "opacity-0"}`}>
                   <table className="w-full text-left">
@@ -706,14 +711,14 @@ export default function InventoryDashboard() {
                           </td>
                           <td className="p-4 whitespace-nowrap"><Badge color={getCategoryColor(item.category)}>{item.category}</Badge></td>
                           <td className="p-4 whitespace-nowrap">
-                              <span className={`font-medium ${item.stock <= 10 ? (theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600') : ''}`}>
-                                {item.stock}
-                              </span>
-                          </td>
+                              <span className={`font-medium ${item.stock <= 10 ? (theme === 'dark' ? 'text-yellow-400' : 'text-yellow-600') : ''}`}>
+                                {item.stock}
+                              </span>
+                          </td>
                           <td className="p-4 whitespace-nowrap"><p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>{item.unit}</p></td>
                         <td className="p-4 whitespace-nowrap"><p className={`text-sm ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>{item.lastRestock}</p></td>
                           
-                          {/* *** ปุ่ม "เบิก" ดีไซน์ใหม่ *** */}
+                          {/* *** ปุ่ม "เบิก" ดีไซน์ใหม่ (ยังคง comment ไวตามต้นฉบับ) *** */}
                           <td className="p-4 whitespace-nowrap text-right">
 {/*                             <button
                               type="button"
@@ -743,35 +748,35 @@ export default function InventoryDashboard() {
                     </div>
                   )}
                 </div>
-          </div>
-          
-          {/* 3.2 Right Column (Sidebar) */}
-          <div className="lg:col-span-1 flex flex-col gap-6">
-            
-            {/* Quick Actions Card */}
-            <div className={`${cardBg} border  ${border} rounded-lg shadow-sm p-4`}>
-              <h3 className="text-md  text-black font-semibold mb-3">ดำเนินการด่วน</h3>
-              <button
+          </div>
+          
+          {/* 3.2 Right Column (Sidebar) */}
+          <div className="lg:col-span-1 flex flex-col gap-6">
+            
+            {/* Quick Actions Card */}
+            <div className={`${cardBg} border  ${border} rounded-lg shadow-sm p-4`}>
+              <h3 className="text-md  text-black font-semibold mb-3">ดำเนินการด่วน</h3>
+              <button
                     type="button"
                     onClick={handleShowAddForm}
-                    className={`flex  w-full items-center justify-center gap-1.5 px-3 py-2.5 text-sm font-medium rounded-md transition-colors
+                    className={`flex  w-full items-center justify-center gap-1.5 px-3 py-2.5 text-sm font-medium rounded-md transition-colors
                       ${theme === "dark" ? "bg-yellow-500 text-gray-900 hover:bg-yellow-400" : "bg-blue-600 text-white hover:bg-blue-700"}`}
                   >
                     <Plus size={16} />
                     เพิ่มวัสดุใหม่
                   </button>
-            </div>
+            </div>
 
-            {/* Stock Summary Card */}
-            <div className={`${cardBg}  border ${border} rounded-lg shadow-sm p-4`}>
-              <OverallGithubBar
-                    summaryData={overallStockSummary}
-                    getCategoryColor={getCategoryColor}
-                    theme={theme}
-                  />
-            </div>
-          </div>
-        </div>
+            {/* Stock Summary Card */}
+            <div className={`${cardBg}  border ${border} rounded-lg shadow-sm p-4`}>
+              <OverallGithubBar
+                    summaryData={overallStockSummary}
+                    getCategoryColor={getCategoryColor}
+                    theme={theme}
+                  />
+            </div>
+          </div>
+        </div>
       </div>
       
       

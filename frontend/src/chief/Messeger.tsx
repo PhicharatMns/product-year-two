@@ -61,7 +61,7 @@ const Badge = ({ children, color = "gray" }: BadgeProps) => {
   }[color];
   return (
     // เปลี่ยนจาก px-2.5 py-0.5 text-xs เป็น px-3 py-1 text-sm
-    <span className={`inline-flex items-center rounded-full px-2 py-1  text-sm ${colorClasses}`}>
+    <span className={`inline-flex  items-center justify-center rounded-full  min-w-15 px-2.5 py-0.5 text-xs font-medium ${colorClasses}`}>
       {children}
     </span>
   );
