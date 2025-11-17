@@ -271,6 +271,7 @@ export default function Dashboard({
             value: roundedAll, // motion value
             link: "Editacc",
             icon: <MdPerson size={24} />,
+            
           },
           {
             title: "ช่างที่ได้งาน",
@@ -417,7 +418,7 @@ export default function Dashboard({
         >
           {" "}
           <div className="rounded-2xl bg-white w-[900px] h-200 shadow-2xl border ">
-            <div className="flex justify-between border-b px-6 py-4 ">
+            <div className="flex items-center justify-between border-b px-6 py-4 ">
               <p
                 className={` text-2xl  font-semibold  ${
                   theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -433,7 +434,7 @@ export default function Dashboard({
                 </span>
               </p>
 
-              <div className="relative">
+              <div className="relative ite">
                 <CiSearch
                   className={`absolute left-3 top-1/2 -translate-y-1/2 transition-all duration-300`}
                 />

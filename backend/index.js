@@ -9,6 +9,7 @@ const employeeRouter = require("./routes/employee");
 const otherTradesmanRouter = require("./routes/otherTradesman");
 const loginRouter = require("./routes/login");
 const item = require("./routes/iteme");
+const additem = require("./routes/additem");
 
 const app = express();
 
@@ -34,7 +35,8 @@ app.use("/api/tradesman", tradesmanRouter);
 app.use("/api/employees", employeeRouter);
 app.use("/api/otherTradesman", otherTradesmanRouter);
 app.use("/api/login", loginRouter);
-app.use("/api/item" , item);
+app.use("/api/item", item);
+app.use("/api/additem", additem);
 
 app.listen(5000, "localhost", () => {
   console.log("Server running at http://localhost:5000");

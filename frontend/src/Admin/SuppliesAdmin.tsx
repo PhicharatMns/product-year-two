@@ -67,7 +67,6 @@ const AddItemForm = ({ items }: { items: ItemType[] }) => {
   );
 };
 
-<<<<<<< HEAD
 type ShowlistProps = {
   items: ItemType[];
   onOpen: (item: ItemType) => void;
@@ -82,15 +81,11 @@ const Showlist: React.FC<ShowlistProps> = ({
   setEditItem,
   onOpenPopupDelete,
 }) => {
-=======
-const Showlist = ({ items }: { items: ItemType[] }) => {
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
   const [Focused, setFocused] = useState(false);
   const { theme } = useTheme();
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string>("ทั้งหมด");
 
-<<<<<<< HEAD
   // นับจำนวนแต่ละ category จาก items
   const categoryCounts: Record<string, number> = items.reduce((acc, item) => {
     acc[item.category] = (acc[item.category] || 0) + 1;
@@ -121,40 +116,6 @@ const Showlist = ({ items }: { items: ItemType[] }) => {
   const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm bg-white";
   const bgborder = theme === "dark" ? "bg-gray-800" : "bg-gray-50";
 
-=======
-  // const categoryList = ["ทั้งหมด", ...Array.from(new Set(items.map((i) => i.category)))];
-
-  // นับจำนวนแต่ละหมวดหมู่
-  const categoryCounts: Record<string, number> = items.reduce((acc, item) => {
-    acc[item.category] = (acc[item.category] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  // สร้าง array ของหมวดหมู่และเรียงจากมากไปน้อย
-  const sortedCategories = Object.keys(categoryCounts).sort(
-    (a, b) => categoryCounts[b] - categoryCounts[a]
-  );
-
-  // เพิ่ม "ทั้งหมด" เป็นหมวดแรก
-  const categoryList = ["ทั้งหมด", ...sortedCategories];
-
-  const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm bg-white";
-  const bgborder = theme === "dark" ? "bg-gray-800" : "bg-gray-50";
-
-  // Filter data ตาม search + category
-  const filteredData = items.filter((item) => {
-    const matchSearch =
-      item.name.toLowerCase().includes(search.toLowerCase()) ||
-      item.category.toLowerCase().includes(search.toLowerCase()) ||
-      item.number.toLowerCase().includes(search.toLowerCase());
-
-    const matchCategory =
-      selectedCategory === "ทั้งหมด" || item.category === selectedCategory;
-
-    return matchSearch && matchCategory;
-  });
-
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
   return (
     <div className={`border rounded-lg h-175 ${bg}`}>
       <div className="grid grid-cols-9 items-center gap-5 p-3">
@@ -163,11 +124,7 @@ const Showlist = ({ items }: { items: ItemType[] }) => {
             <div key={i}>
               <p
                 onClick={() => setSelectedCategory(e)}
-<<<<<<< HEAD
                 className={`relative overflow-hidden truncate text-center cursor-pointer rounded-md px-4 py-1 text-white text-sm shadow-md transition-all duration-300 
-=======
-                className={`relative overflow-hidden text-center cursor-pointer rounded-md px-4 py-1 text-white text-sm shadow-md transition-all duration-300 
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
       [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
        active:-translate-y-1 active:scale-x-90 active:scale-y-110
       ${selectedCategory === e ? "bg-yellow-500" : "bg-blue-500"}`}
@@ -204,7 +161,6 @@ const Showlist = ({ items }: { items: ItemType[] }) => {
 
       {/* header */}
       <div className="border">
-<<<<<<< HEAD
         <div className="grid grid-cols-9 pl-5 text-sm py-1 m-2 ">
           {[
             "ชื่ออุปกรณ์",
@@ -223,21 +179,6 @@ const Showlist = ({ items }: { items: ItemType[] }) => {
               <p>{e}</p>
             </div>
           ))}
-=======
-        <div className="grid grid-cols-7 pl-5 text-sm py-1 m-2 ">
-          {["วัสดุ / รหัส", "หมวดหมู่", "คงคลัง", "หน่วย", "อัปเดตล่าสุด"].map(
-            (e, i) => (
-              <div
-                key={i}
-                className={`${
-                  i === 0 || i === 1 ? "col-span-2" : "col-span-1"
-                }`}
-              >
-                <p>{e}</p>
-              </div>
-            )
-          )}
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
         </div>
       </div>
 
@@ -253,7 +194,6 @@ const Showlist = ({ items }: { items: ItemType[] }) => {
               delay: i * 0.1,
               ease: "easeOut",
             }}
-<<<<<<< HEAD
             className={`grid grid-cols-9 pl-5 text-sm py-4 m-2 border rounded-lg items-center ${bgborder}`}
           >
             <p className="col-span-2">{e.name}</p>
@@ -282,15 +222,6 @@ const Showlist = ({ items }: { items: ItemType[] }) => {
                 ลบ
               </button>
             </div>
-=======
-            className={`grid grid-cols-7 pl-5 text-sm py-4 m-2 border rounded-lg ${bgborder}`}
-          >
-            <p className="col-span-2">{e.number}</p>
-            <p className="col-span-2">{e.name}</p>
-            <p>{e.category}</p>
-            <p>{e.counting}</p>
-            <p>{new Date(e.createdAt).toLocaleDateString("th-TH")}</p>
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
           </motion.div>
         ))}
       </div>
@@ -309,11 +240,7 @@ const ButtonaddItem: React.FC<ButtonaddItemType> = ({ onOpen }) => {
   return (
     <div className={`h-fit border p-5 rounded-lg ${bg}`}>
       <p
-<<<<<<< HEAD
         className={`  ${
-=======
-        className={`${
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
           theme === "dark" ? "text-yellow-500" : "text-blue-500"
         } text-lg font-semibold`}
       >
@@ -329,11 +256,7 @@ const ButtonaddItem: React.FC<ButtonaddItemType> = ({ onOpen }) => {
                   : "bg-blue-500 hover:bg-blue-600"
               }`}
       >
-<<<<<<< HEAD
         เพิ่มอุปกรณ์
-=======
-        รายละเอียด
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
       </button>
     </div>
   );
@@ -409,7 +332,6 @@ const ShowaletProgress: React.FC<ShowaletProgressProps> = ({
         </p>
 
         <div className="grid grid-cols-2 gap-5">
-<<<<<<< HEAD
           {["ชื่ออุปกรณ์", "หมวดหมู่", "จำนวน/คงเหลือ", "หน่วยนับ"].map(
             (e, i) => (
               <div key={i} className={`${i === 4 ? "col-span-2" : ""}`}>
@@ -446,43 +368,6 @@ const ShowaletProgress: React.FC<ShowaletProgressProps> = ({
               </div>
             )
           )}
-=======
-          {["ชื่อวัสดุ", "หมวดหมู่", "จำนวน", "หน่วยนับ"].map((e, i) => (
-            <div key={i} className={`${i === 4 ? "col-span-2" : ""}`}>
-              <p className={`mb-1 ${texthead} `}>{e}</p>
-              <input
-                type="text"
-                value={
-                  i === 0
-                    ? formData.code
-                    : i === 1
-                    ? formData.name
-                    : i === 2
-                    ? formData.category
-                    : i === 3
-                    ? formData.number
-                    : formData.counting
-                }
-                onChange={(ev) => {
-                  const value = ev.target.value;
-                  setFormData((prev) => ({
-                    ...prev,
-                    code: i === 0 ? value : prev.code,
-                    name: i === 1 ? value : prev.name,
-                    category: i === 2 ? value : prev.category,
-                    number: i === 3 ? value : prev.number,
-                    counting: i === 4 ? value : prev.counting,
-                  }));
-                }}
-                className={`border focus:ring-2 outline-none duration-300 ${
-                  theme === "dark"
-                    ? "border-gray-600 focus:ring-yellow-400  text-white"
-                    : " focus:ring-blue-400  text-gray-800"
-                }  w-full p-2 rounded-lg ${bgborder}`}
-              />
-            </div>
-          ))}
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
         </div>
 
         <div className="flex justify-end gap-4 border-t pt-4 mt-4">
@@ -522,10 +407,6 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import type { PieLabelRenderProps } from "recharts";
-<<<<<<< HEAD
-=======
-import type { fromTheme } from "tailwind-merge";
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
 
 type ShowProgressProps = {
   items: ItemType[];
@@ -621,7 +502,6 @@ const ShowProgress: React.FC<ShowProgressProps> = ({ items }) => {
   );
 };
 
-<<<<<<< HEAD
 type AddItemProps = {
   item: ItemType;
   onClose: () => void;
@@ -861,18 +741,13 @@ const ShowPopupDetele: React.FC<ShowPopupDeteleProps> = ({
   );
 };
 
-=======
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
 export default function SuppliesAdmin() {
   const [fade, setFade] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [items, setItems] = useState<ItemType[]>([]);
-<<<<<<< HEAD
   const [showaddItem, setshowaddItem] = useState(false);
   const [editItem, setEditItem] = useState<ItemType | null>(null);
   const [showpopupdatele, setshowpopupdatele] = useState(false);
-=======
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
 
   const { theme } = useTheme();
 
@@ -915,7 +790,6 @@ export default function SuppliesAdmin() {
         </p>
         <p>ภาพรวมสัดส่วนสต็อก</p>
       </div>
-<<<<<<< HEAD
       {/* ส่ง items */}
       <AddItemForm items={items} />
       <div className="my-5 grid gap-5 grid-cols-6">
@@ -930,15 +804,6 @@ export default function SuppliesAdmin() {
             fetchItems={fetchItems}
             setEditItem={setEditItem} // ⭐ ต้องใส่นี่!!!!
           />
-=======
-
-      {/* ส่ง items */}
-      <AddItemForm items={items} />
-
-      <div className="my-5 grid gap-5 grid-cols-6">
-        <div className="col-span-4">
-          <Showlist items={items} />
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
         </div>
 
         <div className="col-span-2">
@@ -948,17 +813,12 @@ export default function SuppliesAdmin() {
           </div>
         </div>
       </div>
-<<<<<<< HEAD
       {/* เปิดเพิ่มอุปกรณ์ */}
-=======
-
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
       {showModal && (
         <ShowaletProgress
           onClose={() => setShowModal(false)}
           fetchItems={fetchItems}
         />
-<<<<<<< HEAD
       )}
       {/* //เปิดเเก้ไขจํานวน */}
       {showaddItem && editItem && (
@@ -979,8 +839,6 @@ export default function SuppliesAdmin() {
           fetchItems={fetchItems}
           item={editItem} // ต้องส่ง item ที่จะลบ
         />
-=======
->>>>>>> 011bd2b5afae1d67dcae4c2d96344469e5eba02d
       )}
     </div>
   );

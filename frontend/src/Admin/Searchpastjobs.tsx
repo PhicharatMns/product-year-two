@@ -52,7 +52,7 @@ const defaultForm: FormState = {
   Date_of_acceptance_of_work: new Date().toISOString().split("T")[0],
   Closing_date: new Date().toISOString().split("T")[0],
   description: "",
-  Status: "Active",
+  Status: "กำลังดำเนินการ",
   image: null,
   messageDelete: "",
 };
@@ -195,7 +195,7 @@ export default function Searchpastjobs() {
           e.Closing_date?.split("T")[0] ||
           new Date().toISOString().split("T")[0],
         description: e.description,
-        Status: e.Status || "Active",
+        Status: e.Status || "กำลังดำเนินการ",
         image: null,
         messageDelete: e.messageDelete,
       });
@@ -445,9 +445,13 @@ export default function Searchpastjobs() {
           </div>
 
           {/* แสดงเฉพาะงานที่ Status = Active */}
-          {/* แสดงเฉพาะงานที่ Status = Active */}
           {filtered
-            .filter((e) => e.Status === "Active")
+            .sort((a, b) => {
+              const dateA = new Date(a.Closing_date).getTime();
+              const dateB = new Date(b.Closing_date).getTime();
+              return dateB - dateA; // วันที่ใหม่ → เก่า (บนลงล่าง)
+            })
+            .filter((e) => e.Status === "กำลังดำเนินการ")
             .map((e, i) => (
               <motion.div
                 key={e._id}
