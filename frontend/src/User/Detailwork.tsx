@@ -42,6 +42,19 @@ interface Tradesman {
   role: string;
 }
 
+interface RequisitionItem {
+  jobId?: string;
+  id: string;
+  name: string;
+  quantity: string;
+  description?: string;
+  requesterName?: string; // ชื่อคนขอเบิก
+  requesterProfile?: string; // รูปโปรไฟล์
+  section?: string;
+  role?: string;
+  createdAt?: string;
+}
+
 export default function Detailwork() {
   const { theme } = useTheme();
   const { id } = useParams<{ id: string }>();
@@ -55,7 +68,7 @@ export default function Detailwork() {
     []
   );
 
-  const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm";
+  const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm bg-white";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
   const text_color = theme === "dark" ? "text-white" : "text-black";
   const borderSoft = theme === "dark" ? "border-gray-700" : "border-gray-300";
@@ -353,7 +366,7 @@ export default function Detailwork() {
 
           <div className="grid grid-cols-5 gap-4 mt-3">
             <div
-              className={`w-full p-3 col-span-2 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
+              className={`w-full p-3 h-174  col-span-2 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
             >
               <div
                 className={`${
@@ -362,47 +375,8 @@ export default function Detailwork() {
               >
                 รายการติดต่อ / เบิกของ
               </div>
-              {/* <div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.05,
-                    ease: "easeOut",
-                  }}
-                  className={`items-center border p-1 my-1 rounded-xl ${
-                    theme === "dark" ? "bg-gray-800" : "shadow-sm"
-                  }`}
-                >
-                  <p className={`text-sm pl-2 font-semibold ${titleColor}`}>
-                    การขอเบิกของ
-                  </p>
-                  <div className="flex gap-2">
-                    <img
-                      className="h-10 w-10  rounded-4xl bg-blue-500"
-                      src=""
-                      alt=""
-                    />
-                    <div className="text-sm flex flex-col gap-1">
-                      <p className={` ${text_color}`}>
-                        <span className={`font-semibold  ${titleColor}`}>
-                          หัวหน้างาน:
-                        </span>{" "}
-                        ชื่อหัวหน้างาน
-                      </p>
 
-                      <p className={`truncate w-120 ${text_color}`}>
-                        <span className={`font-semibold  ${titleColor}`}>
-                          รายละเอียด:
-                        </span>{" "}
-                        {job.description}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
-              </div> */}
-              <div>
+              <div className="h-155  overflow-auto scrollbar-hide">
                 {requisitionItems.map((item, index) => (
                   <motion.div
                     key={item.id}
@@ -418,13 +392,56 @@ export default function Detailwork() {
                     }`}
                   >
                     <p className={`text-sm pl-2 font-semibold ${titleColor}`}>
-                      {item.name} (จำนวน: {item.quantity})
+                      {item.section}
                     </p>
-                    {item.description && (
-                      <p className={`text-xs pl-2 ${text_color}`}>
-                        หมายเหตุ: {item.description}
-                      </p>
-                    )}
+                    <div className="flex gap-2 items-center">
+                      <img
+                        className="w-12 h-12 rounded-full object-cover"
+                        src={
+                          item.requesterProfile
+                            ? `http://localhost:5000/uploads/Profile/${item.requesterProfile}`
+                            : "/default-profile.png"
+                        }
+                        alt="รูปผู้ขอเบิก"
+                      />
+                      <div className="text-sm flex flex-col gap-1">
+                        <p className={`font-semibold ${titleColor}`}>
+                          <span className={`font-semibold`}> {item.role} </span>
+                          {item.requesterName}
+                        </p>
+                        <p
+                          className={`truncate w-120 flex gap-2 ${text_color}`}
+                        >
+                          <span className={`font-semibold  ${titleColor}`}>
+                            รายงาน:
+                          </span>{" "}
+                          {item.name}
+                          <p>
+                            {" "}
+                            <span className={`${titleColor} font-semibold`}>
+                              {" "}
+                              จํานวน :{" "}
+                            </span>
+                            {item.quantity}
+                          </p>
+                        </p>
+                        <p
+                          className={`${
+                            theme === "dark" ? "text-white" : "text-black"
+                          }`}
+                        >
+                          <span className={`${titleColor} font-semibold `}>
+                            วันที่ :{" "}
+                          </span>
+                          {item.createdAt
+                            ? new Date(item.createdAt).toLocaleString("th-TH", {
+                                dateStyle: "short",
+                                timeStyle: "short",
+                              })
+                            : "-"}
+                        </p>
+                      </div>
+                    </div>
                   </motion.div>
                 ))}
                 {requisitionItems.length === 0 && (

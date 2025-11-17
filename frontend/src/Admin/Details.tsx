@@ -261,7 +261,7 @@ export default function Details() {
                       รายละเอียดงาน :
                     </p>
                     <span
-                      className={`${
+                      className={`  ${
                         theme === "dark" ? "text-bule-500" : "text-yellow-500"
                       }`}
                     >
@@ -294,7 +294,7 @@ export default function Details() {
                       <p className={`text-lg mb-1 font-semibold `}>
                         รายละเอียดงาน
                       </p>
-                      <p className="text-ellipsis">
+                      <p className="text-ellipsis scrollbar-hide  h-20 overflow-auto">
                         {event.description || "-"}
                       </p>
                     </div>

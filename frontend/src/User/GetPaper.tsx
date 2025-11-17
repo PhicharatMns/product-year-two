@@ -4,6 +4,7 @@ import { CiSearch } from "react-icons/ci";
 import { jwtDecode } from "jwt-decode";
 import { Link } from "react-router-dom";
 // import { Link } from "react-router-dom"; // --- 3. เราจะใช้ปุ่มเปิด Modal แทน Link ---
+import { motion } from "framer-motion";
 
 interface Employee {
   _id: string;
@@ -37,6 +38,8 @@ interface RequisitionItem {
   description?: string;
   requesterName?: string; // ชื่อคนขอเบิก
   requesterProfile?: string; // รูปโปรไฟล์
+  section?: string;
+  role?: string;
 }
 
 export default function GetPaper() {
@@ -168,50 +171,52 @@ export default function GetPaper() {
   const submitItems = async () => {
     if (!selectedJob) return;
 
+    // สมมติคุณมี API /api/user/:id เพื่อดึงชื่อและโปรไฟล์
+    let requesterName = "ไม่ทราบ";
+    let requesterProfile = "/default-profile.png";
+
+    if (currentUserId) {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/user/${currentUserId}`
+        );
+        const data = await res.json();
+        requesterName = data.Name;
+        requesterProfile = data.Profile || "/default-profile.png";
+      } catch (err) {
+        console.error("ไม่สามารถดึงข้อมูลผู้ใช้", err);
+      }
+    }
+
     try {
       await Promise.all(
         items.map((item) =>
           fetch(`${API_URL}`, {
-            method: "POST", // ทุกอันเป็น POST
-            headers: { "Content-Type": "application/json" },
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
             body: JSON.stringify({
               jobId: selectedJob._id,
               name: item.name,
               quantity: Number(item.quantity),
               description: note,
-              requesterId: currentUserId,
+              requesterName,
+              requesterProfile,
+              section: "เบิกของ",
+              role: "ช่าง",
             }),
           })
         )
       );
-      alert("บันทึกรายการเรียบร้อยแล้ว");
-      setNote(""); // ล้างหมายเหตุหลังบันทึก
+      setNote("");
       closeopenItemModal();
     } catch (err) {
       console.error(err);
       alert("เกิดข้อผิดพลาดในการบันทึก");
     }
   };
-
-  
-
-  // // โหลดรายการเบิกทั้งหมดของงานนั้น
-  // const fetchItems = async (jobId: string) => {
-  //   try {
-  //     const res = await fetch(`${API_URL}?jobId=${jobId}`);
-  //     const data: RequisitionItem[] = await res.json();
-  //     setItems(
-  //       data.map((item) => ({
-  //         ...item,
-  //         jobId: item.jobId, // ดึง jobId มาด้วย
-  //       }))
-  //     );
-  //   } catch (err) {
-  //     console.error(err);
-  //     // ถ้าโหลดไม่เจอ หรืองานยังไม่มีรายการ
-  //     setItems([{ id: "temp-" + Date.now(), name: "", quantity: "" }]);
-  //   }
-  // };
 
   const border_b_2_data =
     theme === "dark"
@@ -286,7 +291,11 @@ export default function GetPaper() {
 
         {/* ข้อมูลใบงาน */}
         {filtered.filter(
-          (job) => job.Status === "กำลังดำเนินการ" || job.Status === "Active"
+          (job) =>
+            job.Status === "กำลังดำเนินการ" ||
+            job.Status === "Active" ||
+            job.Status === "เสร็จสิ้น" ||
+            job.Status === "ล่าช้า"
         ).length > 0 ? (
           filtered
             .filter(
@@ -295,61 +304,73 @@ export default function GetPaper() {
                 job.Status === "เสร็จสิ้น" ||
                 job.Status === "ล่าช้า"
             )
-            .map((job) => (
-              <div
-                key={job._id}
-                className={`grid grid-cols-7 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
+            .map((job, index) => (
+              <motion.div
+                key={job._id} // ใช้ job._id เป็น key
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.05 * index,
+                  ease: "easeOut",
+                }}
               >
-                <p className="truncate">{job.Worksheet || "-"}</p>
-                <p className="col-span-2 truncate">{job.description || "-"}</p>
-                <p
-                  className={`${
-                    job.Status === "กำลังดำเนินการ" ? `${texthaed}` : ""
-                  } ${job.Status === "เสร็จสิ้น" ? "text-green-500" : ""}
-                  ${job.Status === "ล่าช้า" ? "text-red-500" : ""}
-                  `}
+                <div
+                  className={`grid grid-cols-7 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
                 >
-                  {job.Status || "-"}
-                </p>
-                <p>
-                  {job.Date_of_acceptance_of_work
-                    ? new Date(
-                        job.Date_of_acceptance_of_work
-                      ).toLocaleDateString("th-TH")
-                    : "-"}
-                </p>
-                <p>
-                  {job.Closing_date
-                    ? new Date(job.Closing_date).toLocaleDateString("th-TH")
-                    : "-"}
-                </p>
-                <div className="flex gap-2 mx-auto">
-                  <Link
-                    to={`/user/Detailwork/${job._id}`}
-                    className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-               theme === "dark"
-                 ? "bg-yellow-500 hover:bg-yellow-600"
-                 : "bg-blue-500 hover:bg-blue-600"
-             }`}
+                  <p className="truncate">{job.Worksheet || "-"}</p>
+                  <p className="col-span-2 truncate">
+                    {job.description || "-"}
+                  </p>
+                  <p
+                    className={`${
+                      job.Status === "กำลังดำเนินการ" ? texthaed : ""
+                    } ${job.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${
+                      job.Status === "ล่าช้า" ? "text-red-500" : ""
+                    }`}
                   >
-                    รายละเอียดงาน
-                  </Link>
-                  <button
-                    onClick={() => openItemModal(job)}
-                    className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-                  [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                    theme === "dark"
-                      ? "bg-yellow-500 hover:bg-yellow-600"
-                      : "bg-blue-500 hover:bg-blue-600"
-                  }`}
-                  >
-                    เบิกของ
-                  </button>
+                    {job.Status || "-"}
+                  </p>
+                  <p>
+                    {job.Date_of_acceptance_of_work
+                      ? new Date(
+                          job.Date_of_acceptance_of_work
+                        ).toLocaleDateString("th-TH")
+                      : "-"}
+                  </p>
+                  <p>
+                    {job.Closing_date
+                      ? new Date(job.Closing_date).toLocaleDateString("th-TH")
+                      : "-"}
+                  </p>
+                  <div className="flex gap-2 mx-auto">
+                    <Link
+                      to={`/user/Detailwork/${job._id}`}
+                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                theme === "dark"
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+                    >
+                      รายละเอียดงาน
+                    </Link>
+                    <button
+                      onClick={() => openItemModal(job)}
+                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                theme === "dark"
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+                    >
+                      เบิกของ
+                    </button>
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             ))
         ) : (
           <div

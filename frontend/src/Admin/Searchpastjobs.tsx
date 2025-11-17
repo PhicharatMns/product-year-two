@@ -738,7 +738,7 @@ export default function Searchpastjobs() {
                           clasOpendate(); // ปิด modal
                         }
                       }}
-                      className="group relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                      className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
                     >
                       <span className="relative z-10">ลบ</span>
                       <span className="absolute inset-0 overflow-hidden pointer-events-none">

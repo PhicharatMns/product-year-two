@@ -8,6 +8,8 @@ const additemSchema = new mongoose.Schema({
   description: String,
   requesterName: String,
   requesterProfile: String,
+  section : String,
+  role : String
 });
 
 const Additem = mongoose.model("Additem", additemSchema);

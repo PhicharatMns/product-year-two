@@ -719,7 +719,7 @@ const ShowPopupDetele: React.FC<ShowPopupDeteleProps> = ({
         <div className="flex justify-end gap-3 mt-4">
           <button
             onClick={handleCloseShowPopupDetele}
-            className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+            className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
           >
             <span className="relative z-10">ยกเลิก</span>
             <span className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -728,7 +728,7 @@ const ShowPopupDetele: React.FC<ShowPopupDeteleProps> = ({
           </button>
           <button
             onClick={handleDelete}
-            className="group relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+            className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
           >
             <span className="relative z-10">ลบ</span>
             <span className="absolute inset-0 overflow-hidden pointer-events-none">
