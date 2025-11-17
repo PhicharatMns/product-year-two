@@ -9,7 +9,8 @@ const additemSchema = new mongoose.Schema({
   requesterName: String,
   requesterProfile: String,
   section : String,
-  role : String
+  role : String,
+  message : String
 });
 
 const Additem = mongoose.model("Additem", additemSchema);

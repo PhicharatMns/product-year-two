@@ -42,6 +42,7 @@ router.get("/", async (req, res) => {
       section: item.section,
       role: item.role,
       createdAt: item.createdAt, // <-- แก้ตรงนี้
+      message: item.message,
     }));
 
     res.json(formattedItems);
@@ -53,7 +54,7 @@ router.get("/", async (req, res) => {
 
 // POST: เพิ่มรายการ (ดึง requester จาก token)
 router.post("/", verifyToken, async (req, res) => {
-  const { name, quantity, jobId, description, section, role } =
+  const { name, quantity, jobId, description, section, role, message } =
     req.body;
 
   if (!jobId) return res.status(400).json({ message: "jobId required" });
@@ -73,6 +74,7 @@ router.post("/", verifyToken, async (req, res) => {
       section,
       role,
       createdAt: new Date(), //  กำหนดเวลาอัตโนมัติ
+      message,
     });
 
     const savedItem = await newItem.save();
@@ -92,5 +94,28 @@ router.delete("/:id", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+// routes/additem.js
+router.post("/:id/message", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { message } = req.body;
+
+    if (!message) return res.status(400).json({ message: "กรุณาส่งข้อความ" });
+
+    // ใช้ model ของ Additem เอง แทน Requisition (คุณยังไม่มี Requisition)
+    await Additem.updateOne(
+      { _id: id },
+      { $push: { messages: { text: message, date: new Date() } } }
+    );
+
+    res.status(200).json({ message: "ส่งข้อความเรียบร้อย" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "เกิดข้อผิดพลาดภายใน server" });
+  }
+});
+
+
 
 module.exports = router;

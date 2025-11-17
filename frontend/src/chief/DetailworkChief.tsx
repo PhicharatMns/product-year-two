@@ -166,7 +166,6 @@ export default function DetailworkChief() {
   const [job, setJob] = useState<Employee | null>(null);
   const [loading, setLoading] = useState(true);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
-  const [fade, setFade] = useState(false);
   const [userPos, setUserPos] = useState<[number, number] | null>(null);
   const [Mobiles, setMobled] = useState(false);
   const [modalFade, setModalFade] = useState(false);
@@ -188,22 +187,37 @@ export default function DetailworkChief() {
     null
   );
   const [PopupMessage, setPopupMessage] = useState(false);
-
+  const [PopupNotApproved, setPopupNotApproved] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [messageReason, setMessageReason] = useState(""); // เก็บข้อความที่พิมพ์
   const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm bg-white";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
   const text_color = theme === "dark" ? "text-white" : "text-black";
   const borderSoft = theme === "dark" ? "border-gray-700" : "border-gray-300";
   const titleColor = theme === "dark" ? "text-yellow-500" : "text-blue-500";
 
-  const openPopupMessage = (id: string) => {
-    setSelectedTradesmanId(id); // ใช้ id ของ requisition item
+  const openPopupNotApproved = (itemId: string) => {
+    setSelectedItemId(itemId);
+    colsePopupMessage();
+    setPopupNotApproved(true);
+    setTimeout(() => setDuplicateFade(true), 50);
+  };
+
+  // ปิด popup
+  const closePopupMessage = () => {
+    setDuplicateFade(false);
+    setTimeout(() => setPopupNotApproved(false), 300);
+  };
+
+  const openPopupMessage = (itemId: string) => {
+    setSelectedItemId(itemId); // ใช้ selectedItemId สำหรับ requisition item
     setPopupMessage(true);
     setTimeout(() => setDuplicateFade(true), 50);
   };
 
   const colsePopupMessage = () => {
     setDuplicateFade(false);
-    setTimeout(() => setPopupMessage(false), 300);
+    setTimeout(() => setPopupMessage(false), 50);
   };
 
   const openPopUpDate = (id: string) => {
@@ -243,7 +257,7 @@ export default function DetailworkChief() {
           const [lng, lat] = selected.address.coordinates;
           setMarkerPos([lat, lng]);
         } else {
-          setMarkerPos([13.7563, 100.5018]);
+          setMarkerPos([13.7563, 100.5018]); // Bangkok default
         }
 
         setUserPos([position.coords.latitude, position.coords.longitude]);
@@ -251,7 +265,6 @@ export default function DetailworkChief() {
         console.error("Error loading data:", err);
       } finally {
         setLoading(false);
-        setFade(true);
       }
     }
     loadData();
@@ -349,6 +362,42 @@ export default function DetailworkChief() {
     }
   };
 
+  const handleSendMessage = async () => {
+    if (!messageReason.trim()) {
+      alert("กรุณาระบุเหตุผลก่อนส่ง");
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/additem/${selectedItemId}/message`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: messageReason,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || "เกิดข้อผิดพลาด");
+      }
+
+      alert("ส่งข้อความเรียบร้อยแล้ว");
+      setMessageReason(""); // ล้าง textarea
+      closePopupMessage(); // ปิด popup
+
+      // อัปเดตรายการถ้าต้องการ ลบออกจากหน้าหรือทำ highlight
+      setRequisitionItems((prev) =>
+        prev.filter((i) => i.id !== selectedItemId)
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const handeDelete = async (id: string) => {
     try {
       const res = await fetch(
@@ -365,6 +414,7 @@ export default function DetailworkChief() {
       console.error("เกิดข้อผิดพลาดตอนลบ:", err);
     }
   };
+
   useEffect(() => {
     fetchTradesman();
     fetchRequisitionItems();
@@ -374,12 +424,8 @@ export default function DetailworkChief() {
   if (!job) return <div></div>;
 
   return (
-    <div className={`w-max-380 p-5 mx-auto container ${text}`}>
-      <div
-        className={`transition-opacity duration-500 ${
-          fade ? "opacity-100" : "opacity-0"
-        }`}
-      >
+    <div className={`w-max-380 p-5 mx-auto container duration-300  ${text}`}>
+      <div>
         <div className="text-3xl font-bold flex gap-2">
           <p className={`${titleColor}`}>รายละเอียดงาน :</p>
           <span
@@ -390,7 +436,7 @@ export default function DetailworkChief() {
         </div>
 
         {/* ข้อมูลงาน */}
-        <div className="mt-5 transition-all duration-300 rounded-2xl">
+        <div className="mt-5 transition-all  rounded-2xl">
           <div className="grid grid-cols-2 gap-5">
             <div className={`border p-3 rounded-xl ${bg}`}>
               <p className={`${titleColor} font-semibold`}>
@@ -449,81 +495,84 @@ export default function DetailworkChief() {
                 <div className="overflow-auto scrollbar-hide h-60">
                   {SelectedTradesmen.filter(
                     (event) => event.role?.toLowerCase() === "user"
-                  ).map((event, index) => (
-                    <motion.div
-                      key={event._id}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        duration: 0.5,
-                        delay: index * 0.5,
-                        ease: "easeOut",
-                      }}
-                    >
-                      <div
-                        className={`items-center border p-1 my-1 rounded-xl ${
-                          theme === "dark" ? "bg-gray-800" : "shadow-sm"
-                        }`}
+                  ).length > 0 ? (
+                    SelectedTradesmen.filter(
+                      (event) => event.role?.toLowerCase() === "user"
+                    ).map((event, index) => (
+                      <motion.div
+                        key={event._id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                          duration: 0.5,
+                          delay: index * 0.2,
+                          ease: "easeOut",
+                        }}
                       >
-                        <div className="items-center justify-between flex">
-                          <p
-                            className={`${titleColor} text-sm pl-2 font-semibold`}
-                          >
-                            นาย :{" "}
-                            <span
-                              className={`${
-                                theme === "dark" ? "text-white" : "text-black"
-                              }`}
-                            >
-                              {event.Name}
-                            </span>
-                          </p>
-                          <button
-                            onClick={() => openPopUpDate(event._id)}
-                            // onClick={() => handeDelete(event._id)}
-                            className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-black text-sm duration-300 
-              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:translate-y-1 active:scale-x-110 active:scale-y-90`}
-                          >
-                            <RiDeleteBin5Line fontSize={20} />
-                          </button>
-                        </div>
-                        <div className="flex gap-2 items-center">
-                          <img
-                            className="w-12 h-12 rounded-full object-cover"
-                            src={
-                              event.Profile
-                                ? `http://localhost:5000/uploads/Profile/${event.Profile}`
-                                : "/default-profile.png"
-                            }
-                            alt="รูปผู้ขอเบิก"
-                          />
-                          <div className="text-sm flex flex-col gap-1">
+                        <div
+                          className={`items-center border p-1 my-1 rounded-xl ${
+                            theme === "dark" ? "bg-gray-800" : "shadow-sm"
+                          }`}
+                        >
+                          <div className="items-center justify-between flex">
                             <p
-                              className={`${
-                                theme === "dark" ? "text-white" : "text-black"
-                              }`}
+                              className={`${titleColor} text-sm pl-2 font-semibold`}
                             >
-                              <span className={`${titleColor} font-semibold`}>
-                                เบอร์ติดต่อ :
-                              </span>{" "}
-                              {event.Phone_Number}
-                            </p>
-                            <p
-                              className={`${
-                                theme === "dark" ? "text-white" : "text-black"
-                              }`}
-                            >
-                              <span className={`${titleColor} font-semibold`}>
-                                สายงาน :
+                              นาย :{" "}
+                              <span
+                                className={`${
+                                  theme === "dark" ? "text-white" : "text-black"
+                                }`}
+                              >
+                                {event.Name}
                               </span>
-                              {event.Position}
                             </p>
+                            <button
+                              onClick={() => openPopUpDate(event._id)}
+                              className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-black text-sm duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90`}
+                            >
+                              <RiDeleteBin5Line fontSize={20} />
+                            </button>
+                          </div>
+                          <div className="flex gap-2 items-center">
+                            <img
+                              className="w-12 h-12 rounded-full object-cover"
+                              src={
+                                event.Profile
+                                  ? `http://localhost:5000/uploads/Profile/${event.Profile}`
+                                  : "/default-profile.png"
+                              }
+                              alt="รูปผู้ขอเบิก"
+                            />
+                            <div className="text-sm flex flex-col gap-1">
+                              <p
+                                className={`${
+                                  theme === "dark" ? "text-white" : "text-black"
+                                }`}
+                              >
+                                <span className={`${titleColor} font-semibold`}>
+                                  เบอร์ติดต่อ :
+                                </span>{" "}
+                                {event.Phone_Number}
+                              </p>
+                              <p
+                                className={`${
+                                  theme === "dark" ? "text-white" : "text-black"
+                                }`}
+                              >
+                                <span className={`${titleColor} font-semibold`}>
+                                  สายงาน :
+                                </span>{" "}
+                                {event.Position}
+                              </p>
+                            </div>
                           </div>
                         </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))
+                  ) : (
+                    <p>ยังไม่มีช่างในงานนี่</p>
+                  )}
                 </div>
               </div>
 
@@ -546,7 +595,7 @@ export default function DetailworkChief() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
                           duration: 0.5,
-                          delay: 0.05 * index,
+                          delay: 0.2 * index,
                           ease: "easeOut",
                         }}
                         className={`items-center border p-2 my-1 rounded-xl ${
@@ -560,7 +609,10 @@ export default function DetailworkChief() {
                           >
                             {e.section}
                           </p>
-                          <button onClick={() => openPopupMessage(e.id)}>
+                          <button
+                            onClick={() => openPopupMessage(e.id)}
+                            className={`relative overflow-hidden cursor-pointer rounded-md  text-black text-sm duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90`}
+                          >
                             <TiMessage size={24} />
                           </button>
                         </div>
@@ -626,7 +678,7 @@ export default function DetailworkChief() {
                       </motion.div>
                     ))}
                     {requisitionItems.length === 0 && (
-                      <p className={`text-sm pl-2 ${text_color}`}>
+                      <p className={` pl-2 ${text_color}`}>
                         ยังไม่มีรายการเบิกของ
                       </p>
                     )}
@@ -1000,7 +1052,7 @@ export default function DetailworkChief() {
             <div className="flex gap-2 justify-end border-t pt-4">
               <button
                 onClick={closePopUpDate}
-                className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
               >
                 <span className="relative z-10">ยกเลิก</span>
                 <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -1012,7 +1064,7 @@ export default function DetailworkChief() {
                   await handeDelete(selectedTradesmanId);
                   closePopUpDate();
                 }}
-                className="group relative   overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                className="group relative py-1  overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
               >
                 <span className="relative z-10">ยืนยัน</span>
                 <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -1039,10 +1091,9 @@ export default function DetailworkChief() {
             transition={{ duration: 0.25 }}
             className={`bg-white rounded-2xl shadow-2xl p-6 w-[500px] max-h-[400px] overflow-auto`}
           >
-            {/** หาข้อมูลจาก requisitionItems โดยใช้ id */}
             {(() => {
               const item = requisitionItems.find(
-                (i) => i.id === selectedTradesmanId
+                (i) => i.id === selectedItemId
               );
               if (!item)
                 return <p className="text-center text-gray-500">ไม่พบข้อมูล</p>;
@@ -1102,6 +1153,17 @@ export default function DetailworkChief() {
                           <span className="absolute left-0 top-0 w-0 h-full bg-gray-200  transition-all duration-500 group-hover:w-full"></span>
                         </span>
                       </button>
+
+                      <button
+                        onClick={() => openPopupNotApproved(item.id)}
+                        className={`group relative py-1 bg-red-500 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95
+                      `}
+                      >
+                        <span className="relative z-10">ไม่อนุมัติ</span>
+                        <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                          <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
+                        </span>
+                      </button>
                       <button
                         onClick={colsePopupMessage}
                         className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
@@ -1119,6 +1181,103 @@ export default function DetailworkChief() {
               );
             })()}
           </motion.div>
+        </div>
+      )}
+      {PopupNotApproved && selectedItemId && (
+        <div>
+          {(() => {
+            const item = requisitionItems.find((i) => i.id === selectedItemId);
+            if (!item)
+              return <p className="text-center text-gray-500">ไม่พบข้อมูล</p>;
+            return (
+              <div
+                className={`${
+                  duplicateFade ? "opacity-100" : "opacity-0"
+                } duration-300 inset-0 fixed flex items-center justify-center bg-black/40 backdrop-blur-sm z-50`}
+              >
+                <div
+                  className={`rounded-2xl shadow-2xl p-5 w-120 h-90 overflow-y-auto transform transition-all duration-300 ${
+                    duplicateFade
+                      ? "scale-100 opacity-100"
+                      : "scale-90 opacity-0"
+                  } ${
+                    theme === "dark"
+                      ? "bg-gray-800 text-white"
+                      : "bg-white text-gray-900"
+                  }`}
+                >
+                  {" "}
+                  <div className="flex items-center gap-1">
+                    {" "}
+                    <p
+                      className={`font-semibold text-lg ${
+                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      }`}
+                    >
+                      รายการ :
+                    </p>
+                    <span>{item.name}</span>
+                    <p
+                      className={`font-semibold text-lg ${
+                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      }`}
+                    >
+                      จํานวน :
+                    </p>
+                    <span>{item.quantity}</span>
+                  </div>
+                  {/* หมายเหตุเตือนก่อนลบ */}
+                  <div
+                    className={`p-3 my-4 rounded-lg text-sm ${
+                      theme === "dark"
+                        ? "bg-red-900/30 text-red-300"
+                        : "bg-red-100 text-red-600"
+                    }`}
+                  >
+                    หมายเหตุ: ข้อความที่ถูกส่งไปแล้วจะถูกส่งกลับไปให้ช่างทันที
+                    หลังจากส่งแล้ว **ไม่สามารถแก้ไขได้**
+                  </div>
+                  {/* ช่องพิมพ์เหตุผล */}
+                  <div className="flex flex-col gap-1">
+                    <label className="font-medium">
+                      กรุณาระบุเหตุผลที่ต้องการลบงานนี้:
+                    </label>
+                    <textarea
+                      value={messageReason}
+                      onChange={(e) => setMessageReason(e.target.value)}
+                      placeholder="พิมพ์เหตุผลที่ต้องการลบ..."
+                      className={`border rounded-lg p-3 h-28 outline-none transition ${
+                        theme === "dark"
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "bg-white border-gray-300 text-gray-900"
+                      }`}
+                    />
+                  </div>
+                  <div className="flex gap-2 justify-end mt-5">
+                    <button
+                      onClick={closePopupMessage}
+                      className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                    >
+                      <span className="relative z-10">ยกเลิก</span>
+                      <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={handleSendMessage}
+                      className="group py-1 relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                    >
+                      <span className="relative z-10">ยืนยัน</span>
+                      <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <span className="absolute left-0 top-0 w-0 h-full bg-red-600 transition-all duration-500 group-hover:w-full"></span>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       )}
     </div>
