@@ -57,6 +57,7 @@ interface RequisitionItem {
   section?: string;
   role?: string;
   createdAt?: string;
+  _id?: string;
 }
 
 // 🔹 RoutingMachine Component (เร็วขึ้น)
@@ -189,7 +190,7 @@ export default function DetailworkChief() {
   const [PopupMessage, setPopupMessage] = useState(false);
   const [PopupNotApproved, setPopupNotApproved] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  const [messageReason, setMessageReason] = useState(""); // เก็บข้อความที่พิมพ์
+
   const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm bg-white";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
   const text_color = theme === "dark" ? "text-white" : "text-black";
@@ -209,8 +210,8 @@ export default function DetailworkChief() {
     setTimeout(() => setPopupNotApproved(false), 300);
   };
 
-  const openPopupMessage = (itemId: string) => {
-    setSelectedItemId(itemId); // ใช้ selectedItemId สำหรับ requisition item
+  const openPopupMessage = (id: string) => {
+    setSelectedTradesmanId(id); // ใช้ id ของ requisition item
     setPopupMessage(true);
     setTimeout(() => setDuplicateFade(true), 50);
   };
@@ -257,7 +258,7 @@ export default function DetailworkChief() {
           const [lng, lat] = selected.address.coordinates;
           setMarkerPos([lat, lng]);
         } else {
-          setMarkerPos([13.7563, 100.5018]); // Bangkok default
+          setMarkerPos([13.7563, 100.5018]);
         }
 
         setUserPos([position.coords.latitude, position.coords.longitude]);
@@ -359,42 +360,6 @@ export default function DetailworkChief() {
       setDataTradesman(data);
     } catch (err) {
       console.error("โหลดข้อมูลช่างล้มเหลว:", err);
-    }
-  };
-
-  const handleSendMessage = async () => {
-    if (!messageReason.trim()) {
-      alert("กรุณาระบุเหตุผลก่อนส่ง");
-      return;
-    }
-
-    try {
-      const response = await fetch(`/api/additem/${selectedItemId}/message`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: messageReason,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "เกิดข้อผิดพลาด");
-      }
-
-      alert("ส่งข้อความเรียบร้อยแล้ว");
-      setMessageReason(""); // ล้าง textarea
-      closePopupMessage(); // ปิด popup
-
-      // อัปเดตรายการถ้าต้องการ ลบออกจากหน้าหรือทำ highlight
-      setRequisitionItems((prev) =>
-        prev.filter((i) => i.id !== selectedItemId)
-      );
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -1091,9 +1056,10 @@ export default function DetailworkChief() {
             transition={{ duration: 0.25 }}
             className={`bg-white rounded-2xl shadow-2xl p-6 w-[500px] max-h-[400px] overflow-auto`}
           >
+            {/** หาข้อมูลจาก requisitionItems โดยใช้ id */}
             {(() => {
               const item = requisitionItems.find(
-                (i) => i.id === selectedItemId
+                (i) => i.id === selectedTradesmanId
               );
               if (!item)
                 return <p className="text-center text-gray-500">ไม่พบข้อมูล</p>;
@@ -1243,8 +1209,6 @@ export default function DetailworkChief() {
                       กรุณาระบุเหตุผลที่ต้องการลบงานนี้:
                     </label>
                     <textarea
-                      value={messageReason}
-                      onChange={(e) => setMessageReason(e.target.value)}
                       placeholder="พิมพ์เหตุผลที่ต้องการลบ..."
                       className={`border rounded-lg p-3 h-28 outline-none transition ${
                         theme === "dark"
@@ -1264,10 +1228,7 @@ export default function DetailworkChief() {
                       </span>
                     </button>
 
-                    <button
-                      onClick={handleSendMessage}
-                      className="group py-1 relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
-                    >
+                    <button className="group py-1 relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95">
                       <span className="relative z-10">ยืนยัน</span>
                       <span className="absolute inset-0 overflow-hidden pointer-events-none">
                         <span className="absolute left-0 top-0 w-0 h-full bg-red-600 transition-all duration-500 group-hover:w-full"></span>

@@ -42,7 +42,7 @@ router.get("/", async (req, res) => {
       section: item.section,
       role: item.role,
       createdAt: item.createdAt, // <-- แก้ตรงนี้
-      message: item.message,
+      date: item.date,
     }));
 
     res.json(formattedItems);
@@ -54,8 +54,7 @@ router.get("/", async (req, res) => {
 
 // POST: เพิ่มรายการ (ดึง requester จาก token)
 router.post("/", verifyToken, async (req, res) => {
-  const { name, quantity, jobId, description, section, role, message } =
-    req.body;
+  const { name, quantity, jobId, description, section, role, date } = req.body;
 
   if (!jobId) return res.status(400).json({ message: "jobId required" });
 
@@ -74,7 +73,6 @@ router.post("/", verifyToken, async (req, res) => {
       section,
       role,
       createdAt: new Date(), //  กำหนดเวลาอัตโนมัติ
-      message,
     });
 
     const savedItem = await newItem.save();
@@ -96,26 +94,24 @@ router.delete("/:id", async (req, res) => {
 });
 
 // routes/additem.js
-router.post("/:id/message", async (req, res) => {
+router.post("/send-reason", verifyToken, async (req, res) => {
   try {
-    const { id } = req.params;
-    const { message } = req.body;
+    const { itemId, reason } = req.body;
 
-    if (!message) return res.status(400).json({ message: "กรุณาส่งข้อความ" });
+    if (!itemId || !reason)
+      return res.status(400).json({ message: "itemId and reason required" });
 
-    // ใช้ model ของ Additem เอง แทน Requisition (คุณยังไม่มี Requisition)
-    await Additem.updateOne(
-      { _id: id },
-      { $push: { messages: { text: message, date: new Date() } } }
-    );
+    const item = await Additem.findById(itemId);
+    if (!item) return res.status(404).json({ message: "Item not found" });
 
-    res.status(200).json({ message: "ส่งข้อความเรียบร้อย" });
+    item.deleteReason = reason;
+    await item.save();
+
+    return res.status(200).json({ message: "ส่งเหตุผลเรียบร้อย", item });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "เกิดข้อผิดพลาดภายใน server" });
+    return res.status(500).json({ message: "เกิดข้อผิดพลาด" });
   }
 });
-
-
 
 module.exports = router;
