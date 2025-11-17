@@ -40,6 +40,7 @@ interface RequisitionItem {
   requesterProfile?: string; // รูปโปรไฟล์
   section?: string;
   role?: string;
+  status?: string;
 }
 
 export default function GetPaper() {
@@ -206,6 +207,7 @@ export default function GetPaper() {
               requesterProfile,
               section: "เบิกของ",
               role: "ช่าง",
+              status : 'รอดําเนินการ'
             }),
           })
         )
@@ -383,7 +385,6 @@ export default function GetPaper() {
         )}
       </div>
 
-      {/* MODAL 2: ฟอร์มเบิกของ  */}
       {OpendateItem && selectedJob && (
         <div
           className={`fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50 

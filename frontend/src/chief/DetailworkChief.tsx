@@ -58,6 +58,7 @@ interface RequisitionItem {
   role?: string;
   createdAt?: string;
   _id?: string;
+  status?: string;
 }
 
 // 🔹 RoutingMachine Component (เร็วขึ้น)
@@ -190,6 +191,7 @@ export default function DetailworkChief() {
   const [PopupMessage, setPopupMessage] = useState(false);
   const [PopupNotApproved, setPopupNotApproved] = useState(false);
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
 
   const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm bg-white";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
@@ -380,6 +382,57 @@ export default function DetailworkChief() {
     }
   };
 
+  const handleReject = async (itemId: string) => {
+    try {
+      const token = localStorage.getItem("token"); // หรือที่คุณเก็บ token
+      if (!token) {
+        alert("ไม่พบ token");
+        return;
+      }
+
+      const res = await fetch(
+        `http://localhost:5000/api/additem/${itemId}/status`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            status: "ไม่อนุมัติ",
+            reasondescriptionstatus: rejectReason,
+          }),
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        console.error(data);
+        alert("อัปเดตสถานะไม่สำเร็จ");
+        return;
+      }
+
+      // อัปเดตข้อมูลใน state
+      setRequisitionItems((prev) =>
+        prev.map((i) =>
+          i.id === itemId || i._id === itemId
+            ? {
+                ...i,
+                status: "ไม่อนุมัติ",
+                reasondescriptionstatus: rejectReason,
+              }
+            : i
+        )
+      );
+
+      setRejectReason(""); // ล้าง textarea
+      closePopupMessage();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
   useEffect(() => {
     fetchTradesman();
     fetchRequisitionItems();
@@ -407,19 +460,31 @@ export default function DetailworkChief() {
               <p className={`${titleColor} font-semibold`}>
                 ระยะเวลาในการนําเนินงาน
               </p>
-              <p>
-                วันเริ่มงาน:{" "}
-                {job.Date_of_acceptance_of_work
-                  ? new Date(job.Date_of_acceptance_of_work).toLocaleDateString(
-                      "th-TH"
-                    )
-                  : "-"}
+              <p className={`${titleColor} font-semibold`}>
+                วันเริ่มงาน:
+                <span
+                  className={`${
+                    theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                >
+                  {job.Date_of_acceptance_of_work
+                    ? new Date(
+                        job.Date_of_acceptance_of_work
+                      ).toLocaleDateString("th-TH")
+                    : "-"}
+                </span>
               </p>
-              <p>
+              <p className={`${titleColor} font-semibold`}>
                 วันปิดงาน:{" "}
-                {job.Closing_date
-                  ? new Date(job.Closing_date).toLocaleDateString("th-TH")
-                  : "-"}
+                <span
+                  className={`${
+                    theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                >
+                  {job.Closing_date
+                    ? new Date(job.Closing_date).toLocaleDateString("th-TH")
+                    : "-"}
+                </span>
               </p>
             </div>
 
@@ -542,7 +607,7 @@ export default function DetailworkChief() {
               </div>
 
               <div
-                className={`w-full h-90 p-3 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
+                className={`w-full h-90 p-3 mt-3 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
               >
                 <div
                   className={`${
@@ -567,12 +632,35 @@ export default function DetailworkChief() {
                           theme === "dark" ? "bg-gray-800" : "shadow-sm"
                         }`}
                       >
-                        <div className="flex justify-between">
+                        <div className="flex  justify-between">
                           {" "}
                           <p
                             className={`text-sm pl-2 font-semibold ${titleColor}`}
                           >
-                            {e.section}
+                            {e.section} :
+                            <span
+                              className={`${
+                                theme === "dark" ? "text-white" : "text-black"
+                              }`}
+                            >
+                              {" "}
+                              สถานะ :{" "}
+                              <span
+                                className={`${
+                                  e.status === "ไม่อนุมัติ"
+                                    ? "text-red-500"
+                                    : ""
+                                } ${
+                                  e.status === "รอดําเนินการ"
+                                    ? "text-orange-500"
+                                    : ""
+                                } ${
+                                  e.status === "อนุมัติ" ? "text-green-500" : ""
+                                }`}
+                              >
+                                {e.status}
+                              </span>
+                            </span>
                           </p>
                           <button
                             onClick={() => openPopupMessage(e.id)}
@@ -593,12 +681,16 @@ export default function DetailworkChief() {
                           />
                           <div className="">
                             <div className="text-sm  gap-1">
-                              <p className={`font-semibold ${titleColor}`}>
-                                <span className={`font-semibold`}>
+                              <p
+                                className={`font-semibold ${
+                                  theme === "dark" ? "text-white" : "text-black"
+                                }`}
+                              >
+                                <span className={`font-semibold ${titleColor}`}>
                                   {" "}
                                   {e.role}{" "}
                                 </span>
-                                {e.requesterName}
+                                นาย : {e.requesterName}
                               </p>
                               <p
                                 className={`truncate w-120 flex gap-2 ${text_color}`}
@@ -644,7 +736,7 @@ export default function DetailworkChief() {
                     ))}
                     {requisitionItems.length === 0 && (
                       <p className={` pl-2 ${text_color}`}>
-                        ยังไม่มีรายการเบิกของ
+                        ยังไม่มีรายขอการเบิกของ
                       </p>
                     )}
                   </div>
@@ -1059,7 +1151,8 @@ export default function DetailworkChief() {
             {/** หาข้อมูลจาก requisitionItems โดยใช้ id */}
             {(() => {
               const item = requisitionItems.find(
-                (i) => i.id === selectedTradesmanId
+                (i) =>
+                  i.id === selectedTradesmanId || i._id === selectedTradesmanId
               );
               if (!item)
                 return <p className="text-center text-gray-500">ไม่พบข้อมูล</p>;
@@ -1122,6 +1215,7 @@ export default function DetailworkChief() {
 
                       <button
                         onClick={() => openPopupNotApproved(item.id)}
+                        // onClick={() => handleReject(item.id)}
                         className={`group relative py-1 bg-red-500 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95
                       `}
                       >
@@ -1192,7 +1286,6 @@ export default function DetailworkChief() {
                     </p>
                     <span>{item.quantity}</span>
                   </div>
-                  {/* หมายเหตุเตือนก่อนลบ */}
                   <div
                     className={`p-3 my-4 rounded-lg text-sm ${
                       theme === "dark"
@@ -1203,12 +1296,13 @@ export default function DetailworkChief() {
                     หมายเหตุ: ข้อความที่ถูกส่งไปแล้วจะถูกส่งกลับไปให้ช่างทันที
                     หลังจากส่งแล้ว **ไม่สามารถแก้ไขได้**
                   </div>
-                  {/* ช่องพิมพ์เหตุผล */}
                   <div className="flex flex-col gap-1">
                     <label className="font-medium">
                       กรุณาระบุเหตุผลที่ต้องการลบงานนี้:
                     </label>
                     <textarea
+                      value={rejectReason}
+                      onChange={(e) => setRejectReason(e.target.value)}
                       placeholder="พิมพ์เหตุผลที่ต้องการลบ..."
                       className={`border rounded-lg p-3 h-28 outline-none transition ${
                         theme === "dark"
@@ -1228,7 +1322,10 @@ export default function DetailworkChief() {
                       </span>
                     </button>
 
-                    <button className="group py-1 relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95">
+                    <button
+                      onClick={() => handleReject(item.id)}
+                      className="group py-1 relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                    >
                       <span className="relative z-10">ยืนยัน</span>
                       <span className="absolute inset-0 overflow-hidden pointer-events-none">
                         <span className="absolute left-0 top-0 w-0 h-full bg-red-600 transition-all duration-500 group-hover:w-full"></span>

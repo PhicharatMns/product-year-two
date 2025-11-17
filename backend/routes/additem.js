@@ -2,7 +2,7 @@
 const express = require("express");
 const router = express.Router();
 const Additem = require("../models/additem");
-const Login = require("../models/Login"); // model ผู้ใช้
+const Login = require("../models/Login");
 const jwt = require("jsonwebtoken");
 
 const JWT_SECRET = process.env.JWT_SECRET || "mysecretkey";
@@ -30,19 +30,20 @@ router.get("/", async (req, res) => {
   try {
     const items = await Additem.find({ jobId });
 
-    // map ให้ frontend ได้ใช้ชื่อ + รูป
+    console.log("jobId:", jobId, "items found:", items.length);
+
     const formattedItems = items.map((item) => ({
       id: item._id,
       name: item.name,
       quantity: item.quantity,
       jobId: item.jobId,
-      description: item.description,
+      description: item.description || "ไม่ระบุ",
       requesterName: item.requesterName || "ไม่ทราบ",
       requesterProfile: item.requesterProfile || "/default-profile.png",
-      section: item.section,
-      role: item.role,
-      createdAt: item.createdAt, // <-- แก้ตรงนี้
-      date: item.date,
+      section: item.section || "ไม่ระบุ",
+      role: item.role || "ไม่ระบุ",
+      createdAt: item.createdAt || new Date(),
+      status: item.status || "รอดำเนินการ",
     }));
 
     res.json(formattedItems);
@@ -54,12 +55,12 @@ router.get("/", async (req, res) => {
 
 // POST: เพิ่มรายการ (ดึง requester จาก token)
 router.post("/", verifyToken, async (req, res) => {
-  const { name, quantity, jobId, description, section, role, date } = req.body;
+  const { name, quantity, jobId, description, section, role, status } =
+    req.body;
 
   if (!jobId) return res.status(400).json({ message: "jobId required" });
 
   try {
-    // ดึงข้อมูลผู้ใช้จาก token
     const user = await Login.findById(req.user.id);
     if (!user) return res.status(404).json({ message: "User not found" });
 
@@ -72,7 +73,8 @@ router.post("/", verifyToken, async (req, res) => {
       requesterProfile: user.Profile || "/default-profile.png",
       section,
       role,
-      createdAt: new Date(), //  กำหนดเวลาอัตโนมัติ
+      createdAt: new Date(),
+      status,
     });
 
     const savedItem = await newItem.save();
@@ -86,32 +88,45 @@ router.post("/", verifyToken, async (req, res) => {
 // DELETE: ลบรายการ
 router.delete("/:id", async (req, res) => {
   try {
-    await Additem.findByIdAndDelete(req.params.id);
+    const deleted = await Additem.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).json({ message: "Item not found" });
     res.json({ message: "Deleted successfully" });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 });
 
-// routes/additem.js
-router.post("/send-reason", verifyToken, async (req, res) => {
+// PUT: อัปเดตสถานะของรายการ
+router.put("/:id/status", verifyToken, async (req, res) => {
+  const { status, reasondescriptionstatus } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ message: "status required" });
+  }
+
   try {
-    const { itemId, reason } = req.body;
+    const updatedItem = await Additem.findByIdAndUpdate(
+      req.params.id,
+      {
+        status: status,
+        reasondescriptionstatus: reasondescriptionstatus || "",
+        statusUpdatedAt: new Date(), //  เซ็ตเวลาปัจจุบัน
+      },
+      { new: true }
+    );
 
-    if (!itemId || !reason)
-      return res.status(400).json({ message: "itemId and reason required" });
+    if (!updatedItem) {
+      return res.status(404).json({ message: "Item not found" });
+    }
 
-    const item = await Additem.findById(itemId);
-    if (!item) return res.status(404).json({ message: "Item not found" });
-
-    item.deleteReason = reason;
-    await item.save();
-
-    return res.status(200).json({ message: "ส่งเหตุผลเรียบร้อย", item });
+    res.json({
+      message: "Status updated successfully",
+      item: updatedItem,
+    });
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: "เกิดข้อผิดพลาด" });
+    res.status(500).json({ message: err.message });
   }
 });
-
 module.exports = router;

@@ -10,7 +10,9 @@ const additemSchema = new mongoose.Schema({
   requesterProfile: String,
   section: String,
   role: String,
-  date : String,
+  status: String,
+  reasondescriptionstatus: String,
+  statusUpdatedAt: Date, // เก็บวันที่
 });
 
 const Additem = mongoose.model("Additem", additemSchema);
