@@ -97,46 +97,4 @@ router.delete("/delete-item/:id", async (req, res) => {
   }
 });
 
-router.put("/:id/status", verifyToken, async (req, res) => {
-  const { status, reasondescriptionstatus } = req.body;
-
-  try {
-    const updatedItem = await Additem.findByIdAndUpdate(
-      req.params.id,
-      {
-        status,
-        reasondescriptionstatus: reasondescriptionstatus || "",
-        statusUpdatedAt: new Date(),
-      },
-      { new: true }
-    );
-
-    if (!updatedItem)
-      return res.status(404).json({ message: "Item not found" });
-
-    // --- ลดจำนวนในคลังถ้าอนุมัติ ---
-    if (status === "อนุมัติแล้วรอการติดต่อคลัง") {
-      const stockItem = await Item.findOne({ name: updatedItem.name });
-
-      if (!stockItem) return res.status(404).json({ message: "ไม่พบในคลัง" });
-
-      const remaining = Number(stockItem.number) - Number(updatedItem.quantity);
-
-      if (remaining < 0)
-        return res.status(400).json({ message: "จำนวนในคลังไม่เพียงพอ" });
-
-      stockItem.number = remaining;
-      await stockItem.save();
-    }
-
-    res.json({
-      message: "Status updated and stock updated successfully",
-      item: updatedItem,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: err.message });
-  }
-});
-
 module.exports = router;
