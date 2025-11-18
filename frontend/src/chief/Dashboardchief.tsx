@@ -104,10 +104,35 @@ export default function Dashboardchief() {
     { เดือน: "ธันวาคม", ทั้งหมด: 100, เสร็จสิ้น: 80, กำลังดำเนินการ: 20 },
   ];
 
+  interface typeshowDatefetchAddTradesman {
+    _id?: string;
+    Name?: string; // เพิ่มตรงนี้
+    role?: string;
+  }
+
   // #endregion
   const count = useMotionValue(0);
   const rounded = useTransform(() => Math.round(count.get()));
   const [Faev, setFaev] = useState(false);
+  const [showDatefetchAddTradesman, setshowDatefetchAddTradesman] = useState<
+    typeshowDatefetchAddTradesman[]
+  >([]);
+
+  const [totalTradesman, setTotalTradesman] = useState(0);
+
+  const fetchAddTradesman = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/login/all-tradesman");
+      const data = await res.json();
+      // setshowDatefetchAddTradesman(data);
+      setTotalTradesman(data.length); // นับจำนวน object ใน array
+    } catch (err) {
+      console.error(err);
+    }
+  };
+  useEffect(() => {
+    fetchAddTradesman();
+  }, []);
 
   useEffect(() => {
     const controls = animate(count, 100, { duration: 5 });
@@ -198,6 +223,25 @@ export default function Dashboardchief() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* <div className="mt-5">
+            <h2 className="text-xl font-bold mb-3">รายชื่อช่างทั้งหมด</h2>
+            {showDatefetchAddTradesman.length === 0 ? (
+              <p>กำลังโหลดข้อมูล...</p>
+            ) : (
+              <ul className="list-disc pl-5">
+                {showDatefetchAddTradesman.map((e, i) => (
+                  <li key={i}>
+                    {e.Name} {e.role ? `(${e.role})` : ""}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div> */}
+
+          <div className="text-xl font-bold">
+            จำนวนช่างทั้งหมด: {totalTradesman}
           </div>
 
           <div className="w-full flex flex-col gap-3">

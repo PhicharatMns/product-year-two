@@ -165,9 +165,7 @@ router.get("/dashboardUser", verifyToken, async (req, res) => {
 // ดึงข้อมูลช่างมาเเสดง ในหน้า Editacc
 router.get("/all-tradesman", async (req, res) => {
   try {
-    // ดึงเฉพาะ role = "user" (สมมติช่างคือ user)
     const tradesman = await Login.find(); // ไม่กรอง role
-    //    const tradesman = await Login.find({ role: { $in: ["user", "chief", "executive"] } });
     res.json(tradesman);
   } catch (err) {
     console.error(err);
@@ -245,50 +243,6 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
   } catch (err) {
     console.error("อัปเดตข้อมูลล้มเหลว:", err);
     res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัปเดต" });
-  }
-});
-
-
-router.get("/same-position-users", verifyToken, async (req, res) => {
-  try {
-    // หา user ของเราจาก token
-    const currentUser = await Login.findById(req.user.id);
-    if (!currentUser)
-      return res.status(404).json({ message: "User not found" });
-
-    const myPosition = currentUser.Position;
-    if (!myPosition)
-      return res.status(400).json({ message: "Your position is not set" });
-
-    // หา user ที่ Position เหมือนเรา (ยกเว้นตัวเราเอง)
-    const samePositionUsers = await Login.find({
-      Position: myPosition,
-      _id: { $ne: currentUser._id },
-    });
-
-    // สมมติคุณมี collection Job เก็บงานของช่าง
-    const Job = require("../models/Job");
-
-    const result = await Promise.all(
-      samePositionUsers.map(async (user) => {
-        const jobs = await Job.find({ assignedTo: user._id });
-        const completed = jobs.filter((j) => j.status === "completed").length;
-        const pending = jobs.filter((j) => j.status !== "completed").length;
-        return {
-          _id: user._id,
-          Name: user.Name,
-          Position: user.Position,
-          totalJobs: jobs.length,
-          completedJobs: completed,
-          pendingJobs: pending,
-        };
-      })
-    );
-
-    res.json(result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Server Error" });
   }
 });
 
