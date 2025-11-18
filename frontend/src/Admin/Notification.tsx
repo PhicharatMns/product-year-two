@@ -100,13 +100,13 @@ export default function Notification() {
     setTimeout(() => setPopupDate(false), 300);
   };
 
-  // --- Confirm Item ---
   const handleConfirm = async () => {
     if (!selectedItem) return;
 
     try {
       const token = localStorage.getItem("token");
 
+      // --- 1) ยืนยันรายการเบิกของ ---
       const resConfirm = await fetch(
         `http://localhost:5000/api/additem/${selectedItem.id}/confirm`,
         {
@@ -121,10 +121,52 @@ export default function Notification() {
 
       if (!resConfirm.ok) {
         const errData = await resConfirm.json();
-        throw new Error(errData.message || "บันทึกข้อความล้มเหลว");
+        throw new Error(errData.message || "ยืนยันรายการล้มเหลว");
       }
 
-      alert("ยืนยันสำเร็จ! ส่งข้อความเรียบร้อย");
+      // --- 2) อัปเดตจำนวนในคลังจริง (MongoDB) ---
+      const itemInStock = items.find((i) => i.name === selectedItem.name);
+
+      if (!itemInStock) {
+        alert("ไม่พบวัสดุในคลัง");
+        return;
+      }
+
+      const newNumber =
+        Number(itemInStock.number) - Number(selectedItem.quantity);
+
+      const resUpdate = await fetch(
+        `http://localhost:5000/api/item/update-item/${itemInStock._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            name: itemInStock.name,
+            category: itemInStock.category,
+            number: newNumber >= 0 ? newNumber : 0,
+            counting: itemInStock.counting,
+          }),
+        }
+      );
+
+      if (!resUpdate.ok) {
+        const errData = await resUpdate.json();
+        throw new Error(errData.message || "อัปเดตจำนวนในคลังล้มเหลว");
+      }
+
+      // --- 3) อัปเดต state ท้องถิ่น ---
+      setItems((prevItems) =>
+        prevItems.map((i) =>
+          i._id === itemInStock._id
+            ? { ...i, number: newNumber >= 0 ? newNumber : 0 }
+            : i
+        )
+      );
+
+      alert("ยืนยันสำเร็จ! จำนวนในคลังถูกอัปเดตแล้ว");
       fetchRequisitionItems();
       closePopupDate();
     } catch (err: any) {
@@ -193,7 +235,7 @@ export default function Notification() {
                       className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 ${
                         theme === "dark"
                           ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border border-gray-600"
-                          : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border border-blue-300"
+                          : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border "
                       } ${Focused ? "w-72" : "w-60"}`}
                     />
                   </div>
