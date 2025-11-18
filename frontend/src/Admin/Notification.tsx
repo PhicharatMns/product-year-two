@@ -378,6 +378,43 @@ export default function Notification() {
               {selectedItem.quantity}
             </p>
 
+            {/* --- จำนวนคงเหลือในคลัง --- */}
+            {(() => {
+              const itemInStock = items.find(
+                (item) => item.name === selectedItem.name
+              );
+
+              if (itemInStock) {
+                const remaining =
+                  Number(itemInStock.number) - Number(selectedItem.quantity);
+                return (
+                  <div className="mt-3">
+                    <p>
+                      <span className={`${texthead} font-semibold`}>
+                        จำนวนในคลัง:{" "}
+                      </span>
+                      {itemInStock.number}
+                    </p>
+                    <p>
+                      <span className={`${texthead} font-semibold`}>
+                        หลังยืนยัน:{" "}
+                      </span>
+                      {remaining >= 0 ? remaining : 0}
+                    </p>
+                  </div>
+                );
+              } else {
+                return (
+                  <p className="mt-3">
+                    <span className={`${texthead} font-semibold`}>
+                      จำนวนในคลัง:{" "}
+                    </span>
+                    ไม่พบข้อมูล
+                  </p>
+                );
+              }
+            })()}
+
             <div className="flex justify-end gap-3 mt-4">
               <button
                 onClick={closePopupDate}
@@ -395,13 +432,6 @@ export default function Notification() {
           </div>
         </div>
       )}
-    {items.map((e)=>{
-      return(
-        <div>
-          {e._id}
-        </div>
-      )
-    })}
     </div>
   );
 }
