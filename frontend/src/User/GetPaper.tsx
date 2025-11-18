@@ -208,6 +208,7 @@ export default function GetPaper() {
               section: "เบิกของ",
               role: "ช่าง",
               status: "รอดําเนินการ",
+              additemecomfam: "รอดําเนินการ",
             }),
           })
         )

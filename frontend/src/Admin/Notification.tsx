@@ -17,6 +17,7 @@ interface RequisitionItem {
   _id?: string;
   status?: string;
   statusUpdatedAt?: string;
+  additemecomfam?: string;
 }
 
 interface Item {
@@ -39,12 +40,11 @@ export default function Notification() {
     []
   );
   const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
   const [PopupDate, setPopupDate] = useState(false);
   const [selectedItem, setSelectedItem] = useState<RequisitionItem | null>(
     null
   );
+  const [warningMessage, setWarningMessage] = useState(""); // state สำหรับข้อความเตือน
 
   // --- Theme classes ---
   const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm bg-white";
@@ -54,7 +54,6 @@ export default function Notification() {
   const border = theme === "dark" ? "border-gray-700" : "border-gray-200";
   const bgborder = theme === "dark" ? "bg-gray-800" : "bg-gray-50";
 
-  // --- Fade effect ---
   useEffect(() => {
     const timer = setTimeout(() => setFade(true), 50);
     return () => clearTimeout(timer);
@@ -105,9 +104,24 @@ export default function Notification() {
 
     try {
       const token = localStorage.getItem("token");
+      const itemInStock = items.find((i) => i.name === selectedItem.name);
+      if (!itemInStock) return alert("ไม่พบวัสดุในคลัง");
 
-      // --- 1) ยืนยันรายการเบิกของ ---
-      const resConfirm = await fetch(
+      const requestedQty = Number(selectedItem.quantity);
+      const stockQty = Number(itemInStock.number);
+
+      // ถ้าคลังไม่พอ → แสดงข้อความเตือน
+      if (stockQty < requestedQty) {
+        // setWarningMessage(
+        //   `จำนวนในคลังไม่เพียงพอ! คลังมี ${stockQty} แต่ต้องการ ${requestedQty}`
+        // );
+        setWarningMessage(`จำนวนในคลังไม่เพียงพอ! `);
+        return;
+      }
+
+      const newNumber = stockQty - requestedQty;
+
+      await fetch(
         `http://localhost:5000/api/additem/${selectedItem.id}/confirm`,
         {
           method: "PUT",
@@ -115,67 +129,36 @@ export default function Notification() {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ message: "ยืนยันแล้ว" }),
-        }
-      );
-
-      if (!resConfirm.ok) {
-        const errData = await resConfirm.json();
-        throw new Error(errData.message || "ยืนยันรายการล้มเหลว");
-      }
-
-      // --- 2) อัปเดตจำนวนในคลังจริง (MongoDB) ---
-      const itemInStock = items.find((i) => i.name === selectedItem.name);
-
-      if (!itemInStock) {
-        alert("ไม่พบวัสดุในคลัง");
-        return;
-      }
-
-      const newNumber =
-        Number(itemInStock.number) - Number(selectedItem.quantity);
-
-      const resUpdate = await fetch(
-        `http://localhost:5000/api/item/update-item/${itemInStock._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
           body: JSON.stringify({
-            name: itemInStock.name,
-            category: itemInStock.category,
-            number: newNumber >= 0 ? newNumber : 0,
-            counting: itemInStock.counting,
+            message: "ยืนยันแล้ว",
+            status: "ได้รับการยืนยันจากคลังแล้ว",
+            newNumber,
           }),
         }
       );
 
-      if (!resUpdate.ok) {
-        const errData = await resUpdate.json();
-        throw new Error(errData.message || "อัปเดตจำนวนในคลังล้มเหลว");
-      }
-
-      // --- 3) อัปเดต state ท้องถิ่น ---
-      setItems((prevItems) =>
-        prevItems.map((i) =>
-          i._id === itemInStock._id
-            ? { ...i, number: newNumber >= 0 ? newNumber : 0 }
-            : i
+      // อัปเดต state
+      setItems((prev) =>
+        prev.map((i) =>
+          i._id === itemInStock._id ? { ...i, number: newNumber } : i
+        )
+      );
+      setRequisitionItems((prev) =>
+        prev.map((r) =>
+          r.id === selectedItem.id
+            ? { ...r, status: "ได้รับการยืนยันจากคลังแล้ว" }
+            : r
         )
       );
 
-      alert("ยืนยันสำเร็จ! จำนวนในคลังถูกอัปเดตแล้ว");
-      fetchRequisitionItems();
+      setWarningMessage(""); // ล้างข้อความเตือน
       closePopupDate();
-    } catch (err: any) {
-      console.error(err);
-      alert("เกิดข้อผิดพลาด: " + err.message);
+      alert("ยืนยันสำเร็จ! จำนวนและสถานะอัปเดตแล้ว");
+    } catch (err) {
+      alert("เกิดข้อผิดพลาด: " + err);
     }
   };
 
-  // --- Filtered Items ---
   const filteredItems = requisitionItems.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -249,7 +232,7 @@ export default function Notification() {
                 <div className="grid grid-cols-5 gap-5 w-full">
                   {[
                     "ทั้งหมด",
-                    "รอการยืนยัน",
+                    "รอดําเนินการ",
                     "รอเบิกขอใหม่",
                     "ยืนยันแล้ว",
                     "ยืนยันแล้ว",
@@ -285,50 +268,68 @@ export default function Notification() {
               </div>
 
               {/* Table Rows */}
-              {filteredItems.map((e, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.05, ease: "easeOut" }}
-                  className={`grid grid-cols-11 items-center gap-5 text-sm p-2 pl-5 border rounded-xl m-2 ${bgborder}`}
-                >
-                  <div className="flex col-span-2 items-center gap-3">
-                    <img
-                      src={
-                        e.requesterProfile
-                          ? `http://localhost:5000/uploads/Profile/${e.requesterProfile}`
-                          : "/default-profile.png"
-                      }
-                      className="w-10 h-10 rounded-full"
-                      alt=""
-                    />
-                    <p>{e.requesterName}</p>
-                  </div>
-                  <div className="truncate col-span-2">{e.status}</div>
-                  <div className="truncate col-span-2">{e.name}</div>
-                  <div className="truncate">{e.quantity}</div>
-                  <div className="truncate text-center col-span-2">
-                    {e.statusUpdatedAt &&
-                      new Date(e.statusUpdatedAt).toLocaleString("th-TH", {
-                        dateStyle: "short",
-                        timeStyle: "short",
-                      })}
-                  </div>
-                  <div className="col-span-2 mx-auto">
-                    <button
-                      onClick={() => openPopupDate(e)}
-                      className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
-                        theme === "dark"
-                          ? "bg-yellow-600 hover:bg-yellow-700"
-                          : "bg-blue-600 hover:bg-blue-700"
-                      }`}
-                    >
-                      รายละเอียด
-                    </button>
-                  </div>
-                </motion.div>
-              ))}
+              {requisitionItems
+                .filter(
+                  (e) =>
+                    e.status !== "รอดําเนินการ" && e.status !== "ไม่อนุมัติ"
+                )
+                .filter(
+                  (e) =>
+                    e.name.toLowerCase().includes(search.toLowerCase()) ||
+                    e.requesterName
+                      ?.toLowerCase()
+                      .includes(search.toLowerCase())
+                )
+                .map((e, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: i * 0.2,
+                      ease: "easeOut",
+                    }}
+                    className={`grid grid-cols-11 items-center gap-5 text-sm p-2 pl-5 border rounded-xl m-2 ${bgborder}`}
+                  >
+                    <div className="flex col-span-2 items-center gap-3">
+                      <img
+                        src={
+                          e.requesterProfile
+                            ? `http://localhost:5000/uploads/Profile/${e.requesterProfile}`
+                            : "/default-profile.png"
+                        }
+                        className="w-10 h-10 rounded-full"
+                        alt=""
+                      />
+                      <p>{e.requesterName}</p>
+                    </div>
+                    <div className="truncate col-span-2">
+                      {e.additemecomfam}
+                    </div>
+                    <div className="truncate col-span-2">{e.name}</div>
+                    <div className="truncate">{e.quantity}</div>
+                    <div className="truncate text-center col-span-2">
+                      {e.statusUpdatedAt &&
+                        new Date(e.statusUpdatedAt).toLocaleString("th-TH", {
+                          dateStyle: "short",
+                          timeStyle: "short",
+                        })}
+                    </div>
+                    <div className="col-span-2 mx-auto">
+                      <button
+                        onClick={() => openPopupDate(e)}
+                        className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                          theme === "dark"
+                            ? "bg-yellow-600 hover:bg-yellow-700"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
+                      >
+                        รายละเอียด
+                      </button>
+                    </div>
+                  </motion.div>
+                ))}
             </div>
 
             {/* --- รายงานจากช่าง --- */}
@@ -430,7 +431,7 @@ export default function Notification() {
                 const remaining =
                   Number(itemInStock.number) - Number(selectedItem.quantity);
                 return (
-                  <div className="mt-3">
+                  <div className="">
                     <p>
                       <span className={`${texthead} font-semibold`}>
                         จำนวนในคลัง:{" "}
@@ -458,18 +459,53 @@ export default function Notification() {
             })()}
 
             <div className="flex justify-end gap-3 mt-4">
-              <button
-                onClick={closePopupDate}
-                className="px-3 py-1 bg-blue-600 text-white rounded-md"
-              >
-                ปิด
-              </button>
-              <button
-                onClick={handleConfirm}
-                className="px-3 py-1 rounded-md text-white bg-green-600 hover:bg-green-700"
-              >
-                ยืนยัน
-              </button>
+              {selectedItem.status === "ได้รับการยืนยันจากคลังแล้ว" ? (
+                <span
+                  onClick={closePopupDate}
+                  className={`block w-full cursor-pointer border text-center rounded-lg px-3 py-2 ${
+                    theme === "dark"
+                      ? "bg-red-900/30 text-red-300"
+                      : "bg-red-100 text-red-600"
+                  }`}
+                >
+                  รายการนี่ถูกยืนยันไปแล้ว
+                </span>
+              ) : warningMessage ? (
+                <span
+                  onClick={closePopupDate}
+                  className={`block w-full cursor-pointer border text-center rounded-lg px-3 py-2 ${
+                    theme === "dark"
+                      ? "bg-red-900/30 text-red-300"
+                      : "bg-red-100 text-red-600"
+                  }`}
+                >
+                  {warningMessage}
+                </span>
+              ) : (
+                <>
+                  <button
+                    onClick={closePopupDate}
+                    className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                  >
+                    <span className="relative z-10">ยกเลิก</span>
+                    <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                      <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
+                    </span>
+                  </button>
+
+                  <button
+                    onClick={handleConfirm}
+                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
+                  >
+                    <span className="relative z-10">ยืนยัน</span>
+                    <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                      <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20 transition-all duration-500 group-hover:w-full"></span>
+                    </span>
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

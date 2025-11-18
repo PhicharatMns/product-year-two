@@ -47,7 +47,7 @@ router.get("/", async (req, res) => {
       status: item.status || "รอดำเนินการ",
       reasondescriptionstatus: item.reasondescriptionstatus || "",
       statusUpdatedAt: item.statusUpdatedAt || null,
-      additemecomfam : item.additemecomfam
+      additemecomfam: item.additemecomfam,
     }));
 
     res.json(formattedItems);
@@ -59,8 +59,16 @@ router.get("/", async (req, res) => {
 
 // POST: เพิ่มรายการ (ดึง requester จาก token)
 router.post("/", verifyToken, async (req, res) => {
-  const { name, quantity, jobId, description, section, role, additemecomfam , status } =
-    req.body;
+  const {
+    name,
+    quantity,
+    jobId,
+    description,
+    section,
+    role,
+    additemecomfam,
+    status,
+  } = req.body;
 
   if (!jobId) return res.status(400).json({ message: "jobId required" });
 
@@ -148,6 +156,7 @@ router.put("/:id/confirm", verifyToken, async (req, res) => {
       req.params.id,
       {
         additemecomfam: message, // บันทึกข้อความยืนยัน
+        status: "ได้รับการยืนยันจากคลังแล้ว", // อัปเดต status พร้อมกัน
       },
       { new: true }
     );

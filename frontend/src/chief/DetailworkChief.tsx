@@ -699,7 +699,7 @@ export default function DetailworkChief() {
                           <div className="flex  justify-between">
                             {" "}
                             <p
-                              className={`text-sm pl-2 font-semibold ${titleColor}`}
+                              className={`text-sm pl-2 truncate  w-120 font-semibold ${titleColor}`}
                             >
                               {e.section} :
                               <span
@@ -708,7 +708,6 @@ export default function DetailworkChief() {
                                 }`}
                               >
                                 {" "}
-                                สถานะ :{" "}
                                 <span
                                   className={`${
                                     e.status === "ไม่อนุมัติ"
@@ -722,10 +721,28 @@ export default function DetailworkChief() {
                                     e.status === "อนุมัติเเล้วรอการติดต่อคลัง"
                                       ? "text-green-500"
                                       : ""
+                                  } ${
+                                    e.status === "ได้รับการยืนยันจากคลังแล้ว"
+                                      ? "text-green-500"
+                                      : ""
                                   }`}
                                 >
                                   {e.status}
                                 </span>
+                                {e.reasondescriptionstatus?.trim() && (
+                                  <span className="">
+                                    หมายเหตุ:{" "}
+                                    <span
+                                      className={`${
+                                        theme === "dark"
+                                          ? "text-white"
+                                          : "text-black"
+                                      }`}
+                                    >
+                                      {e.reasondescriptionstatus}
+                                    </span>
+                                  </span>
+                                )}
                               </span>
                             </p>
                             <button
@@ -1274,9 +1291,7 @@ export default function DetailworkChief() {
                         {item.description || "-"}
                       </p>
                       <p>
-                        <span
-                          className={`font-semibold  ${titleColor} `}
-                        >
+                        <span className={`font-semibold  ${titleColor} `}>
                           {" "}
                           วันที่ขอเบิก:{" "}
                         </span>

@@ -395,39 +395,62 @@ export default function Detailwork() {
                         ease: "easeOut",
                       }}
                       className={`items-center border p-2 my-2 rounded-xl ${
-                        theme === "dark" ? "bg-gray-800" : "shadow-sm bg-gray-50"
+                        theme === "dark"
+                          ? "bg-gray-800"
+                          : "shadow-sm bg-gray-50"
                       }`}
                     >
-                      <p className={`text-sm pl-2 font-semibold ${titleColor}`}>
-                        {item.section} :
-                        <span
-                          className={`${
-                            theme === "dark" ? "text-white" : "text-black"
-                          }`}
+                      <div>
+                        <p
+                          className={`text-sm pl-2 font-semibold truncate  w-120 ${titleColor}`}
                         >
-                          {" "}
-                          สถานะ :{" "}
+                          {item.section} :
                           <span
                             className={`${
-                              item.status === "ไม่อนุมัติ" ? "text-red-500" : ""
-                            } ${
-                              item.status === "รอดําเนินการ"
-                                ? "text-orange-500"
-                                : ""
-                            } ${
-                              item.status === "อนุมัติเเล้วรอการติดต่อคลัง" ? "text-green-500" : ""
+                              theme === "dark" ? "text-white" : "text-black"
                             }`}
                           >
-                            {item.status}
+                            {" "}
+                            สถานะ :{" "}
+                            <span
+                              className={`${
+                                item.status === "ไม่อนุมัติ"
+                                  ? "text-red-500"
+                                  : ""
+                              } ${
+                                item.status === "รอดําเนินการ"
+                                  ? "text-orange-500"
+                                  : ""
+                              } ${
+                                item.status === "อนุมัติเเล้วรอการติดต่อคลัง"
+                                  ? "text-green-500"
+                                  : ""
+                              } ${
+                                item.status === "ได้รับการยืนยันจากคลังแล้ว"
+                                  ? "text-green-500"
+                                  : ""
+                              }`}
+                            >
+                              {item.status}
+                            </span>
+                            {item.reasondescriptionstatus?.trim() && (
+                              <span className="">
+                                หมายเหตุ:{" "}
+                                <span
+                                  className={`${
+                                    theme === "dark"
+                                      ? "text-white"
+                                      : "text-black"
+                                  }`}
+                                >
+                                  {item.reasondescriptionstatus}
+                                </span>
+                              </span>
+                            )}
                           </span>
-                          <span> หมายเหตุ : </span>
-                          <span className="text-black">
-                            {item.reasondescriptionstatus?.trim()
-                              ? item.reasondescriptionstatus
-                              : "—"}
-                          </span>
-                        </span>
-                      </p>
+                        </p>
+                      </div>
+
                       <div className="flex gap-2 items-center">
                         <img
                           className="w-12 h-12 rounded-full object-cover"
