@@ -207,7 +207,7 @@ export default function GetPaper() {
               requesterProfile,
               section: "เบิกของ",
               role: "ช่าง",
-              status : 'รอดําเนินการ'
+              status: "รอดําเนินการ",
             }),
           })
         )
@@ -294,18 +294,37 @@ export default function GetPaper() {
         {/* ข้อมูลใบงาน */}
         {filtered.filter(
           (job) =>
+            job.Status === "ล่าช้า" ||
             job.Status === "กำลังดำเนินการ" ||
             job.Status === "Active" ||
-            job.Status === "เสร็จสิ้น" ||
-            job.Status === "ล่าช้า"
+            job.Status === "เสร็จสิ้น"
         ).length > 0 ? (
           filtered
             .filter(
               (job) =>
+                job.Status === "ล่าช้า" ||
                 job.Status === "กำลังดำเนินการ" ||
-                job.Status === "เสร็จสิ้น" ||
-                job.Status === "ล่าช้า"
+                job.Status === "เสร็จสิ้น"
             )
+            .sort((a, b) => {
+              const statusOrder = ["ล่าช้า", "กำลังดำเนินการ", "เสร็จสิ้น"];
+
+              //  เรียงตาม Status ตามลำดับที่กำหนด
+              const statusA = a.Status ?? "";
+              const statusB = b.Status ?? "";
+              const statusDiff =
+                statusOrder.indexOf(statusA) - statusOrder.indexOf(statusB);
+              if (statusDiff !== 0) return statusDiff;
+
+              //  ถ้า Status เหมือนกัน เรียงตาม Closing_date ใกล้สุด → ไกลสุด
+              const dateA = a.Closing_date
+                ? new Date(a.Closing_date).getTime()
+                : Infinity;
+              const dateB = b.Closing_date
+                ? new Date(b.Closing_date).getTime()
+                : Infinity;
+              return dateA - dateB;
+            })
             .map((job, index) => (
               <motion.div
                 key={job._id} // ใช้ job._id เป็น key

@@ -44,6 +44,8 @@ router.get("/", async (req, res) => {
       role: item.role || "ไม่ระบุ",
       createdAt: item.createdAt || new Date(),
       status: item.status || "รอดำเนินการ",
+      reasondescriptionstatus: item.reasondescriptionstatus || "",
+      statusUpdatedAt: item.statusUpdatedAt || null,
     }));
 
     res.json(formattedItems);

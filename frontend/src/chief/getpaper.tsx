@@ -16,6 +16,9 @@ interface Employee {
   Closing_date?: string;
   Details?: string;
   description?: string;
+  Status?: string;
+  jobDate?: string;
+  dueDate?: string;
 }
 
 interface Tradesman {
@@ -33,7 +36,8 @@ interface JwtPayload {
 interface RequisitionItem {
   id: string;
   name: string;
-  quantity: string; // ใช้ string เพื่อความง่ายในการจัดการ input, ค่อยแปลงเป็น number ตอน submit
+  quantity: string;
+  Status: string;
 }
 
 export default function GetPaper() {
@@ -163,6 +167,7 @@ export default function GetPaper() {
       ? "bg-gray-900 border-gray-700"
       : "bg-gray-100 border-gray-300";
 
+  const texthaed = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
 
   return (
@@ -213,74 +218,114 @@ export default function GetPaper() {
 
         {/* Header Row */}
         <div
-          className={`grid grid-cols-6 gap-5 border-b-2 px-5 text-lg items-center font-semibold mb-3 ${border_b_2_data}`}
+          className={`grid grid-cols-7 gap-5 border-b-2 px-5 text-lg items-center font-semibold mb-3 ${border_b_2_data}`}
         >
-          <div>ใบงาน</div>
-          <div>หัวหน้างาน</div>
-          <div>เบอร์ติดต่อ</div>
+          <div>ชื่องาน</div>
+          <div className="col-span-2">รายละเอียดงาน</div>
+          <div>สถานะ</div>
           <div>วันเริ่มงาน</div>
           <div>วันปิดงาน</div>
           <div className="text-center">รายละเอียด</div>
         </div>
 
         {/* ข้อมูลใบงาน */}
-        {filtered.length > 0 ? (
-          filtered.map((job, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                duration: 0.5,
-                delay: index * 0.05,
-                ease: "easeOut",
-              }}
-              className={`grid grid-cols-6 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
-            >
-              <p className="truncate">{job.Worksheet || "-"}</p>
-              <p>{job.Supervisor || "-"}</p>
-              <p>{job.PhoneNumber || "-"}</p>
-              <p>
-                {job.Date_of_acceptance_of_work
-                  ? new Date(job.Date_of_acceptance_of_work).toLocaleDateString(
-                      "th-TH"
-                    )
-                  : "-"}
-              </p>
-              <p>
-                {job.Closing_date
-                  ? new Date(job.Closing_date).toLocaleDateString("th-TH")
-                  : "-"}
-              </p>
-              <div className="flex gap-2 mx-auto">
-                <Link
-                  to={`/chief/DetailworkChief/${job._id}`}
-                  replace={false}
-                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
+        {filtered.filter(
+          (job) =>
+            job.Status === "ล่าช้า" ||
+            job.Status === "กำลังดำเนินการ" ||
+            job.Status === "Active" ||
+            job.Status === "เสร็จสิ้น"
+        ).length > 0 ? (
+          filtered
+            .filter(
+              (job) =>
+                job.Status === "ล่าช้า" ||
+                job.Status === "กำลังดำเนินการ" ||
+                job.Status === "เสร็จสิ้น"
+            )
+            .sort((a, b) => {
+              const statusOrder = ["ล่าช้า", "กำลังดำเนินการ", "เสร็จสิ้น"];
+
+              //  เรียงตาม Status ตามลำดับที่กำหนด
+              const statusA = a.Status ?? "";
+              const statusB = b.Status ?? "";
+              const statusDiff =
+                statusOrder.indexOf(statusA) - statusOrder.indexOf(statusB);
+              if (statusDiff !== 0) return statusDiff;
+
+              //  ถ้า Status เหมือนกัน เรียงตาม Closing_date ใกล้สุด → ไกลสุด
+              const dateA = a.Closing_date
+                ? new Date(a.Closing_date).getTime()
+                : Infinity;
+              const dateB = b.Closing_date
+                ? new Date(b.Closing_date).getTime()
+                : Infinity;
+              return dateA - dateB;
+            })
+            .map((job, index) => (
+              <motion.div
+                key={job._id} // ใช้ job._id เป็น key
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.05 * index,
+                  ease: "easeOut",
+                }}
+                className={`grid grid-cols-7 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
+              >
+                <p className="truncate">{job.Worksheet || "-"}</p>
+                <p className="col-span-2 truncate">{job.description || "-"}</p>
+                <p
+                  className={`${
+                    job.Status === "กำลังดำเนินการ" ? texthaed : ""
+                  } ${job.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${
+                    job.Status === "ล่าช้า" ? "text-red-500" : ""
+                  }`}
+                >
+                  {job.Status || "-"}
+                </p>
+                <p>
+                  {job.Date_of_acceptance_of_work
+                    ? new Date(
+                        job.Date_of_acceptance_of_work
+                      ).toLocaleDateString("th-TH")
+                    : "-"}
+                </p>
+                <p>
+                  {job.Closing_date
+                    ? new Date(job.Closing_date).toLocaleDateString("th-TH")
+                    : "-"}
+                </p>
+                <div className="flex gap-2 mx-auto">
+                  <Link
+                    to={`/chief/DetailworkChief/${job._id}`}
+                    replace={false}
+                    className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
                theme === "dark"
                  ? "bg-yellow-500 hover:bg-yellow-600"
                  : "bg-blue-500 hover:bg-blue-600"
              }`}
-                >
-                  รายละเอียดงาน
-                </Link>
-                <button
-                  onClick={() => openItemModal(job)}
-                  className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+                  >
+                    รายละเอียดงาน
+                  </Link>
+                  <button
+                    onClick={() => openItemModal(job)}
+                    className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
                   [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
                   active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
                     theme === "dark"
                       ? "bg-yellow-500 hover:bg-yellow-600"
                       : "bg-blue-500 hover:bg-blue-600"
                   }`}
-                >
-                  เบิกของ
-                </button>
-              </div>
-            </motion.div>
-          ))
+                  >
+                    เบิกของ
+                  </button>
+                </div>
+              </motion.div>
+            ))
         ) : (
           <div
             className={`text-center py-5 font-semibold ${
@@ -292,10 +337,6 @@ export default function GetPaper() {
         )}
       </div>
 
-      {/* =========================================================
-              MODAL 2: ฟอร์มเบิกของ (โค้ดที่อัปเดตแล้ว)
-              =========================================================
-      */}
       {OpendateItem && selectedJob && (
         <div
           className={`fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50 

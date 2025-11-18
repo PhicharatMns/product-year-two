@@ -53,6 +53,8 @@ interface RequisitionItem {
   section?: string;
   role?: string;
   createdAt?: string;
+  status?: string;
+  reasondescriptionstatus?: string;
 }
 
 export default function Detailwork() {
@@ -306,22 +308,18 @@ export default function Detailwork() {
 
         <div className={`mt-5 transition-all duration-300 rounded-2xl`}>
           <div className="grid grid-cols-2 gap-5">
-            <div className={`border p-3 rounded-xl ${bg}`}>
+            <div className={`border p-3 rounded-xl font-semibold  ${bg}`}>
               {SelectedTradesmen.map((event, index) => {
                 return (
                   <div key={index}>
                     {event.role.toLowerCase() == "chief" && (
                       <div>
                         <div className="flex gap-1 items-center">
-                          <p className={`font-semibold ${titleColor}`}>
-                            หัวหน้างาน :
-                          </p>{" "}
+                          <p className={` ${titleColor}`}>หัวหน้างาน :</p>{" "}
                           <span>{event.Name}</span>
                         </div>
                         <div className="flex gap-1 items-center">
-                          <p className={`font-semibold ${titleColor}`}>
-                            เบอร์ติดต่อ:
-                          </p>
+                          <p className={`${titleColor}`}>เบอร์ติดต่อ:</p>
                           <span> {event.Phone_Number || "-"}</span>
                         </div>
                       </div>
@@ -329,8 +327,8 @@ export default function Detailwork() {
                   </div>
                 );
               })}
-              <div className="flex gap-1 items-center">
-                <p className={`font-semibold ${titleColor}`}>วันเริ่มงาน: </p>
+              <div className="flex gap-1 items-center  ">
+                <p className={` ${titleColor}`}>วันเริ่มงาน: </p>
                 <span>
                   {" "}
                   {job.Date_of_acceptance_of_work
@@ -340,8 +338,8 @@ export default function Detailwork() {
                     : "-"}
                 </span>
               </div>
-              <div className="flex gap-1 items-center">
-                <p className={`font-semibold ${titleColor}`}>วันปิดงาน: </p>
+              <div className="flex gap-1 items-center ">
+                <p className={` ${titleColor}`}>วันปิดงาน: </p>
                 <span>
                   {" "}
                   {job.Closing_date
@@ -352,9 +350,7 @@ export default function Detailwork() {
             </div>
 
             <div className={`border p-3 rounded-xl ${bg}`}>
-              <p className={`text-lg mb-1 font-semibold  ${titleColor}`}>
-                รายละเอียดงาน
-              </p>
+              <p className={`text-lg mb-1   ${titleColor}`}>รายละเอียดงาน</p>
               <div className="">
                 <p className="  h-17 overflow-auto scrollbar-hide ">
                   {" "}
@@ -377,73 +373,121 @@ export default function Detailwork() {
               </div>
 
               <div className="h-155  overflow-auto scrollbar-hide">
-                {requisitionItems.map((item, index) => (
-                  <motion.div
-                    key={item.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.5,
-                      delay: 0.05 * index,
-                      ease: "easeOut",
-                    }}
-                    className={`items-center border p-2 my-1 rounded-xl ${
-                      theme === "dark" ? "bg-gray-800" : "shadow-sm"
-                    }`}
-                  >
-                    <p className={`text-sm pl-2 font-semibold ${titleColor}`}>
-                      {item.section}
-                    </p>
-                    <div className="flex gap-2 items-center">
-                      <img
-                        className="w-12 h-12 rounded-full object-cover"
-                        src={
-                          item.requesterProfile
-                            ? `http://localhost:5000/uploads/Profile/${item.requesterProfile}`
-                            : "/default-profile.png"
-                        }
-                        alt="รูปผู้ขอเบิก"
-                      />
-                      <div className="text-sm flex flex-col gap-1">
-                        <p className={`font-semibold ${titleColor}`}>
-                          <span className={`font-semibold`}> {item.role} </span>
-                          {item.requesterName}
-                        </p>
-                        <p
-                          className={`truncate w-120 flex gap-2 ${text_color}`}
-                        >
-                          <span className={`font-semibold  ${titleColor}`}>
-                            รายงาน:
-                          </span>{" "}
-                          {item.name}
-                          <p>
-                            {" "}
-                            <span className={`${titleColor} font-semibold`}>
-                              {" "}
-                              จํานวน :{" "}
-                            </span>
-                            {item.quantity}
-                          </p>
-                        </p>
-                        <p
+                {requisitionItems
+                  .sort((a, b) => {
+                    const dateA = a.createdAt
+                      ? new Date(a.createdAt).getTime()
+                      : 0;
+                    const dateB = b.createdAt
+                      ? new Date(b.createdAt).getTime()
+                      : 0;
+
+                    return dateB - dateA; // ใหม่ → เก่า
+                  })
+                  .map((item, index) => (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: 0.05 * index,
+                        ease: "easeOut",
+                      }}
+                      className={`items-center border p-2 my-1 rounded-xl ${
+                        theme === "dark" ? "bg-gray-800" : "shadow-sm"
+                      }`}
+                    >
+                      <p className={`text-sm pl-2 font-semibold ${titleColor}`}>
+                        {item.section} :
+                        <span
                           className={`${
                             theme === "dark" ? "text-white" : "text-black"
                           }`}
                         >
-                          <span className={`${titleColor} font-semibold `}>
-                            วันที่ :{" "}
+                          {" "}
+                          สถานะ :{" "}
+                          <span
+                            className={`${
+                              item.status === "ไม่อนุมัติ" ? "text-red-500" : ""
+                            } ${
+                              item.status === "รอดําเนินการ"
+                                ? "text-orange-500"
+                                : ""
+                            } ${
+                              item.status === "อนุมัติ" ? "text-green-500" : ""
+                            }`}
+                          >
+                            {item.status}
                           </span>
-                          {item.createdAt
-                            ? new Date(item.createdAt).toLocaleString("th-TH", {
-                                dateStyle: "short",
-                                timeStyle: "short",
-                              })
-                            : "-"}
-                        </p>
+                          <span> หมายเหตุ : </span>
+                          <span className="text-black">
+                            {item.reasondescriptionstatus?.trim()
+                              ? item.reasondescriptionstatus
+                              : "—"}
+                          </span>
+                        </span>
+                      </p>
+                      <div className="flex gap-2 items-center">
+                        <img
+                          className="w-12 h-12 rounded-full object-cover"
+                          src={
+                            item.requesterProfile
+                              ? `http://localhost:5000/uploads/Profile/${item.requesterProfile}`
+                              : "/default-profile.png"
+                          }
+                          alt="รูปผู้ขอเบิก"
+                        />
+                        <div className="text-sm flex flex-col gap-1">
+                          <p
+                            className={`font-semibold ${
+                              theme === "dark" ? "text-white" : "text-black"
+                            }`}
+                          >
+                            <span className={`font-semibold ${titleColor}`}>
+                              {" "}
+                              {item.role}{" "}
+                            </span>
+                            นาย : {item.requesterName}
+                          </p>
+                          <p
+                            className={`truncate w-120 flex gap-2 font-semibold  ${text_color}`}
+                          >
+                            <span className={`font-semibold  ${titleColor}`}>
+                              รายงาน:
+                            </span>{" "}
+                            {item.name}
+                            <p className="font-semibold ">
+                              {" "}
+                              <span className={`${titleColor} font-semibold`}>
+                                {" "}
+                                จํานวน :{" "}
+                              </span>
+                              {item.quantity}
+                            </p>
+                          </p>
+                          <p
+                            className={`font-semibold  ${
+                              theme === "dark" ? "text-white" : "text-black"
+                            }`}
+                          >
+                            <span className={`${titleColor} font-semibold `}>
+                              วันที่ :{" "}
+                            </span>
+                            {item.createdAt
+                              ? new Date(item.createdAt).toLocaleString(
+                                  "th-TH",
+                                  {
+                                    dateStyle: "short",
+                                    timeStyle: "short",
+                                  }
+                                )
+                              : "-"}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  ))}
                 {requisitionItems.length === 0 && (
                   <p className={`text-sm pl-2 ${text_color}`}>
                     ยังไม่มีรายการเบิกของ
@@ -452,7 +496,7 @@ export default function Detailwork() {
               </div>
             </div>
 
-            {/* ---------- แผนที่ ---------- */}
+            {/* แผนที่*/}
             <div
               className={`border py-3 px-4 col-span-3 rounded-2xl h-175 ${bg}`}
             >
