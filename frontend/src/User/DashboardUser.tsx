@@ -24,7 +24,7 @@ interface Employee {
   Closing_date?: string;
   Details?: string;
   description?: string;
-  Status?: "Finish" | "กำลังดำเนินการ" | "ล่าช้า" | "Active";
+  Status?: "Finish" | "กำลังดำเนินการ" | "ล่าช้า" | "Active" | "เสร็จสิ้น";
 }
 
 interface Tradesman {
@@ -196,7 +196,7 @@ export default function DashboardUser() {
 
   const descrtiption = theme === "dark" ? "text-white" : "text-gray-500";
   const cardBg = theme === "dark" ? "bg-gray-900" : "bg-gray-100 shadow-sm";
-
+  const bgpopup = theme === "dark" ? "bg-gray-800" : " shadow-sm bg-white";
   return (
     <div
       className={`w-max-380 p-5 mx-auto container duration-300 ${
@@ -274,9 +274,9 @@ export default function DashboardUser() {
                             | "ล่าช้า"
                             | undefined;
 
-                          if (j.Status === "Active") {
+                          if (j.Status === "กำลังดำเนินการ") {
                             statusMapped = "กำลังดำเนินการ";
-                          } else if (j.Status === "Finish") {
+                          } else if (j.Status === "เสร็จสิ้น") {
                             statusMapped = "เสร็จสิ้น";
                           } else if (j.Status === "ล่าช้า") {
                             statusMapped = "ล่าช้า";
@@ -499,7 +499,9 @@ export default function DashboardUser() {
             animInProgress ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="rounded-2xl bg-white w-[900px] h-200 shadow-2xl border">
+          <div
+            className={`rounded-2xl ${bgpopup} w-[900px] h-200 shadow-2xl border `}
+          >
             <div className="flex items-center justify-between border-b px-6 py-4 ">
               <p
                 className={` text-2xl  font-semibold  ${
@@ -622,7 +624,9 @@ export default function DashboardUser() {
             anim ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="rounded-2xl bg-white w-[900px] h-200 shadow-2xl border">
+          <div
+            className={`rounded-2xl  w-[900px] h-200 shadow-2xl border ${bgpopup}`}
+          >
             <div className="flex items-center justify-between border-b px-6 py-4 ">
               <p
                 className={` text-2xl  font-semibold  ${
@@ -681,8 +685,7 @@ export default function DashboardUser() {
             <div className="h-150 border-b overflow-y-auto scrollber-hide px-6">
               {employees
                 .filter(
-                  (emp) =>
-                    emp.Status === "Active" || emp.Status === "ล่าช้า"
+                  (emp) => emp.Status === "Active" || emp.Status === "ล่าช้า"
                 )
                 .filter((emp) =>
                   (emp.Worksheet || "")
