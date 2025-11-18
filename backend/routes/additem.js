@@ -23,14 +23,15 @@ const verifyToken = (req, res, next) => {
 
 // GET: ดึงรายการทั้งหมดของงาน
 router.get("/", async (req, res) => {
-  const { jobId } = req.query; // ส่ง ?jobId=xxx
-
-  if (!jobId) return res.status(400).json({ message: "jobId required" });
+  const { jobId } = req.query;
 
   try {
-    const items = await Additem.find({ jobId });
-
-    console.log("jobId:", jobId, "items found:", items.length);
+    let items;
+    if (jobId) {
+      items = await Additem.find({ jobId });
+    } else {
+      items = await Additem.find(); // ดึงทั้งหมด
+    }
 
     const formattedItems = items.map((item) => ({
       id: item._id,
@@ -46,6 +47,7 @@ router.get("/", async (req, res) => {
       status: item.status || "รอดำเนินการ",
       reasondescriptionstatus: item.reasondescriptionstatus || "",
       statusUpdatedAt: item.statusUpdatedAt || null,
+      additemecomfam: item.additemecomfam,
     }));
 
     res.json(formattedItems);
@@ -57,8 +59,16 @@ router.get("/", async (req, res) => {
 
 // POST: เพิ่มรายการ (ดึง requester จาก token)
 router.post("/", verifyToken, async (req, res) => {
-  const { name, quantity, jobId, description, section, role, status } =
-    req.body;
+  const {
+    name,
+    quantity,
+    jobId,
+    description,
+    section,
+    role,
+    additemecomfam,
+    status,
+  } = req.body;
 
   if (!jobId) return res.status(400).json({ message: "jobId required" });
 
@@ -77,6 +87,7 @@ router.post("/", verifyToken, async (req, res) => {
       role,
       createdAt: new Date(),
       status,
+      additemecomfam,
     });
 
     const savedItem = await newItem.save();
@@ -131,4 +142,36 @@ router.put("/:id/status", verifyToken, async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+
+// PUT: ยืนยันรายการ -> บันทึกข้อความไป additemecomfam
+router.put("/:id/confirm", verifyToken, async (req, res) => {
+  const { message } = req.body;
+
+  if (!message) {
+    return res.status(400).json({ message: "message required" });
+  }
+
+  try {
+    const updatedItem = await Additem.findByIdAndUpdate(
+      req.params.id,
+      {
+        additemecomfam: message, // บันทึกข้อความยืนยัน
+      },
+      { new: true }
+    );
+
+    if (!updatedItem) {
+      return res.status(404).json({ message: "Item not found" });
+    }
+
+    res.json({
+      message: "Confirm message saved successfully",
+      item: updatedItem,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

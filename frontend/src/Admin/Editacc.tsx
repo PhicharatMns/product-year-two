@@ -295,7 +295,7 @@ export default function Editacc() {
                 theme === "dark" ? "text-yellow-500" : "text-gray-900"
               }`}
             >
-              {t.Nickname}
+              {t.Name}
             </p>
             <p className="">{t.Position}</p>
             <p className="">{t.Phone_Number}</p>

@@ -13,6 +13,7 @@ const additemSchema = new mongoose.Schema({
   status: String,
   reasondescriptionstatus: String,
   statusUpdatedAt: Date, // เก็บวันที่
+  additemecomfam: String,
 });
 
 const Additem = mongoose.model("Additem", additemSchema);

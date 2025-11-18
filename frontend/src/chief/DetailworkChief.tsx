@@ -198,6 +198,7 @@ export default function DetailworkChief() {
   const text_color = theme === "dark" ? "text-white" : "text-black";
   const borderSoft = theme === "dark" ? "border-gray-700" : "border-gray-300";
   const titleColor = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+  const bgpopup = theme === "dark" ? "bg-gray-800" : " shadow-sm bg-white";
 
   const openPopupNotApproved = (itemId: string) => {
     setSelectedItemId(itemId);
@@ -220,7 +221,7 @@ export default function DetailworkChief() {
 
   const colsePopupMessage = () => {
     setDuplicateFade(false);
-    setTimeout(() => setPopupMessage(false), 50);
+    setTimeout(() => setPopupMessage(false), 300);
   };
 
   const openPopUpDate = (id: string) => {
@@ -441,7 +442,7 @@ export default function DetailworkChief() {
         return;
       }
 
-      const payload = { status: "อนุมัติ" };
+      const payload = { status: "อนุมัติเเล้วรอการติดต่อคลัง" };
       console.log("Approving:", itemId, payload);
 
       const res = await fetch(
@@ -467,11 +468,15 @@ export default function DetailworkChief() {
       setRequisitionItems((prev) =>
         prev.map((i) =>
           i.id === itemId || i._id === itemId
-            ? { ...i, status: "อนุมัติ", reasondescriptionstatus: rejectReason }
+            ? {
+                ...i,
+                status: "อนุมัติเเล้วรอการติดต่อคลัง",
+                reasondescriptionstatus: rejectReason,
+              }
             : i
         )
       );
-      closePopupMessage();
+      colsePopupMessage();
     } catch (err) {
       console.error(err);
     }
@@ -605,7 +610,7 @@ export default function DetailworkChief() {
                             </p>
                             <button
                               onClick={() => openPopUpDate(event._id)}
-                              className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-black text-sm duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90`}
+                              className={`relative ${text_color} overflow-hidden cursor-pointer rounded-md px-4 py-1  text-sm duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90`}
                             >
                               <RiDeleteBin5Line fontSize={20} />
                             </button>
@@ -714,7 +719,7 @@ export default function DetailworkChief() {
                                       ? "text-orange-500"
                                       : ""
                                   } ${
-                                    e.status === "อนุมัติ"
+                                    e.status === "อนุมัติเเล้วรอการติดต่อคลัง"
                                       ? "text-green-500"
                                       : ""
                                   }`}
@@ -725,7 +730,7 @@ export default function DetailworkChief() {
                             </p>
                             <button
                               onClick={() => openPopupMessage(e.id)}
-                              className={`relative overflow-hidden cursor-pointer rounded-md  text-black text-sm duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90`}
+                              className={`relative overflow-hidden cursor-pointer ${text_color} rounded-md   text-sm duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90`}
                             >
                               <TiMessage size={24} />
                             </button>
@@ -947,7 +952,9 @@ export default function DetailworkChief() {
                     <div
                       key={index}
                       className={`flex my-2 py-1 justify-between shadow-sm  px-5 rounded-xl ${
-                        theme === "dark" ? "bg-gray-900" : "bg-gray-100/50 border"
+                        theme === "dark"
+                          ? "bg-gray-900"
+                          : "bg-gray-100/50 border"
                       }`}
                     >
                       <div className="flex  gap-5 items-center">
@@ -1213,9 +1220,7 @@ export default function DetailworkChief() {
       {PopupMessage && selectedTradesmanId && (
         <div
           className={`fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${
-            duplicateFade
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
+            duplicateFade ? "opacity-100 " : "opacity-0 "
           }`}
         >
           <motion.div
@@ -1223,7 +1228,7 @@ export default function DetailworkChief() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className={`bg-white rounded-2xl shadow-2xl p-6 w-[500px] max-h-[400px] overflow-auto`}
+            className={`${bgpopup} rounded-2xl shadow-2xl p-6 w-[500px] max-h-[400px] overflow-auto`}
           >
             {/** หาข้อมูลจาก requisitionItems โดยใช้ id */}
             {(() => {
@@ -1235,39 +1240,45 @@ export default function DetailworkChief() {
                 return <p className="text-center text-gray-500">ไม่พบข้อมูล</p>;
               return (
                 <div className="flex flex-col gap-3">
-                  <h2 className="text-xl font-semibold text-blue-500">
+                  <h2 className={` font-semibold text-xl  ${titleColor} `}>
                     รายละเอียดรายการ
                   </h2>
                   <div className="flex items-center gap-3">
                     <div className="flex flex-col gap-1">
                       <p>
-                        <span className="font-semibold text-blue-500">
+                        <span className={` font-semibold  ${titleColor} `}>
                           ชื่อผู้ขอเบิก:{" "}
                         </span>
                         {item.requesterName}
                       </p>
                       <p>
-                        <span className="font-semibold text-blue-500">
+                        <span className={`font-semibold  ${titleColor} `}>
+                          {" "}
                           ของที่เบิก:{" "}
                         </span>
                         {item.name}
                       </p>
                       <p className="gap-2 flex">
-                        <span className="font-semibold text-blue-500">
+                        <span className={`font-semibold  ${titleColor} `}>
+                          {" "}
                           จำนวน:{" "}
                         </span>
                         {item.quantity}
                         <span>รายการ</span>
                       </p>
                       <p>
-                        <span className="font-semibold truncate text-blue-500">
+                        <span className={` font-semibold  ${titleColor} `}>
+                          {" "}
                           หมายเหตุ:{" "}
                         </span>
                         {item.description || "-"}
                       </p>
                       <p>
-                        <span className="font-semibold text-blue-500">
-                          วันที่สร้าง:{" "}
+                        <span
+                          className={`font-semibold  ${titleColor} `}
+                        >
+                          {" "}
+                          วันที่ขอเบิก:{" "}
                         </span>
                         {item.createdAt
                           ? new Date(item.createdAt).toLocaleString("th-TH", {

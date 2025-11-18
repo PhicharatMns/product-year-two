@@ -394,8 +394,8 @@ export default function Detailwork() {
                         delay: 0.05 * index,
                         ease: "easeOut",
                       }}
-                      className={`items-center border p-2 my-1 rounded-xl ${
-                        theme === "dark" ? "bg-gray-800" : "shadow-sm"
+                      className={`items-center border p-2 my-2 rounded-xl ${
+                        theme === "dark" ? "bg-gray-800" : "shadow-sm bg-gray-50"
                       }`}
                     >
                       <p className={`text-sm pl-2 font-semibold ${titleColor}`}>
@@ -415,7 +415,7 @@ export default function Detailwork() {
                                 ? "text-orange-500"
                                 : ""
                             } ${
-                              item.status === "อนุมัติ" ? "text-green-500" : ""
+                              item.status === "อนุมัติเเล้วรอการติดต่อคลัง" ? "text-green-500" : ""
                             }`}
                           >
                             {item.status}

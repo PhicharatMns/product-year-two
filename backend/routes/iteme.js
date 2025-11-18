@@ -1,19 +1,44 @@
 const express = require("express");
 const router = express.Router();
 const Item = require("../models/Item");
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = process.env.JWT_SECRET || "mysecretkey";
+
+// Middleware ตรวจสอบ token
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+
+  if (!token) return res.status(401).json({ message: "Token required" });
+
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) return res.status(403).json({ message: "Invalid token" });
+    req.user = decoded; // id, username, role
+    next();
+  });
+};
 
 // ตัวอย่างตั้งชื่อ route เป็น /add-item
 router.post("/add-item", async (req, res) => {
   try {
     const { name, category, number, counting } = req.body;
 
-    const newItem = new Item({
-      name,
-      category,
-      number,
-      counting,
-    });
+    // ตรวจสอบว่ามี item ชื่อเดียวกันใน category เดียวกันหรือไม่
+    const existingItem = await Item.findOne({ name, category });
 
+    if (existingItem) {
+      // รวมจำนวน: number + counting ของรายการเก่า
+      existingItem.number = Number(existingItem.number) + Number(number);
+      existingItem.counting = Number(existingItem.counting) + Number(counting);
+      await existingItem.save();
+      return res.status(200).json({
+        message: "อัปเดตจำนวนรายการที่มีอยู่แล้ว",
+        item: existingItem,
+      });
+    }
+
+    // ถ้าไม่มีซ้ำ → สร้างใหม่
+    const newItem = new Item({ name, category, number, counting });
     const savedItem = await newItem.save();
     res.status(201).json(savedItem);
   } catch (error) {
@@ -69,6 +94,48 @@ router.delete("/delete-item/:id", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "เกิดข้อผิดพลาดในการลบข้อมูล" });
+  }
+});
+
+router.put("/:id/status", verifyToken, async (req, res) => {
+  const { status, reasondescriptionstatus } = req.body;
+
+  try {
+    const updatedItem = await Additem.findByIdAndUpdate(
+      req.params.id,
+      {
+        status,
+        reasondescriptionstatus: reasondescriptionstatus || "",
+        statusUpdatedAt: new Date(),
+      },
+      { new: true }
+    );
+
+    if (!updatedItem)
+      return res.status(404).json({ message: "Item not found" });
+
+    // --- ลดจำนวนในคลังถ้าอนุมัติ ---
+    if (status === "อนุมัติแล้วรอการติดต่อคลัง") {
+      const stockItem = await Item.findOne({ name: updatedItem.name });
+
+      if (!stockItem) return res.status(404).json({ message: "ไม่พบในคลัง" });
+
+      const remaining = Number(stockItem.number) - Number(updatedItem.quantity);
+
+      if (remaining < 0)
+        return res.status(400).json({ message: "จำนวนในคลังไม่เพียงพอ" });
+
+      stockItem.number = remaining;
+      await stockItem.save();
+    }
+
+    res.json({
+      message: "Status updated and stock updated successfully",
+      item: updatedItem,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: err.message });
   }
 });
 

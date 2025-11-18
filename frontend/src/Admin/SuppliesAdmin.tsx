@@ -161,24 +161,19 @@ const Showlist: React.FC<ShowlistProps> = ({
 
       {/* header */}
       <div className="border">
-        <div className="grid grid-cols-9 pl-5 text-sm py-1 m-2 ">
-          {[
-            "ชื่ออุปกรณ์",
-            "หมวดหมู่",
-            "คงคลัง",
-            "หน่วย",
-            "อัปเดตล่าสุด",
-            "รายการ",
-          ].map((e, i) => (
-            <div
-              key={i}
-              className={`${
-                i === 0 || i === 1 || i === 5 ? "col-span-2" : "col-span-1"
-              } ${i === 5 ? "text-center" : ""}`}
-            >
-              <p>{e}</p>
-            </div>
-          ))}
+        <div className="grid grid-cols-8 pl-5 text-sm py-1 m-2 ">
+          {["ชื่ออุปกรณ์", "หมวดหมู่", "คงคลัง", "อัปเดตล่าสุด", "รายการ"].map(
+            (e, i) => (
+              <div
+                key={i}
+                className={`${
+                  i === 0 || i === 1 ? "col-span-2" : "col-span-1"
+                } ${i === 4 ? "text-center col-span-2 " : ""}`}
+              >
+                <p>{e}</p>
+              </div>
+            )
+          )}
         </div>
       </div>
 
@@ -194,12 +189,12 @@ const Showlist: React.FC<ShowlistProps> = ({
               delay: i * 0.1,
               ease: "easeOut",
             }}
-            className={`grid grid-cols-9 pl-5 text-sm py-4 m-2 border rounded-lg items-center ${bgborder}`}
+            className={`grid grid-cols-8 pl-5 text-sm py-4 m-2 border rounded-lg items-center ${bgborder}`}
           >
             <p className="col-span-2">{e.name}</p>
             <p className="col-span-2">{e.category}</p>
             <p>{e.number}</p>
-            <p>{e.counting}</p>
+
             <p>{new Date(e.createdAt).toLocaleDateString("th-TH")}</p>
             <div className="mx-auto flex gap-1 col-span-2">
               <button
@@ -332,42 +327,35 @@ const ShowaletProgress: React.FC<ShowaletProgressProps> = ({
         </p>
 
         <div className="grid grid-cols-2 gap-5">
-          {["ชื่ออุปกรณ์", "หมวดหมู่", "จำนวน/คงเหลือ", "หน่วยนับ"].map(
-            (e, i) => (
-              <div key={i} className={`${i === 4 ? "col-span-2" : ""}`}>
-                <p className={`mb-1 ${texthead} `}>{e}</p>
-                <input
-                  type="text"
-                  value={
-                    i === 0
-                      ? formData.name
-                      : i === 1
-                      ? formData.category
-                      : i === 2
-                      ? formData.number
-                      : i === 3
-                      ? formData.counting
-                      : ""
-                  }
-                  onChange={(ev) => {
-                    const value = ev.target.value;
-                    setFormData((prev) => ({
-                      ...prev,
-                      name: i === 0 ? value : prev.name,
-                      category: i === 1 ? value : prev.category,
-                      number: i === 2 ? value : prev.number,
-                      counting: i === 3 ? value : prev.counting,
-                    }));
-                  }}
-                  className={`border focus:ring-2 outline-none duration-300 ${
-                    theme === "dark"
-                      ? "border-gray-600 focus:ring-yellow-400  text-white"
-                      : " focus:ring-blue-400  text-gray-800"
-                  }  w-full p-2 rounded-lg ${bgborder}`}
-                />
-              </div>
-            )
-          )}
+          {["ชื่ออุปกรณ์", "หมวดหมู่", "จำนวน/คงเหลือ"].map((e, i) => (
+            <div key={i} className={`${i === 2 ? 'col-span-2' : ''}`}>
+              <p className={`mb-1 ${texthead}`}>{e}</p>
+              <input
+                type="text"
+                value={
+                  i === 0
+                    ? formData.name
+                    : i === 1
+                    ? formData.category
+                    : formData.number
+                }
+                onChange={(ev) => {
+                  const value = ev.target.value;
+                  setFormData((prev) => ({
+                    ...prev,
+                    name: i === 0 ? value : prev.name,
+                    category: i === 1 ? value : prev.category,
+                    number: i === 2 ? value : prev.number,
+                  }));
+                }}
+                className={`border focus:ring-2 outline-none duration-300 w-full p-2 rounded-lg ${bgborder} ${
+                  theme === "dark"
+                    ? "text-white border-gray-600 focus:ring-yellow-400"
+                    : "text-gray-800 focus:ring-blue-400"
+                }`}
+              />
+            </div>
+          ))}
         </div>
 
         <div className="flex justify-end gap-4 border-t pt-4 mt-4">
@@ -572,42 +560,36 @@ const AddItem: React.FC<AddItemProps> = ({ onClose, item, fetchItems }) => {
         </p>
 
         <div className="grid grid-cols-2 gap-5">
-          {["ชื่ออุปกรณ์", "หมวดหมู่", "จำนวน/คงเหลือ", "หน่วยนับ"].map(
-            (e, i) => (
-              <div key={i}>
-                <p className={`mb-1 ${texthead}`}>{e}</p>
-                <input
-                  type="text"
-                  value={
-                    i === 0
-                      ? formData.name
-                      : i === 1
-                      ? formData.category
-                      : i === 2
-                      ? formData.number
-                      : formData.counting
-                  }
-                  onChange={(ev) => {
-                    const value = ev.target.value;
-                    setFormData((prev) => ({
-                      ...prev,
-                      name: i === 0 ? value : prev.name,
-                      category: i === 1 ? value : prev.category,
-                      number: i === 2 ? value : prev.number,
-                      counting: i === 3 ? value : prev.counting,
-                    }));
-                  }}
-                  className={`border focus:ring-2 outline-none duration-300 w-full p-2 rounded-lg ${bgborder} ${
-                    theme === "dark"
-                      ? "text-white border-gray-600 focus:ring-yellow-400"
-                      : "text-gray-800 focus:ring-blue-400"
-                  }`}
-                />
-              </div>
-            )
-          )}
+          {["ชื่ออุปกรณ์", "หมวดหมู่", "จำนวน/คงเหลือ"].map((e, i) => (
+            <div key={i} className={`${i === 2 ? 'col-span-2' : ''}`}>
+              <p className={`mb-1 ${texthead}`}>{e}</p>
+              <input
+                type="text"
+                value={
+                  i === 0
+                    ? formData.name
+                    : i === 1
+                    ? formData.category
+                    : formData.number
+                }
+                onChange={(ev) => {
+                  const value = ev.target.value;
+                  setFormData((prev) => ({
+                    ...prev,
+                    name: i === 0 ? value : prev.name,
+                    category: i === 1 ? value : prev.category,
+                    number: i === 2 ? value : prev.number,
+                  }));
+                }}
+                className={`border focus:ring-2 outline-none duration-300 w-full p-2 rounded-lg ${bgborder} ${
+                  theme === "dark"
+                    ? "text-white border-gray-600 focus:ring-yellow-400"
+                    : "text-gray-800 focus:ring-blue-400"
+                }`}
+              />
+            </div>
+          ))}
         </div>
-
         <div className="flex justify-end gap-4 border-t pt-4 mt-4">
           <button
             onClick={handleClose}
