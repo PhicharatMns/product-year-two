@@ -822,6 +822,6 @@ export default function SuppliesAdmin() {
           item={editItem} // ต้องส่ง item ที่จะลบ
         />
       )}
-    </div>
+http://localhost:5173/chief/Dashboardchief    </div>
   );
 }

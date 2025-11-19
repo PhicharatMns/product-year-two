@@ -23,7 +23,7 @@ export default function SidebarChief() {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  
+
   // --- State ให้ตรงกับ ProfileChief ---
   const [name, setName] = useState("Chief"); // Default
   const [profileSuffix, setProfileSuffix] = useState(""); // เก็บค่า Profile string จาก API
@@ -69,6 +69,11 @@ export default function SidebarChief() {
     {
       text: "รายงาน",
       icon: RiFilePaper2Line,
+      link: "/chief/getpaper",
+    },
+    {
+      text: "ปฎิทิน",
+      icon: RiFilePaper2Line,
       link: "/chief/gatpaper",
     },
     { text: "ทีมงาน", icon: AiOutlineTeam, link: "/chief/EditUser" },
@@ -107,7 +112,7 @@ export default function SidebarChief() {
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-900" : "bg-blue-500";
   const linkTextColor = "text-white";
-  
+
   // Theme สำหรับ Slide Panel
   const bgside = theme === "dark" ? "bg-gray-900" : "bg-white";
   const textPanel = theme === "dark" ? "text-white" : "text-black";
@@ -125,9 +130,8 @@ export default function SidebarChief() {
       </button>
 
       <div
-        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 ${linkTextColor} font-bold border-r transition-transform duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 ${linkTextColor} font-bold border-r transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
       >
         <div className="flex flex-col">
           <div className="flex items-center py-3 p-4">
@@ -135,7 +139,7 @@ export default function SidebarChief() {
               <div className="uppercase text-2xl font-black text-white dark:text-white whitespace-nowrap mt-5 transition-all duration-300">
                 Tech<span className="text-yellow-500">Job</span>
                 <div className="text-xs text-white dark:text-gray-200 mt-1 transition-all duration-300">
-                  Chief 
+                  Chief
                 </div>
               </div>
             </Link>
@@ -150,8 +154,7 @@ export default function SidebarChief() {
                     to={item.link}
                     key={index}
                     className={({ isActive }) =>
-                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium ${linkTextColor} transition duration-300 ${
-                        isActive ? "bg-yellow-500" : ""
+                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium ${linkTextColor} transition duration-300 ${isActive ? "bg-yellow-500" : ""
                       }`
                     }
                     onClick={() => setOpen(false)}
@@ -191,7 +194,7 @@ export default function SidebarChief() {
             <div className="border-t border-blue-700 dark:border-gray-700 bg-blue-900 dark:bg-gray-800 duration-300 hover:bg-blue-700 dark:hover:bg-gray-700 h-20 flex items-center gap-4 cursor-pointer px-2">
               {/* ใช้ Logic รูปภาพเดียวกับ ProfileChief */}
               <img
-                src={`${baseImage}${profileSuffix}`} 
+                src={`${baseImage}${profileSuffix}`}
                 className="object-cover w-10 h-10 rounded-full duration-300 border border-gray-300"
                 alt="profile"
               />
