@@ -37,26 +37,20 @@ const verifyToken = (req, res, next) => {
 //Register
 router.post("/register", upload.single("Profile"), async (req, res) => {
   try {
-    // เช็คค่าพื้นฐานก่อน
     if (!req.body.username || !req.body.passwork) {
-      return res
-        .status(400)
-        .json({ message: "Username and password required" });
+      return res.status(400).json({ message: "Username and password required" });
     }
 
-    // ตรวจสอบว่ามี username ซ้ำหรือไม่
     const user = await Login.findOne({ username: req.body.username });
     if (user) {
       return res.status(409).json({ message: "User already exists" });
     }
 
-    // เข้ารหัสรหัสผ่าน
     const hashedPassword = await bcrypt.hash(req.body.passwork, 10);
 
-    // สร้าง user ใหม่ โดยใช้ req.body ทั้งหมด
     const newUser = new Login({
       username: req.body.username,
-      passwork: hashedPassword, // เข้ารหัสแล้ว
+      passwork: hashedPassword,
       Name: req.body.Name,
       Nickname: req.body.Nickname,
       ID: req.body.ID,
@@ -64,7 +58,7 @@ router.post("/register", upload.single("Profile"), async (req, res) => {
       Address: req.body.Address,
       Phone_Number: req.body.Phone_Number,
       Email: req.body.Email,
-      Profile: req.file ? req.file.filename : "", // ถ้ามีรูปให้บันทึกชื่อไฟล์
+      Profile: req.file ? req.file.filename : "",
       Position: req.body.Position,
       Start_data: req.body.Start_data,
       role: req.body.role,
@@ -72,9 +66,7 @@ router.post("/register", upload.single("Profile"), async (req, res) => {
     });
 
     await newUser.save();
-    res
-      .status(201)
-      .json({ message: "User registered successfully!", user: newUser });
+    res.status(201).json({ message: "User registered successfully!", user: newUser });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Database Error" });
@@ -82,7 +74,6 @@ router.post("/register", upload.single("Profile"), async (req, res) => {
 });
 
 //Login
-// Login
 router.post("/login", async (req, res) => {
   const { username, passwork } = req.body;
   if (!username || !passwork)
@@ -97,6 +88,7 @@ router.post("/login", async (req, res) => {
     if (!isMatch)
       return res.status(401).json({ message: "Invalid user or password" });
 
+    // เก็บ id ลงใน token
     const token = jwt.sign(
       { id: user._id, username: username, role: user.role },
       JWT_SECRET,
@@ -106,7 +98,7 @@ router.post("/login", async (req, res) => {
     res.json({
       message: "Login successful!",
       token,
-      role: user.role, //  ส่ง role กลับไปด้วย
+      role: user.role,
     });
   } catch (err) {
     console.error(err);
@@ -122,7 +114,6 @@ router.delete("/:id", async (req, res) => {
       return res.status(404).json({ message: "ไม่พบช่างนี้" });
     }
 
-    // ลบไฟล์รูปถ้ามี
     if (deleted.Profile) {
       const filepath = path.join(__dirname, "../uploads/Profile", deleted.Profile);
       if (fs.existsSync(filepath)) {
@@ -139,18 +130,20 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
-// path DashboardUser
+// *** จุดสำคัญที่แก้ไข *** path DashboardUser
 router.get("/dashboardUser", verifyToken, async (req, res) => {
   try {
-    const user = await Login.findById(req.user.Name); // req.user.id จาก token
+    // ต้องใช้ req.user.id เพราะตอน login เรา sign token ด้วย id
+    const user = await Login.findById(req.user.id); 
+    
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.json({
-      Name: user.Name, // หรือ user.Username, user.Email
+      Name: user.Name,
       Email: user.Email,
       Phone_Number: user.Phone_Number,
       Position: user.Position,
-      Profile: user.Profile,
+      Profile: user.Profile, // ส่งชื่อไฟล์รูปกลับไป
     });
   } catch (err) {
     console.error(err);
@@ -158,10 +151,10 @@ router.get("/dashboardUser", verifyToken, async (req, res) => {
   }
 });
 
-// ดึงข้อมูลช่างมาเเสดง ในหน้า Editacc
+// ดึงข้อมูลช่างมาเเสดง
 router.get("/all-tradesman", async (req, res) => {
   try {
-    const tradesman = await Login.find(); // ไม่กรอง role
+    const tradesman = await Login.find();
     res.json(tradesman);
   } catch (err) {
     console.error(err);
@@ -174,50 +167,29 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      username,
-      passwork,
-      Name,
-      Nickname,
-      ID,
-      Birthday,
-      Address,
-      Phone_Number,
-      Email,
-      Position,
-      Start_data,
-      role,
-      Salary,
-
+      username, passwork, Name, Nickname, ID, Birthday,
+      Address, Phone_Number, Email, Position, Start_data,
+      role, Salary,
     } = req.body;
 
-    // หา user เดิมก่อน
     const user = await Login.findById(id);
     if (!user) return res.status(404).json({ message: "ไม่พบผู้ใช้งาน" });
 
-    // ถ้ามีการอัปโหลดรูปใหม่
     if (req.file) {
-      // ลบรูปเก่าถ้ามี
       if (user.Profile) {
-        const oldFilePath = path.join(
-          __dirname,
-          "../uploads/Profile",
-          user.Profile
-        );
+        const oldFilePath = path.join(__dirname, "../uploads/Profile", user.Profile);
         if (fs.existsSync(oldFilePath)) {
           fs.unlinkSync(oldFilePath);
         }
       }
-      // เซ็ตชื่อไฟล์ใหม่
       user.Profile = req.file.filename;
     }
 
-    // ถ้ามีการเปลี่ยนรหัสผ่าน → เข้ารหัสใหม่
     if (passwork) {
       const hashedPassword = await bcrypt.hash(passwork, 10);
       user.passwork = hashedPassword;
     }
 
-    // อัปเดตฟิลด์อื่น
     user.username = username || user.username;
     user.Name = Name || user.Name;
     user.Nickname = Nickname || user.Nickname;
@@ -229,14 +201,11 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
     user.Position = Position || user.Position;
     user.Start_data = Start_data || user.Start_data;
     user.role = role || user.role;
-    user.Salary = role || user.Salary;
-    // บันทึกข้อมูลที่อัปเดตแล้ว
+    user.Salary = Salary || user.Salary; // แก้บั๊กเดิมที่เขียนว่า user.Salary = role
+
     await user.save();
 
-    res.status(200).json({
-      message: "อัปเดตข้อมูลสำเร็จ",
-      user,
-    });
+    res.status(200).json({ message: "อัปเดตข้อมูลสำเร็จ", user });
   } catch (err) {
     console.error("อัปเดตข้อมูลล้มเหลว:", err);
     res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัปเดต" });

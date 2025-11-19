@@ -27,15 +27,21 @@ export default function Sidebar() {
   const [slideManage, setslideManage] = useState(false);
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+
+  // --- State สำหรับข้อมูล User ---
   const [Message, setMessage] = useState("");
+  const [profileImg, setProfileImg] = useState<string | null>(null);
+  // ----------------------------
+
   const [fade, setFade] = useState(false);
-  const [fadeModal, setFadeModal] = useState(false);
+
+  // รูปสำรองกรณีไม่มีรูป หรือโหลดไม่ได้
+  const defaultProfileImage = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
   useEffect(() => {
     const timer = setTimeout(() => setFade(true), 50);
     return () => clearTimeout(timer);
   }, []);
-
 
   useEffect(() => {
     if (window.innerWidth >= 768) {
@@ -58,6 +64,7 @@ export default function Sidebar() {
     { text: "ออกจากระบบ", icon: IoLogOutOutline, onClick: handleLogout },
   ];
 
+  // --- ดึงข้อมูล Profile ---
   useEffect(() => {
     if (!token) {
       navigate("/logins");
@@ -69,9 +76,12 @@ export default function Sidebar() {
           "http://localhost:5000/api/login/dashboardUser",
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        
+        // เก็บข้อมูลลง State
         setMessage(response.data.Name);
+        setProfileImg(response.data.Profile); 
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching profile:", err);
       }
     };
     fetchData();
@@ -102,17 +112,13 @@ export default function Sidebar() {
   const text = theme === "dark" ? "text-white" : "text-black";
   const bgside = theme === "dark" ? "bg-gray-900" : "bg-white";
 
-
   return (
-
     <div className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"}`}>
-
       <>
         <button
           className="md:hidden fixed top-4 left-4 z-30 text-3xl bg-blue-500 p-2 text-white rounded-lg"
           onClick={() => setOpen(!open)}
         >
-
           {open ? <IoClose /> : <GiHamburgerMenu />}
         </button>
 
@@ -150,16 +156,12 @@ export default function Sidebar() {
                       }
                       onClick={() => setOpen(false)}
                     >
-                      {/* แถบ animation */}
                       <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
                         <div className="relative h-full w-8 bg-white/50"></div>
                       </div>
-
-                      {/* เนื้อหาภายใน NavLink */}
                       <Icon size={24} className="relative z-10" />
                       <span className="relative z-10">{item.text}</span>
                     </NavLink>
-
                   );
                 }
                 return (
@@ -182,11 +184,23 @@ export default function Sidebar() {
             <ThemeSwitcher />
             <Link to="Profile" className="mt-auto">
               <div className="border-t border-blue-600 bg-blue-900 h-20 flex items-center gap-4 cursor-pointer px-2 hover:bg-blue-700 duration-300">
+                
+                {/* --- ส่วนแสดงรูป Profile --- */}
                 <img
-                  src="https://i.pinimg.com/736x/f7/94/54/f79454c439ea58e65d2bb675a1faf77b.jpg"
-                  className="object-cover w-10 rounded-full"
+                  src={
+                    profileImg 
+                      ? `http://localhost:5000/uploads/Profile/${profileImg}` 
+                      : defaultProfileImage
+                  }
+                  className="object-cover w-10 h-10 rounded-full border-2 border-white/30 bg-gray-500"
                   alt="profile"
+                  onError={(e) => {
+                    // ถ้าโหลดรูปจาก Server ไม่เจอ ให้ใช้รูป default ทันที
+                    e.currentTarget.src = defaultProfileImage;
+                  }}
                 />
+                {/* ------------------------- */}
+
                 <div className="text-lg font-semibold">
                   คุณ <span className="text-yellow-500">{Message}</span>
                 </div>
@@ -200,45 +214,45 @@ export default function Sidebar() {
             onClick={() => setOpen(false)}
           ></div>
         )}
-      {showManu && (
-  <div
-    className={`
-      fixed left-0 bottom-0 
-      rounded-t-xl h-180 w-80 p-2 ${bgside}
-      transition-all transform duration-500
-      z-15
-      ${slideIn
-        ? "translate-x-67 scale-100 opacity-100" // เลื่อนเข้ามาใต้ sidebar
-        : "-translate-x-full opacity-0"         // ซ่อนซ้ายจอ
-      }
-    `}
-  >
-    <div className={`flex justify-between items-center mb-4 border-b-2 border-blue-100 pb-2 ${text}`}>
-      <h2 className="text-xl font-semibold text-blue-500">กล่องข้อความ</h2>
-      <button
-        onClick={closeManu}
-        className={`text-2xl hover:text-red-500 pr-2 cursor-pointer ${text}`}
-      >
-        ✕
-      </button>
-    </div>
-    <div className="h-100">
-      <div
-        onClick={openManageMenu}
-        className="border-black p-2 shadow-xl rounded-xl flex items-center gap-3 cursor-pointer hover:bg-gray-100"
-      >
-        <img
-          className="w-12 h-12 rounded-full object-cover"
-          src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
-          alt="พิชรัตน์"
-        />
-        <div>
-          <p className={`font-semibold ${text}`}>พิชรัตน</p>
-        </div>
-      </div>
-    </div>
-  </div>
-)}
+        {showManu && (
+          <div
+            className={`
+              fixed left-0 bottom-0 
+              rounded-t-xl h-180 w-80 p-2 ${bgside}
+              transition-all transform duration-500
+              z-15
+              ${slideIn
+                ? "translate-x-67 scale-100 opacity-100"
+                : "-translate-x-full opacity-0"
+              }
+            `}
+          >
+            <div className={`flex justify-between items-center mb-4 border-b-2 border-blue-100 pb-2 ${text}`}>
+              <h2 className="text-xl font-semibold text-blue-500">กล่องข้อความ</h2>
+              <button
+                onClick={closeManu}
+                className={`text-2xl hover:text-red-500 pr-2 cursor-pointer ${text}`}
+              >
+                ✕
+              </button>
+            </div>
+            <div className="h-100">
+              <div
+                onClick={openManageMenu}
+                className="border-black p-2 shadow-xl rounded-xl flex items-center gap-3 cursor-pointer hover:bg-gray-100"
+              >
+                <img
+                  className="w-12 h-12 rounded-full object-cover"
+                  src={defaultProfileImage}
+                  alt="Admin"
+                />
+                <div>
+                  <p className={`font-semibold ${text}`}>พิชรัตน (Admin)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {openManage && (
           <div
@@ -250,11 +264,11 @@ export default function Sidebar() {
             <div className="border-black p-2 rounded-xl flex items-center gap-3">
               <img
                 className="w-12 h-12 rounded-full object-cover"
-                src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
-                alt="พิชรัตน์"
+                src={defaultProfileImage}
+                alt="Admin"
               />
               <div>
-                <p className={`font-semibold ${text}`}>{Message}</p>
+                <p className={`font-semibold ${text}`}>พิชรัตน (Admin)</p>
               </div>
               <div className="ml-auto">
                 <button
