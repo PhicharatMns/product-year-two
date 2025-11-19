@@ -2,7 +2,6 @@ import { useTheme } from "@/components/theme-provider";
 import { useEffect, useState, useCallback } from "react";
 import { CiSearch } from "react-icons/ci";
 import { jwtDecode } from "jwt-decode";
-
 import { Link } from "react-router-dom";
 // import { Link } from "react-router-dom"; // --- 3. เราจะใช้ปุ่มเปิด Modal แทน Link ---
 import { motion } from "framer-motion";
@@ -17,8 +16,6 @@ interface Employee {
   Details?: string;
   description?: string;
   Status?: string;
-  jobDate?: string;
-  dueDate?: string;
 }
 
 interface Tradesman {
@@ -32,12 +29,18 @@ interface JwtPayload {
   id: string;
 }
 
-// --- 1. เพิ่ม Interface สำหรับรายการเบิกของ ---
+// --- Interface สำหรับรายการเบิกของ ---
 interface RequisitionItem {
+  jobId?: string;
   id: string;
   name: string;
   quantity: string;
-  Status: string;
+  description?: string;
+  requesterName?: string; // ชื่อคนขอเบิก
+  requesterProfile?: string; // รูปโปรไฟล์
+  section?: string;
+  role?: string;
+  status?: string;
 }
 
 export default function GetPaper() {
@@ -49,11 +52,9 @@ export default function GetPaper() {
   const [filtered, setFiltered] = useState<Employee[]>([]);
   const [selectedJob, setSelectedJob] = useState<Employee | null>(null);
 
-  // --- State สำหรับ Modal "เบิกของ" ---
   const [OpendateItem, setOpendateItem] = useState(false);
   const [fadeItem, setFadeItem] = useState(false);
 
-  // --- 2. เพิ่ม State สำหรับรายการเบิกของ ---
   const [items, setItems] = useState<RequisitionItem[]>([]);
 
   const token = localStorage.getItem("token");
@@ -97,8 +98,14 @@ export default function GetPaper() {
   // --- ฟังก์ชันสำหรับ Modal "เบิกของ" (อัปเดต) ---
   const openItemModal = (job: Employee) => {
     setSelectedJob(job);
-    // --- 4. ตั้งค่าเริ่มต้นให้มี 1 รายการ ---
-    setItems([{ id: Date.now().toString(), name: "", quantity: "" }]);
+    //  ตั้งค่าเริ่มต้นให้มี  รายการ ---
+    setItems(
+      Array.from({ length: 4 }, (_, i) => ({
+        id: (Date.now() + i).toString(),
+        name: "",
+        quantity: "",
+      }))
+    );
     setOpendateItem(true);
     setFadeItem(false);
     setTimeout(() => setFadeItem(true), 50);
@@ -109,14 +116,14 @@ export default function GetPaper() {
     setTimeout(() => {
       setOpendateItem(false);
       setSelectedJob(null);
-      setItems([]); // --- 4. ล้างค่า items เมื่อปิด ---
+      setItems([]); // ล้างค่า items เมื่อปิด ---
     }, 300);
   };
 
-  // --- 3. เพิ่มฟังก์ชันสำหรับจัดการรายการเบิกของ ---
+  //  เพิ่มฟังก์ชันสำหรับจัดการรายการเบิกของ ---
   const handleItemChange = (
     id: string,
-    field: "name" | "quantity",
+    field: "name" | "quantity" | "description",
     value: string
   ) => {
     // ป้องกันการใส่ค่าน้อยกว่า 0 สำหรับจำนวน
@@ -131,7 +138,7 @@ export default function GetPaper() {
   };
 
   const handleAddItem = () => {
-    setItems([...items, { id: Date.now().toString(), name: "", quantity: "" }]);
+    setItems([...items, { id: "temp-" + Date.now(), name: "", quantity: "" }]);
   };
 
   const handleDeleteItem = (id: string) => {
@@ -156,6 +163,63 @@ export default function GetPaper() {
       );
     }
   }, [search, employees]);
+
+  const API_URL = "http://localhost:5000/api/additem"; // เปลี่ยนตาม backend ของคุณ
+
+  const [note, setNote] = useState("");
+
+  // บันทึกรายการเบิกทั้งหมดเป็นรายการใหม่ (POST ทุกอัน)
+  const submitItems = async () => {
+    if (!selectedJob) return;
+
+    // สมมติคุณมี API /api/user/:id เพื่อดึงชื่อและโปรไฟล์
+    let requesterName = "ไม่ทราบ";
+    let requesterProfile = "/default-profile.png";
+
+    if (currentUserId) {
+      try {
+        const res = await fetch(
+          `http://localhost:5000/api/user/${currentUserId}`
+        );
+        const data = await res.json();
+        requesterName = data.Name;
+        requesterProfile = data.Profile || "/default-profile.png";
+      } catch (err) {
+        console.error("ไม่สามารถดึงข้อมูลผู้ใช้", err);
+      }
+    }
+
+    try {
+      await Promise.all(
+        items.map((item) =>
+          fetch(`${API_URL}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              jobId: selectedJob._id,
+              name: item.name,
+              quantity: Number(item.quantity),
+              description: note,
+              requesterName,
+              requesterProfile,
+              section: "เบิกของ",
+              role: "ช่าง",
+              status: "รอดําเนินการ",
+              additemecomfam: "รอดําเนินการ",
+            }),
+          })
+        )
+      );
+      setNote("");
+      closeopenItemModal();
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาดในการบันทึก");
+    }
+  };
 
   const border_b_2_data =
     theme === "dark"
@@ -210,7 +274,7 @@ export default function GetPaper() {
               ${
                 theme === "dark"
                   ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
-                  : " focus:ring-blue-400 bg-white text-gray-800"
+                  : "border-b-purple-300 focus:ring-blue-400 bg-white text-gray-800"
               }`}
             />
           </div>
@@ -272,57 +336,61 @@ export default function GetPaper() {
                   delay: 0.05 * index,
                   ease: "easeOut",
                 }}
-                className={`grid grid-cols-7 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
               >
-                <p className="truncate">{job.Worksheet || "-"}</p>
-                <p className="col-span-2 truncate">{job.description || "-"}</p>
-                <p
-                  className={`${
-                    job.Status === "กำลังดำเนินการ" ? texthaed : ""
-                  } ${job.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${
-                    job.Status === "ล่าช้า" ? "text-red-500" : ""
-                  }`}
+                <div
+                  className={`grid grid-cols-7 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
                 >
-                  {job.Status || "-"}
-                </p>
-                <p>
-                  {job.Date_of_acceptance_of_work
-                    ? new Date(
-                        job.Date_of_acceptance_of_work
-                      ).toLocaleDateString("th-TH")
-                    : "-"}
-                </p>
-                <p>
-                  {job.Closing_date
-                    ? new Date(job.Closing_date).toLocaleDateString("th-TH")
-                    : "-"}
-                </p>
-                <div className="flex gap-2 mx-auto">
-                  <Link
-                    to={`/chief/DetailworkChief/${job._id}`}
-                    replace={false}
-                    className={` relative w-fit overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-               theme === "dark"
-                 ? "bg-yellow-500 hover:bg-yellow-600"
-                 : "bg-blue-500 hover:bg-blue-600"
-             }`}
+                  <p className="truncate">{job.Worksheet || "-"}</p>
+                  <p className="col-span-2 truncate">
+                    {job.description || "-"}
+                  </p>
+                  <p
+                    className={`${
+                      job.Status === "กำลังดำเนินการ" ? texthaed : ""
+                    } ${job.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${
+                      job.Status === "ล่าช้า" ? "text-red-500" : ""
+                    }`}
                   >
-                    รายละเอียดงาน
-                  </Link>
-                  <button
-                    onClick={() => openItemModal(job)}
-                    className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-                  [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                    theme === "dark"
-                      ? "bg-yellow-500 hover:bg-yellow-600"
-                      : "bg-blue-500 hover:bg-blue-600"
-                  }`}
-                  >
-                    เบิกของ
-                  </button>
+                    {job.Status || "-"}
+                  </p>
+                  <p>
+                    {job.Date_of_acceptance_of_work
+                      ? new Date(
+                          job.Date_of_acceptance_of_work
+                        ).toLocaleDateString("th-TH")
+                      : "-"}
+                  </p>
+                  <p>
+                    {job.Closing_date
+                      ? new Date(job.Closing_date).toLocaleDateString("th-TH")
+                      : "-"}
+                  </p>
+                  <div className="flex gap-2 mx-auto">
+                    <Link
+                      to={`/chief/DetailworkChief/${job._id}`}
+                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                theme === "dark"
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+                    >
+                      รายละเอียดงาน
+                    </Link>
+                    <button
+                      onClick={() => openItemModal(job)}
+                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                theme === "dark"
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+                    >
+                      เบิกของ
+                    </button>
+                  </div>
                 </div>
               </motion.div>
             ))
@@ -370,8 +438,8 @@ export default function GetPaper() {
                 className={`grid grid-cols-4 text-center p-2 rounded-t-lg font-semibold shadow-sm 
   ${
     theme === "dark"
-      ? "bg-gray-900 text-yellow-400 border-b border-gray-700"
-      : "bg-blue-50 text-blue-600 border-b border-blue-200"
+      ? "bg-gray-900 text-yellow-500 border-b border-gray-700"
+      : "bg-blue-50/50 text-blue-500 border-b border-blue-200"
   }`}
               >
                 <div className="col-span-2">รายชื่อ</div>
@@ -380,7 +448,7 @@ export default function GetPaper() {
               </div>
 
               {/* --- 5. เปลี่ยนมา map จาก state `items` --- */}
-              <div className="transition-all duration-300">
+              <div className="transition-all h-67 overflow-auto  duration-300">
                 {items.map((item, index) => (
                   <div
                     key={index} // --- ใช้ id ที่ไม่ซ้ำกันเป็น key ---
@@ -429,17 +497,7 @@ export default function GetPaper() {
                     {/* ปุ่มลบ */}
                     <div className="text-center">
                       <button
-                        onClick={() => handleDeleteItem(item.id)} // --- เชื่อม onClick ---
-                        //   disabled={items.length <= 1} // --- Disable ปุ่ม ถ้าเหลือรายการเดียว ---
-                        //   className={`text-sm font-medium bg-red-500 w-20 h-10 hover:scale-105 duration-200 text-white rounded-2xl  ${
-                        //     items.length <= 1
-                        //       ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
-                        //       : theme === "dark"
-                        //       ? "hover:text-white"
-                        //       : "hover:text-white"
-                        //   }`}
-                        // >
-                        //   ลบ
+                        onClick={() => handleDeleteItem(item.id)}
                         className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-5 py-2 text-white text-sm duration-300 
                   [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
                   active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
@@ -478,7 +536,8 @@ export default function GetPaper() {
               </div>
 
               {/* หมายเหตุ */}
-              <div className="pt-2">
+              {/* หมายเหตุรวม */}
+              <div>
                 <p
                   className={`text-lg mb-1 font-semibold ${
                     theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -487,7 +546,9 @@ export default function GetPaper() {
                   หมายเหตุ
                 </p>
                 <textarea
-                  className={`border w-full px-2 py-2 rounded-lg h-24 resize-none focus:ring-2 outline-none duration-200 ${
+                  value={note}
+                  onChange={(e) => setNote(e.target.value)}
+                  className={`border w-full px-2 py-2 rounded-lg h-48 resize-none focus:ring-2 outline-none duration-200 ${
                     theme === "dark"
                       ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
                       : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
@@ -511,6 +572,7 @@ export default function GetPaper() {
                 </span>
               </button>
               <button
+                onClick={submitItems}
                 className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
                   theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
                 }`}

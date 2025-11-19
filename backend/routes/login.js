@@ -68,7 +68,7 @@ router.post("/register", upload.single("Profile"), async (req, res) => {
       Position: req.body.Position,
       Start_data: req.body.Start_data,
       role: req.body.role,
-      Salary: req.body.Salary,
+      Salary: req.body.Salary
     });
 
     await newUser.save();
@@ -124,11 +124,7 @@ router.delete("/:id", async (req, res) => {
 
     // ลบไฟล์รูปถ้ามี
     if (deleted.Profile) {
-      const filepath = path.join(
-        __dirname,
-        "../uploads/Profile",
-        deleted.Profile
-      );
+      const filepath = path.join(__dirname, "../uploads/Profile", deleted.Profile);
       if (fs.existsSync(filepath)) {
         fs.unlink(filepath, (err) => {
           if (err) console.error("ลบรูปไม่สำเร็จ:", err);
@@ -191,6 +187,7 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
       Start_data,
       role,
       Salary,
+
     } = req.body;
 
     // หา user เดิมก่อน

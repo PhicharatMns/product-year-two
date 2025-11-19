@@ -235,6 +235,7 @@ export default function Dashboard({
 
   const descrtiption = theme === "dark" ? "text-white" : "text-gray-500";
   const cardBg = theme === "dark" ? "bg-gray-900" : "bg-white";
+  const bgborder = theme === "dark" ? "bg-gray-800" : "bg-gray-50";
 
   return (
     <div
@@ -271,7 +272,6 @@ export default function Dashboard({
             value: roundedAll, // motion value
             link: "Editacc",
             icon: <MdPerson size={24} />,
-            
           },
           {
             title: "ช่างที่ได้งาน",
@@ -291,6 +291,7 @@ export default function Dashboard({
             title: "รายการขอเบิกของ",
             color: "bg-blue-800",
             color_bark: "bg-yellow-900",
+            link: "Notification",
             icon: <CiSearch size={24} />,
           },
         ].map((item, index) => (
@@ -306,7 +307,7 @@ export default function Dashboard({
               <div className="border-b pb-3"></div>
             </p>
             <div className="text-sm text-white">
-              {item.title === "จำนวนช่าง" ? (
+              {item.title === "จำนวนช่าง" || item.title === 'รายการขอเบิกของ' ? (
                 <Link
                   to={`/${item.link}`}
                   className={`relative cursor-pointer after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:translate-y-1  after:opacity-0 after:transition after:duration-150 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100 
@@ -417,7 +418,9 @@ export default function Dashboard({
     ${anim ? "opacity-100" : "opacity-0"}`}
         >
           {" "}
-          <div className="rounded-2xl bg-white w-[900px] h-200 shadow-2xl border ">
+          <div
+            className={`rounded-2xl ${bgborder} w-[900px] h-200 shadow-2xl border `}
+          >
             <div className="flex items-center justify-between border-b px-6 py-4 ">
               <p
                 className={` text-2xl  font-semibold  ${
