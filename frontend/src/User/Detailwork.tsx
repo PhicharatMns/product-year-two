@@ -42,6 +42,21 @@ interface Tradesman {
   role: string;
 }
 
+interface RequisitionItem {
+  jobId?: string;
+  id: string;
+  name: string;
+  quantity: string;
+  description?: string;
+  requesterName?: string; // ชื่อคนขอเบิก
+  requesterProfile?: string; // รูปโปรไฟล์
+  section?: string;
+  role?: string;
+  createdAt?: string;
+  status?: string;
+  reasondescriptionstatus?: string;
+}
+
 export default function Detailwork() {
   const { theme } = useTheme();
   const { id } = useParams<{ id: string }>();
@@ -49,11 +64,13 @@ export default function Detailwork() {
   const [loading, setLoading] = useState(true);
   const [markerPos, setMarkerPos] = useState<[number, number] | null>(null);
   const [fade, setFade] = useState(false);
-  const [ setDataTradesman] = useState<Tradesman[]>([]);
   const [SelectedTradesmen, setSelectedTradesmen] = useState<Tradesman[]>([]);
   const [userPos, setUserPos] = useState<[number, number] | null>(null);
+  const [requisitionItems, setRequisitionItems] = useState<RequisitionItem[]>(
+    []
+  );
 
-  const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm";
+  const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm bg-white";
   const text = theme === "dark" ? "text-gray-100" : "text-gray-800";
   const text_color = theme === "dark" ? "text-white" : "text-black";
   const borderSoft = theme === "dark" ? "border-gray-700" : "border-gray-300";
@@ -66,7 +83,7 @@ export default function Detailwork() {
         credentials: "include",
       });
       const data: Tradesman[] = await res.json();
-        (data);
+      data;
     } catch (err) {
       console.error("โหลดข้อมูลช่างล้มเหลว:", err);
     }
@@ -183,6 +200,18 @@ export default function Detailwork() {
     );
   };
 
+  const fetchRequisitionItems = async () => {
+    if (!id) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/additem?jobId=${id}`);
+      const data: RequisitionItem[] = await res.json();
+      setRequisitionItems(data);
+    } catch (err) {
+      console.error("โหลดรายการเบิกของล้มเหลว:", err);
+      setRequisitionItems([]);
+    }
+  };
+
   useEffect(() => {
     if (!id) return;
 
@@ -213,45 +242,46 @@ export default function Detailwork() {
     fetchJob();
   }, [id]);
 
-   //  โหลดข้อมูล + ตำแหน่ง
-    useEffect(() => {
-      if (!id) return;
-  
-      async function loadData() {
-        try {
-          const [res, position] = await Promise.all([
-            fetch("http://localhost:5000/api/employees"),
-            new Promise<GeolocationPosition>((resolve, reject) => {
-              navigator.geolocation.getCurrentPosition(resolve, reject);
-            }),
-          ]);
-  
-          const data: Employee[] = await res.json();
-          const selected = data.find((emp) => emp._id === id);
-          setJob(selected || null);
-  
-          if (selected?.address?.coordinates) {
-            const [lng, lat] = selected.address.coordinates;
-            setMarkerPos([lat, lng]);
-          } else {
-            setMarkerPos([13.7563, 100.5018]);
-          }
-  
-          setUserPos([position.coords.latitude, position.coords.longitude]);
-        } catch (err) {
-          console.error("Error loading data:", err);
-        } finally {
-          setLoading(false);
-          setFade(true);
+  //  โหลดข้อมูล + ตำแหน่ง
+  useEffect(() => {
+    if (!id) return;
+
+    async function loadData() {
+      try {
+        const [res, position] = await Promise.all([
+          fetch("http://localhost:5000/api/employees"),
+          new Promise<GeolocationPosition>((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject);
+          }),
+        ]);
+
+        const data: Employee[] = await res.json();
+        const selected = data.find((emp) => emp._id === id);
+        setJob(selected || null);
+
+        if (selected?.address?.coordinates) {
+          const [lng, lat] = selected.address.coordinates;
+          setMarkerPos([lat, lng]);
+        } else {
+          setMarkerPos([13.7563, 100.5018]);
         }
+
+        setUserPos([position.coords.latitude, position.coords.longitude]);
+      } catch (err) {
+        console.error("Error loading data:", err);
+      } finally {
+        setLoading(false);
+        setFade(true);
       }
-      loadData();
-    }, [id]);
+    }
+    loadData();
+  }, [id]);
 
   // เริ่ม fade-in หลังจากโหลดเสร็จ
   useEffect(() => {
     if (!loading) {
       fetchTradesman();
+      fetchRequisitionItems(); // โหลดรายการเบิกของ
       fetchOtherTradesman();
       const timer = setTimeout(() => setFade(true), 100);
       return () => clearTimeout(timer);
@@ -278,46 +308,61 @@ export default function Detailwork() {
 
         <div className={`mt-5 transition-all duration-300 rounded-2xl`}>
           <div className="grid grid-cols-2 gap-5">
-            <div className={`border p-3 rounded-xl ${bg}`}>
+            <div className={`border p-3 rounded-xl font-semibold  ${bg}`}>
               {SelectedTradesmen.map((event, index) => {
                 return (
                   <div key={index}>
                     {event.role.toLowerCase() == "chief" && (
                       <div>
-                        หัวหน้างาน : {event.Name}
-                        <p>เบอร์ติดต่อ: {event.Phone_Number || "-"}</p>
+                        <div className="flex gap-1 items-center">
+                          <p className={` ${titleColor}`}>หัวหน้างาน :</p>{" "}
+                          <span>{event.Name}</span>
+                        </div>
+                        <div className="flex gap-1 items-center">
+                          <p className={`${titleColor}`}>เบอร์ติดต่อ:</p>
+                          <span> {event.Phone_Number || "-"}</span>
+                        </div>
                       </div>
                     )}
                   </div>
                 );
               })}
-              <p>
-                วันเริ่มงาน:{" "}
-                {job.Date_of_acceptance_of_work
-                  ? new Date(job.Date_of_acceptance_of_work).toLocaleDateString(
-                      "th-TH"
-                    )
-                  : "-"}
-              </p>
-              <p>
-                วันปิดงาน:{" "}
-                {job.Closing_date
-                  ? new Date(job.Closing_date).toLocaleDateString("th-TH")
-                  : "-"}
-              </p>
+              <div className="flex gap-1 items-center  ">
+                <p className={` ${titleColor}`}>วันเริ่มงาน: </p>
+                <span>
+                  {" "}
+                  {job.Date_of_acceptance_of_work
+                    ? new Date(
+                        job.Date_of_acceptance_of_work
+                      ).toLocaleDateString("th-TH")
+                    : "-"}
+                </span>
+              </div>
+              <div className="flex gap-1 items-center ">
+                <p className={` ${titleColor}`}>วันปิดงาน: </p>
+                <span>
+                  {" "}
+                  {job.Closing_date
+                    ? new Date(job.Closing_date).toLocaleDateString("th-TH")
+                    : "-"}
+                </span>
+              </div>
             </div>
 
             <div className={`border p-3 rounded-xl ${bg}`}>
-              <p className={`text-lg mb-1 font-semibold ${titleColor}`}>
-                รายละเอียดงาน
-              </p>
-              <p className="text-ellipsis"> {job.description || "-"}</p>
+              <p className={`text-lg mb-1   ${titleColor}`}>รายละเอียดงาน</p>
+              <div className="">
+                <p className="  h-17 overflow-auto scrollbar-hide ">
+                  {" "}
+                  {job.description || "-"}
+                </p>
+              </div>
             </div>
           </div>
 
           <div className="grid grid-cols-5 gap-4 mt-3">
             <div
-              className={`w-full p-3 col-span-2 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
+              className={`w-full p-3 h-174  col-span-2 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
             >
               <div
                 className={`${
@@ -326,51 +371,157 @@ export default function Detailwork() {
               >
                 รายการติดต่อ / เบิกของ
               </div>
-              <div>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.05,
-                    ease: "easeOut",
-                  }}
-                  className={`items-center border p-1 my-1 rounded-xl ${
-                    theme === "dark" ? "bg-gray-800" : "shadow-sm"
-                  }`}
-                >
-                  <p className={`text-sm pl-2 font-semibold ${titleColor}`}>
-                    การขอเบิกของ
-                  </p>
-                  <div className="flex gap-2">
-                    <img
-                      className="h-10 w-10  rounded-4xl bg-blue-500"
-                      src=""
-                      alt=""
-                    />
-                    <div className="text-sm flex flex-col gap-1">
-                      <p className={` ${text_color}`}>
-                        <span className={`font-semibold  ${titleColor}`}>
-                          หัวหน้างาน:
-                        </span>{" "}
-                        ชื่อหัวหน้างาน
-                      </p>
 
-                      <p className={`truncate w-120 ${text_color}`}>
-                        <span className={`font-semibold  ${titleColor}`}>
-                          รายละเอียด:
-                        </span>{" "}
-                        {job.description}
-                      </p>
-                    </div>
-                  </div>
-                </motion.div>
+              <div className="h-155  overflow-auto scrollbar-hide">
+                {requisitionItems
+                  .sort((a, b) => {
+                    const dateA = a.createdAt
+                      ? new Date(a.createdAt).getTime()
+                      : 0;
+                    const dateB = b.createdAt
+                      ? new Date(b.createdAt).getTime()
+                      : 0;
+
+                    return dateB - dateA; // ใหม่ → เก่า
+                  })
+                  .map((item, index) => (
+                    <motion.div
+                      key={item.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: 0.05 * index,
+                        ease: "easeOut",
+                      }}
+                      className={`items-center border p-2 my-2 rounded-xl ${
+                        theme === "dark"
+                          ? "bg-gray-800"
+                          : "shadow-sm bg-gray-50"
+                      }`}
+                    >
+                      <div>
+                        <p
+                          className={`text-sm pl-2 font-semibold truncate  w-120 ${titleColor}`}
+                        >
+                          {item.section} :
+                          <span
+                            className={`${
+                              theme === "dark" ? "text-white" : "text-black"
+                            }`}
+                          >
+                            {" "}
+                            สถานะ :{" "}
+                            <span
+                              className={`${
+                                item.status === "ไม่อนุมัติ"
+                                  ? "text-red-500"
+                                  : ""
+                              } ${
+                                item.status === "รอดําเนินการ"
+                                  ? "text-orange-500"
+                                  : ""
+                              } ${
+                                item.status === "อนุมัติเเล้วรอการติดต่อคลัง"
+                                  ? "text-green-500"
+                                  : ""
+                              } ${
+                                item.status === "ได้รับการยืนยันจากคลังแล้ว"
+                                  ? "text-green-500"
+                                  : ""
+                              }`}
+                            >
+                              {item.status}
+                            </span>
+                            {item.reasondescriptionstatus?.trim() && (
+                              <span className="">
+                                หมายเหตุ:{" "}
+                                <span
+                                  className={`${
+                                    theme === "dark"
+                                      ? "text-white"
+                                      : "text-black"
+                                  }`}
+                                >
+                                  {item.reasondescriptionstatus}
+                                </span>
+                              </span>
+                            )}
+                          </span>
+                        </p>
+                      </div>
+
+                      <div className="flex gap-2 items-center">
+                        <img
+                          className="w-12 h-12 rounded-full object-cover"
+                          src={
+                            item.requesterProfile
+                              ? `http://localhost:5000/uploads/Profile/${item.requesterProfile}`
+                              : "/default-profile.png"
+                          }
+                          alt="รูปผู้ขอเบิก"
+                        />
+                        <div className="text-sm flex flex-col gap-1">
+                          <p
+                            className={`font-semibold ${
+                              theme === "dark" ? "text-white" : "text-black"
+                            }`}
+                          >
+                            <span className={`font-semibold ${titleColor}`}>
+                              {" "}
+                              {item.role}{" "}
+                            </span>
+                            นาย : {item.requesterName}
+                          </p>
+                          <p
+                            className={`truncate w-120 flex gap-2 font-semibold  ${text_color}`}
+                          >
+                            <span className={`font-semibold  ${titleColor}`}>
+                              รายงาน:
+                            </span>{" "}
+                            {item.name}
+                            <p className="font-semibold ">
+                              {" "}
+                              <span className={`${titleColor} font-semibold`}>
+                                {" "}
+                                จํานวน :{" "}
+                              </span>
+                              {item.quantity}
+                            </p>
+                          </p>
+                          <p
+                            className={`font-semibold  ${
+                              theme === "dark" ? "text-white" : "text-black"
+                            }`}
+                          >
+                            <span className={`${titleColor} font-semibold `}>
+                              วันที่ :{" "}
+                            </span>
+                            {item.createdAt
+                              ? new Date(item.createdAt).toLocaleString(
+                                  "th-TH",
+                                  {
+                                    dateStyle: "short",
+                                    timeStyle: "short",
+                                  }
+                                )
+                              : "-"}
+                          </p>
+                        </div>
+                      </div>
+                    </motion.div>
+                  ))}
+                {requisitionItems.length === 0 && (
+                  <p className={`text-sm pl-2 ${text_color}`}>
+                    ยังไม่มีรายการเบิกของ
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* ---------- แผนที่ ---------- */}
+            {/* แผนที่*/}
             <div
-              className={`border py-3 px-4 col-span-3 rounded-2xl h-160 ${bg}`}
+              className={`border py-3 px-4 col-span-3 rounded-2xl h-175 ${bg}`}
             >
               <h2
                 className={`text-xl font-semibold text-blue-500 mb-3 ${
@@ -380,7 +531,7 @@ export default function Detailwork() {
                 แผนที่งาน
               </h2>
               {loading || !markerPos || !userPos ? (
-                <div className="w-full  rounded-lg bg-gray-200 animate-pulse"></div>
+                <div className="w-full   rounded-lg bg-gray-200 animate-pulse"></div>
               ) : (
                 <JobMap
                   markerPos={markerPos}

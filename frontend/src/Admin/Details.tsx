@@ -240,6 +240,8 @@ export default function Details() {
   // const bg_border =
   //   theme === "dark" ? "bg-gray-900" : "border-bule-200 shadow-lg";
 
+  const bg = theme === "dark" ? "bg-gray-900" : " shadow-sm bg-white";
+
   return (
     <div
       className={` w-max-380 h-screen transition-opacity duration-300 p-5 mx-auto container  ${
@@ -252,7 +254,7 @@ export default function Details() {
             if (event._id === id)
               return (
                 <div key={index}>
-                  <div className="text-3xl font-bold flex gap-2">
+                  <div className="text-3xl font-bold flex gap-2 ">
                     <p
                       className={`${
                         theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -261,7 +263,7 @@ export default function Details() {
                       รายละเอียดงาน :
                     </p>
                     <span
-                      className={`${
+                      className={`  ${
                         theme === "dark" ? "text-bule-500" : "text-yellow-500"
                       }`}
                     >
@@ -269,7 +271,7 @@ export default function Details() {
                     </span>
                   </div>
                   <div className="grid grid-cols-2 gap-5 mt-5">
-                    <div className={`border p-3 rounded-xl `}>
+                    <div className={`border p-3 rounded-xl ${bg} `}>
                       <p>ผู้จ้าง: {event.Employer || "-"}</p>
                       <p>เบอร์ติดต่อ: {event.Contact_number || "-"}</p>
                       <p>
@@ -290,11 +292,11 @@ export default function Details() {
                       </p>
                     </div>
 
-                    <div className={`border p-3 rounded-xl`}>
+                    <div className={`border p-3 rounded-xl ${bg}`}>
                       <p className={`text-lg mb-1 font-semibold `}>
                         รายละเอียดงาน
                       </p>
-                      <p className="text-ellipsis">
+                      <p className="text-ellipsis scrollbar-hide  h-20 overflow-auto">
                         {event.description || "-"}
                       </p>
                     </div>
@@ -304,8 +306,8 @@ export default function Details() {
           })}
 
           <div className="grid grid-cols-5 gap-4 mt-3">
-            <div className="col-span-2">
-              <div className="w-full h-90 mb-1 p-5 rounded-2xl border ">
+            <div className={`  col-span-2  `}>
+              <div className={`w-full h-85 mb-2 p-5 rounded-2xl border bg-red ${bg}`}>
                 <div
                   className={` items-center ${
                     theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -333,13 +335,13 @@ export default function Details() {
                         animate={{ opacity: 1, y: 0 }} // จบที่มองเห็น + ตำแหน่งปกติ
                         transition={{
                           duration: 0.5, // เวลา animation 0.5 วินาที
-                          delay: index * 0.5, // ทำให้แต่ละ item delay ตามลำดับ
+                          delay: index * 0.3, // ทำให้แต่ละ item delay ตามลำดับ
                           ease: "easeOut",
                         }}
                       >
                         <div
                           key={index}
-                          className={`items-center  border  p-1 my-1 rounded-xl ${
+                          className={`items-center  border p-1 my-1 rounded-xl ${
                             theme === "dark" ? "bg-gray-800" : "shadow-sm"
                           }`}
                         >
@@ -393,7 +395,7 @@ export default function Details() {
                   })}
                 </div>
               </div>
-              <div className="w-full h-90 mb-1 p-3 rounded-2xl border ">
+              <div className={`w-full h-90 mb-1 p-3 rounded-2xl border ${bg}`}>
                 <div
                   className={`${
                     theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -427,7 +429,7 @@ export default function Details() {
               </div>
             </div>
             {/* เเผนที่ */}
-            <div className="`border py-3 px-4 col-span-3 z-0 rounded-2xl border">
+            <div className={`border py-3 px-4 col-span-3 ${bg} z-0 rounded-2xl border`}>
               <h2 className={`text-xl font-semibold mb-3 `}>แผนที่งาน</h2>
               {markerPos && (
                 <MapContainer

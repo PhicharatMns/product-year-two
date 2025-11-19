@@ -1,8 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { AiOutlineLeft, AiOutlineRight } from "react-icons/ai";
-import { BsXLg } from "react-icons/bs";
 import { jwtDecode } from "jwt-decode";
+import { motion } from "framer-motion";
 
 interface Employee {
   _id: string;
@@ -33,9 +33,21 @@ export default function Calendar() {
   const [month, setMonth] = useState(new Date());
   const [events, setEvents] = useState<Event[]>([]);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [anim, setanim] = useState(false);
   const [fade, setFade] = useState(true);
   const [slideDir, setSlideDir] = useState<"left" | "right">("right");
   const [mounted, setMounted] = useState(false);
+
+  const openSelectedDate = (date: string) => {
+    setanim(false); // รีเซ็ตก่อน
+    setSelectedDate(date); // ตั้งวันที่
+    setTimeout(() => setanim(true), 50); // ให้ anim ทำงาน
+  };
+
+  const closeSelectedDate = () => {
+    setanim(false); // เริ่ม fade-out
+    setTimeout(() => setSelectedDate(null), 200); // ปิด modal หลัง animation
+  };
 
   // ดึง current user id
   const token = localStorage.getItem("token");
@@ -45,18 +57,18 @@ export default function Calendar() {
   const currentUserId = decoded?.id;
 
   // ฟังก์ชันดูรายละเอียดงาน
-  const checkJob = async (jobId: string) => {
-    try {
-      const res = await fetch(
-        `http://localhost:5000/api/employees/check/${jobId}`
-      );
-      const data = await res.json();
-      if (!res.ok) return alert(data.message);
-      alert(`งาน: ${data.job.Worksheet}\nเจ้าของงาน: ${data.owner.Name}`);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  // const checkJob = async (jobId: string) => {
+  //   try {
+  //     const res = await fetch(
+  //       `http://localhost:5000/api/employees/check/${jobId}`
+  //     );
+  //     const data = await res.json();
+  //     if (!res.ok) return alert(data.message);
+  //     alert(`งาน: ${data.job.Worksheet}\nเจ้าของงาน: ${data.owner.Name}`);
+  //   } catch (err) {
+  //     console.error(err);
+  //   }
+  // };
 
   // ดึงงานของช่างที่ล็อกอิน
   const fetchData = useCallback(async () => {
@@ -90,7 +102,7 @@ export default function Calendar() {
             },
             end && {
               date: end,
-              title: emp.Worksheet ? `${emp.Worksheet} (จบ)` : "งานจบ",
+              title: emp.Worksheet ? `${emp.Worksheet} (จบงาน)` : "งานจบ",
               jobId: emp._id,
             },
           ].filter(Boolean) as Event[];
@@ -147,7 +159,7 @@ export default function Calendar() {
 
   return (
     <div
-      className={`w-max-380 p-5 mx-auto container
+      className={`w-max-380 my-5 p-5 mx-auto container
     transition-all duration-500 ease-out
     ${mounted ? "opacity-100 " : "opacity-0 "}
     ${
@@ -233,8 +245,8 @@ export default function Calendar() {
             return (
               <div
                 key={i}
-                onClick={() => dayStr && setSelectedDate(dayStr)}
-                className={`relative overflow-y-auto scrollbar-hide border-t h-27 rounded-lg border cursor-pointer transition-all duration-200
+                onClick={() => dayStr && openSelectedDate(dayStr)}
+                className={`relative overflow-y-auto scrollbar-hide border-t h-35 rounded-lg border cursor-pointer transition-all duration-200
           ${
             theme === "dark"
               ? "hover:bg-gray-700 bg-gray-800"
@@ -267,7 +279,7 @@ export default function Calendar() {
                           : "bg-blue-500 text-white "
                       }`}
                       //  ไม่ stopPropagation เพราะอยากให้คลิกได้ทุกส่วน
-                      onClick={() => dayStr && setSelectedDate(dayStr)}
+                      onClick={() => dayStr && openSelectedDate(dayStr)}
                     >
                       {e.title}
                     </p>
@@ -281,18 +293,26 @@ export default function Calendar() {
 
       {/* Modal รายละเอียดวันที่ */}
       {selectedDate && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm">
+        <div
+          className={`fixed inset-0 z-50 flex items-center justify-center bg-black/20 backdrop-blur-sm duration-300 ${
+            anim ? "opacity-100" : "opacity-0"
+          }`}
+        >
           <div
-            className={`p-5 rounded-4xl ite ${
-              theme === "dark" ? "bg-gray-900" : "bg-white"
+            className={`rounded-2xl w-[600px] h-200  shadow-2xl border ${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
           >
-            <div className=" flex items-center w-80">
-              <p className="text-lg font-semibold mb-2 gap-2 flex items-center">
+            <div className="flex justify-between border-b px-6 py-4 ">
+              <p
+                className={` text-2xl  font-semibold  ${
+                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                }`}
+              >
                 งานวันที่{" "}
                 <span
                   className={`${
-                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    theme === "dark" ? "text-white" : "text-yellow-500"
                   }`}
                 >
                   {new Date(selectedDate).toLocaleDateString("th-TH", {
@@ -302,31 +322,64 @@ export default function Calendar() {
                   })}
                 </span>
               </p>
-              <div className="ml-auto ">
-                <button
-                  className="cursor-pointer"
-                  onClick={() => setSelectedDate(null)}
-                >
-                  <BsXLg />
-                </button>
-              </div>
             </div>
-            <div className="flex flex-col w-full gap-2 mb-3 max-h-80 overflow-y-auto scrollbar-hide">
-              {events
-                .filter((e) => e.date === selectedDate)
-                .map((e, idx) => (
-                  <div
-                    key={idx}
-                    onClick={() => e.jobId && checkJob(e.jobId)}
-                    className={`flex justify-between p-1 rounded cursor-pointer ${
-                      theme === "dark"
-                        ? "bg-yellow-500 text-white"
-                        : "bg-blue-500 text-white"
-                    }`}
-                  >
-                    <span className="px-2">{e.title}</span>
-                  </div>
-                ))}
+            <div className="px-6 border-b h-165 mb-2">
+              {events.filter((e) => e.date === selectedDate).length > 0 ? (
+                events
+                  .filter((e) => e.date === selectedDate)
+                  .map((e, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      transition={{
+                        delay: i * 0.1,
+                        duration: 0.4,
+                        ease: "easeOut",
+                      }}
+                    >
+                      <div
+                        className={`border p-3 my-4 rounded-xl ${
+                          theme === "dark"
+                            ? "bg-gray-900"
+                            : "bg-gray-50 border shadow-sm"
+                        }`}
+                      >
+                        <span
+                          className={`${
+                            theme === "dark"
+                              ? "text-yellow-500"
+                              : "text-blue-500"
+                          }`}
+                        >
+                          {e.title}
+                        </span>
+                      </div>
+                    </motion.div>
+                  ))
+              ) : (
+                <div
+                  className={` p-3 my-4 rounded-xl text-center ${
+                    theme === "dark"
+                      ? " text-yellow-500"
+                      : " text-blue-500 "
+                  }`}
+                >
+                  วันนี่ ยังไม่มีงาน
+                </div>
+              )}
+            </div>
+            <div className="flex w-full px-6 justify-end">
+              <button
+                onClick={closeSelectedDate}
+                className="group relative py-1  overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+              >
+                <span className="relative z-10">ยกเลิก</span>
+                <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                  <span className="absolute left-0 top-0 w-0 h-full bg-gray-200  transition-all duration-500 group-hover:w-full"></span>
+                </span>
+              </button>
             </div>
           </div>
         </div>

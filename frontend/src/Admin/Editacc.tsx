@@ -295,7 +295,7 @@ export default function Editacc() {
                 theme === "dark" ? "text-yellow-500" : "text-gray-900"
               }`}
             >
-              {t.Nickname}
+              {t.Name}
             </p>
             <p className="">{t.Position}</p>
             <p className="">{t.Phone_Number}</p>
@@ -467,7 +467,7 @@ export default function Editacc() {
               Anim ? "scale-100" : "scale-90"
             } ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}
           >
-            <p className="text-lg font-bold">ยืนยันการลบ</p>
+            <p className="text-lg font-semibold text-red-500">ยืนยันการลบ</p>
             {/* <div className="flex gap-2  items-center ">
               <p
                 className={`font-semibold ${
@@ -478,7 +478,7 @@ export default function Editacc() {
               </p>
               <span>{selectedDelete.Name}</span>
             </div> */}
-            <div className="border-b h-70 mb-5">
+            <div className="border-b h-70  mb-5">
               <img
                 className="border rounded-full mx-auto object-cover mb-5 bg-yellow-500 w-35 h-35"
                 src={`http://localhost:5000/uploads/Profile/${
@@ -496,7 +496,7 @@ export default function Editacc() {
             <div className="flex gap-2 justify-end">
               <button
                 onClick={closeAddEmployee}
-                className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
               >
                 <span className="relative z-10">ยกเลิก</span>
                 <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -505,11 +505,13 @@ export default function Editacc() {
               </button>
               <button
                 onClick={handleConfirmDelete}
-                className="group relative   overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                }`}
               >
                 <span className="relative z-10">ยืนยัน</span>
                 <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                  <span className="absolute left-0 top-0 w-0 h-full bg-red-600  transition-all duration-500 group-hover:w-full"></span>
+                  <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
                 </span>
               </button>
             </div>

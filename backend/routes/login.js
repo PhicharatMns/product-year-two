@@ -142,7 +142,7 @@ router.delete("/:id", async (req, res) => {
 // path DashboardUser
 router.get("/dashboardUser", verifyToken, async (req, res) => {
   try {
-    const user = await Login.findById(req.user.id); // req.user.id จาก token
+    const user = await Login.findById(req.user.Name); // req.user.id จาก token
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.json({
@@ -161,9 +161,7 @@ router.get("/dashboardUser", verifyToken, async (req, res) => {
 // ดึงข้อมูลช่างมาเเสดง ในหน้า Editacc
 router.get("/all-tradesman", async (req, res) => {
   try {
-    // ดึงเฉพาะ role = "user" (สมมติช่างคือ user)
     const tradesman = await Login.find(); // ไม่กรอง role
-    //    const tradesman = await Login.find({ role: { $in: ["user", "chief", "executive"] } });
     res.json(tradesman);
   } catch (err) {
     console.error(err);

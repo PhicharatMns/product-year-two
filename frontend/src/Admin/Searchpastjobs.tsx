@@ -52,7 +52,7 @@ const defaultForm: FormState = {
   Date_of_acceptance_of_work: new Date().toISOString().split("T")[0],
   Closing_date: new Date().toISOString().split("T")[0],
   description: "",
-  Status: "Active",
+  Status: "กำลังดำเนินการ",
   image: null,
   messageDelete: "",
 };
@@ -195,7 +195,7 @@ export default function Searchpastjobs() {
           e.Closing_date?.split("T")[0] ||
           new Date().toISOString().split("T")[0],
         description: e.description,
-        Status: e.Status || "Active",
+        Status: e.Status || "กำลังดำเนินการ",
         image: null,
         messageDelete: e.messageDelete,
       });
@@ -364,7 +364,8 @@ export default function Searchpastjobs() {
   const bg = theme === "dark" ? "bg-gray-800" : " shadow-sm bg-white";
   const bgborder = theme === "dark" ? "bg-gray-700" : "bg-gray-50";
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
-
+  const texthaed = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+  
   return (
     <div
       className={`transition-opacity duration-500 container mx-auto p-5 max-w-380   ${
@@ -445,97 +446,146 @@ export default function Searchpastjobs() {
           </div>
 
           {/* แสดงเฉพาะงานที่ Status = Active */}
-          {/* แสดงเฉพาะงานที่ Status = Active */}
-          {filtered
-            .filter((e) => e.Status === "Active")
-            .map((e, i) => (
-              <motion.div
-                key={e._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: i * 0.2,
-                  ease: "easeOut",
-                }}
-                className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${
-                  theme === "dark" ? "bg-gray-900" : "bg-gray-100"
-                }`}
-              >
-                {/* ชื่อ คต. */}
-                {(
-                  [
-                    "Worksheet",
-                    "Employer",
-                    "Contact_number",
-                  ] as (keyof Employee)[]
-                ).map((k) => (
-                  <p key={k} className="hidden lg:block truncate">
-                    {e[k] instanceof File ? e[k].name : e[k] ?? ""}
-                  </p>
-                ))}
+          {filtered.filter(
+            (e) =>
+              e.Status === "ล่าช้า" ||
+              e.Status === "กำลังดำเนินการ" ||
+              e.Status === "Active" ||
+              e.Status === "เสร็จสิ้น"
+          ).length > 0 ? (
+            filtered
+              .filter(
+                (e) =>
+                  e.Status === "ล่าช้า" ||
+                  e.Status === "กำลังดำเนินการ" ||
+                  e.Status === "Active" ||
+                  e.Status === "เสร็จสิ้น"
+              )
+              .sort((a, b) => {
+                const statusOrder = [
+                  "ล่าช้า",
+                  "กำลังดำเนินการ",
+                  "Active",
+                  "เสร็จสิ้น",
+                ];
 
-                {/* สถานะ Active */}
-                <p className="hidden lg:block truncate text-yellow-500">
-                  {e.Status}
-                </p>
+                const indexA = statusOrder.indexOf(a.Status ?? "");
+                const indexB = statusOrder.indexOf(b.Status ?? "");
+                const statusDiff =
+                  (indexA === -1 ? Infinity : indexA) -
+                  (indexB === -1 ? Infinity : indexB);
+                if (statusDiff !== 0) return statusDiff;
 
-                {/* วันที่ */}
-                {(
-                  [
-                    "Date_of_acceptance_of_work",
-                    "Closing_date",
-                  ] as (keyof Employee)[]
-                ).map((k) => (
-                  <p key={k} className="hidden lg:block truncate">
-                    {typeof e[k] === "string"
-                      ? e[k].split("T")[0]
-                      : e[k] instanceof Date
-                      ? e[k].toISOString().split("T")[0]
-                      : ""}
-                  </p>
-                ))}
+                const dateA = a.Closing_date
+                  ? new Date(a.Closing_date).getTime()
+                  : Infinity;
+                const dateB = b.Closing_date
+                  ? new Date(b.Closing_date).getTime()
+                  : Infinity;
+                return dateA - dateB;
+              })
+              .map((e, index) => (
+                <motion.div
+                  key={e._id ?? index} // fallback เป็น index เผื่อ _id ไม่มี
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: index * 0.2,
+                    ease: "easeOut",
+                  }}
+                  className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${
+                    theme === "dark" ? "bg-gray-900" : "bg-gray-100"
+                  }`}
+                >
+                  {/* ชื่อ คต. */}
+                  {(
+                    [
+                      "Worksheet",
+                      "Employer",
+                      "Contact_number",
+                    ] as (keyof Employee)[]
+                  ).map((k) => (
+                    <p key={k} className="hidden lg:block truncate">
+                      {e[k] instanceof File ? e[k].name : e[k] ?? ""}
+                    </p>
+                  ))}
 
-                {/* ปุ่มต่าง ๆ */}
-                <div className="gap-1 flex justify-center">
-                  <button
-                    onClick={() => Opendatele_function(e)}
-                    className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             hover:bg-red-600 active:-translate-y-1 active:scale-x-90 active:scale-y-110"
+                  {/* สถานะ */}
+                  <p
+                    className={`${
+                      e.Status === "กำลังดำเนินการ" ? texthaed : ""
+                    } ${e.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${
+                      e.Status === "ล่าช้า" ? "text-red-500" : ""
+                    }`}
                   >
-                    ลบ
-                  </button>
+                    {e.Status || "-"}
+                  </p>
 
-                  <button
-                    onClick={() => openModal(e)}
-                    className={`relative overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
-                theme === "dark"
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-blue-500 hover:bg-blue-600"
-              }`}
-                  >
-                    แก้ไข
-                  </button>
+                  {/* วันที่ */}
+                  {(
+                    [
+                      "Date_of_acceptance_of_work",
+                      "Closing_date",
+                    ] as (keyof Employee)[]
+                  ).map((k) => {
+                    let dateStr = "";
+                    if (e[k]) {
+                      if (typeof e[k] === "string")
+                        dateStr = e[k].split("T")[0];
+                      else if (e[k] instanceof Date)
+                        dateStr = e[k].toISOString().split("T")[0];
+                    }
+                    return (
+                      <p key={k} className="hidden lg:block truncate">
+                        {dateStr}
+                      </p>
+                    );
+                  })}
 
-                  <Link to={`/Details/${e._id}`}>
+                  {/* ปุ่ม */}
+                  <div className="gap-1 flex justify-center">
                     <button
-                      className={`relative overflow-hidden cursor-pointer rounded-md  px-2 py-1 text-white text-sm shadow-md transition-all duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
-                theme === "dark"
-                  ? "bg-yellow-600 hover:bg-yellow-700"
-                  : "bg-blue-600 hover:bg-blue-700"
-              }`}
+                      onClick={() => Opendatele_function(e)}
+                      className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-red-600 active:-translate-y-1 active:scale-x-90 active:scale-y-110"
                     >
-                      รายละเอียด
+                      ลบ
                     </button>
-                  </Link>
-                </div>
-              </motion.div>
-            ))}
+
+                    <button
+                      onClick={() => openModal(e)}
+                      className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                        theme === "dark"
+                          ? "bg-yellow-500 hover:bg-yellow-600"
+                          : "bg-blue-500 hover:bg-blue-600"
+                      }`}
+                    >
+                      แก้ไข
+                    </button>
+
+                    <Link to={`/Details/${e._id}`}>
+                      <button
+                        className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                          theme === "dark"
+                            ? "bg-yellow-600 hover:bg-yellow-700"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
+                      >
+                        รายละเอียด
+                      </button>
+                    </Link>
+                  </div>
+                </motion.div>
+              ))
+          ) : (
+            <div
+              className={`text-center py-5 font-semibold ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
+            >
+              ไม่พบใบงานของคุณ ในเวลานี่
+            </div>
+          )}
 
           {/* Modal */}
           {showModal && (
@@ -734,7 +784,7 @@ export default function Searchpastjobs() {
                           clasOpendate(); // ปิด modal
                         }
                       }}
-                      className="group relative overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                      className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-red-500 text-white px-4 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
                     >
                       <span className="relative z-10">ลบ</span>
                       <span className="absolute inset-0 overflow-hidden pointer-events-none">

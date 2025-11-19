@@ -10,299 +10,407 @@ import {
 } from "recharts";
 import { useTheme } from "@/components/theme-provider";
 import { animate, motion, useMotionValue, useTransform } from "motion/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
+import { jwtDecode } from "jwt-decode";
+import { Link } from "react-router-dom";
+
+// ... [Interface definitions remain the same] ...
+interface Employee {
+  _id: string;
+  Worksheet?: string;
+  Supervisor?: string;
+  PhoneNumber?: string;
+  Date_of_acceptance_of_work?: string;
+  Closing_date?: string;
+  Details?: string;
+  description?: string;
+  Status?: "Finish" | "กำลังดำเนินการ" | "ล่าช้า" | "Active" | "เสร็จสิ้น";
+}
+interface Tradesman {
+  _id: string;
+  Name: string;
+  employeeId: string; // ID ของงานที่ผูกด้วย (ถ้ามี)
+  role?: string; // เช่น "chief", "staff"
+  id: string; // user id
+}
+interface JwtPayload {
+  id: string;
+}
+interface MonthlyData {
+  เดือน: string;
+  งานทั้งหมด: number;
+  เสร็จสิ้น: number;
+  กำลังดำเนินการ: number;
+  ล่าช้า: number;
+}
+interface DashboardStats {
+  totalTradesmen: number;
+  tradesmenWithJobs: number;
+  tradesmenWithoutJobs: number;
+  materialRequests: number;
+}
+
+interface typeUser {
+  Name: string;
+  role: string;
+  Position: string;
+}
 
 export default function Dashboardchief() {
-  const techniciansData = [
-    {
-      เดือน: "มกราคม",
-      จำนวนช่าง: 50,
-      ช่างที่ได้งาน: 35,
-      ช่างที่ยังไม่มีงาน: 15,
-    },
-    {
-      เดือน: "กุมภาพันธ์",
-      จำนวนช่าง: 60,
-      ช่างที่ได้งาน: 40,
-      ช่างที่ยังไม่มีงาน: 20,
-    },
-    {
-      เดือน: "มีนาคม",
-      จำนวนช่าง: 55,
-      ช่างที่ได้งาน: 45,
-      ช่างที่ยังไม่มีงาน: 10,
-    },
-    {
-      เดือน: "เมษายน",
-      จำนวนช่าง: 65,
-      ช่างที่ได้งาน: 50,
-      ช่างที่ยังไม่มีงาน: 15,
-    },
-    {
-      เดือน: "พฤษภาคม",
-      จำนวนช่าง: 70,
-      ช่างที่ได้งาน: 60,
-      ช่างที่ยังไม่มีงาน: 10,
-    },
-    {
-      เดือน: "มิถุนายน",
-      จำนวนช่าง: 60,
-      ช่างที่ได้งาน: 40,
-      ช่างที่ยังไม่มีงาน: 20,
-    },
-    {
-      เดือน: "กรกฎาคม",
-      จำนวนช่าง: 75,
-      ช่างที่ได้งาน: 55,
-      ช่างที่ยังไม่มีงาน: 20,
-    },
-    {
-      เดือน: "สิงหาคม",
-      จำนวนช่าง: 80,
-      ช่างที่ได้งาน: 65,
-      ช่างที่ยังไม่มีงาน: 15,
-    },
-    {
-      เดือน: "กันยายน",
-      จำนวนช่าง: 85,
-      ช่างที่ได้งาน: 70,
-      ช่างที่ยังไม่มีงาน: 15,
-    },
-    {
-      เดือน: "ตุลาคม",
-      จำนวนช่าง: 90,
-      ช่างที่ได้งาน: 75,
-      ช่างที่ยังไม่มีงาน: 15,
-    },
-    {
-      เดือน: "พฤศจิกายน",
-      จำนวนช่าง: 95,
-      ช่างที่ได้งาน: 80,
-      ช่างที่ยังไม่มีงาน: 15,
-    },
-    {
-      เดือน: "ธันวาคม",
-      จำนวนช่าง: 100,
-      ช่างที่ได้งาน: 85,
-      ช่างที่ยังไม่มีงาน: 15,
-    },
-  ];
+  const { theme } = useTheme();
 
-  // #region Sample data
-  const monthlyData = [
-    { เดือน: "มกราคม", ทั้งหมด: 50, เสร็จสิ้น: 20, กำลังดำเนินการ: 30 },
-    { เดือน: "กุมภาพันธ์", ทั้งหมด: 60, เสร็จสิ้น: 35, กำลังดำเนินการ: 25 },
-    { เดือน: "มีนาคม", ทั้งหมด: 45, เสร็จสิ้น: 30, กำลังดำเนินการ: 15 },
-    { เดือน: "เมษายน", ทั้งหมด: 70, เสร็จสิ้น: 50, กำลังดำเนินการ: 20 },
-    { เดือน: "พฤษภาคม", ทั้งหมด: 55, เสร็จสิ้น: 25, กำลังดำเนินการ: 30 },
-    { เดือน: "มิถุนายน", ทั้งหมด: 65, เสร็จสิ้น: 40, กำลังดำเนินการ: 25 },
-    { เดือน: "กรกฎาคม", ทั้งหมด: 60, เสร็จสิ้น: 45, กำลังดำเนินการ: 15 },
-    { เดือน: "สิงหาคม", ทั้งหมด: 75, เสร็จสิ้น: 50, กำลังดำเนินการ: 25 },
-    { เดือน: "กันยายน", ทั้งหมด: 80, เสร็จสิ้น: 60, กำลังดำเนินการ: 20 },
-    { เดือน: "ตุลาคม", ทั้งหมด: 70, เสร็จสิ้น: 45, กำลังดำเนินการ: 25 },
-    { เดือน: "พฤศจิกายน", ทั้งหมด: 90, เสร็จสิ้น: 70, กำลังดำเนินการ: 20 },
-    { เดือน: "ธันวาคม", ทั้งหมด: 100, เสร็จสิ้น: 80, กำลังดำเนินการ: 20 },
-  ];
+  const [monthlyData, setMonthlyData] = useState<MonthlyData[]>([]);
 
-  // #endregion
+  const [dashboardStats, setDashboardStats] = useState<DashboardStats>({
+    totalTradesmen: 0,
+    tradesmenWithJobs: 0,
+    tradesmenWithoutJobs: 0,
+    materialRequests: 0,
+  });
+
+  // State ที่จำเป็น
+  const [, setfinish] = useState(false);
+  const [, setanim] = useState(false);
+  const [, setInProgress] = useState(false);
+  const [, setAnimInProgress] = useState(false);
+  const [, setpopupdelayed] = useState(false);
+  const [fadeIn, setFadeIn] = useState(false);
+
+  const opensetpopupdelayed = () => {
+    setpopupdelayed(true);
+    setTimeout(() => setanim(true), 10);
+  };
+
+  const OpenInProgressPopup = () => {
+    setInProgress(true);
+    setTimeout(() => setAnimInProgress(true), 50);
+  };
+  const OpenModadShowfinishpopup = () => {
+    setfinish(true);
+    setTimeout(() => setanim(true), 50);
+  };
+
+  const token = localStorage.getItem("token");
+  const decoded: JwtPayload | null = token
+    ? jwtDecode<JwtPayload>(token)
+    : null;
+  const currentUserId = decoded?.id;
+
+  // --- ฟังก์ชันดึงข้อมูลงานของช่าง ---
+  const fetchData = useCallback(async () => {
+    if (!token || !currentUserId) return;
+
+    try {
+      const [resEmp, resTrades] = await Promise.all([
+        fetch("http://localhost:5000/api/employees"),
+        fetch("http://localhost:5000/api/otherTradesman", {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      const allEmployees: Employee[] = await resEmp.json();
+      const tradesmen: Tradesman[] = await resTrades.json();
+
+      // หางานของช่างคนนั้น (ใช้ tradesmen ที่ได้จากการ fetch)
+      const myJobIds = tradesmen
+        .filter((t) => t.id === currentUserId)
+        .map((t) => t.employeeId);
+
+      const myJobs = allEmployees.filter((emp) => myJobIds.includes(emp._id));
+
+      // --- คำนวณสถิติใหม่ (ใช้ tradesmen ที่ได้จากการ fetch) ---
+      const totalTradesmenReal = tradesmen.length;
+
+      const uniqueTradesmenWithJobs = new Set(
+        tradesmen.filter((t) => t.employeeId).map((t) => t.id)
+      ).size;
+
+      setDashboardStats({
+        totalTradesmen: totalTradesmenReal,
+        tradesmenWithJobs: uniqueTradesmenWithJobs,
+        tradesmenWithoutJobs: totalTradesmenReal - uniqueTradesmenWithJobs,
+        materialRequests: 5,
+      });
+
+      // --- แปลงเป็น monthlyData ---
+      const months = [
+        "มกราคม",
+        "กุมภาพันธ์",
+        "มีนาคม",
+        "เมษายน",
+        "พฤษภาคม",
+        "มิถุนายน",
+        "กรกฎาคม",
+        "สิงหาคม",
+        "กันยายน",
+        "ตุลาคม",
+        "พฤศจิกายน",
+        "ธันวาคม",
+      ];
+
+      const dataPerMonth = months.map((month) => {
+        const jobsInMonth = myJobs.filter((emp) => {
+          if (!emp.Date_of_acceptance_of_work) return false;
+          const date = new Date(emp.Date_of_acceptance_of_work);
+          return date.getMonth() === months.indexOf(month);
+        });
+
+        return {
+          เดือน: month,
+          งานทั้งหมด: jobsInMonth.length,
+          เสร็จสิ้น: jobsInMonth.filter((j) => j.Status === "Finish").length,
+          กำลังดำเนินการ: jobsInMonth.filter(
+            (j) => j.Status === "กำลังดำเนินการ" || j.Status === "Active"
+          ).length,
+          ล่าช้า: jobsInMonth.filter((j) => j.Status === "ล่าช้า").length,
+        };
+      });
+
+      setMonthlyData(dataPerMonth);
+    } catch (err) {
+      console.error(err);
+    }
+  }, [token, currentUserId]);
+
+  const [user, setuser] = useState<typeUser[]>([]);
+
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/login/all-tradesman");
+      const data = await res.json();
+      setuser(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const numberOfUsers = user.length;
+
+  // motion value (ตัวเลขจริง)
   const count = useMotionValue(0);
-  const rounded = useTransform(() => Math.round(count.get()));
-  const [Faev, setFaev] = useState(false);
+
+  // เอาค่ามาปัดเป็นจำนวนเต็ม
+  const rounded = useTransform(count, (latest) => Math.floor(latest));
 
   useEffect(() => {
-    const controls = animate(count, 100, { duration: 5 });
-    const timer = setTimeout(() => setFaev(true), 10);
+    const controls = animate(count, numberOfUsers, {
+      duration: 1.5,
+    });
 
+    return () => controls.stop();
+  }, [numberOfUsers]);
+
+  // เริ่ม fade-in + animate ตัวเลข
+  useEffect(() => {
+    const timer = setTimeout(() => setFadeIn(true), 10);
     return () => {
-      controls.stop(); // หยุด animation
-      clearTimeout(timer); // ล้าง timer
+      clearTimeout(timer);
     };
   }, []);
 
-  const { theme } = useTheme();
+  useEffect(() => {
+    fetchData();
+    fetchUser();
+  }, [fetchData]);
+
   const descrtiption = theme === "dark" ? "text-white" : "text-gray-500";
-  const cardBg = theme === "dark" ? "bg-gray-900  " : "";
+  const cardBg = theme === "dark" ? "bg-gray-900" : "bg-gray-100 shadow-sm";
+
+  const statsItems = useMemo(
+    () => [
+      {
+        title: "จำนวนช่างทั้งหมด",
+        value: dashboardStats.totalTradesmen,
+        color: "bg-blue-400",
+        color_bark: "bg-yellow-500",
+        link: "user/getpaper",
+        valueFn: () => {},
+      },
+      {
+        title: "ช่างที่ได้งาน",
+        value: dashboardStats.tradesmenWithJobs,
+        color: "bg-blue-500",
+        color_bark: "bg-yellow-500",
+        valueFn: OpenModadShowfinishpopup,
+        link: "chief/edituser",
+      },
+      {
+        title: "ช่างที่ยังไม่มีงาน",
+        value: numberOfUsers - dashboardStats.totalTradesmen,
+        color: "bg-blue-600",
+        color_bark: "bg-yellow-600",
+        valueFn: OpenInProgressPopup,
+        link: "chief/edituser",
+      },
+      {
+        title: "รายการขอเบิกของ",
+        value: dashboardStats.materialRequests,
+        color: "bg-blue-700",
+        color_bark: "bg-yellow-700",
+        link: "chief/ItemChief",
+        valueFn: opensetpopupdelayed,
+      },
+    ],
+    [dashboardStats]
+  );
 
   return (
     <div
-      className={` w-max-380 p-5 mx-auto container duration-300 pt-10 ${
-        Faev ? "opacity-100" : "opacity-0"
+      className={`w-max-380 p-5 mx-auto container duration-300 ${
+        fadeIn ? "opacity-100" : "opacity-0"
       }`}
     >
-      <header className="mb-5">
-        <h1
-          className={`text-3xl sm:text-3xl md:text-3xl font-extrabold drop-shadow-sm  ${
-            theme === "dark" ? "text-yellow-500" : "text-blue-500"
-          }`}
-        >
-          Dashboard{" "}
-          <span
-            className={`${theme === "dark" ? "text-white" : "text-yellow-500"}`}
+      <div>
+        <header className="mb-5">
+          <h1
+            className={`text-3xl font-extrabold drop-shadow-sm ${
+              theme === "dark" ? "text-yellow-500" : "text-blue-500"
+            }`}
           >
-            หัวหน้า
-          </span>
-        </h1>
-        <p className={`  text-lg font-medium ${descrtiption}`}>
-          ภาพรวมการทำงานทั้งหมดในระบบ
-        </p>
-      </header>
+            Dashboard{" "}
+            <span
+              className={`${
+                theme === "dark" ? "text-white" : "text-yellow-500"
+              }`}
+            >
+              User
+            </span>
+          </h1>
+          <p className={`text-lg font-medium ${descrtiption}`}>
+            ภาพรวมการทำงานของช่างคนนี้
+          </p>
+        </header>
 
-      <section>
-        <div className="flex flex-col lg:flex-row gap-10">
-          <div className="grid grid-cols-1 w-90 gap-5">
-            {[
-              {
-                title: "จำนวนช่าง",
-                color: "bg-blue-400",
-                color_bark: "bg-yellow-500",
-              },
-              {
-                title: "ช่างที่ได้งาน",
-                color: "bg-blue-500",
-                color_bark: "bg-yellow-600",
-              },
-              {
-                title: "ช่างที่ยังไม่มีงาน",
-                color: "bg-blue-700",
-                color_bark: "bg-yellow-700",
-              },
-              {
-                title: "รายการขอเบิกของ",
-                color: "bg-blue-800",
-                color_bark: "bg-yellow-900",
-              },
-            ].map((item, index) => (
-              <div
-                key={index}
-                className={`  text-white rounded-2xl flex  pl-5 justify-center flex-col shadow-lg ${
-                  theme === "dark" ? item.color_bark : item.color
-                }`}
-              >
-                <h2 className="text-2xl mb-3 font-extrabold">{item.title}</h2>
-                <p className="mb-3 font-extrabold text-xl">
-                  <motion.pre>{rounded}</motion.pre>
-                </p>
-                <div className="text-sm text-white">
-                  <button
-                    role="link"
-                    className={`relative cursor-pointer bg-[length:100%_2px,0_2px] bg-[position:100%_100%,0_100%] 
-                 bg-no-repeat transition-[background-size,color] duration-500 hover:bg-[0_2px,100%_2px] 
-                 rounded-md ${
-                   theme === "dark"
-                     ? "hover:text-purple-600 bg-[linear-gradient(#ffffff,#ffffff),linear-gradient(#7c3aed,#7c3aed)]" // ม่วงเข้มตัดเหลือง
-                     : "hover:text-yellow-500 bg-[linear-gradient(#ffffff,#ffffff),linear-gradient(#facc15,#facc15)]" // น้ำเงินเข้มตัดเหลือง
-                 }`}
-                  >
-                    รายละเอียด
-                  </button>
+        <section>
+          <div className="flex flex-col lg:flex-row gap-10">
+            {/* Dashboard Cards */}
+            <div className="grid grid-cols-1 w-90 gap-5">
+              {statsItems.map((item, index) => (
+                <div
+                  key={index}
+                  className={`text-white rounded-2xl flex pl-5 justify-center flex-col shadow-lg ${
+                    theme === "dark" ? item.color_bark : item.color
+                  }`}
+                >
+                  <h2 className="text-2xl mb-3 font-extrabold">{item.title}</h2>
+                  <p className="mb-3 font-extrabold text-xl">
+                    {item.title === "จำนวนช่างทั้งหมด" ? (
+                      <motion.pre>{rounded}</motion.pre>
+                    ) : (
+                      <motion.pre>{item.value}</motion.pre>
+                    )}
+                  </p>
+                  <div>
+                    <Link
+                      to={`/${item.link}`}
+                      className={`relative cursor-pointer after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:translate-y-1  after:opacity-0 after:transition after:duration-150 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100 ${
+                        theme === "dark" ? "after:bg-white" : "after:bg-white"
+                      }`}
+                    >
+                      รายละเอียด
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* ส่วนแสดงกราฟสถานะช่าง */}
+            <div className="w-full  flex  flex-col gap-3">
+              {/* กราฟ Bar Chart เดิม */}
+              <div className={`rounded-xl shadow-sm h-200 p-6 ${cardBg}`}>
+                <h2
+                  className={`text-2xl font-extrabold mb-4 text-center ${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
+                >
+                  จำนวนงานแต่ละเดือน
+                </h2>
+                <div className="w-full h-180 ">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={monthlyData}>
+                      <CartesianGrid
+                        stroke={theme === "dark" ? "#facc15" : "#3b82f6"}
+                      />
+                      <XAxis dataKey="เดือน" />
+                      <YAxis
+                        yAxisId="left"
+                        orientation="left"
+                        stroke={theme === "dark" ? "#eab308" : "#3b82f6"}
+                        width="auto"
+                      />
+                      <YAxis
+                        yAxisId="right"
+                        orientation="right"
+                        stroke={theme === "dark" ? "#eab308" : "#3b82f6"}
+                        width="auto"
+                      />
+                      <Tooltip />
+                      <Legend />
+                      <Bar
+                        yAxisId="left"
+                        dataKey="งานทั้งหมด"
+                        fill={theme === "dark" ? "#3b82f6" : "#3b82f6"}
+                      />
+                      <Bar yAxisId="right" dataKey="เสร็จสิ้น" fill="#10b981" />
+                      <Bar
+                        yAxisId="right"
+                        dataKey="กำลังดำเนินการ"
+                        fill="#fb923c"
+                      />
+                      <Bar yAxisId="right" dataKey="ล่าช้า" fill="#f87171" />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
-            ))}
+            </div>
           </div>
-
-          <div className="w-full flex flex-col gap-3">
-            <div className={`rounded-xl shadow-xl p-6 ${cardBg}`}>
-              <h2
-                className={`text-2xl font-extrabold mb-4 text-center ${
-                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                }`}
-              >
-                จํานวนกราฟที่ได่รับงาน
-              </h2>
-              <div className="w-full h-70 ">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={techniciansData}>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke={theme === "dark" ? "#facc15" : "#3b82f6"}
-                    />{" "}
-                    <XAxis dataKey="เดือน" />
-                    <YAxis
-                      yAxisId="left"
-                      orientation="left"
-                      stroke={`${theme === "dark" ? "#eab308" : "#3b82f6"}`}
-                      width="auto"
-                    />
-                    <YAxis
-                      yAxisId="right"
-                      orientation="right"
-                      stroke={`${theme === "dark" ? "#eab308" : "#3b82f6"}`}
-                      width="auto"
-                    />
-                    <Tooltip />
-                    <Legend />
-                    <Bar
-                      yAxisId="left"
-                      dataKey="จำนวนช่าง"
-                      fill={` ${theme === "dark" ? "#3b82f6" : "#3b82f6"}`}
-                    />
-                    <Bar
-                      yAxisId="right"
-                      dataKey="ช่างที่ได้งาน"
-                      fill={` ${theme === "dark" ? "#10b981" : "#10b981"}`}
-                    />
-                    <Bar
-                      yAxisId="right"
-                      dataKey="ช่างที่ยังไม่มีงาน"
-                      fill={` ${theme === "dark" ? "#ef4444" : "#ef4444"}`}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-
-            <div className={`rounded-xl shadow-xl p-6 ${cardBg}`}>
-              <h2
-                className={`text-2xl font-extrabold mb-4 text-center ${
-                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                }`}
-              >
-                จำนวนงานแต่ละเดือน
-              </h2>
-              <div className="w-full h-70">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={monthlyData}>
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      stroke={theme === "dark" ? "#facc15" : "#3b82f6"}
-                    />
-                    <XAxis dataKey="เดือน" />
-                    <YAxis
-                      yAxisId="left"
-                      orientation="left"
-                      stroke={`${theme === "dark" ? "#eab308" : "#3b82f6"}`}
-                      width="auto"
-                    />
-                    <YAxis
-                      yAxisId="right"
-                      orientation="right"
-                      stroke={`${theme === "dark" ? "#eab308" : "#3b82f6"}`}
-                      width="auto"
-                    />
-                    <Tooltip />
-                    <Legend />
-                    <Bar
-                      yAxisId="left"
-                      dataKey="ทั้งหมด"
-                      fill={` ${theme === "dark" ? "#3b82f6" : "#3b82f6"}`}
-                    />
-                    <Bar
-                      yAxisId="right"
-                      dataKey="เสร็จสิ้น"
-                      fill={` ${theme === "dark" ? "#10b981" : "#10b981"}`}
-                    />
-                    <Bar
-                      yAxisId="right"
-                      dataKey="กำลังดำเนินการ"
-                      fill={` ${theme === "dark" ? "#fb923c" : "#fb923c"}`}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
+        </section>
+      </div>
+      {/* Popups */}
+      {/* {finish && (
+        <div
+          className={`z-50 duration-300 inset-0 fixed justify-center items-center flex backdrop-blur-sm bg-black/40 ${
+            anim ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div
+            className={`rounded-2xl ${bgpopup} w-[900px] h-200 shadow-2xl border `}
+          >
+            <button onClick={closeModalfinish}>ปิด</button>
+            <h3 className="text-xl p-4">รายละเอียด: ช่างที่ได้งาน</h3>
           </div>
         </div>
-      </section>
+      )}
+
+      {inProgress && (
+        <div
+          className={`z-50 duration-300 inset-0 fixed justify-center items-center flex backdrop-blur-sm bg-black/40 ${
+            animInProgress ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div
+            className={`rounded-2xl ${bgpopup} w-[900px] h-200 shadow-2xl border `}
+          >
+            <button onClick={closeModalinProgress}>ปิด</button>
+            <h3 className="text-xl p-4">รายละเอียด: ช่างที่ยังไม่มีงาน</h3>
+          </div>
+        </div>
+      )}
+
+      {popupdelayed && (
+        <div
+          className={`z-50 duration-300 inset-0 fixed justify-center items-center flex backdrop-blur-sm bg-black/40 ${
+            anim ? "opacity-100" : "opacity-0"
+          }`}
+        >
+          <div
+            className={`rounded-2xl w-[900px] h-200 shadow-2xl border ${bgpopup}`}
+          >
+            <button onClick={closepopupdelayed}>ปิด</button>
+            <h3 className="text-xl p-4">รายละเอียด: รายการขอเบิกของ</h3>
+          </div>
+        </div>
+      )} */}
     </div>
   );
 }

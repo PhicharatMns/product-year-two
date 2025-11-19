@@ -1,19 +1,44 @@
 const express = require("express");
 const router = express.Router();
 const Item = require("../models/Item");
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = process.env.JWT_SECRET || "mysecretkey";
+
+// Middleware ตรวจสอบ token
+const verifyToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+
+  if (!token) return res.status(401).json({ message: "Token required" });
+
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) return res.status(403).json({ message: "Invalid token" });
+    req.user = decoded; // id, username, role
+    next();
+  });
+};
 
 // ตัวอย่างตั้งชื่อ route เป็น /add-item
 router.post("/add-item", async (req, res) => {
   try {
     const { name, category, number, counting } = req.body;
 
-    const newItem = new Item({
-      name,
-      category,
-      number,
-      counting,
-    });
+    // ตรวจสอบว่ามี item ชื่อเดียวกันใน category เดียวกันหรือไม่
+    const existingItem = await Item.findOne({ name, category });
 
+    if (existingItem) {
+      // รวมจำนวน: number + counting ของรายการเก่า
+      existingItem.number = Number(existingItem.number) + Number(number);
+      existingItem.counting = Number(existingItem.counting) + Number(counting);
+      await existingItem.save();
+      return res.status(200).json({
+        message: "อัปเดตจำนวนรายการที่มีอยู่แล้ว",
+        item: existingItem,
+      });
+    }
+
+    // ถ้าไม่มีซ้ำ → สร้างใหม่
+    const newItem = new Item({ name, category, number, counting });
     const savedItem = await newItem.save();
     res.status(201).json(savedItem);
   } catch (error) {
