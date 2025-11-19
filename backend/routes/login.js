@@ -62,7 +62,7 @@ router.post("/register", upload.single("Profile"), async (req, res) => {
       Position: req.body.Position,
       Start_data: req.body.Start_data,
       role: req.body.role,
-      Salary: req.body.Salary
+      Salary: req.body.Salary,
     });
 
     await newUser.save();
@@ -115,7 +115,11 @@ router.delete("/:id", async (req, res) => {
     }
 
     if (deleted.Profile) {
-      const filepath = path.join(__dirname, "../uploads/Profile", deleted.Profile);
+      const filepath = path.join(
+        __dirname,
+        "../uploads/Profile",
+        deleted.Profile
+      );
       if (fs.existsSync(filepath)) {
         fs.unlink(filepath, (err) => {
           if (err) console.error("ลบรูปไม่สำเร็จ:", err);
@@ -133,9 +137,7 @@ router.delete("/:id", async (req, res) => {
 // *** จุดสำคัญที่แก้ไข *** path DashboardUser
 router.get("/dashboardUser", verifyToken, async (req, res) => {
   try {
-    // ต้องใช้ req.user.id เพราะตอน login เรา sign token ด้วย id
-    const user = await Login.findById(req.user.id); 
-    
+    const user = await Login.findById(req.user.Name); // req.user.id จาก token
     if (!user) return res.status(404).json({ message: "User not found" });
 
     res.json({
@@ -167,9 +169,20 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
   try {
     const { id } = req.params;
     const {
-      username, passwork, Name, Nickname, ID, Birthday,
-      Address, Phone_Number, Email, Position, Start_data,
-      role, Salary,
+      username,
+      passwork,
+      Name,
+      Nickname,
+      ID,
+      Birthday,
+      Address,
+      Phone_Number,
+      Email,
+      Position,
+      Start_data,
+      role,
+      Salary,
+
     } = req.body;
 
     const user = await Login.findById(id);
