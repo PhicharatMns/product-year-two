@@ -1,20 +1,20 @@
-import { useTheme } from "@/components/theme-provider"; // (สมมติว่าคุณมีไฟล์นี้อยู่)
-import { useEffect, useState, useRef, ChangeEvent, FormEvent } from "react";
-import type { ReactNode } from "react";
-
-// 1. นำเข้า Icons (เพิ่ม ChevronDown สำหรับ Dropdown)
+import React, { useEffect, useState, ChangeEvent, FormEvent, ReactNode, createContext, useContext } from "react";
 import { 
   Search, 
   Plus, 
   X, 
   TriangleAlert, 
-  FileText,   
+  FileText,    
   ClipboardList,
-  Warehouse,   
+  Warehouse,    
   ChevronDown
 } from "lucide-react";
 
-// --- Types (เหมือนเดิม) ---
+// --- Mock Theme Provider ---
+const ThemeContext = createContext({ theme: "light", toggleTheme: () => {} });
+export const useTheme = () => useContext(ThemeContext);
+
+// --- Types ---
 export type ReportItem = {
   id: string;
   title: string;
@@ -27,7 +27,7 @@ export type ReportItem = {
 type ColorName = "green" | "blue" | "purple" | "gray" | "yellow" | "red" | "indigo" | "pink";
 type ReportStatus = 'Pending' | 'Resolved' | 'Submitted';
 
-// --- Mock Data (เหมือนเดิม) ---
+// --- Mock Data ---
 const initialReportsData: ReportItem[] = [
   { id: "P001", title: "เซิร์ฟเวอร์ฐานข้อมูลขัดข้อง", category: "ปัญหา (Admin)", detail: "สถานะ: กำลังแก้ไข", date: "16/11/68", status: "Pending" },
   { id: "D001", title: "รายงานสรุปยอดขายประจำเดือน", category: "เอกสาร", detail: "ส่งโดย: ฝ่ายบัญชี", date: "15/11/68", status: "Submitted" },
@@ -40,7 +40,7 @@ const initialReportsData: ReportItem[] = [
 
 // --- Helper Components ---
 
-// 1. Badge (เหมือนเดิม)
+// 1. Badge
 type BadgeProps = { children: ReactNode; color?: ColorName; };
 const Badge = ({ children, color = "gray" }: BadgeProps) => {
   const { theme } = useTheme();
@@ -51,6 +51,8 @@ const Badge = ({ children, color = "gray" }: BadgeProps) => {
     yellow: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300",
     red: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
     gray: "bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-gray-300",
+    indigo: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300",
+    pink: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300",
   }[color];
   return (
     <span className={`inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-medium ${colorClasses}`}>
@@ -59,7 +61,7 @@ const Badge = ({ children, color = "gray" }: BadgeProps) => {
   );
 };
 
-// 2. StatCard (เหมือนเดิม)
+// 2. StatCard
 type StatCardProps = { title: string; value: string | number; icon: ReactNode; colorClass: string; theme: string | undefined; }
 const StatCard = ({ title, value, icon, colorClass, theme }: StatCardProps) => {
   const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
@@ -75,11 +77,7 @@ const StatCard = ({ title, value, icon, colorClass, theme }: StatCardProps) => {
   );
 }
 
-// 3. AddReportModal (เหมือนเดิม - ไม่ได้คัดลอกมาเพื่อประหยัดพื้นที่)
-// (สมมติว่า AddReportModal และ AddReportForm อยู่ที่นี่)
-// ... (วางโค้ด AddReportModal และ AddReportForm จากตัวอย่างก่อนหน้า)
-
-// ⭐️ 4. (ใหม่) Kanban Card Component
+// 3. Kanban Card
 type KanbanCardProps = {
   report: ReportItem;
   theme: string | undefined;
@@ -93,28 +91,28 @@ const KanbanCard = ({ report, theme, getStatusColor }: KanbanCardProps) => {
   const metaText = theme === "dark" ? "text-gray-400" : "text-gray-500";
 
   return (
-    <div className={`p-3 rounded-lg border ${border} ${cardBg} shadow-sm cursor-pointer hover:shadow-md transition-shadow`}>
-      {/* Card Header: Title & Status */}
+    <div className={`p-3 rounded-lg border ${border} ${cardBg} shadow-sm cursor-pointer hover:shadow-md transition-shadow group`}>
+      {/* Card Header */}
       <div className="flex justify-between items-start mb-2">
-        <span className={`text-sm font-semibold ${titleText}`}>{report.title}</span>
+        <span className={`text-sm font-semibold ${titleText} line-clamp-2`}>{report.title}</span>
         <Badge color={getStatusColor(report.status)}>{report.status}</Badge>
       </div>
 
-      {/* Card Body: Detail */}
-      <p className={`text-sm ${detailText} mb-3`}>
+      {/* Card Body */}
+      <p className={`text-sm ${detailText} mb-3 line-clamp-3`}>
         {report.detail}
       </p>
 
-      {/* Card Footer: Date & ID */}
+      {/* Card Footer */}
       <div className={`flex justify-between items-center text-xs ${metaText}`}>
         <span>{report.date}</span>
-        <span>ID: {report.id}</span>
+        <span className="font-mono opacity-70">#{report.id}</span>
       </div>
     </div>
   );
 };
 
-// ⭐️ 5. (ใหม่) Kanban Column Component
+// 4. Kanban Column (Responsive Optimized)
 type KanbanColumnProps = {
   title: string;
   reports: ReportItem[];
@@ -139,18 +137,18 @@ const KanbanColumn = ({ title, reports, theme, getStatusColor, getCategoryColor 
   };
 
   return (
-    // ⭐️ กำหนดความกว้างของคอลัมน์
-    <div className="w-80 md:w-96 flex-shrink-0">
-      {/* Column Header */}
-      <div className={`flex items-center justify-between p-3 rounded-t-lg ${columnBg} border-t-4 ${colorMap[colorName]}`}>
+    <div className="w-[85vw] sm:w-80 md:w-96 flex-shrink-0 snap-center flex flex-col h-full max-h-full">
+      
+      {/* Header */}
+      <div className={`flex items-center justify-between p-3 rounded-t-lg ${columnBg} border-t-4 ${colorMap[colorName]} flex-shrink-0 shadow-sm mb-1`}>
         <h3 className={`font-semibold ${titleText}`}>{title}</h3>
-        <span className={`text-sm font-medium px-2 py-0.5 rounded-full ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} ${countText}`}>
+        <span className={`text-xs font-bold px-2 py-1 rounded-full ${theme === 'dark' ? 'bg-gray-700' : 'bg-gray-200'} ${countText}`}>
           {reports.length}
         </span>
       </div>
 
-      {/* Column Body (Card List) */}
-      <div className={`p-3 flex flex-col gap-3 rounded-b-lg ${columnBg} h-full max-h-[65vh] overflow-y-auto`}>
+      {/* Body (Scrollable) */}
+      <div className={`p-2 flex flex-col gap-2 rounded-b-lg ${columnBg} flex-grow overflow-y-auto min-h-0 scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600`}>
         {reports.map(report => (
           <KanbanCard 
             key={report.id}
@@ -160,8 +158,8 @@ const KanbanColumn = ({ title, reports, theme, getStatusColor, getCategoryColor 
           />
         ))}
         {reports.length === 0 && (
-          <div className="p-10 text-center text-gray-500">
-            <p>ไม่มีรายงาน</p>
+          <div className="flex flex-col items-center justify-center h-32 text-gray-400 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg">
+            <p className="text-sm">ไม่มีรายการ</p>
           </div>
         )}
       </div>
@@ -169,224 +167,195 @@ const KanbanColumn = ({ title, reports, theme, getStatusColor, getCategoryColor 
   );
 }
 
+// 5. Modal Component
+type ModalProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  onSubmit: (e: FormEvent) => void;
+  theme: string | undefined;
+  categories: string[];
+  newReport: any;
+  onFormChange: (e: ChangeEvent<any>) => void;
+}
+const AddReportModal = ({ isOpen, onClose, onSubmit, theme, categories, newReport, onFormChange }: ModalProps) => {
+  if (!isOpen) return null;
+  const bg = theme === "dark" ? "bg-gray-800" : "bg-white";
+  const text = theme === "dark" ? "text-white" : "text-gray-900";
+  const inputBg = theme === "dark" ? "bg-gray-700 border-gray-600 text-white" : "bg-white border-gray-300 text-gray-900";
 
-// --- Main Component (Getpaperexecutive) ---
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4">
+      <div className={`${bg} rounded-xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in duration-200`}>
+        <div className="flex justify-between items-center p-4 border-b border-gray-200 dark:border-gray-700">
+          <h3 className={`text-lg font-semibold ${text}`}>แจ้งรายงานใหม่</h3>
+          <button onClick={onClose} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+            <X size={20} />
+          </button>
+        </div>
+        <form onSubmit={onSubmit} className="p-4 flex flex-col gap-4">
+          <div>
+            <label className={`block text-sm font-medium mb-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>หัวข้อ</label>
+            <input required name="title" value={newReport.title} onChange={onFormChange} className={`w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none ${inputBg}`} placeholder="ระบุหัวข้อ..." />
+          </div>
+          <div>
+            <label className={`block text-sm font-medium mb-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>หมวดหมู่</label>
+            <select name="category" value={newReport.category} onChange={onFormChange} className={`w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none ${inputBg}`}>
+              {categories.map(c => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </div>
+          <div>
+            <label className={`block text-sm font-medium mb-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>รายละเอียด</label>
+            <textarea required name="detail" value={newReport.detail} onChange={onFormChange} rows={3} className={`w-full rounded-lg border px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none ${inputBg}`} placeholder="รายละเอียดเพิ่มเติม..." />
+          </div>
+          <div className="flex justify-end gap-3 mt-2">
+            <button type="button" onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600">ยกเลิก</button>
+            <button type="submit" className="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 shadow-sm">บันทึก</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+// --- Main Component ---
 
 export default function Getpaperexecutive() {
-  // --- Hooks & Context ---
   const { theme } = useTheme();
-
-  // --- State ---
   const [reports, setReports] = useState<ReportItem[]>(initialReportsData);
   const [fade, setFade] = useState(false);
   const [search, setSearch] = useState("");
-  // ⭐️ (ใหม่) State สำหรับ Status Filter
   const [statusFilter, setStatusFilter] = useState<"All" | ReportStatus>("All");
-
   const [isAddingReport, setIsAddingReport] = useState(false);
-  const [newReport, setNewReport] = useState({
-    title: "", category: "ปัญหา (Admin)", detail: ""
-  });
+  const [newReport, setNewReport] = useState({ title: "", category: "ปัญหา (Admin)", detail: "" });
 
-  // --- Theme Styles ---
-  const pageBg = theme === "dark" ? "bg-gray-900" : "bg-gray-50";
-  const text = theme === "dark" ? "text-white" : "text-gray-300";
-  const titleText = theme === "dark" ? "text-white" : "text-gray-900";
-  const border = theme === "dark" ? "border-gray-700" : "border-gray-200";
-
-  // --- Effects ---
-  useEffect(() => {
-    const timer = setTimeout(() => setFade(true), 50);
-    return () => clearTimeout(timer);
-  }, []);
-
-  // --- Derived Data & Logic ---
-  
-  // ⭐️ (ใหม่) Categories และ Statuses สำหรับ Filter
-  const categories = [...new Set(reports.map((item) => item.category))];
+  const categories = ["ปัญหา (Admin)", "เอกสาร", "อุปกรณ์"];
   const statuses: ReportStatus[] = ['Pending', 'Resolved', 'Submitted'];
 
-  // ⭐️ (ใหม่) Logic การ Filter (รวม Search และ Status)
   const filteredReports = reports
+    .filter((item) => statusFilter === "All" ? true : item.status === statusFilter)
     .filter((item) => {
-      // Filter Status
-      return statusFilter === "All" ? true : item.status === statusFilter;
-    })
-    .filter((item) => {
-      // Filter Search
       if (search === "") return true;
-      const searchTerm = search.toLowerCase();
-      return (
-        item.title.toLowerCase().includes(searchTerm) ||
-        item.category.toLowerCase().includes(searchTerm) ||
-        item.id.toLowerCase().includes(searchTerm) ||
-        item.detail.toLowerCase().includes(searchTerm)
-      );
+      const s = search.toLowerCase();
+      return item.title.toLowerCase().includes(s) || item.id.toLowerCase().includes(s) || item.detail.toLowerCase().includes(s);
     });
 
-  // คำนวณข้อมูลสำหรับ Stat Cards (เหมือนเดิม)
-  const totalReports = reports.length;
-  const pendingProblems = reports.filter(r => r.category === 'ปัญหา (Admin)' && r.status === 'Pending').length;
-  const totalDocuments = reports.filter(r => r.category === 'เอกสาร').length;
-  const totalItems = reports.filter(r => r.category === 'อุปกรณ์').length;
-  
   const stats = [
-    { title: "รายงานทั้งหมด", value: totalReports, icon: <ClipboardList size={24} />, colorClass: theme === 'dark' ? "text-blue-400" : "text-blue-600" },
-    { title: "ปัญหารอแก้ไข", value: pendingProblems, icon: <TriangleAlert size={24} />, colorClass: theme === 'dark' ? "text-red-400" : "text-red-600" },
-    { title: "เอกสารทั้งหมด", value: totalDocuments, icon: <FileText size={24} />, colorClass: theme === 'dark' ? "text-purple-400" : "text-purple-600" },
-    { title: "อุปกรณ์", value: totalItems, icon: <Warehouse size={24} />, colorClass: theme === 'dark' ? "text-yellow-500" : "text-yellow-600" },
+    { title: "รายงานทั้งหมด", value: reports.length, icon: <ClipboardList size={24} />, colorClass: theme === 'dark' ? "text-blue-400" : "text-blue-600" },
+    { title: "ปัญหารอแก้ไข", value: reports.filter(r => r.category === 'ปัญหา (Admin)' && r.status === 'Pending').length, icon: <TriangleAlert size={24} />, colorClass: theme === 'dark' ? "text-red-400" : "text-red-600" },
+    { title: "เอกสารทั้งหมด", value: reports.filter(r => r.category === 'เอกสาร').length, icon: <FileText size={24} />, colorClass: theme === 'dark' ? "text-purple-400" : "text-purple-600" },
+    { title: "อุปกรณ์", value: reports.filter(r => r.category === 'อุปกรณ์').length, icon: <Warehouse size={24} />, colorClass: theme === 'dark' ? "text-yellow-500" : "text-yellow-600" },
   ];
 
-  // --- Handlers ---
+  useEffect(() => { setTimeout(() => setFade(true), 50); }, []);
 
-  // 1. Helper สี (เหมือนเดิม)
-  const getCategoryColor = (category: string): ColorName => {
-    switch (category) {
-      case "ปัญหา (Admin)": return "red";
-      case "เอกสาร": return "blue";
-      case "อุปกรณ์": return "yellow";
-      default: return "gray";
-    }
-  };
-
-  // ⭐️ 2. (ใหม่) Helper สีสำหรับ Status
-  const getStatusColor = (status: ReportStatus): ColorName => {
-    switch (status) {
-      case "Pending": return "red";
-      case "Resolved": return "green";
-      case "Submitted": return "blue";
-      default: return "gray";
-    }
-  };
-
-  // 3. Handlers "เพิ่มรายงาน" (เหมือนเดิม)
-  const handleShowAddForm = () => { setIsAddingReport(true); setNewReport({ title: "", category: categories[0] || "ปัญหา (Admin)", detail: "" }); };
-  const handleCancelAdd = () => { setIsAddingReport(false); };
-  const handleFormInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => { const { name, value } = e.target; setNewReport(prev => ({ ...prev, [name]: value })); };
+  const getCategoryColor = (c: string): ColorName => c === "ปัญหา (Admin)" ? "red" : c === "เอกสาร" ? "blue" : c === "อุปกรณ์" ? "yellow" : "gray";
+  const getStatusColor = (s: ReportStatus): ColorName => s === "Pending" ? "red" : s === "Resolved" ? "green" : "blue";
+  
   const handleSubmitAdd = (e: FormEvent) => {
     e.preventDefault();
-    if (!newReport.title || !newReport.detail) { alert("กรุณากรอกหัวข้อและรายละเอียด"); return; }
-    const reportToAdd: ReportItem = {
+    if (!newReport.title) return;
+    const newItem: ReportItem = {
       id: `R${Math.floor(Math.random() * 9000) + 1000}`,
       title: newReport.title,
-      category: newReport.category as 'ปัญหา (Admin)' | 'เอกสาร' | 'อุปกรณ์',
+      category: newReport.category as any,
       detail: newReport.detail,
       date: new Date().toLocaleDateString("th-TH"),
       status: newReport.category === 'ปัญหา (Admin)' ? 'Pending' : 'Submitted',
     };
-    setReports(prevItems => [reportToAdd, ...prevItems]);
-    handleCancelAdd();
+    setReports([newItem, ...reports]);
+    setIsAddingReport(false);
+    setNewReport({ title: "", category: "ปัญหา (Admin)", detail: "" });
   };
 
+  const pageBg = theme === "dark" ? "bg-gray-900" : "bg-gray-50";
+  const titleText = theme === "dark" ? "text-white" : "text-gray-900";
 
-  // --- ⭐️ JSX Return (ดีไซน์ใหม่สไตล์ Kanban) ---
   return (
-    // ⭐️ ใช้ `flex flex-col h-screen` เพื่อบังคับให้ Board อยู่ในพื้นที่จำกัด
-    <div className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"} ${pageBg} ${text} min-h-screen h-screen flex flex-col`}>
+    // ⭐️ เพิ่ม Style tag สำหรับโหลด Font "Kanit" โดยเฉพาะ
+    // และกำหนด inline style fontFamily ให้กับ Container หลัก
+    <div 
+      className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"} ${pageBg} h-[100dvh] flex flex-col overflow-hidden`}
+      style={{ fontFamily: "'Kanit', sans-serif" }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;400;500;600&display=swap');
+      `}</style>
       
-      {/* ⭐️ ใช้ `overflow-hidden` กับ container หลัก */}
-      <div className={`max-w-full h-full transition-opacity duration-300 p-4 md:p-6 lg:p-8 mx-auto container flex flex-col`}>
+      {/* Content Wrapper */}
+      <div className="w-full h-full flex flex-col p-4 md:p-6 lg:p-8 max-w-[1600px] mx-auto">
         
-        {/* 1. Header */}
-        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-4 flex-shrink-0">
+        {/* Header Section */}
+        <div className="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6 flex-shrink-0">
           <div>
-            <h1 className={`text-3xl font-bold ${titleText}`}>
-              Board รายงาน
-            </h1>
-            <p className="text-sm text-gray-400 mt-1">
-              ติดตามสถานะรายงานผ่าน Kanban Board
-            </p>
+            <h1 className={`text-2xl md:text-3xl font-bold ${titleText}`}>Board บริหารงาน</h1>
+            <p className="text-xs md:text-sm text-gray-500 mt-1 font-light">ติดตามสถานะรายงานและงานต่าง ๆ (Kanban View)</p>
           </div>
-          <div>
-            <button
-              onClick={handleShowAddForm}
-              className={`flex items-center gap-2 w-full md:w-auto justify-center px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                theme === 'dark' 
-                  ? 'bg-yellow-500 text-gray-900 hover:bg-yellow-400' 
-                  : 'bg-blue-600 text-white hover:bg-blue-700'
-              } shadow-sm`}
-            >
-              <Plus size={18} />
-              แจ้งรายงานใหม่
-            </button>
-          </div>
+          <button
+            onClick={() => setIsAddingReport(true)}
+            className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium shadow-sm transition-all hover:scale-105 active:scale-95 ${theme === 'dark' ? 'bg-yellow-500 text-gray-900 hover:bg-yellow-400' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+          >
+            <Plus size={18} />
+            <span>แจ้งรายงานใหม่</span>
+          </button>
         </div>
 
-        {/* 2. Stat Cards (KPIs) */}
-        <div className="grid grid-cols-4 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-4 flex-shrink-0">
-          {stats.map((stat) => (
-            <StatCard 
-              key={stat.title}
-              {...stat}
-              theme={theme}
-            />
-          ))}
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-6 flex-shrink-0">
+          {stats.map((stat) => <StatCard key={stat.title} {...stat} theme={theme} />)}
         </div>
 
-        {/* ⭐️ 3. Filter Row (ดีไซน์ใหม่) */}
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-4 flex-shrink-0">
-          {/* Status Filter Dropdown */}
+        {/* Filter & Search Bar */}
+        <div className="flex flex-col md:flex-row justify-between items-center gap-3 mb-4 flex-shrink-0 z-20">
           <div className="relative w-full md:w-auto">
             <select
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value as "All" | ReportStatus)}
-              className={`pl-3 pr-8 py-2 text-sm rounded-lg transition-all duration-300 w-full md:w-48 appearance-none
-                ${theme === "dark" ? "bg-gray-800 text-white focus:outline-none ring-2 ring-transparent focus:ring-yellow-500 border border-gray-700" : "bg-white text-gray-900 focus:outline-none ring-2 ring-transparent focus:ring-blue-500 border border-gray-300"}`}
+              onChange={(e) => setStatusFilter(e.target.value as any)}
+              className={`appearance-none w-full md:w-48 pl-3 pr-10 py-2.5 text-sm rounded-lg border cursor-pointer transition-colors ${theme === "dark" ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-300 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-500`}
             >
               <option value="All">ทุกสถานะ</option>
               {statuses.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
-            <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`} />
+            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500 pointer-events-none" />
           </div>
-
-          {/* Search Bar */}
-          <div className="relative w-full md:w-64">
-            <Search
-              className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${theme === "dark" ? "text-gray-400" : "text-gray-500"}`}
-            />
+          <div className="relative w-full md:w-72">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-500" />
             <input
-              placeholder="ค้นหารายงาน"
+              placeholder="ค้นหา: หัวข้อ, รหัส..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className={`pl-10 pr-3 py-2 text-sm rounded-lg transition-all duration-300 w-full
-                ${theme === "dark" ? "bg-gray-800 text-white focus:outline-none ring-2 ring-transparent focus:ring-yellow-500 border border-gray-700" : "bg-white text-gray-900 focus:outline-none ring-2 ring-transparent focus:ring-blue-500 border border-gray-300"}`}
+              className={`w-full pl-9 pr-4 py-2.5 text-sm rounded-lg border transition-colors ${theme === "dark" ? "bg-gray-800 border-gray-700 text-white" : "bg-white border-gray-300 text-gray-900"} focus:outline-none focus:ring-2 focus:ring-blue-500`}
             />
           </div>
         </div>
 
-
-        {/* ⭐️ 4. Kanban Board Area (นี่คือส่วนที่ขอ) */}
-  <div className={`flex-grow   overflow-x-auto overflow-y-hidden -mx-4`}>
-    {/* ⭐️ เพิ่ม min-w-full ที่นี่ */}
-    <div className="flex flex- h-full gap-4 px-4 pb-4 min-w-full">
-        
-        {categories.map(category => (
-            <KanbanColumn
-                key={category}
-                title={category}
-                reports={filteredReports.filter(r => r.category === category)}
-                theme={theme}
-                getStatusColor={getStatusColor}
-                getCategoryColor={getCategoryColor}
-            />
-        ))}
-
-    </div>
-</div>
-
+        {/* Kanban Board Area */}
+        <div className="flex-grow relative min-h-0 -mx-4 md:mx-0 bg-transparent">
+           <div className="absolute inset-0 flex overflow-x-auto overflow-y-hidden px-4 md:px-0 gap-4 pb-2 snap-x snap-mandatory scroll-smooth">
+              {categories.map(category => (
+                  <KanbanColumn
+                      key={category}
+                      title={category}
+                      reports={filteredReports.filter(r => r.category === category)}
+                      theme={theme}
+                      getStatusColor={getStatusColor}
+                      getCategoryColor={getCategoryColor}
+                  />
+              ))}
+              <div className="w-1 md:hidden flex-shrink-0 snap-center" />
+           </div>
+        </div>
       </div>
-      
-      {/* --- Modals --- (เหมือนเดิม) */}
-      {/* <AddReportModal
+
+      {/* Modal */}
+      <AddReportModal
         isOpen={isAddingReport}
-        onCancel={handleCancelAdd}
+        onClose={() => setIsAddingReport(false)}
+        onSubmit={handleSubmitAdd}
         theme={theme}
         categories={categories}
-        onSubmit={handleSubmitAdd}
         newReport={newReport}
-        onFormChange={handleFormInputChange}
+        onFormChange={(e) => setNewReport(prev => ({ ...prev, [e.target.name]: e.target.value }))}
       />
-      */}
     </div>
   );
 }
