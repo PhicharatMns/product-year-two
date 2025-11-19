@@ -157,7 +157,7 @@ export default function Sidebaradmin() {
         <div>
           <ThemeSwitcher />
           
-          <Link to="/ProfileAdmin" className="mt-auto">
+          <Link to="/Profileadmin" className="mt-auto">
             <div className="border-t border-blue-600 dark:border-gray-700 bg-blue-900 dark:bg-gray-800 duration-300 hover:bg-blue-700 dark:hover:bg-gray-700 h-20 flex items-center gap-4 cursor-pointer px-2">
               
               {/* รูป Profile */}
