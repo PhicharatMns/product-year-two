@@ -137,9 +137,8 @@ const Showlist: React.FC<ShowlistProps> = ({
         <div className="flex items-center justify-end gap-2 col-span-3">
           <div className="relative">
             <Search
-              className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${
-                theme === "dark" ? "text-gray-400" : "text-gray-500"
-              }`}
+              className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${theme === "dark" ? "text-gray-400" : "text-gray-500"
+                }`}
             />
             <input
               value={search}
@@ -148,10 +147,9 @@ const Showlist: React.FC<ShowlistProps> = ({
               onBlur={() => setFocused(false)}
               placeholder="ค้นหา..."
               className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 
-                ${
-                  theme === "dark"
-                    ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border border-gray-600"
-                    : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border border-blue-300"
+                ${theme === "dark"
+                  ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border border-gray-600"
+                  : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border border-blue-300"
                 }
                 ${Focused ? "w-72" : "w-60"}`}
             />
@@ -166,9 +164,8 @@ const Showlist: React.FC<ShowlistProps> = ({
             (e, i) => (
               <div
                 key={i}
-                className={`${
-                  i === 0 || i === 1 ? "col-span-2" : "col-span-1"
-                } ${i === 4 ? "text-center col-span-2 " : ""}`}
+                className={`${i === 0 || i === 1 ? "col-span-2" : "col-span-1"
+                  } ${i === 4 ? "text-center col-span-2 " : ""}`}
               >
                 <p>{e}</p>
               </div>
@@ -235,9 +232,8 @@ const ButtonaddItem: React.FC<ButtonaddItemType> = ({ onOpen }) => {
   return (
     <div className={`h-fit border p-5 rounded-lg ${bg}`}>
       <p
-        className={`  ${
-          theme === "dark" ? "text-yellow-500" : "text-blue-500"
-        } text-lg font-semibold`}
+        className={`  ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+          } text-lg font-semibold`}
       >
         เพิ่มวัสดุใหม่
       </p>
@@ -245,11 +241,10 @@ const ButtonaddItem: React.FC<ButtonaddItemType> = ({ onOpen }) => {
         onClick={onOpen}
         className={`relative overflow-hidden w-full cursor-pointer rounded-md  px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
-                theme === "dark"
-                  ? "bg-yellow-500 hover:bg-amber-600"
-                  : "bg-blue-500 hover:bg-blue-600"
-              }`}
+              active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${theme === "dark"
+            ? "bg-yellow-500 hover:bg-amber-600"
+            : "bg-blue-500 hover:bg-blue-600"
+          }`}
       >
         เพิ่มอุปกรณ์
       </button>
@@ -308,15 +303,13 @@ const ShowaletProgress: React.FC<ShowaletProgressProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
-        visible ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed inset-0 z-50 flex justify-center items-center bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${visible ? "opacity-100" : "opacity-0"
+        }`}
     >
       <div className={`w-220 h-88 rounded-2xl p-8 border ${bg}`}>
         <p
-          className={`text-2xl font-bold mb-6 border-b pb-3 ${
-            theme === "dark" ? "text-yellow-500" : "text-blue-500"
-          }`}
+          className={`text-2xl font-bold mb-6 border-b pb-3 ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+            }`}
         >
           เพิ่มวัสดุ{" "}
           <span
@@ -336,8 +329,8 @@ const ShowaletProgress: React.FC<ShowaletProgressProps> = ({
                   i === 0
                     ? formData.name
                     : i === 1
-                    ? formData.category
-                    : formData.number
+                      ? formData.category
+                      : formData.number
                 }
                 onChange={(ev) => {
                   const value = ev.target.value;
@@ -348,11 +341,10 @@ const ShowaletProgress: React.FC<ShowaletProgressProps> = ({
                     number: i === 2 ? value : prev.number,
                   }));
                 }}
-                className={`border focus:ring-2 outline-none duration-300 w-full p-2 rounded-lg ${bgborder} ${
-                  theme === "dark"
+                className={`border focus:ring-2 outline-none duration-300 w-full p-2 rounded-lg ${bgborder} ${theme === "dark"
                     ? "text-white border-gray-600 focus:ring-yellow-400"
                     : "text-gray-800 focus:ring-blue-400"
-                }`}
+                  }`}
               />
             </div>
           ))}
@@ -371,9 +363,8 @@ const ShowaletProgress: React.FC<ShowaletProgressProps> = ({
 
           <button
             onClick={handleSubmit}
-            className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-              theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-            }`}
+            className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+              }`}
           >
             <span className="relative z-10">ยืนยัน</span>
             <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -550,9 +541,8 @@ const AddItem: React.FC<AddItemProps> = ({ onClose, item, fetchItems }) => {
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 duration-300 backdrop-blur-sm ${
-        animtion ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center bg-black/40 duration-300 backdrop-blur-sm ${animtion ? "opacity-100" : "opacity-0"
+        }`}
     >
       <div className={`w-220 h-88 rounded-2xl p-8 border ${bg}`}>
         <p className={`text-2xl font-bold mb-6 border-b pb-3 ${texthead}`}>
@@ -569,8 +559,8 @@ const AddItem: React.FC<AddItemProps> = ({ onClose, item, fetchItems }) => {
                   i === 0
                     ? formData.name
                     : i === 1
-                    ? formData.category
-                    : formData.number
+                      ? formData.category
+                      : formData.number
                 }
                 onChange={(ev) => {
                   const value = ev.target.value;
@@ -581,11 +571,10 @@ const AddItem: React.FC<AddItemProps> = ({ onClose, item, fetchItems }) => {
                     number: i === 2 ? value : prev.number,
                   }));
                 }}
-                className={`border focus:ring-2 outline-none duration-300 w-full p-2 rounded-lg ${bgborder} ${
-                  theme === "dark"
+                className={`border focus:ring-2 outline-none duration-300 w-full p-2 rounded-lg ${bgborder} ${theme === "dark"
                     ? "text-white border-gray-600 focus:ring-yellow-400"
                     : "text-gray-800 focus:ring-blue-400"
-                }`}
+                  }`}
               />
             </div>
           ))}
@@ -602,9 +591,8 @@ const AddItem: React.FC<AddItemProps> = ({ onClose, item, fetchItems }) => {
           </button>
           <button
             onClick={handleSubmit}
-            className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-              theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-            }`}
+            className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+              }`}
           >
             <span className="relative z-10">
               {" "}
@@ -666,19 +654,16 @@ const ShowPopupDetele: React.FC<ShowPopupDeteleProps> = ({
 
   return (
     <div
-      className={`fixed z-50 inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300 ${
-        animtion ? "opacity-100" : "opacity-0"
-      }`}
+      className={`fixed z-50 inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center transition-opacity duration-300 ${animtion ? "opacity-100" : "opacity-0"
+        }`}
     >
       <div
-        className={`w-120 rounded-2xl shadow-2xl p-5 ${bg} ${
-          animtion ? "scale-100 opacity-100" : "scale-90 opacity-0"
-        }`}
+        className={`w-120 rounded-2xl shadow-2xl p-5 ${bg} ${animtion ? "scale-100 opacity-100" : "scale-90 opacity-0"
+          }`}
       >
         <p
-          className={`font-semibold text-lg ${
-            theme === "dark" ? "text-yellow-500" : "text-blue-500"
-          }`}
+          className={`font-semibold text-lg ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+            }`}
         >
           ลบอุปกรณ์{" "}
           <span
@@ -689,11 +674,10 @@ const ShowPopupDetele: React.FC<ShowPopupDeteleProps> = ({
         </p>
 
         <div
-          className={`p-3 rounded-lg text-sm ${
-            theme === "dark"
+          className={`p-3 rounded-lg text-sm ${theme === "dark"
               ? "bg-red-900/30 text-red-300"
               : "bg-red-100 text-red-600"
-          }`}
+            }`}
         >
           การลบภาวะนี้จะทำให้ข้อมูลหายไปทันที และไม่สามารถกู้คืนได้
         </div>
@@ -751,21 +735,18 @@ export default function SuppliesAdmin() {
 
   return (
     <div
-      className={`max-w-380 p-5 container mx-auto duration-300 ${
-        fade ? "opacity-100" : "opacity-0"
-      }`}
+      className={`max-w-380 p-5 container mx-auto duration-300 ${fade ? "opacity-100" : "opacity-0"
+        }`}
     >
       <div>
         <p
-          className={`text-3xl font-bold ${
-            theme === "dark" ? "text-yellow-500" : "text-blue-500"
-          }`}
+          className={`text-3xl font-bold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+            }`}
         >
           คลังวัสดุและ{" "}
           <span
-            className={` ${
-              theme === "dark" ? "text-white" : "text-yellow-500"
-            }`}
+            className={` ${theme === "dark" ? "text-white" : "text-yellow-500"
+              }`}
           >
             อุปกรณ์
           </span>
@@ -822,6 +803,6 @@ export default function SuppliesAdmin() {
           item={editItem} // ต้องส่ง item ที่จะลบ
         />
       )}
-http://localhost:5173/chief/Dashboardchief    </div>
+    </div>
   );
 }

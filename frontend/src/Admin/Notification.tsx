@@ -105,22 +105,20 @@ export default function Notification() {
     try {
       const token = localStorage.getItem("token");
       const itemInStock = items.find((i) => i.name === selectedItem.name);
+
       if (!itemInStock) return alert("ไม่พบวัสดุในคลัง");
 
       const requestedQty = Number(selectedItem.quantity);
       const stockQty = Number(itemInStock.number);
 
-      // ถ้าคลังไม่พอ → แสดงข้อความเตือน
       if (stockQty < requestedQty) {
-        // setWarningMessage(
-        //   `จำนวนในคลังไม่เพียงพอ! คลังมี ${stockQty} แต่ต้องการ ${requestedQty}`
-        // );
-        setWarningMessage(`จำนวนในคลังไม่เพียงพอ! `);
+        setWarningMessage(`จำนวนในคลังไม่เพียงพอ!`);
         return;
       }
 
       const newNumber = stockQty - requestedQty;
 
+      // --- 1) อัปเดต status ใน additem ---
       await fetch(
         `http://localhost:5000/api/additem/${selectedItem.id}/confirm`,
         {
@@ -132,17 +130,32 @@ export default function Notification() {
           body: JSON.stringify({
             message: "ยืนยันแล้ว",
             status: "ได้รับการยืนยันจากคลังแล้ว",
-            newNumber,
           }),
         }
       );
 
-      // อัปเดต state
+      // --- 2) อัปเดตจำนวนในคลังจริง ---
+      await fetch(
+        `http://localhost:5000/api/item/update-item/${itemInStock._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            number: newNumber,
+          }),
+        }
+      );
+
+      // --- 3) อัปเดต UI ---
       setItems((prev) =>
         prev.map((i) =>
           i._id === itemInStock._id ? { ...i, number: newNumber } : i
         )
       );
+
       setRequisitionItems((prev) =>
         prev.map((r) =>
           r.id === selectedItem.id
@@ -151,7 +164,7 @@ export default function Notification() {
         )
       );
 
-      setWarningMessage(""); // ล้างข้อความเตือน
+      setWarningMessage("");
       closePopupDate();
       alert("ยืนยันสำเร็จ! จำนวนและสถานะอัปเดตแล้ว");
     } catch (err) {
@@ -159,24 +172,23 @@ export default function Notification() {
     }
   };
 
+
   const filteredItems = requisitionItems.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div
-      className={`transition-opacity p-5 mx-auto container duration-700 w-380 ${
-        fade ? "opacity-100" : "opacity-0"
-      }`}
+      className={`transition-opacity p-5 mx-auto container duration-700 w-380 ${fade ? "opacity-100" : "opacity-0"
+        }`}
     >
       <div className={text}>
         <div className="mb-5">
           <p className={`text-3xl font-bold ${texthead}`}>
             การแจ้งเตือน
             <span
-              className={`${
-                theme === "dark" ? "text-white" : "text-yellow-500"
-              }`}
+              className={`${theme === "dark" ? "text-white" : "text-yellow-500"
+                }`}
             >
               {" "}
               & ข้อความ
@@ -195,9 +207,8 @@ export default function Notification() {
                 <p className={`text-lg font-semibold mb-2 sm:mb-0 ${texthead}`}>
                   รายการเบิกของ
                   <span
-                    className={`text-sm font-normal ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-600"
-                    } ml-2`}
+                    className={`text-sm font-normal ${theme === "dark" ? "text-gray-400" : "text-gray-600"
+                      } ml-2`}
                   >
                     ({filteredItems.length} รายการ)
                   </span>
@@ -205,9 +216,8 @@ export default function Notification() {
                 <div className="flex items-center gap-2">
                   <div className="relative">
                     <Search
-                      className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${
-                        theme === "dark" ? "text-gray-400" : "text-gray-500"
-                      }`}
+                      className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${theme === "dark" ? "text-gray-400" : "text-gray-500"
+                        }`}
                     />
                     <input
                       onFocus={() => setFocused(true)}
@@ -215,11 +225,10 @@ export default function Notification() {
                       placeholder="ค้นหา..."
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
-                      className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 ${
-                        theme === "dark"
-                          ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border border-gray-600"
-                          : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border "
-                      } ${Focused ? "w-72" : "w-60"}`}
+                      className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 ${theme === "dark"
+                        ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border border-gray-600"
+                        : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border "
+                        } ${Focused ? "w-72" : "w-60"}`}
                     />
                   </div>
                 </div>
@@ -257,9 +266,8 @@ export default function Notification() {
                   ].map((event, index) => (
                     <div
                       key={index}
-                      className={`${
-                        [0, 1, 2, 4, 5].includes(index) ? "col-span-2" : ""
-                      } ${[4, 5].includes(index) ? "text-center" : ""}`}
+                      className={`${[0, 1, 2, 4, 5].includes(index) ? "col-span-2" : ""
+                        } ${[4, 5].includes(index) ? "text-center" : ""}`}
                     >
                       {event}
                     </div>
@@ -319,11 +327,10 @@ export default function Notification() {
                     <div className="col-span-2 mx-auto">
                       <button
                         onClick={() => openPopupDate(e)}
-                        className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
-                          theme === "dark"
-                            ? "bg-yellow-600 hover:bg-yellow-700"
-                            : "bg-blue-600 hover:bg-blue-700"
-                        }`}
+                        className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${theme === "dark"
+                          ? "bg-yellow-600 hover:bg-yellow-700"
+                          : "bg-blue-600 hover:bg-blue-700"
+                          }`}
                       >
                         รายละเอียด
                       </button>
@@ -340,9 +347,8 @@ export default function Notification() {
                 <p className={`text-lg font-semibold mb-2 sm:mb-0 ${texthead}`}>
                   รายงานจากช่าง
                   <span
-                    className={`text-sm font-normal ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-600"
-                    } ml-2`}
+                    className={`text-sm font-normal ${theme === "dark" ? "text-gray-400" : "text-gray-600"
+                      } ml-2`}
                   >
                     รายการ
                   </span>
@@ -395,9 +401,8 @@ export default function Notification() {
       {/* --- Popup --- */}
       {PopupDate && selectedItem && (
         <div
-          className={`fixed z-50 inset-0 flex items-center justify-center duration-300 bg-black/40 backdrop-blur-sm ${
-            fadePopup ? "opacity-100" : "opacity-0"
-          }`}
+          className={`fixed z-50 inset-0 flex items-center justify-center duration-300 bg-black/40 backdrop-blur-sm ${fadePopup ? "opacity-100" : "opacity-0"
+            }`}
         >
           <div
             className={`${bgpopup} rounded-2xl shadow-2xl p-6 w-[500px] max-h-[400px] overflow-auto`}
@@ -462,22 +467,20 @@ export default function Notification() {
               {selectedItem.status === "ได้รับการยืนยันจากคลังแล้ว" ? (
                 <span
                   onClick={closePopupDate}
-                  className={`block w-full cursor-pointer border text-center rounded-lg px-3 py-2 ${
-                    theme === "dark"
-                      ? "bg-red-900/30 text-red-300"
-                      : "bg-red-100 text-red-600"
-                  }`}
+                  className={`block w-full cursor-pointer border text-center rounded-lg px-3 py-2 ${theme === "dark"
+                    ? "bg-red-900/30 text-red-300"
+                    : "bg-red-100 text-red-600"
+                    }`}
                 >
                   รายการนี่ถูกยืนยันไปแล้ว
                 </span>
               ) : warningMessage ? (
                 <span
                   onClick={closePopupDate}
-                  className={`block w-full cursor-pointer border text-center rounded-lg px-3 py-2 ${
-                    theme === "dark"
-                      ? "bg-red-900/30 text-red-300"
-                      : "bg-red-100 text-red-600"
-                  }`}
+                  className={`block w-full cursor-pointer border text-center rounded-lg px-3 py-2 ${theme === "dark"
+                    ? "bg-red-900/30 text-red-300"
+                    : "bg-red-100 text-red-600"
+                    }`}
                 >
                   {warningMessage}
                 </span>
@@ -495,9 +498,8 @@ export default function Notification() {
 
                   <button
                     onClick={handleConfirm}
-                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                    }`}
+                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                      }`}
                   >
                     <span className="relative z-10">ยืนยัน</span>
                     <span className="absolute inset-0 overflow-hidden pointer-events-none">
