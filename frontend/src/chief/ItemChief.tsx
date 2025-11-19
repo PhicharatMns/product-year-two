@@ -85,7 +85,7 @@ export default function ItemChief() {
             return (
               <div
                 key={i}
-                className={` rounded-xl py-5 pl-5  ${theme === 'dark' ? 'bg-gray-900' : 'bg-white shadow-sm'}`}
+                className={` rounded-xl py-5 pl-5  ${theme === 'dark' ? 'bg-gray-900' : 'bg-white shadow-lg'}`}
               >
                 <div className="flex gap-3 items-center">
                   <Icon className="w-8 h-8 mb-2" />
@@ -98,10 +98,7 @@ export default function ItemChief() {
             );
           })}
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8"></div>
-
-        <div className="mb-4">
+        <div className="my-5">
           <h2
             className={`text-xl font-semibold ${text} transition-colors duration-300 ease-in-out`}
           >
@@ -116,21 +113,29 @@ export default function ItemChief() {
           <div className="min-w-[768px] md:min-w-full">
             {/* Header (Grid) (ใช้ tableHeaderBg, textSecondary) และเพิ่ม transition */}
             <div
-              className={`grid grid-cols-12 gap-4 px-6 py-3 ${tableHeaderBg} text-left text-xs font-medium ${textSecondary} uppercase tracking-wider transition-colors duration-300 ease-in-out`}
+              className={`grid grid-cols-5 gap-4 px-6 py-3 ${tableHeaderBg} text-left text-sm font-medium ${textSecondary}`}
             >
-              <div className="col-span-1">ID</div>
-              <div className="col-span-3">ผู้เบิก</div>
-              <div className="col-span-2">จำนวนรายการ</div>
-              <div className="col-span-3">สถานะ</div>
-              <div className="col-span-3 text-right">จัดการ</div>
+              <div>ผู้เบิก</div>
+              <div>สถานะ</div>
+              <div>ประเภท</div>
+              <div>จํานวน</div>
+              <div className="text-center">จัดการ</div>
             </div>
 
           </div>
         </div>
         {RequisitionItems.map((e, i) => {
           return (
-            <div>
-              {e.name}
+            <div className="grid grid-cols-5 gap-4 px-6 py-2">
+              <p>{e.requesterName}</p>
+              <p>{e.status}</p>
+              <p>{e.name}</p>
+              <p>{e.quantity}</p>
+              <div>
+                <button>
+                  
+                </button>
+              </div>
             </div>
           )
         })}
