@@ -10,6 +10,7 @@ import { AiOutlineTeam } from "react-icons/ai";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { RiFilePaper2Line } from "react-icons/ri";
 import { FaInbox } from "react-icons/fa6"; // เพิ่ม Icon Inbox
+import { FaCalendarAlt } from "react-icons/fa";
 import axios from "axios";
 
 interface SidebarItem {
@@ -67,7 +68,12 @@ export default function Sidebarexecutive() {
     {
       text: "รายงาน",
       icon: RiFilePaper2Line,
-      link: "/chief/gatpaper",
+      link: "/chief/GetPaper",
+    },
+    {
+      text: "ปฏิทิน",
+      icon: FaCalendarAlt,
+      link: "/chief/CalendarChief",
     },
     { text: "ทีมงาน", icon: AiOutlineTeam, link: "/chief/EditUser" },
     { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() }, // เพิ่มปุ่มกล่องข้อความ
@@ -107,7 +113,7 @@ export default function Sidebarexecutive() {
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-900" : "bg-blue-500";
   const linkTextColor = "text-white";
-  
+
   // Theme สำหรับ Slide Panel
   const bgside = theme === "dark" ? "bg-gray-900" : "bg-white";
   const textPanel = theme === "dark" ? "text-white" : "text-black";
