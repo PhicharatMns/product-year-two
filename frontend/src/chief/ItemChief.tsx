@@ -61,7 +61,7 @@ export default function ItemChief() {
   return (
     // (แก้ไข) 6. ใช้ตัวแปร `bg` และเพิ่ม transition
     <div
-      className={`min-h-screen p-4 sm:p-8 font-inter ${bg} transition-colors duration-300 ease-in-out`}
+      className={`min-h-screen p-4 sm:p-8 font-inter  transition-colors duration-300 ease-in-out`}
     >
       {/* (แก้ไข) 7. แก้ไข max-w-380 เป็น max-w-7xl */}
       <div className="max-w-380 mx-auto">
@@ -85,12 +85,12 @@ export default function ItemChief() {
             return (
               <div
                 key={i}
-                className="bg-blue-500  text-white rounded-xl py-5 pl-5 "
+                className={` rounded-xl py-5 pl-5  ${theme === 'dark' ? 'bg-gray-900' : 'bg-white shadow-sm'}`}
               >
                 <div className="flex gap-3 items-center">
                   <Icon className="w-8 h-8 mb-2" />
                   <div className="flex flex-col">
-                    <p className="text-lg font-semibold">{e.name}</p>
+                    <p className={`text-sm font-semibold ${theme === 'dark' ? 'text-yellow-500' : 'text-blue-500'}`}>{e.name}</p>
                     <p className="font-semibold">{e.num}</p>
                   </div>
                 </div>
@@ -127,8 +127,8 @@ export default function ItemChief() {
 
           </div>
         </div>
-        {RequisitionItems.map((e,i)=>{
-          return(
+        {RequisitionItems.map((e, i) => {
+          return (
             <div>
               {e.name}
             </div>

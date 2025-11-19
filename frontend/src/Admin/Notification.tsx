@@ -166,9 +166,8 @@ export default function Notification() {
 
       setWarningMessage("");
       closePopupDate();
-      alert("ยืนยันสำเร็จ! จำนวนและสถานะอัปเดตแล้ว");
     } catch (err) {
-      alert("เกิดข้อผิดพลาด: " + err);
+      console.error(err)
     }
   };
 
@@ -453,8 +452,8 @@ export default function Notification() {
                 );
               } else {
                 return (
-                  <p className="mt-3">
-                    <span className={`${texthead} font-semibold`}>
+                  <p className="">
+                    <span className={`${texthead}  font-semibold`}>
                       จำนวนในคลัง:{" "}
                     </span>
                     ไม่พบข้อมูล
@@ -482,6 +481,7 @@ export default function Notification() {
                     : "bg-red-100 text-red-600"
                     }`}
                 >
+                  5
                   {warningMessage}
                 </span>
               ) : (

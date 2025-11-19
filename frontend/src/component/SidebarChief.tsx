@@ -9,7 +9,6 @@ import ThemeSwitcher from "./ThemeSwitcher";
 import { AiOutlineTeam } from "react-icons/ai";
 import { RiFilePaper2Line } from "react-icons/ri";
 import axios from "axios";
-import { LuUserRoundCog } from "react-icons/lu";
 import { LuMessageSquareText } from "react-icons/lu";
 interface SidebarItem {
   text: string;
@@ -71,15 +70,16 @@ export default function SidebarChief() {
       link: "/chief/GetPaper",
     },
     {
-      text: "ข้อความ",
-      icon: LuMessageSquareText,
-      link: "/chief/messeger",
-    },
-    {
       text: "ปฎิทิน",
       icon: RiFilePaper2Line,
       link: "/chief/CalendarChief",
     },
+    {
+      text: "ข้อความ",
+      icon: LuMessageSquareText,
+      link: "/chief/messeger",
+    },
+
     { text: "รายการเบิกของ", icon: AiOutlineTeam, link: "/chief/ItemChief" },
 
     // { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
@@ -128,7 +128,7 @@ export default function SidebarChief() {
   return (
     <>
       <button
-        className="md:hidden fixed top-4 left-4 z-30 text-3xl bg-blue-500 p-2 text-white rounded-lg"
+        className="md:hidden fixed top-4 left-4 z-30 text-3xl  p-2 text-white rounded-lg"
         onClick={() => setOpen(!open)}
       >
         {open ? <IoClose /> : <GiHamburgerMenu />}
