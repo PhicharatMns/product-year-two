@@ -135,17 +135,26 @@ router.delete("/:id", async (req, res) => {
 });
 
 // *** จุดสำคัญที่แก้ไข *** path DashboardUser
+// *** จุดที่ต้องแก้ไขใน Backend ***
 router.get("/dashboardUser", verifyToken, async (req, res) => {
   try {
-    const user = await Login.findById(req.user.Name); // req.user.id จาก token
+    const user = await Login.findById(req.user.id); // ใช้ req.user.id ที่ได้จาก token
     if (!user) return res.status(404).json({ message: "User not found" });
 
+    // ส่งข้อมูลกลับไปให้ครบตามที่หน้าเว็บต้องการ
     res.json({
+      username: user.username,
       Name: user.Name,
-      Email: user.Email,
+      Nickname: user.Nickname, // เพิ่ม
+      ID: user.ID,             // เพิ่ม
+      Birthday: user.Birthday, // เพิ่ม
+      Address: user.Address,   // เพิ่ม
       Phone_Number: user.Phone_Number,
+      Email: user.Email,
       Position: user.Position,
-      Profile: user.Profile, // ส่งชื่อไฟล์รูปกลับไป
+      Start_data: user.Start_data, // เพิ่ม
+      Profile: user.Profile,
+      Salary: user.Salary      // เพิ่ม (ถ้าอยากโชว์)
     });
   } catch (err) {
     console.error(err);

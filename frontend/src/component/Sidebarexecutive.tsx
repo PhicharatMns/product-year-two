@@ -1,23 +1,15 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, NavLink } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
 import { IoIosLogOut } from "react-icons/io";
-import { TbBellPlus } from "react-icons/tb";
 import { useTheme } from "@/components/theme-provider";
-import { LiaUserEditSolid } from "react-icons/lia";
-import { VscNewFile } from "react-icons/vsc";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { AiOutlineTeam } from "react-icons/ai";
-import { NavLink } from "react-router-dom";
 import { FaMapMarkedAlt } from "react-icons/fa";
-import { AiTwotoneCalendar } from "react-icons/ai";
-
 import { RiFilePaper2Line } from "react-icons/ri";
 import axios from "axios";
-import { useEffect } from "react";
-
 
 interface SidebarItem {
   text: string;
@@ -30,9 +22,15 @@ export default function Sidebarexecutive() {
   const [open, setOpen] = useState(false); // sidebar มือถือ
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const [Message, setMessage] = useState("ผู้บริหาร"); // ตั้งค่าเริ่มต้นเผื่อไว้
+  
+  // --- State สำหรับเก็บข้อมูล User ---
+  const [Message, setMessage] = useState("ผู้บริหาร");
+  const [userProfile, setUserProfile] = useState<string | null>(null);
 
-  //ออกระบบ
+  // รูป Default กรณีไม่มีรูปหรือโหลดไม่ขึ้น
+  const defaultProfileImage = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+
+  // --- ออกจากระบบ ---
   const handleLogout = () => {
     localStorage.removeItem("token");
     navigate("/logins");
@@ -49,12 +47,12 @@ export default function Sidebarexecutive() {
       icon: RiFilePaper2Line,
       link: "/executive/Getpaperexecutive",
     },
-    { text: "ทีมงาน", icon: AiOutlineTeam , link: "/executive/Team" },
+    { text: "ทีมงาน", icon: AiOutlineTeam, link: "/executive/Team" },
     { text: "แผนที่", icon: FaMapMarkedAlt, link: "/executive/MapWork" },
     { text: "ออกจากระบบ", icon: IoIosLogOut, onClick: handleLogout },
   ];
 
-  //ดึงข้อมูลมาเเสดงใน sidebar user
+  // --- ดึงข้อมูลมาเเสดงใน sidebar ---
   useEffect(() => {
     if (!token) {
       navigate("/logins");
@@ -70,24 +68,30 @@ export default function Sidebarexecutive() {
           }
         );
 
-        console.log("Sidebar response:", response.data);
+        // เซ็ตชื่อ
         if (response.data.Name) {
           setMessage(response.data.Name);
         } else if (response.data.username) {
           setMessage(response.data.username);
         }
+
+        // เซ็ตโปรไฟล์
+        setUserProfile(response.data.Profile);
+
       } catch (err) {
         console.error("Fetch sidebar message error:", err);
+        // กรณี Token หมดอายุอาจจะให้เด้งออก (Optional)
+        // handleLogout();
       }
     };
 
     fetchData();
   }, [navigate, token]);
+
   const { theme } = useTheme();
   const bg = theme === "dark" ? "bg-gray-900" : "bg-blue-500";
 
   // ปรับปรุงการใช้สีพื้นหลังและสีข้อความ
-  const sidebarBgColor = "bg-blue-600 dark:bg-gray-900";
   const linkTextColor = "text-white";
 
   return (
@@ -130,7 +134,6 @@ export default function Sidebarexecutive() {
                     to={item.link}
                     key={index}
                     className={({ isActive }) =>
-                      // สไตล์ NavLink พร้อมแอนิเมชันของ admin
                       `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium ${linkTextColor} transition duration-300 ${
                         isActive ? "bg-yellow-500" : ""
                       }`
@@ -156,7 +159,6 @@ export default function Sidebarexecutive() {
                     setOpen(false);
                     item.onClick?.();
                   }}
-                  // สไตล์ปุ่ม Logout พร้อมแอนิเมชันของ admin
                   className={`group relative flex items-center gap-2 my-2 pl-5 py-3 w-full text-left cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium ${linkTextColor} transition duration-300`}
                 >
                   {/* แถบ animation */}
@@ -176,11 +178,20 @@ export default function Sidebarexecutive() {
           <ThemeSwitcher />
           <Link to="/executive/ProfileExecutive" className="mt-auto">
             <div className="border-t border-blue-700 dark:border-gray-700 bg-blue-900 dark:bg-gray-800 duration-300 hover:bg-blue-700 dark:hover:bg-gray-700 h-20 flex items-center gap-4 cursor-pointer px-2">
+              {/* ส่วนที่เเก้ไขรูปภาพ */}
               <img
-                src="https://i.pinimg.com/736x/f7/94/54/f79454c439ea58e65d2bb675a1faf77b.jpg"
-                className="object-cover w-10 rounded-full duration-300"
+                 src={
+                  userProfile
+                    ? `http://localhost:5000/uploads/Profile/${userProfile}`
+                    : defaultProfileImage
+                }
+                onError={(e) => {
+                  e.currentTarget.src = defaultProfileImage;
+                }}
+                className="object-cover w-10 h-10 rounded-full duration-300 bg-gray-400"
                 alt="profile"
               />
+              
               <div className="text-lg font-semibold text-white dark:text-white">
                 คุณ <span className="text-yellow-400">{Message}</span>
                 <div className="text-sm text-yellow-400">Executive</div>

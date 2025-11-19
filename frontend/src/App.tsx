@@ -53,7 +53,7 @@ import Chief from "./chief/Chief";
 // import Detailwork from "./User/Detailwork";
 import CalendarChief from "./chief/CalendarChief";
 import DetailworkChief from "./chief/DetailworkChief";
-import GetPaper from "./chief/getpaper";
+import GetPaper from "./chief/GetPaper";
 import ItemChief from "./chief/ItemChief";
 import Messeger from "./chief/Messeger";
 import EditUser from "./chief/EditUser";
