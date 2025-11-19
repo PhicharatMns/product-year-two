@@ -8,9 +8,9 @@ import { IoClose } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { AiOutlineTeam } from "react-icons/ai";
 import { RiFilePaper2Line } from "react-icons/ri";
-import { FaInbox } from "react-icons/fa6";
 import axios from "axios";
-
+import { LuUserRoundCog } from "react-icons/lu";
+import { LuMessageSquareText } from "react-icons/lu";
 interface SidebarItem {
   text: string;
   icon: React.ComponentType<{ size?: number }>;
@@ -27,14 +27,7 @@ export default function SidebarChief() {
   const [name, setName] = useState("Chief"); // Default
   const [profileSuffix, setProfileSuffix] = useState(""); // เก็บค่า Profile string จาก API
 
-  // --- State สำหรับข้อมูล User ---
-  const [name, setName] = useState("Chief");
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-
-  // รูป Default
-  const defaultProfileImage = "https://i.pinimg.com/1200x/3c/7f/94/3c7f94cd27f95fb70e0855429176dc34.jpg";
-
-  // --- State สำหรับเมนูย่อย (Inbox) ---
+  // --- State สำหรับเมนูย่อย ---
   const [showManu, setShowManu] = useState(false);
   const [slideIn, setSlideIn] = useState(false);
   const [openManage, setManage] = useState(false);
@@ -75,19 +68,25 @@ export default function SidebarChief() {
     {
       text: "รายงาน",
       icon: RiFilePaper2Line,
-      link: "/chief/getpaper",
+      link: "/chief/GetPaper",
+    },
+    {
+      text: "ข้อความ",
+      icon: LuMessageSquareText,
+      link: "/chief/messeger",
     },
     {
       text: "ปฎิทิน",
       icon: RiFilePaper2Line,
-      link: "/chief/gatpaper",
+      link: "/chief/CalendarChief",
     },
-    { text: "ทีมงาน", icon: AiOutlineTeam, link: "/chief/EditUser" },
-    { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
+    { text: "รายการเบิกของ", icon: AiOutlineTeam, link: "/chief/ItemChief" },
+
+    // { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
     { text: "ออกจากระบบ", icon: IoIosLogOut, onClick: handleLogout },
   ];
 
-  // --- ดึงข้อมูล User ---
+  // --- ดึงข้อมูลเหมือนหน้า ProfileChief ---
   useEffect(() => {
     if (!token) {
       navigate("/logins");
@@ -103,9 +102,9 @@ export default function SidebarChief() {
           }
         );
 
-        // Update State
-        if (response.data.Name) setName(response.data.Name);
-        setProfileImage(response.data.Profile);
+        // Map ข้อมูลให้เหมือนกับหน้า ProfileChief
+        setName(response.data.Name || "ไม่ระบุชื่อ");
+        setProfileSuffix(response.data.Profile || ""); // เก็บ path รูปถ้ามี
 
       } catch (err) {
         console.error("Sidebar fetch error:", err);
@@ -123,9 +122,11 @@ export default function SidebarChief() {
   const bgside = theme === "dark" ? "bg-gray-900" : "bg-white";
   const textPanel = theme === "dark" ? "text-white" : "text-black";
 
+  // URL รูปภาพหลัก (ใช้ Link เดียวกับหน้า Profile)
+  const baseImage = "https://i.pinimg.com/1200x/3c/7f/94/3c7f94cd27f95fb70e0855429176dc34.jpg";
+
   return (
     <>
-      {/* Hamburger Button */}
       <button
         className="md:hidden fixed top-4 left-4 z-30 text-3xl bg-blue-500 p-2 text-white rounded-lg"
         onClick={() => setOpen(!open)}
@@ -133,13 +134,11 @@ export default function SidebarChief() {
         {open ? <IoClose /> : <GiHamburgerMenu />}
       </button>
 
-      {/* Main Sidebar */}
       <div
         className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 ${linkTextColor} font-bold border-r transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
           } md:translate-x-0`}
       >
         <div className="flex flex-col">
-          {/* Logo */}
           <div className="flex items-center py-3 p-4">
             <Link to="/chief/DashboardChief" className="mx-auto">
               <div className="uppercase text-2xl font-black text-white dark:text-white whitespace-nowrap mt-5 transition-all duration-300">
@@ -151,7 +150,6 @@ export default function SidebarChief() {
             </Link>
           </div>
 
-          {/* Menu Items */}
           <div className="mt-4 flex flex-col">
             {items.map((item, index) => {
               const Icon = item.icon;
@@ -194,20 +192,19 @@ export default function SidebarChief() {
           </div>
         </div>
 
-        {/* Profile Section */}
+        {/* --- Profile Section ตรงกับ ProfileChief --- */}
         <div>
           <ThemeSwitcher />
           <Link to="/chief/ProfileChief" className="mt-auto">
             <div className="border-t border-blue-700 dark:border-gray-700 bg-blue-900 dark:bg-gray-800 duration-300 hover:bg-blue-700 dark:hover:bg-gray-700 h-20 flex items-center gap-4 cursor-pointer px-2">
-              
-              {/* Image Logic */}
+              {/* ใช้ Logic รูปภาพเดียวกับ ProfileChief */}
               <img
                 src={`${baseImage}${profileSuffix}`}
                 className="object-cover w-10 h-10 rounded-full duration-300 border border-gray-300"
                 alt="profile"
               />
-
               <div className="text-lg font-semibold text-white dark:text-white">
+                {/* แสดงชื่อที่ดึงมาจาก API */}
                 คุณ <span className="text-yellow-400">{name}</span>
                 <div className="text-sm text-yellow-400">หัวหน้าช่าง</div>
               </div>
@@ -224,7 +221,7 @@ export default function SidebarChief() {
         ></div>
       )}
 
-      {/* Slide Menu: Inbox */}
+      {/* Slide Menu กล่องข้อความ */}
       {showManu && (
         <div
           className={`
@@ -241,33 +238,21 @@ export default function SidebarChief() {
           </div>
           <div className="h-100">
             <div onClick={openManageMenu} className="border-black p-2 shadow-md rounded-xl flex items-center gap-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-              <img className="w-12 h-12 rounded-full object-cover" src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg" alt="Example User" />
+              <img className="w-12 h-12 rounded-full object-cover" src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg" alt="พิชรัตน์" />
               <div><p className={`font-semibold ${textPanel}`}>พิชรัตน์</p></div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Slide Menu: User Detail (Example) */}
+      {/* Slide Menu รายละเอียด */}
       {openManage && (
         <div
           className={`fixed left-4 lg:left-150 bottom-0 rounded-t-xl h-150 w-80 p-2 ${bgside} z-20 transition-all transform duration-500 shadow-2xl border-t border-gray-200 dark:border-gray-700 ${slideManage ? "-translate-x-0 scale-100 opacity-100" : "-translate-x-20 scale-100 opacity-0"}`}
         >
           <div className="border-black p-2 rounded-xl flex items-center gap-3">
-             {/* รูปใน Slide Menu ดึงจาก State */}
-             <img
-                src={
-                  profileImage
-                    ? `http://localhost:5000/uploads/Profile/${profileImage}`
-                    : defaultProfileImage
-                }
-                onError={(e) => {
-                  e.currentTarget.src = defaultProfileImage;
-                }}
-                className="w-12 h-12 rounded-full object-cover bg-gray-300"
-                alt="profile"
-              />
-            <div><p className={`font-semibold ${textPanel}`}>{name}</p></div>
+            <img className="w-12 h-12 rounded-full object-cover" src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg" alt="พิชรัตน์" />
+            <div><p className={`font-semibold ${textPanel}`}>{name}</p></div> {/* ใช้ name ที่ดึงมา */}
             <div className="ml-auto">
               <button onClick={closeManageMenu} className={`hover:text-red-500 text-2xl p-1 cursor-pointer ${textPanel}`}>✕</button>
             </div>
