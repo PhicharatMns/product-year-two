@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import axios from "axios";
-
-// ✨ [แก้ไข] Import ไอคอน BicepsFlexed
-import { BicepsFlexed } from "lucide-react";
 import {
   Mail,
   Phone,
@@ -63,24 +60,29 @@ export default function ProfileChief() {
   const [ID, setID] = useState("");
   const [Address, setAddress] = useState("");
   const [Start_data, setStart_data] = useState("");
-  // const [loading, setLoading] = useState(true);
   const [fade, setfade] = useState(false);
 
+  // รูป Default
+  const defaultProfileImage = "https://i.pinimg.com/1200x/3c/7f/94/3c7f94cd27f95fb70e0855429176dc34.jpg";
+
   const fetchData = async () => {
+    if (!token) return;
     try {
       const response = await axios.get(
         "http://localhost:5000/api/login/dashboardUser",
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setName(response.data.Name || "ไม่ระบุชื่อ");
-      setemail(response.data.Email || "ไม่ระบุอีเมล");
-      setphones(response.data.Phone_Number || "ไม่ระบุเบอร์โทร");
-      setposition(response.data.Position || "ไม่ระบุตำแหน่ง");
-      setprofile(response.data.Profile || "");
-      setID(response.data.ID || "N/A");
-      setAddress(response.data.Address || "ไม่ระบุที่อยู่");
+      const data = response.data;
+      
+      setName(data.Name || "ไม่ระบุชื่อ");
+      setemail(data.Email || "ไม่ระบุอีเมล");
+      setphones(data.Phone_Number || "ไม่ระบุเบอร์โทร");
+      setposition(data.Position || "ไม่ระบุตำแหน่ง");
+      setprofile(data.Profile || "");
+      setID(data.ID || "N/A");
+      setAddress(data.Address || "ไม่ระบุที่อยู่");
 
-      const rawDate = response.data.Start_data;
+      const rawDate = data.Start_data;
       if (rawDate) {
         const date = new Date(rawDate);
         const formattedDate = date.toLocaleDateString("th-TH", {
@@ -94,8 +96,6 @@ export default function ProfileChief() {
       }
     } catch (err) {
       console.error("Fetch profile data error:", err);
-    } finally {
-      // setLoading(false);
     }
   };
 
@@ -111,19 +111,6 @@ export default function ProfileChief() {
   const subTextStyle = theme === "dark" ? "text-gray-400" : "text-gray-500";
   const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-200";
 
-  // if (loading) {
-  //   return (
-  //     <div
-  //       className={`min-h-screen flex items-center justify-center ${bgColor}`}
-  //     >
-  //       <Loader2 className={`w-8 h-8 ${primaryColor} animate-spin`} />
-  //       <span className={`ml-3 text-xl ${subTextStyle}`}>
-  //         กำลังโหลดข้อมูล...
-  //       </span>
-  //     </div>
-  //   );
-  // }
-
   return (
     <div
       className={`min-h-screen ${textStyle} transition-all duration-300 p-4 md:p-12 ${
@@ -138,10 +125,18 @@ export default function ProfileChief() {
           <div className={`p-6 md:p-8 border-b ${borderColor}`}>
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-5 md:space-x-6">
+                {/* Image Logic ที่ถูกต้อง */}
                 <img
-                  src={`https://i.pinimg.com/1200x/3c/7f/94/3c7f94cd27f95fb70e0855429176dc34.jpg${profile}`}
+                  src={
+                    profile
+                      ? `http://localhost:5000/uploads/Profile/${profile}`
+                      : defaultProfileImage
+                  }
+                  onError={(e) => {
+                    e.currentTarget.src = defaultProfileImage;
+                  }}
                   alt="Profile"
-                  className="w-20 h-20 md:w-28 md:h-28 object-cover rounded-full border-2 border-gray-300 dark:border-gray-600 shadow-md"
+                  className="w-20 h-20 md:w-28 md:h-28 object-cover rounded-full border-2 border-gray-300 dark:border-gray-600 shadow-md bg-gray-300"
                 />
                 <div>
                   <h2 className="text-2xl md:text-3xl font-bold">{Name}</h2>

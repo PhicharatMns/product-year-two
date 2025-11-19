@@ -15,8 +15,7 @@ export default function EditUser() {
   return (
     <div className="max-w-380 mx-auto p-6">
       <h2 className="text-2xl font-bold mb-6 flex gap-2">
-        <span className="text-blue-600">จัดการ</span>
-        <span className="text-yellow-400">บัญชี</span>
+        <span className="text-blue-600">ทีมงาน</span><span className="text-yellow-400">ช่าง</span>
       </h2>
 
       <div className="overflow-hidden rounded-xl shadow-md border border-gray-200">
@@ -43,11 +42,19 @@ export default function EditUser() {
                 <td className="p-4 text-gray-700">{u.email}</td>
 
                 <td className="p-4 flex justify-end gap-3">
-                  <button className="px-4 py-1.5 bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow-sm transition">
-                    รายละเอียด
+                  <button  className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                          theme === "dark"
+                            ? "bg-yellow-600 hover:bg-yellow-700"
+                            : "bg-blue-600 hover:bg-blue-700"
+                        }`}
+                      > รายละเอียด
                   </button>
-                  <button className="px-4 py-1.5 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow-sm transition">
-                    ลบ
+                  <button  className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                          theme === "dark"
+                            ? "bg-red-600 hover:bg-red-700"
+                            : "bg-red-600 hover:bg-red-700"
+                        }`}
+                      >  ลบ
                   </button>
                 </td>
               </tr>
