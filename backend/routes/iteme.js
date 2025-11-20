@@ -18,18 +18,25 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-// ตัวอย่างตั้งชื่อ route เป็น /add-item
+// POST /add-item
 router.post("/add-item", async (req, res) => {
   try {
-    const { name, category, number, counting } = req.body;
+    const { name, category, number } = req.body;
+
+    // number ต้องเป็น number
+    const numValue = Number(number);
+
+    if (isNaN(numValue)) {
+      return res.status(400).json({ message: "จำนวนต้องเป็นตัวเลข" });
+    }
 
     // ตรวจสอบว่ามี item ชื่อเดียวกันใน category เดียวกันหรือไม่
     const existingItem = await Item.findOne({ name, category });
 
     if (existingItem) {
-      // รวมจำนวน: number + counting ของรายการเก่า
-      existingItem.number = Number(existingItem.number) + Number(number);
-      existingItem.counting = Number(existingItem.counting) + Number(counting);
+      // รวมจำนวน
+      existingItem.counting.value += numValue;
+      existingItem.counting.timestamp = new Date(); // อัปเดตเวลา
       await existingItem.save();
       return res.status(200).json({
         message: "อัปเดตจำนวนรายการที่มีอยู่แล้ว",
@@ -38,7 +45,16 @@ router.post("/add-item", async (req, res) => {
     }
 
     // ถ้าไม่มีซ้ำ → สร้างใหม่
-    const newItem = new Item({ name, category, number, counting });
+    const newItem = new Item({
+      name,
+      category,
+      number: number.toString(),
+      counting: {
+        value: numValue,
+        timestamp: new Date(),
+      },
+    });
+
     const savedItem = await newItem.save();
     res.status(201).json(savedItem);
   } catch (error) {
@@ -58,14 +74,28 @@ router.get("/all-items", async (req, res) => {
   }
 });
 
-// PUT: แก้ไขรายการตาม id
+// PUT /update-item/:id
 router.put("/update-item/:id", async (req, res) => {
   try {
-    const { name, category, number, counting } = req.body;
+    const { name, category, number } = req.body;
+    const numValue = Number(number);
+
+    if (isNaN(numValue)) {
+      return res.status(400).json({ message: "จำนวนต้องเป็นตัวเลข" });
+    }
+
     const updatedItem = await Item.findByIdAndUpdate(
       req.params.id,
-      { name, category, number, counting },
-      { new: true } // คืนค่า document ที่อัปเดตแล้ว
+      {
+        name,
+        category,
+        number: number.toString(),
+        counting: {
+          value: numValue,
+          timestamp: new Date(),
+        },
+      },
+      { new: true }
     );
 
     if (!updatedItem) {

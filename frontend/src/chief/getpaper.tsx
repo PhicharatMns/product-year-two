@@ -56,7 +56,7 @@ export default function GetPaper() {
   const [fadeItem, setFadeItem] = useState(false);
 
   const [items, setItems] = useState<RequisitionItem[]>([]);
-
+  const [PopupupDate, setPopupupDate] = useState(false);
   const token = localStorage.getItem("token");
   const decoded: JwtPayload | null = token
     ? jwtDecode<JwtPayload>(token)
@@ -118,6 +118,11 @@ export default function GetPaper() {
       setSelectedJob(null);
       setItems([]); // ล้างค่า items เมื่อปิด ---
     }, 300);
+  };
+
+  const openUpdatePopup = (job: Employee) => {
+    setSelectedJob(job);
+    setPopupupDate(true);
   };
 
   //  เพิ่มฟังก์ชันสำหรับจัดการรายการเบิกของ ---
@@ -221,6 +226,42 @@ export default function GetPaper() {
     }
   };
 
+  // ฟังก์ชันอัปเดตสถานะงาน
+  const updateJobStatus = async (jobId: string) => {
+    if (!token) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/employees/${jobId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          Status: "เสร็จสิ้น",
+          แ: "เสร็จสิ้นงาน", // เพิ่ม section ใหม่
+        }),
+      });
+
+      const data = await res.json();
+      console.log("Response:", res.status, data);
+
+      if (!res.ok) throw new Error(data.error || "อัปเดตไม่สำเร็จ");
+
+      setEmployees((prev) =>
+        prev.map((job) =>
+          job._id === jobId
+            ? { ...job, Status: "เสร็จสิ้น", section: "เสร็จสิ้นงาน" }
+            : job
+        )
+      );
+      alert("อัปเดตสถานะเรียบร้อย!");
+      setPopupupDate(false);
+    } catch (err) {
+      console.error(err);
+      alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ: " + err);
+    }
+  };
+
   const border_b_2_data =
     theme === "dark"
       ? "text-yellow-500 border-yellow-500"
@@ -282,14 +323,14 @@ export default function GetPaper() {
 
         {/* Header Row */}
         <div
-          className={`grid grid-cols-7 gap-5 border-b-2 px-5 text-lg items-center font-semibold mb-3 ${border_b_2_data}`}
+          className={`grid grid-cols-8 gap-5 border-b-2 px-5 text-lg items-center font-semibold mb-3 ${border_b_2_data}`}
         >
           <div>ชื่องาน</div>
           <div className="col-span-2">รายละเอียดงาน</div>
           <div>สถานะ</div>
           <div>วันเริ่มงาน</div>
           <div>วันปิดงาน</div>
-          <div className="text-center">รายละเอียด</div>
+          <div className="text-center col-span-2">รายละเอียด</div>
         </div>
 
         {/* ข้อมูลใบงาน */}
@@ -338,7 +379,7 @@ export default function GetPaper() {
                 }}
               >
                 <div
-                  className={`grid grid-cols-7 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
+                  className={`grid grid-cols-8 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
                 >
                   <p className="truncate">{job.Worksheet || "-"}</p>
                   <p className="col-span-2 truncate">
@@ -365,7 +406,7 @@ export default function GetPaper() {
                       ? new Date(job.Closing_date).toLocaleDateString("th-TH")
                       : "-"}
                   </p>
-                  <div className="flex gap-2 mx-auto">
+                  <div className="flex gap-2 col-span-2 mx-auto">
                     <Link
                       to={`/chief/DetailworkChief/${job._id}`}
                       className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
@@ -390,6 +431,18 @@ export default function GetPaper() {
                     >
                       เบิกของ
                     </button>
+                    <button
+                      onClick={() => openUpdatePopup(job)}
+                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
+                theme === "dark"
+                  ? "bg-yellow-500 hover:bg-yellow-600"
+                  : "bg-blue-500 hover:bg-blue-600"
+              }`}
+                    >
+                      อัปเดตงาน
+                    </button>
                   </div>
                 </div>
               </motion.div>
@@ -404,7 +457,6 @@ export default function GetPaper() {
           </div>
         )}
       </div>
-
       {OpendateItem && selectedJob && (
         <div
           className={`fixed inset-0 flex items-center justify-center backdrop-blur-sm bg-black/40 z-50 
@@ -584,6 +636,17 @@ export default function GetPaper() {
               </button>
             </div>
           </div>
+        </div>
+      )}
+      {/* //อัปเดตงาน */}
+      {PopupupDate && selectedJob && (
+        <div>
+          <button
+            onClick={() => updateJobStatus(selectedJob._id)}
+            className="px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600"
+          >
+            อัปเดตงาน
+          </button>
         </div>
       )}
     </div>

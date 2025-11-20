@@ -31,6 +31,7 @@ export default function SidebarChief() {
   const [slideIn, setSlideIn] = useState(false);
   const [openManage, setManage] = useState(false);
   const [slideManage, setslideManage] = useState(false);
+  const [profileImg, setProfileImg] = useState<string | null>(null);
 
   // Functions
   const openManu = () => {
@@ -81,6 +82,11 @@ export default function SidebarChief() {
     },
 
     { text: "รายการเบิกของ", icon: AiOutlineTeam, link: "/chief/ItemChief" },
+    {
+      text: "ทีม",
+      icon: LuMessageSquareText,
+      link: "/chief/edituser",
+    },
 
     // { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
     { text: "ออกจากระบบ", icon: IoIosLogOut, onClick: handleLogout },
@@ -101,11 +107,10 @@ export default function SidebarChief() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
+        setProfileImg(response.data.Profile);
         // Map ข้อมูลให้เหมือนกับหน้า ProfileChief
         setName(response.data.Name || "ไม่ระบุชื่อ");
         setProfileSuffix(response.data.Profile || ""); // เก็บ path รูปถ้ามี
-
       } catch (err) {
         console.error("Sidebar fetch error:", err);
       }
@@ -123,7 +128,8 @@ export default function SidebarChief() {
   const textPanel = theme === "dark" ? "text-white" : "text-black";
 
   // URL รูปภาพหลัก (ใช้ Link เดียวกับหน้า Profile)
-  const baseImage = "https://i.pinimg.com/1200x/3c/7f/94/3c7f94cd27f95fb70e0855429176dc34.jpg";
+  const baseImage =
+    "https://i.pinimg.com/1200x/3c/7f/94/3c7f94cd27f95fb70e0855429176dc34.jpg";
 
   return (
     <>
@@ -135,8 +141,9 @@ export default function SidebarChief() {
       </button>
 
       <div
-        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 ${linkTextColor} font-bold border-r transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0`}
+        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 ${linkTextColor} font-bold border-r transition-transform duration-300 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        } md:translate-x-0`}
       >
         <div className="flex flex-col">
           <div className="flex items-center py-3 p-4">
@@ -159,7 +166,8 @@ export default function SidebarChief() {
                     to={item.link}
                     key={index}
                     className={({ isActive }) =>
-                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium ${linkTextColor} transition duration-300 ${isActive ? "bg-yellow-500" : ""
+                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium ${linkTextColor} transition duration-300 ${
+                        isActive ? "bg-yellow-500" : ""
                       }`
                     }
                     onClick={() => setOpen(false)}
@@ -229,17 +237,44 @@ export default function SidebarChief() {
             rounded-t-xl h-180 w-80 p-2 ${bgside}
             transition-all transform duration-500
             z-15 shadow-2xl border-t border-r border-gray-200 dark:border-gray-700
-            ${slideIn ? "translate-x-67 scale-100 opacity-100" : "-translate-x-full opacity-0"}
+            ${
+              slideIn
+                ? "translate-x-67 scale-100 opacity-100"
+                : "-translate-x-full opacity-0"
+            }
           `}
         >
-          <div className={`flex justify-between items-center mb-4 border-b-2 border-blue-100 pb-2 ${textPanel}`}>
-            <h2 className="text-xl font-semibold text-blue-500">กล่องข้อความ</h2>
-            <button onClick={closeManu} className={`text-2xl hover:text-red-500 pr-2 cursor-pointer ${textPanel}`}>✕</button>
+          <div
+            className={`flex justify-between items-center mb-4 border-b-2 border-blue-100 pb-2 ${textPanel}`}
+          >
+            <h2 className="text-xl font-semibold text-blue-500">
+              กล่องข้อความ
+            </h2>
+            <button
+              onClick={closeManu}
+              className={`text-2xl hover:text-red-500 pr-2 cursor-pointer ${textPanel}`}
+            >
+              ✕
+            </button>
           </div>
           <div className="h-100">
-            <div onClick={openManageMenu} className="border-black p-2 shadow-md rounded-xl flex items-center gap-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-              <img className="w-12 h-12 rounded-full object-cover" src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg" alt="พิชรัตน์" />
-              <div><p className={`font-semibold ${textPanel}`}>พิชรัตน์</p></div>
+            <div
+              onClick={openManageMenu}
+              className="border-black p-2 shadow-md rounded-xl flex items-center gap-3 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            >
+              <img
+                src={
+                  profileImg
+                    ? `http://localhost:5000/uploads/Profile/${profileImg}`
+                    : ""
+                }
+                className="object-cover w-10 h-10 rounded-full border-2 border-white/30 bg-gray-500"
+                alt="profile"
+              />
+
+              <div>
+                <p className={`font-semibold ${textPanel}`}>พิชรัตน์</p>
+              </div>
             </div>
           </div>
         </div>
@@ -248,13 +283,29 @@ export default function SidebarChief() {
       {/* Slide Menu รายละเอียด */}
       {openManage && (
         <div
-          className={`fixed left-4 lg:left-150 bottom-0 rounded-t-xl h-150 w-80 p-2 ${bgside} z-20 transition-all transform duration-500 shadow-2xl border-t border-gray-200 dark:border-gray-700 ${slideManage ? "-translate-x-0 scale-100 opacity-100" : "-translate-x-20 scale-100 opacity-0"}`}
+          className={`fixed left-4 lg:left-150 bottom-0 rounded-t-xl h-150 w-80 p-2 ${bgside} z-20 transition-all transform duration-500 shadow-2xl border-t border-gray-200 dark:border-gray-700 ${
+            slideManage
+              ? "-translate-x-0 scale-100 opacity-100"
+              : "-translate-x-20 scale-100 opacity-0"
+          }`}
         >
           <div className="border-black p-2 rounded-xl flex items-center gap-3">
-            <img className="w-12 h-12 rounded-full object-cover" src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg" alt="พิชรัตน์" />
-            <div><p className={`font-semibold ${textPanel}`}>{name}</p></div> {/* ใช้ name ที่ดึงมา */}
+            <img
+              className="w-12 h-12 rounded-full object-cover"
+              src="https://i.pinimg.com/736x/7e/46/c6/7e46c6d2798eff446b365c5246f4c9ca.jpg"
+              alt="พิชรัตน์"
+            />
+            <div>
+              <p className={`font-semibold ${textPanel}`}>{name}</p>
+            </div>{" "}
+            {/* ใช้ name ที่ดึงมา */}
             <div className="ml-auto">
-              <button onClick={closeManageMenu} className={`hover:text-red-500 text-2xl p-1 cursor-pointer ${textPanel}`}>✕</button>
+              <button
+                onClick={closeManageMenu}
+                className={`hover:text-red-500 text-2xl p-1 cursor-pointer ${textPanel}`}
+              >
+                ✕
+              </button>
             </div>
           </div>
         </div>
