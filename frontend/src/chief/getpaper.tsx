@@ -226,27 +226,77 @@ export default function GetPaper() {
     }
   };
 
-  // ฟังก์ชันอัปเดตสถานะงาน
+  // ฟังก์ชันอัปเดตสถานะงาน และ บันทึก Log ลง additem
   const updateJobStatus = async (jobId: string) => {
     if (!token) return;
+
+    // 1. เตรียมข้อมูลผู้ใช้ (Requester) เหมือนกับตอนเบิกของ
+    let requesterName = "ไม่ทราบ";
+    let requesterProfile = "/default-profile.png";
+
+    if (currentUserId) {
+      try {
+        const resUser = await fetch(
+          `http://localhost:5000/api/user/${currentUserId}`
+        );
+        const dataUser = await resUser.json();
+        requesterName = dataUser.Name;
+        requesterProfile = dataUser.Profile || "/default-profile.png";
+      } catch (err) {
+        console.error("ไม่สามารถดึงข้อมูลผู้ใช้", err);
+      }
+    }
+
     try {
-      const res = await fetch(`http://localhost:5000/api/employees/${jobId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          Status: "เสร็จสิ้น",
-          แ: "เสร็จสิ้นงาน", // เพิ่ม section ใหม่
+      // 2. ยิง API 2 ตัวพร้อมกัน (Parallel Requests) เพื่อความรวดเร็ว
+      const [resUpdate, resAddItem] = await Promise.all([
+        // Request 1: อัปเดตสถานะงาน (PUT)
+        fetch(`http://localhost:5000/api/employees/${jobId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            Status: "เสร็จสิ้น",
+            section: "เสร็จสิ้นงาน", // อัปเดต section ใน employee
+          }),
         }),
-      });
 
-      const data = await res.json();
-      console.log("Response:", res.status, data);
+        // Request 2: เพิ่ม Log ลงใน additems (POST)
+        fetch("http://localhost:5000/api/additem", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            jobId: jobId,
+            name: "ปิดงาน (Finished)", // ชื่อรายการ
+            quantity: 1,
+            description: "ดำเนินการปิดงานเสร็จสิ้น", // รายละเอียด
+            requesterName,
+            requesterProfile,
+            section: "ปิดงาน", // แยก section ให้ชัดเจน
+            role: "ช่าง",
+            status: "เสร็จสิ้น",
+            additemecomfam: "เสร็จสิ้น",
+          }),
+        }),
+      ]);
 
-      if (!res.ok) throw new Error(data.error || "อัปเดตไม่สำเร็จ");
+      // 3. ตรวจสอบผลลัพธ์
+      if (!resUpdate.ok) {
+        const errorData = await resUpdate.json();
+        throw new Error(errorData.error || "อัปเดตสถานะงานไม่สำเร็จ");
+      }
 
+      if (!resAddItem.ok) {
+        console.warn("บันทึก Log ลง additem ไม่สำเร็จ แต่อัปเดตสถานะงานแล้ว");
+        // อาจจะไม่ต้อง throw error ถ้ามองว่าการ update สำคัญกว่า
+      }
+
+      // 4. อัปเดต State หน้าเว็บทันที (ไม่ต้อง Reload)
       setEmployees((prev) =>
         prev.map((job) =>
           job._id === jobId
@@ -254,14 +304,14 @@ export default function GetPaper() {
             : job
         )
       );
-      alert("อัปเดตสถานะเรียบร้อย!");
-      setPopupupDate(false);
+
+      alert("อัปเดตสถานะและบันทึกข้อมูลเรียบร้อย!");
+      setPopupupDate(false); // ปิด Popup
     } catch (err) {
       console.error(err);
-      alert("เกิดข้อผิดพลาดในการอัปเดตสถานะ: " + err);
+      alert("เกิดข้อผิดพลาด: " + err);
     }
   };
-
   const border_b_2_data =
     theme === "dark"
       ? "text-yellow-500 border-yellow-500"

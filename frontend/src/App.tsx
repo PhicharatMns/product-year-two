@@ -31,6 +31,7 @@ import Withdraw from "./User/Withdraw";
 import Followtheprogress from "./User/Followtheprogress";
 import DetailItem from "./User/Detailitem";
 import Profile from "./User/Profile";
+import Usermesseger from "./User/Usermesseger";
 
 
 // Auth
@@ -105,6 +106,7 @@ const router = createBrowserRouter([
       { path: "withdraw", element: <Withdraw /> },
       { path: 'Followtheprogress', element: <Followtheprogress /> },
       { path: "DetailItem", element: <DetailItem /> },
+      { path: "usermesseger", element: <Usermesseger /> }
     ],
   },
 

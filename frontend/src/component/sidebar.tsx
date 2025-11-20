@@ -58,7 +58,8 @@ export default function Sidebar() {
     { text: "Dashboard", icon: MdDashboard, link: "/user/DashboardUser" },
     { text: "รับใบงาน", icon: RiFilePaper2Line, link: "/user/getpaper" },
     { text: "ปฏิทินงาน", icon: AiTwotoneCalendar, link: "/user/Calendar" },
-    { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
+    // { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
+    { text: "กล่องข้อความ", icon: FaInbox, link: "/user/usermesseger" },
     { text: "แผนที่", icon: SiGooglemaps, link: "/user/Maps" },
     { text: "วัสดุอุปกรณ์", icon: FaTools, link: "/user/Supplies" },
     { text: "ออกจากระบบ", icon: IoLogOutOutline, onClick: handleLogout },
@@ -214,7 +215,7 @@ export default function Sidebar() {
             onClick={() => setOpen(false)}
           ></div>
         )}
-        {showManu && (
+        {/* {showManu && (
           <div
             className={`
               fixed left-0 bottom-0 
@@ -252,9 +253,9 @@ export default function Sidebar() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
 
-        {openManage && (
+        {/* {openManage && (
           <div
             className={` ml-1 fixed lg:left-150  left-4 bottom-0 rounded-t-xl h-150 w-80 p-2 ${bgside} z-10 transition-all transform duration-500 ${slideManage
               ? "-translate-x-0 scale-100 opacity-100"
@@ -280,7 +281,7 @@ export default function Sidebar() {
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </>
     </div>
   );
