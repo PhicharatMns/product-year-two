@@ -910,13 +910,12 @@ export default function DetailworkChief() {
             <div className="grid grid-cols-8 py-3 border-b mb-3 gap-5 px-6">
               {[
                 { name: "ทั้งหมด" },
-                { name: "IT Support" },
-                { name: "Helpdesk" },
-                { name: "Network" },
-                { name: "System Admin" },
-                { name: "IT Support" },
-                { name: "Technical" },
-                { name: "Customer" },
+                { name: "ไฟฟ้า" },
+                { name: "ฝ่ายช่วยเหลือ" },
+                { name: "เครือข่าย" },
+                { name: "ผู้ดูแลระบบ" },
+                { name: "สนับสนุนไอที" },
+                { name: "ช่างเทคนิค" },
               ].map((dept) => (
                 <div key={dept.name} className="">
                   <div
@@ -1316,29 +1315,33 @@ export default function DetailworkChief() {
                         </span>
                       </button>
 
-                      <button
-                        onClick={() => openPopupNotApproved(item.id)}
-                        // onClick={() => handleReject(item.id)}
-                        className={`group relative py-1 bg-red-500 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95
+                      {item.status !== "อนุมัติเเล้วรอการติดต่อคลัง" && (
+                        <>
+                          <button
+                            onClick={() => openPopupNotApproved(item.id)}
+                            // onClick={() => handleReject(item.id)}
+                            className={`group relative py-1 bg-red-500 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95
                       `}
-                      >
-                        <span className="relative z-10">ไม่อนุมัติ</span>
-                        <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                          <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
-                        </span>
-                      </button>
-                      <button
-                        // onClick={colsePopupMessage}
-                        onClick={() => handleApprove(item.id)}
-                        className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-                          theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                        }`}
-                      >
-                        <span className="relative z-10">อนุมัติ</span>
-                        <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                          <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
-                        </span>
-                      </button>
+                          >
+                            <span className="relative z-10">ไม่อนุมัติ</span>
+                            <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                              <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
+                            </span>
+                          </button>
+                          <button
+                            // onClick={colsePopupMessage}
+                            onClick={() => handleApprove(item.id)}
+                            className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                              theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                            }`}
+                          >
+                            <span className="relative z-10">อนุมัติ</span>
+                            <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                              <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
+                            </span>
+                          </button>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1347,6 +1350,7 @@ export default function DetailworkChief() {
           </motion.div>
         </div>
       )}
+
       {PopupNotApproved && selectedItemId && (
         <div>
           {(() => {

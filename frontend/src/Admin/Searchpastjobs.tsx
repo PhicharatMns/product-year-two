@@ -47,7 +47,7 @@ const defaultForm: FormState = {
   Worksheet: "",
   Employer: "",
   Contact_number: "",
-  address: { type: "Point", coordinates: [0, 0] }, //  แก้ตรงนี้
+  address: { type: "Point", coordinates: [100.5018, 13.7563] },
   responsible: "",
   Date_of_acceptance_of_work: new Date().toISOString().split("T")[0],
   Closing_date: new Date().toISOString().split("T")[0],
@@ -365,7 +365,7 @@ export default function Searchpastjobs() {
   const bgborder = theme === "dark" ? "bg-gray-700" : "bg-gray-50";
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const texthaed = theme === "dark" ? "text-yellow-500" : "text-blue-500";
-  
+
   return (
     <div
       className={`transition-opacity duration-500 container mx-auto p-5 max-w-380   ${
@@ -491,7 +491,7 @@ export default function Searchpastjobs() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
                     duration: 0.5,
-                    delay: index * 0.2,
+                    delay: index * 0.1,
                     ease: "easeOut",
                   }}
                   className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${

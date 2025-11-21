@@ -429,7 +429,7 @@ export default function GetPaper() {
                 }}
               >
                 <div
-                  className={`grid grid-cols-8 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
+                  className={`grid grid-cols-8 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1  ${headerBg}`}
                 >
                   <p className="truncate">{job.Worksheet || "-"}</p>
                   <p className="col-span-2 truncate">

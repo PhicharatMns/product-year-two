@@ -13,6 +13,7 @@ interface RequisitionItem {
   requesterProfile?: string;
   section?: string;
   role?: string;
+  Closing_date?: string;
   createdAt?: string;
   _id?: string;
   status?: string;
@@ -159,7 +160,12 @@ export default function Notification() {
       setRequisitionItems((prev) =>
         prev.map((r) =>
           r.id === selectedItem.id
-            ? { ...r, status: "ได้รับการยืนยันจากคลังแล้ว" }
+            ? {
+                ...r,
+                status: "ได้รับการยืนยันจากคลังแล้ว",
+                additemecomfam: "ยืนยันแล้ว", // <-- อันนี้ต้องเพิ่ม!!!
+                statusUpdatedAt: new Date().toISOString(), // อัปเดตเวลาใหม่ทันที
+              }
             : r
         )
       );
@@ -280,11 +286,9 @@ export default function Notification() {
               </div>
 
               {/* Table Rows */}
+              {/* Table Rows */}
               {requisitionItems
-                .filter(
-                  (e) =>
-                    e.status !== "รอดําเนินการ" && e.status !== "ไม่อนุมัติ"
-                )
+                .filter((e) => e.status !== "" && e.status !== "ไม่อนุมัติ")
                 .filter(
                   (e) =>
                     e.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -299,7 +303,18 @@ export default function Notification() {
                   const dateB = b.statusUpdatedAt
                     ? new Date(b.statusUpdatedAt).getTime()
                     : 0;
-                  return dateB - dateA; // ใหม่สุด -> เก่าสุด
+
+                  if (dateB !== dateA) return dateB - dateA; // ใหม่สุด -> เก่าสุด
+
+                  // ถ้า statusUpdatedAt เท่ากัน ใช้ Closing_date
+                  const closingA = a.Closing_date
+                    ? new Date(a.Closing_date).getTime()
+                    : 0;
+                  const closingB = b.Closing_date
+                    ? new Date(b.Closing_date).getTime()
+                    : 0;
+
+                  return closingB - closingA; // ใหม่สุด -> เก่าสุด
                 })
                 .map((e, i) => (
                   <motion.div
@@ -339,12 +354,19 @@ export default function Notification() {
 
                     <div className="truncate col-span-2">{e.name}</div>
                     <div className="truncate">{e.quantity}</div>
-                    <div className="truncate text-center col-span-2">
-                      {e.statusUpdatedAt &&
-                        new Date(e.statusUpdatedAt).toLocaleString("th-TH", {
-                          dateStyle: "short",
-                          timeStyle: "short",
-                        })}
+                    <div className=" text-center col-span-2">
+                      {/* แสดง statusUpdatedAt เป็นหลัก */}
+                      {e.statusUpdatedAt
+                        ? new Date(e.statusUpdatedAt).toLocaleString("th-TH", {
+                            dateStyle: "short",
+                            timeStyle: "short",
+                          })
+                        : e.createdAt
+                        ? new Date(e.createdAt).toLocaleString("th-TH", {
+                            dateStyle: "short",
+                            timeStyle: "short",
+                          })
+                        : "-"}
                     </div>
                     <div className="col-span-2 mx-auto">
                       <button

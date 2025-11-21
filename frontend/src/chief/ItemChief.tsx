@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 // 1. (แก้ไข) Import ไอคอนที่สื่อความหมายตรงขึ้น
-import { Package, BadgeCheck, TriangleAlert } from "lucide-react";
 // (ใหม่) 1. Import useTheme
 import { useTheme } from "@/components/theme-provider";
 import { motion } from "framer-motion";
+import { FolderKanban, Clock, ClipboardCheck, CheckCircle } from "lucide-react";
+import { MdOutlinePendingActions } from "react-icons/md";
 import { Item } from "@radix-ui/react-dropdown-menu";
 
 interface RequisitionItem {
@@ -27,7 +28,7 @@ export default function ItemChief() {
   // (ใหม่) 2. เรียกใช้ Hook และกำหนดคลาสตามธีม
   const { theme } = useTheme();
 
-  const bg = theme === "dark" ? "bg-gray-900" : "bg-gray-100";
+  const bg = theme === "dark" ? "bg-gray-900" : "bg-gray-100 border";
   const textSecondary = theme === "dark" ? "text-gray-400" : "text-gray-500";
   const textbg = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const bgpopup = theme === "dark" ? "bg-gray-800" : " shadow-sm bg-white";
@@ -84,23 +85,33 @@ export default function ItemChief() {
     (Item) => Item.status === "ได้รับการยืนยันจากคลังแล้ว"
   ).length;
 
+  const MdOutlinePendingActions = RequisitionItems.filter(
+    (Item) => Item.status === "รอดําเนินการ"
+  ).length;
+
   const cards = [
     {
       name: "คําขอทั้งหมด",
       num: total,
-      icon: Package,
+      icon: FolderKanban,
       color: "text-blue-500",
+    },
+    {
+      name: "รอดําเนินการ",
+      num: MdOutlinePendingActions,
+      icon: Clock,
+      color: "text-yellow-500",
     },
     {
       name: "อนุมัติเเล้วรอการติดต่อคลัง",
       num: confirmed,
-      icon: TriangleAlert,
-      color: "text-red-500",
+      icon: ClipboardCheck,
+      color: "text-orange-500",
     },
     {
       name: "ได้รับการยืนยันจากคลังแล้ว",
       num: Waiting_to_receive,
-      icon: BadgeCheck,
+      icon: CheckCircle,
       color: "text-green-500",
     },
   ];
@@ -118,7 +129,7 @@ export default function ItemChief() {
   };
 
   const [rejectReason, setRejectReason] = useState("");
-  
+
   const handleApprove = async (itemId: string) => {
     try {
       const token = localStorage.getItem("token");
@@ -252,7 +263,7 @@ export default function ItemChief() {
           </p>
         </div>
         {/* grid 3 */}
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-4 gap-3">
           {cards.map((e, i) => {
             const Icon = e.icon; // เอา icon จาก array
             return (
@@ -336,16 +347,21 @@ export default function ItemChief() {
                 >
                   <p>{e.requesterName}</p>
                   <p
-                    className={` ${
+                    className={
                       e.status === "ไม่อนุมัติ"
                         ? "text-red-500"
                         : e.status === "ได้รับการยืนยันจากคลังแล้ว"
                         ? "text-green-500"
+                        : e.status === "อนุมัติเเล้วรอการติดต่อคลัง"
+                        ? "text-orange-500"
+                        : e.status === "รอดําเนินการ"
+                        ? "text-blue-500"
                         : titleColor
-                    }`}
+                    }
                   >
                     {e.status}
                   </p>
+
                   <p>{e.name}</p>
                   <p>{e.quantity}</p>
                   <p>

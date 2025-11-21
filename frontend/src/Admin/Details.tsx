@@ -123,10 +123,10 @@ export default function Details() {
   const handleAddTradesman = async (tradesman: Tradesman) => {
     try {
       // ตรวจสอบ role ของช่าง
-      if (tradesman.Position !== "chief" && tradesman.role !== "chief") {
-        alert("สามารถเพิ่มได้เฉพาะช่างที่เป็น Chief เท่านั้น");
-        return;
-      }
+      // if (tradesman.Position !== "chief" && tradesman.role !== "chief") {
+      //   alert("สามารถเพิ่มได้เฉพาะช่างที่เป็น Chief เท่านั้น");
+      //   return;
+      // }
 
       // ตรวจสอบว่าช่างคนนี้ถูกเพิ่มไปแล้วหรือยัง
       const isDuplicate = SelectedTradesmen.some((t) => t.id === tradesman._id);
@@ -307,7 +307,9 @@ export default function Details() {
 
           <div className="grid grid-cols-5 gap-4 mt-3">
             <div className={`  col-span-2  `}>
-              <div className={`w-full h-85 mb-2 p-5 rounded-2xl border bg-red ${bg}`}>
+              <div
+                className={`w-full h-85 mb-2 p-5 rounded-2xl border bg-red ${bg}`}
+              >
                 <div
                   className={` items-center ${
                     theme === "dark" ? "text-yellow-500" : "text-blue-500"
@@ -429,7 +431,9 @@ export default function Details() {
               </div>
             </div>
             {/* เเผนที่ */}
-            <div className={`border py-3 px-4 col-span-3 ${bg} z-0 rounded-2xl border`}>
+            <div
+              className={`border py-3 px-4 col-span-3 ${bg} z-0 rounded-2xl border`}
+            >
               <h2 className={`text-xl font-semibold mb-3 `}>แผนที่งาน</h2>
               {markerPos && (
                 <MapContainer
@@ -554,13 +558,13 @@ export default function Details() {
               <div className="grid grid-cols-8 py-3 border-b mb-3 gap-5 px-6">
                 {[
                   { name: "ทั้งหมด" },
-                  { name: "IT Support" },
-                  { name: "Helpdesk" },
-                  { name: "Network" },
-                  { name: "System Admin" },
-                  { name: "IT Support" },
-                  { name: "Technical" },
-                  { name: "Customer" },
+                  { name: "หัวหน้าช่าง" },
+                  { name: "ช่าง" },
+                  { name: "ฝ่ายช่วยเหลือ" },
+                  { name: "เครือข่าย" },
+                  { name: "ผู้ดูแลระบบ" },
+                  { name: "สนับสนุนไอที" },
+                  { name: "ช่างเทคนิค" },
                 ].map((dept) => (
                   <div key={dept.name} className="">
                     <div
@@ -584,11 +588,18 @@ export default function Details() {
                 {dataTradesman
                   .filter(
                     (t) =>
-                      (t.Position === "chief" || t.role === "chief") && // เฉพาะ Chief
-                      (selectedPosition === "ทั้งหมด" ||
-                        t.Position === selectedPosition) && // กรองตำแหน่ง
-                      t.Name.toLowerCase().includes(Search.toLowerCase()) //  ค้นหาชื่อ
+                      // admin = หัวหน้าช่าง
+                      ((t.role === "admin" &&
+                        selectedPosition === "หัวหน้าช่าง") ||
+                        // user = ช่าง
+                        (t.role === "user" && selectedPosition === "ช่าง") ||
+                        // เงื่อนไขปกติ
+                        selectedPosition === "ทั้งหมด" ||
+                        selectedPosition === "" ||
+                        t.Position === selectedPosition) &&
+                      t.Name.toLowerCase().includes(Search.toLowerCase()) // ค้นหาชื่อ
                   )
+
                   .sort(
                     (a, b) => (jobCounts[a._id] ?? 0) - (jobCounts[b._id] ?? 0)
                   )
