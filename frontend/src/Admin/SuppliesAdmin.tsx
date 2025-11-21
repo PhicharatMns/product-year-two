@@ -59,7 +59,9 @@ const AddItemForm = ({ items }: { items: ItemType[] }) => {
           className={`flex items-center gap-2 p-4 border rounded-xl shadow transition ${bg}`}
         >
           <item.icon
-            className={`w-10 h-10 bg-gray-200 border p-2 rounded-4xl ${item.color}`}
+            className={`w-10 h-10  ${
+              theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+            } border p-2 rounded-4xl ${item.color}`}
           />
           <div className="flex flex-col text-lg">
             <p className={`text-sm font-semibold ${texthead}`}>{item.name}</p>
@@ -167,14 +169,16 @@ const Showlist: React.FC<ShowlistProps> = ({
 
       {/* header */}
       <div className="border">
-        <div className="grid grid-cols-8 pl-5 text-sm py-1 m-2 ">
+        <div className="grid grid-cols-9 font-semibold pl-5 text-sm py-1 m-2 ">
           {["ชื่ออุปกรณ์", "หมวดหมู่", "คงคลัง", "อัปเดตล่าสุด", "รายการ"].map(
             (e, i) => (
               <div
                 key={i}
                 className={`${
                   i === 0 || i === 1 ? "col-span-2" : "col-span-1"
-                } ${i === 4 ? "text-center col-span-2 " : ""}`}
+                } ${i === 4 ? "text-center col-span-2 " : ""} ${
+                  i === 3 ? "col-span-2  text-center" : ""
+                }`}
               >
                 <p>{e}</p>
               </div>
@@ -195,26 +199,20 @@ const Showlist: React.FC<ShowlistProps> = ({
               delay: i * 0.1,
               ease: "easeOut",
             }}
-            className={`grid grid-cols-8 pl-5 text-sm py-4 m-2 border rounded-lg items-center ${bgborder}`}
+            className={`grid grid-cols-9 pl-5 text-sm py-4 m-2 border rounded-lg items-center ${bgborder}`}
           >
             <p className="col-span-2">{e.name}</p>
             <p className="col-span-2">{e.category}</p>
-            <p>{e.number}</p>
+            <p className={` ${Number(e.number) < 10 ? "text-red-500" : ""}`}>
+              {e.category}
+            </p>
 
-            <p>
+            <p className="col-span-2 text-center">
               {e.counting?.timestamp
                 ? new Date(e.counting.timestamp).toLocaleString("th-TH")
                 : new Date(e.createdAt).toLocaleString("th-TH")}
             </p>
             <div className="mx-auto flex gap-1 col-span-2">
-              <button
-                onClick={() => onOpen(e)} // ส่ง item ปัจจุบันกลับไป parent
-                className="relative overflow-hidden cursor-pointer w-fit rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
-             [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-             hover:bg-red-600 active:-translate-y-1 active:scale-x-90 active:scale-y-110"
-              >
-                เพิ่มจํานวน
-              </button>
               <button
                 onClick={() => {
                   setEditItem(e); // บอกเลยว่าต้องลบชิ้นนี้
@@ -225,6 +223,16 @@ const Showlist: React.FC<ShowlistProps> = ({
              hover:bg-red-600 active:-translate-y-1 active:scale-x-90 active:scale-y-110"
               >
                 ลบ
+              </button>
+              <button
+                onClick={() => onOpen(e)} // ส่ง item ปัจจุบันกลับไป parent
+                className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                  theme === "dark"
+                    ? "bg-yellow-500 hover:bg-yellow-600"
+                    : "bg-blue-600 hover:bg-blue-600"
+                }`}
+              >
+                เพิ่มจํานวน
               </button>
             </div>
           </motion.div>
@@ -350,7 +358,7 @@ const ShowaletProgress: React.FC<ShowaletProgressProps> = ({
             <div key={i} className={`${i === 2 ? "col-span-2" : ""}`}>
               <p className={`mb-1 ${texthead}`}>{e}</p>
               <input
-                type="text"
+                type={i === 2 ? "number" : "text"}
                 value={
                   i === 0
                     ? formData.name
@@ -695,7 +703,7 @@ const ShowPopupDetele: React.FC<ShowPopupDeteleProps> = ({
         }`}
       >
         <p
-          className={`font-semibold text-lg ${
+          className={`font-semibold mb-4 text-lg ${
             theme === "dark" ? "text-yellow-500" : "text-blue-500"
           }`}
         >

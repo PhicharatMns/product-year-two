@@ -362,7 +362,7 @@ export default function Searchpastjobs() {
   }, []);
 
   const bg = theme === "dark" ? "bg-gray-800" : " shadow-sm bg-white";
-  const bgborder = theme === "dark" ? "bg-gray-700" : "bg-gray-50";
+  const bgborder = theme === "dark" ? "bg-gray-700" : "bg-gray-100";
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const texthaed = theme === "dark" ? "text-yellow-500" : "text-blue-500";
 
@@ -556,8 +556,8 @@ export default function Searchpastjobs() {
                       onClick={() => openModal(e)}
                       className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
                         theme === "dark"
-                          ? "bg-yellow-500 hover:bg-yellow-600"
-                          : "bg-blue-500 hover:bg-blue-600"
+                          ? "bg-blue-500 hover:bg-blue-600"
+                          : "bg-yellow-500 hover:bg-yellow-600"
                       }`}
                     >
                       แก้ไข
@@ -567,8 +567,8 @@ export default function Searchpastjobs() {
                       <button
                         className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
                           theme === "dark"
-                            ? "bg-yellow-600 hover:bg-yellow-700"
-                            : "bg-blue-600 hover:bg-blue-700"
+                            ? "bg-yellow-500 hover:bg-yellow-600"
+                            : "bg-blue-500 hover:bg-blue-600"
                         }`}
                       >
                         รายละเอียด
@@ -967,8 +967,8 @@ export default function Searchpastjobs() {
                [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
                active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
                  theme === "dark"
-                   ? "bg-yellow-600 hover:bg-yellow-700"
-                   : "bg-blue-700 hover:bg-blue-800"
+                   ? "bg-yellow-500 hover:bg-yellow-700"
+                   : "bg-blue-500 hover:bg-blue-700"
                }`}
                           >
                             รายละเอียด

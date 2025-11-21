@@ -61,6 +61,10 @@ export default function Dashboard({
     image: File | null;
   }
 
+  interface TypeItems {
+    name?: string;
+  }
+
   const { theme } = useTheme();
 
   const [SelectedTradesmen, setSelectedTradesmen] = useState<Employees[]>([]);
@@ -71,6 +75,7 @@ export default function Dashboard({
   const [Search, setSearch] = useState<string>("");
   const [anim, setanim] = useState(false);
   const [Faev, setFaev] = useState(false);
+  const [items, setitems] = useState<TypeItems[]>([]);
 
   // Fetch Tradesmen + JobCounts + Jobs (รวมใน useEffect เดียว)
   useEffect(() => {
@@ -113,6 +118,22 @@ export default function Dashboard({
       { user: 0, chief: 0 }
     );
   }, [SelectedTradesmen]);
+
+  const fetchRequisitionItems = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/additem");
+      const data = await res.json();
+      setitems(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const number_requests_Items = items.length;
+
+  useEffect(() => {
+    fetchRequisitionItems();
+  }, []);
 
   const totalTechnicians = roleSummary.user + roleSummary.chief;
   const workingCount = useMemo(
@@ -292,6 +313,7 @@ export default function Dashboard({
             color: "bg-blue-800",
             color_bark: "bg-yellow-900",
             link: "Notification",
+            value: number_requests_Items,
             icon: <CiSearch size={24} />,
           },
         ].map((item, index) => (
@@ -307,7 +329,8 @@ export default function Dashboard({
               <div className="border-b pb-3"></div>
             </p>
             <div className="text-sm text-white">
-              {item.title === "จำนวนช่าง" || item.title === 'รายการขอเบิกของ' ? (
+              {item.title === "จำนวนช่าง" ||
+              item.title === "รายการขอเบิกของ" ? (
                 <Link
                   to={`/${item.link}`}
                   className={`relative cursor-pointer after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:translate-y-1  after:opacity-0 after:transition after:duration-150 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100 
