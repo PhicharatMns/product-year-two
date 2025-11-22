@@ -13,6 +13,7 @@ const messageSchema = new mongoose.Schema({
   Position: { type: String },
   message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
+  requireNameinMessage: { type: String, required: true }, // ชื่อผู้ส่ง
 });
 
 const Message = mongoose.model("Message", messageSchema);

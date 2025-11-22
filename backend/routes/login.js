@@ -94,7 +94,12 @@ router.post("/login", async (req, res) => {
 
     // เก็บ id ลงใน token
     const token = jwt.sign(
-      { id: user._id, username: username, role: user.role },
+      {
+        id: user._id,
+        username: user.username,
+        role: user.role,
+        Name: user.Name,
+      },
       JWT_SECRET,
       { expiresIn: "1h" }
     );

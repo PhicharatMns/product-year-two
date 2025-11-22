@@ -17,6 +17,8 @@ type typeMessage = {
   Position: string;
 };
 
+import jwt_decode from "jwt-decode";
+
 export default function Messager() {
   const { theme } = useTheme();
   const [Message, setMessage] = useState<typeMessage[]>([]);
@@ -32,37 +34,60 @@ export default function Messager() {
       console.error(err);
     }
   };
+  const token = localStorage.getItem("token"); // หรือ cookie
+  let loggedInUserName = "ไม่ทราบชื่อ";
+  
+
+  if (token) {
+    const decoded: any = jwt_decode(token);
+    loggedInUserName = decoded.Name; // สมมติ JWT มีฟิลด์ Name
+  }
 
   const [text, setText] = useState("");
 
   const sendMessage = async () => {
     if (!selectedUser || !text.trim()) return;
 
+    const newMessage = {
+      Name: selectedUser.Name, // ชื่อผู้รับ
+      ID: selectedUser._id, // _id ของผู้รับ
+      Profile: selectedUser.Profile,
+      message: text,
+      role: selectedUser.role,
+      Position: selectedUser.Position,
+      requireNameinMessage: loggedInUserName, // ชื่อผู้ส่งจาก JWT
+    };
+
     try {
       const res = await fetch("http://localhost:5000/api/message/send", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          Name: selectedUser.Name,
-          ID: selectedUser._id, // ✅ ส่ง _id ของผู้ใช้ด้วย
-          Profile: selectedUser.Profile,
-          message: text,
-          role: selectedUser.role,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newMessage),
       });
 
       const data = await res.json();
-      console.log("ส่งข้อความสำเร็จ:", data);
+      setMessages((prev) => [...prev, data]); // แสดงทันที
       setText("");
     } catch (err) {
-      console.error("ส่งข้อความล้มเหลว:", err);
+      console.error(err);
+    }
+  };
+
+  const [messages, setMessages] = useState<typeMessage[]>([]);
+
+  const fetchMessages = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/message/all");
+      const data = await res.json();
+      setMessages(data);
+    } catch (err) {
+      console.error("ดึงข้อความล้มเหลว:", err);
     }
   };
 
   useEffect(() => {
     fetchMessage();
+    fetchMessages();
   }, []);
 
   const isDark = theme === "dark";
@@ -222,28 +247,43 @@ export default function Messager() {
           ) : (
             <div className="h-158 flex flex-col">
               {/* ส่วนข้อมูล */}
-              <div className=" rounded-lg p-4 flex-1 overflow-y-auto">
-                <div className="flex items-center">
+              <div className="rounded-lg p-4 flex-1 overflow-y-auto">
+                <div className="flex items-center gap-3 mb-4">
                   {selectedUser.Profile && (
-                    <img 
+                    <img
                       src={`http://localhost:5000/uploads/Profile/${
                         selectedUser.Profile || "default.png"
                       }`}
                       alt="profile"
-                      className="w-12 h-12 rounded-full mt-3 object-cover"
+                      className="w-12 h-12 rounded-full object-cover"
                     />
                   )}
-                  <h2 className="text-lg font-semibold mb-2">
-                    {selectedUser.Name}
-                  </h2>
+                  <div className="">
+                    <h2 className="text-lg font-semibold items-center">
+                      {selectedUser.Name}
+                    </h2>
+                    <span className={`${subText}`}>
+                      ตำแหน่ง: {selectedUser.Position}
+                      <span> /สายงาน : {selectedUser.role}</span>
+                    </span>
+                  </div>
                 </div>
-                {/* <p className={`${subText} mb-1`}>ID: {selectedUser._id}</p> */}
 
-                <p className={`${subText} mb-1`}>
-                  ตำแหน่ง: {selectedUser.Position}
-                </p>
-
-                <p className={`${subText} mb-1`}>บทบาท: {selectedUser.role}</p>
+                {/* แสดงข้อความเฉพาะ ID ตรงกับ selectedUser._id */}
+                {messages
+                  .filter((msg) => msg.ID === selectedUser._id)
+                  .map((msg) => (
+                    <div key={msg._id} className="mb-2 p-2 border rounded-lg">
+                      <span className="text-sm font-semibold">
+                        {msg.requireNameinMessage}:
+                      </span>{" "}
+                      <span className="text-sm">{msg.message}</span>
+                      <br />
+                      <span className="text-xs text-gray-400">
+                        {new Date(msg.timestamp).toLocaleString()}
+                      </span>
+                    </div>
+                  ))}
               </div>
 
               {/* ช่องกรอกข้อความ */}
