@@ -17,7 +17,7 @@ type typeMessage = {
   Position: string;
 };
 
-import jwt_decode from "jwt-decode";
+import * as jwt_decode from "jwt-decode"; // แบบ non-default
 
 export default function Messager() {
   const { theme } = useTheme();
@@ -25,7 +25,7 @@ export default function Messager() {
   const [selectedUser, setSelectedUser] = useState<typeMessage | null>(null);
   const [Focused, setFocused] = useState(false);
 
-  const fetchMessage = async () => {
+  const fetchMessagess = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/login/all-tradesman");
       const data = await res.json();
@@ -36,11 +36,15 @@ export default function Messager() {
   };
   const token = localStorage.getItem("token"); // หรือ cookie
   let loggedInUserName = "ไม่ทราบชื่อ";
-  
 
   if (token) {
-    const decoded: any = jwt_decode(token);
-    loggedInUserName = decoded.Name; // สมมติ JWT มีฟิลด์ Name
+    try {
+      const decoded: any = (jwt_decode as any)(token);
+      loggedInUserName = decoded.Name || "ไม่ทราบชื่อ";
+    } catch (err) {
+      console.error("JWT decode error:", err);
+      loggedInUserName = "ไม่ทราบชื่อ";
+    }
   }
 
   const [text, setText] = useState("");
@@ -49,13 +53,13 @@ export default function Messager() {
     if (!selectedUser || !text.trim()) return;
 
     const newMessage = {
-      Name: selectedUser.Name, // ชื่อผู้รับ
-      ID: selectedUser._id, // _id ของผู้รับ
+      Name: selectedUser.Name,
+      ID: selectedUser._id,
       Profile: selectedUser.Profile,
       message: text,
       role: selectedUser.role,
       Position: selectedUser.Position,
-      requireNameinMessage: loggedInUserName, // ชื่อผู้ส่งจาก JWT
+      requireNameinMessage: selectedUser,
     };
 
     try {
@@ -66,7 +70,13 @@ export default function Messager() {
       });
 
       const data = await res.json();
-      setMessages((prev) => [...prev, data]); // แสดงทันที
+
+      // อัปเดตข้อความทันทีใน state (แสดงทันที)
+      setMessages((prev) => [...prev, data]);
+
+      //  ดึงข้อมูลใหม่จาก server ทันที (ป้องกันไม่ sync)
+      fetchMessages();
+
       setText("");
     } catch (err) {
       console.error(err);
@@ -75,19 +85,29 @@ export default function Messager() {
 
   const [messages, setMessages] = useState<typeMessage[]>([]);
 
+  // const fetchMessages = async () => {
+  //   try {
+  //     const res = await fetch("http://localhost:5000/api/message/all");
+  //     const data = await res.json();
+  //     setMessages(data); // อัปเดต state ทันที
+  //   } catch (err) {
+  //     console.error("ดึงข้อความล้มเหลว:", err);
+  //   }
+  // };
+
   const fetchMessages = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/message/all");
       const data = await res.json();
-      setMessages(data);
+      setMessages(data); // ❗ ต้องแทนทั้งหมด ไม่ใช่ [...prev, data]
     } catch (err) {
       console.error("ดึงข้อความล้มเหลว:", err);
     }
   };
 
   useEffect(() => {
-    fetchMessage();
-    fetchMessages();
+    fetchMessagess(); // ดึงรายชื่อช่าง
+    fetchMessages(); // ดึงข้อความครั้งแรก
   }, []);
 
   const isDark = theme === "dark";
