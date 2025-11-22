@@ -44,6 +44,7 @@ interface Employee {
     type: string;
     coordinates: [number, number]; // [lng, lat]
   };
+  Status?: string;
 }
 
 interface RequisitionItem {
@@ -509,6 +510,16 @@ export default function DetailworkChief() {
               <p className={`${titleColor} font-semibold`}>
                 ระยะเวลาในการนําเนินงาน
               </p>
+              <p className={`${titleColor} font-semibold `}>
+                สถานะงาน:{" "}
+                <span
+                  className={`${
+                    theme === "dark" ? "text-white" : "text-black"
+                  }`}
+                >
+                  {job.Status || "-"}
+                </span>
+              </p>
               <p className={`${titleColor} font-semibold`}>
                 วันเริ่มงาน:
                 <span
@@ -584,7 +595,7 @@ export default function DetailworkChief() {
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
                           duration: 0.5,
-                          delay: index * 0.2,
+                          delay: index * 0.1,
                           ease: "easeOut",
                         }}
                       >
@@ -712,25 +723,23 @@ export default function DetailworkChief() {
                                   className={`${
                                     e.status === "ไม่อนุมัติ"
                                       ? "text-red-500"
-                                      : ""
-                                  } ${
-                                    e.status === "รอดําเนินการ"
+                                      : e.status === "รอดําเนินการ"
                                       ? "text-orange-500"
-                                      : ""
-                                  } ${
-                                    e.status === "อนุมัติเเล้วรอการติดต่อคลัง"
+                                      : e.status ===
+                                        "อนุมัติเเล้วรอการติดต่อคลัง"
+                                      ? "text-yellow-500"
+                                      : e.status ===
+                                        "ได้รับการยืนยันจากคลังแล้ว"
                                       ? "text-green-500"
-                                      : ""
-                                  } ${
-                                    e.status === "ได้รับการยืนยันจากคลังแล้ว"
-                                      ? "text-green-500"
-                                      : ""
+                                      : e.status === "เสร็จสิ้น"
+                                      ? "text-green-600"
+                                      : "text-gray-500"
                                   }`}
                                 >
                                   {e.status}
                                 </span>
-                                {e.reasondescriptionstatus?.trim() && (
-                                  <span className="">
+                                {e.description?.trim() && (
+                                  <span className="pl-1">
                                     หมายเหตุ:{" "}
                                     <span
                                       className={`${
@@ -739,18 +748,20 @@ export default function DetailworkChief() {
                                           : "text-black"
                                       }`}
                                     >
-                                      {e.reasondescriptionstatus}
+                                      {e.description}
                                     </span>
                                   </span>
                                 )}
                               </span>
                             </p>
-                            <button
-                              onClick={() => openPopupMessage(e.id)}
-                              className={`relative overflow-hidden cursor-pointer ${text_color} rounded-md   text-sm duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90`}
-                            >
-                              <TiMessage size={24} />
-                            </button>
+                            {e.status !== "เสร็จสิ้น" && (
+                              <button
+                                onClick={() => openPopupMessage(e.id)}
+                                className={`relative overflow-hidden cursor-pointer ${text_color} rounded-md   text-sm duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90`}
+                              >
+                                <TiMessage size={24} />
+                              </button>
+                            )}
                           </div>
                           <div className="flex gap-2 items-center">
                             <img
@@ -910,13 +921,12 @@ export default function DetailworkChief() {
             <div className="grid grid-cols-8 py-3 border-b mb-3 gap-5 px-6">
               {[
                 { name: "ทั้งหมด" },
-                { name: "IT Support" },
-                { name: "Helpdesk" },
-                { name: "Network" },
-                { name: "System Admin" },
-                { name: "IT Support" },
-                { name: "Technical" },
-                { name: "Customer" },
+                { name: "ไฟฟ้า" },
+                { name: "ฝ่ายช่วยเหลือ" },
+                { name: "เครือข่าย" },
+                { name: "ผู้ดูแลระบบ" },
+                { name: "สนับสนุนไอที" },
+                { name: "ช่างเทคนิค" },
               ].map((dept) => (
                 <div key={dept.name} className="">
                   <div
@@ -924,14 +934,12 @@ export default function DetailworkChief() {
                     onClick={() => setSelectedPosition(dept.name)}
                   >
                     <p
-                      className={`truncate relative w-fit mx-auto after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full
-                after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-500
+                      className={`truncate cursor-pointer relative w-fit mx-auto after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full
+                after:origin-bottom after:scale-x-0 ${
+                  theme === "dark" ? "after:bg-yellow-500" : "after:bg-blue-500"
+                } after:transition-transform after:duration-500
                 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100
-                ${
-                  selectedPosition === dept.name
-                    ? "font-bold text-blue-500"
-                    : ""
-                }`}
+                ${selectedPosition === dept.name ? titleColor : ""}`}
                     >
                       {dept.name}
                     </p>
@@ -1316,29 +1324,36 @@ export default function DetailworkChief() {
                         </span>
                       </button>
 
-                      <button
-                        onClick={() => openPopupNotApproved(item.id)}
-                        // onClick={() => handleReject(item.id)}
-                        className={`group relative py-1 bg-red-500 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95
+                      {item.status !== "อนุมัติเเล้วรอการติดต่อคลัง" &&
+                        item.status !== "ไม่อนุมัติ" && (
+                          <>
+                            <button
+                              onClick={() => openPopupNotApproved(item.id)}
+                              // onClick={() => handleReject(item.id)}
+                              className={`group relative py-1 bg-red-500 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95
                       `}
-                      >
-                        <span className="relative z-10">ไม่อนุมัติ</span>
-                        <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                          <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
-                        </span>
-                      </button>
-                      <button
-                        // onClick={colsePopupMessage}
-                        onClick={() => handleApprove(item.id)}
-                        className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-                          theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                        }`}
-                      >
-                        <span className="relative z-10">อนุมัติ</span>
-                        <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                          <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
-                        </span>
-                      </button>
+                            >
+                              <span className="relative z-10">ไม่อนุมัติ</span>
+                              <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                                <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
+                              </span>
+                            </button>
+                            <button
+                              // onClick={colsePopupMessage}
+                              onClick={() => handleApprove(item.id)}
+                              className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                                theme === "dark"
+                                  ? "bg-yellow-500"
+                                  : "bg-blue-500"
+                              }`}
+                            >
+                              <span className="relative z-10">อนุมัติ</span>
+                              <span className="absolute inset-0 overflow-hidden  pointer-events-none">
+                                <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20  transition-all duration-500 group-hover:w-full"></span>
+                              </span>
+                            </button>
+                          </>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -1347,6 +1362,7 @@ export default function DetailworkChief() {
           </motion.div>
         </div>
       )}
+
       {PopupNotApproved && selectedItemId && (
         <div>
           {(() => {

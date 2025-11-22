@@ -366,30 +366,32 @@ export default function GetPaper() {
                       : "-"}
                   </p>
                   <div className="flex gap-2 mx-auto">
-                    <Link
-                      to={`/user/Detailwork/${job._id}`}
-                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                theme === "dark"
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-blue-500 hover:bg-blue-600"
-              }`}
-                    >
-                      รายละเอียดงาน
-                    </Link>
                     <button
                       onClick={() => openItemModal(job)}
                       className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                theme === "dark"
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-blue-500 hover:bg-blue-600"
-              }`}
+      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+      active:translate-y-1 active:scale-x-110 active:scale-y-90
+      ${
+        theme === "dark"
+          ? "bg-blue-500 hover:bg-blue-500"
+          : "bg-yellow-500 hover:bg-yellow-600"
+      }`}
                     >
                       เบิกของ
                     </button>
+                    <Link
+                      to={`/user/Detailwork/${job._id}`}
+                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+      active:translate-y-1 active:scale-x-110 active:scale-y-90
+      ${
+        theme === "dark"
+          ? "bg-yellow-500 hover:bg-yellow-600"
+          : "bg-blue-500 hover:bg-blue-600"
+      }`}
+                    >
+                      รายละเอียดงาน
+                    </Link>
                   </div>
                 </div>
               </motion.div>

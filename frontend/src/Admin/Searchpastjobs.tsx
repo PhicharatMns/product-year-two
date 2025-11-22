@@ -47,7 +47,7 @@ const defaultForm: FormState = {
   Worksheet: "",
   Employer: "",
   Contact_number: "",
-  address: { type: "Point", coordinates: [0, 0] }, //  แก้ตรงนี้
+  address: { type: "Point", coordinates: [100.5018, 13.7563] },
   responsible: "",
   Date_of_acceptance_of_work: new Date().toISOString().split("T")[0],
   Closing_date: new Date().toISOString().split("T")[0],
@@ -365,7 +365,7 @@ export default function Searchpastjobs() {
   const bgborder = theme === "dark" ? "bg-gray-700" : "bg-gray-50";
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const texthaed = theme === "dark" ? "text-yellow-500" : "text-blue-500";
-  
+
   return (
     <div
       className={`transition-opacity duration-500 container mx-auto p-5 max-w-380   ${
@@ -491,7 +491,7 @@ export default function Searchpastjobs() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{
                     duration: 0.5,
-                    delay: index * 0.2,
+                    delay: index * 0.1,
                     ease: "easeOut",
                   }}
                   className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${
@@ -556,8 +556,8 @@ export default function Searchpastjobs() {
                       onClick={() => openModal(e)}
                       className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
                         theme === "dark"
-                          ? "bg-yellow-500 hover:bg-yellow-600"
-                          : "bg-blue-500 hover:bg-blue-600"
+                          ? "bg-blue-500 hover:bg-blue-600"
+                          : "bg-yellow-500 hover:bg-yellow-600"
                       }`}
                     >
                       แก้ไข
@@ -567,8 +567,8 @@ export default function Searchpastjobs() {
                       <button
                         className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
                           theme === "dark"
-                            ? "bg-yellow-600 hover:bg-yellow-700"
-                            : "bg-blue-600 hover:bg-blue-700"
+                            ? "bg-yellow-500 hover:bg-yellow-600"
+                            : "bg-blue-500 hover:bg-blue-600"
                         }`}
                       >
                         รายละเอียด
@@ -640,11 +640,15 @@ export default function Searchpastjobs() {
                     </div>
                   ))}
 
-                  {["Date_of_acceptance_of_work", "Closing_date"].map((k) => (
+                  {[
+                    ["Date_of_acceptance_of_work", "วันเริ่มงาน"],
+                    ["Closing_date", "วันปิดงาน"],
+                  ].map(([k, label]) => (
                     <div key={k} className="flex flex-col">
                       <label className={`mb-1 font-semibold ${cls.label}`}>
-                        {k}
+                        {label}
                       </label>
+
                       <input
                         type="date"
                         value={form[k as keyof FormState] as string}
@@ -655,6 +659,7 @@ export default function Searchpastjobs() {
                       />
                     </div>
                   ))}
+
                   <div className="flex flex-col">
                     <label className={`mb-1 font-semibold ${cls.label}`}>
                       ไฟล์แนบ
@@ -967,8 +972,8 @@ export default function Searchpastjobs() {
                [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
                active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
                  theme === "dark"
-                   ? "bg-yellow-600 hover:bg-yellow-700"
-                   : "bg-blue-700 hover:bg-blue-800"
+                   ? "bg-yellow-500 hover:bg-yellow-700"
+                   : "bg-blue-500 hover:bg-blue-700"
                }`}
                           >
                             รายละเอียด

@@ -60,8 +60,6 @@ export default function Sidebar() {
     { text: "ปฏิทินงาน", icon: AiTwotoneCalendar, link: "/user/Calendar" },
     // { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
     { text: "กล่องข้อความ", icon: FaInbox, link: "/user/usermesseger" },
-    { text: "แผนที่", icon: SiGooglemaps, link: "/user/Maps" },
-    { text: "วัสดุอุปกรณ์", icon: FaTools, link: "/user/Supplies" },
     { text: "ออกจากระบบ", icon: IoLogOutOutline, onClick: handleLogout },
   ];
 

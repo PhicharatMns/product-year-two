@@ -13,6 +13,7 @@ interface RequisitionItem {
   requesterProfile?: string;
   section?: string;
   role?: string;
+  Closing_date?: string;
   createdAt?: string;
   _id?: string;
   status?: string;
@@ -159,7 +160,12 @@ export default function Notification() {
       setRequisitionItems((prev) =>
         prev.map((r) =>
           r.id === selectedItem.id
-            ? { ...r, status: "ได้รับการยืนยันจากคลังแล้ว" }
+            ? {
+                ...r,
+                status: "ได้รับการยืนยันจากคลังแล้ว",
+                additemecomfam: "ยืนยันแล้ว", // <-- อันนี้ต้องเพิ่ม!!!
+                statusUpdatedAt: new Date().toISOString(), // อัปเดตเวลาใหม่ทันที
+              }
             : r
         )
       );
@@ -170,6 +176,8 @@ export default function Notification() {
       console.error(err);
     }
   };
+
+  const [selectedStatus, setSelectedStatus] = useState<string>("ทั้งหมด");
 
   const filteredItems = requisitionItems.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
@@ -241,18 +249,24 @@ export default function Notification() {
               <div
                 className={`flex p-3 items-center border-b ${border} overflow-x-auto`}
               >
-                <div className="grid grid-cols-5 gap-5 w-full">
-                  {[
-                    "ทั้งหมด",
-                    "รอดําเนินการ",
-                    "รอเบิกขอใหม่",
-                    "ยืนยันแล้ว",
-                    "ยืนยันแล้ว",
-                  ].map((e, i) => (
-                    <div key={i}>
-                      <p className="px-5 text-sm">{e}</p>
-                    </div>
-                  ))}
+                <div className="grid grid-cols-3 gap-5 w-full">
+                  {["ทั้งหมด", "รอดําเนินการ", "ยืนยันแล้ว"].map(
+                    (status, i) => (
+                      <div key={i}>
+                        <p
+                          onClick={() => setSelectedStatus(status)}
+                          className={`truncate cursor-pointer relative w-fit mx-auto after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full
+                after:origin-bottom after:scale-x-0 ${
+                  theme === "dark" ? "after:bg-yellow-500" : "after:bg-blue-500"
+                } after:transition-transform after:duration-500
+                after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100
+                ${selectedStatus === status ? texthead : ""}`}
+                        >
+                          {status}
+                        </p>
+                      </div>
+                    )
+                  )}
                 </div>
               </div>
 
@@ -280,86 +294,115 @@ export default function Notification() {
               </div>
 
               {/* Table Rows */}
-              {requisitionItems
-                .filter(
-                  (e) =>
-                    e.status !== "รอดําเนินการ" && e.status !== "ไม่อนุมัติ"
-                )
-                .filter(
-                  (e) =>
-                    e.name.toLowerCase().includes(search.toLowerCase()) ||
-                    e.requesterName
-                      ?.toLowerCase()
-                      .includes(search.toLowerCase())
-                )
-                .sort((a, b) => {
-                  const dateA = a.statusUpdatedAt
-                    ? new Date(a.statusUpdatedAt).getTime()
-                    : 0;
-                  const dateB = b.statusUpdatedAt
-                    ? new Date(b.statusUpdatedAt).getTime()
-                    : 0;
-                  return dateB - dateA; // ใหม่สุด -> เก่าสุด
-                })
-                .map((e, i) => (
-                  <motion.div
-                    key={i}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{
-                      duration: 0.5,
-                      delay: i * 0.1,
-                      ease: "easeOut",
-                    }}
-                    className={`grid grid-cols-11 items-center gap-5 text-sm p-2 pl-5 border rounded-xl m-2 ${bgborder}`}
-                  >
-                    <div className="flex col-span-2 items-center gap-3">
-                      <img
-                        src={
-                          e.requesterProfile
-                            ? `http://localhost:5000/uploads/Profile/${e.requesterProfile}`
-                            : "/default-profile.png"
-                        }
-                        className="w-10 h-10 rounded-full"
-                        alt=""
-                      />
-                      <p>{e.requesterName}</p>
-                    </div>
-                    <div
-                      className={`truncate col-span-2 ${
-                        e.additemecomfam === "ยืนยันแล้ว"
-                          ? "text-green-500"
-                          : e.additemecomfam === "รอดําเนินการ"
-                          ? texthead
-                          : "text-gray-500"
-                      }`}
-                    >
-                      {e.additemecomfam || "-"}
-                    </div>
+              {/* Table Rows */}
+              <div className="overflow-auto h-160 scrollbar-hide">
+                {requisitionItems
+                  // ซ่อนสถานะว่าง / ไม่อนุมัติ
+                  .filter((e) => e.status !== "เสร็จสิ้น" && e.status !== "ไม่อนุมัติ")
+                  .filter((e) => {
+                    if (selectedStatus === "ทั้งหมด") return true;
 
-                    <div className="truncate col-span-2">{e.name}</div>
-                    <div className="truncate">{e.quantity}</div>
-                    <div className="truncate text-center col-span-2">
-                      {e.statusUpdatedAt &&
-                        new Date(e.statusUpdatedAt).toLocaleString("th-TH", {
-                          dateStyle: "short",
-                          timeStyle: "short",
-                        })}
-                    </div>
-                    <div className="col-span-2 mx-auto">
-                      <button
-                        onClick={() => openPopupDate(e)}
-                        className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
-                          theme === "dark"
-                            ? "bg-yellow-600 hover:bg-yellow-700"
-                            : "bg-blue-600 hover:bg-blue-700"
+                    return e.additemecomfam === selectedStatus;
+                  })
+                  // ฟิลเตอร์ค้นหา
+                  .filter(
+                    (e) =>
+                      e.name.toLowerCase().includes(search.toLowerCase()) ||
+                      e.requesterName
+                        ?.toLowerCase()
+                        .includes(search.toLowerCase())
+                  )
+
+                  // เรียงลำดับ
+                  .sort((a, b) => {
+                    const dateA = a.statusUpdatedAt
+                      ? new Date(a.statusUpdatedAt).getTime()
+                      : 0;
+                    const dateB = b.statusUpdatedAt
+                      ? new Date(b.statusUpdatedAt).getTime()
+                      : 0;
+
+                    if (dateB !== dateA) return dateB - dateA;
+
+                    const closingA = a.Closing_date
+                      ? new Date(a.Closing_date).getTime()
+                      : 0;
+                    const closingB = b.Closing_date
+                      ? new Date(b.Closing_date).getTime()
+                      : 0;
+
+                    return closingB - closingA;
+                  })
+                  .map((e, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: i * 0.1,
+                        ease: "easeOut",
+                      }}
+                      className={`grid grid-cols-11 items-center gap-5 text-sm  p-2 pl-5 border rounded-xl m-2 ${bgborder}`}
+                    >
+                      <div className="flex col-span-2 items-center gap-3">
+                        <img
+                          src={
+                            e.requesterProfile
+                              ? `http://localhost:5000/uploads/Profile/${e.requesterProfile}`
+                              : "/default-profile.png"
+                          }
+                          className="w-10 h-10 rounded-full"
+                          alt=""
+                        />
+                        <p>{e.requesterName}</p>
+                      </div>
+                      <div
+                        className={`truncate col-span-2 ${
+                          e.additemecomfam === "ยืนยันแล้ว"
+                            ? "text-green-500"
+                            : e.additemecomfam === "รอดําเนินการ"
+                            ? texthead
+                            : "text-gray-500"
                         }`}
                       >
-                        รายละเอียด
-                      </button>
-                    </div>
-                  </motion.div>
-                ))}
+                        {e.additemecomfam || "-"}
+                      </div>
+
+                      <div className="truncate col-span-2">{e.name}</div>
+                      <div className="truncate">{e.quantity}</div>
+                      <div className=" text-center col-span-2">
+                        {/* แสดง statusUpdatedAt เป็นหลัก */}
+                        {e.statusUpdatedAt
+                          ? new Date(e.statusUpdatedAt).toLocaleString(
+                              "th-TH",
+                              {
+                                dateStyle: "short",
+                                timeStyle: "short",
+                              }
+                            )
+                          : e.createdAt
+                          ? new Date(e.createdAt).toLocaleString("th-TH", {
+                              dateStyle: "short",
+                              timeStyle: "short",
+                            })
+                          : "-"}
+                      </div>
+                      <div className="col-span-2 mx-auto">
+                        <button
+                          onClick={() => openPopupDate(e)}
+                          className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                            theme === "dark"
+                              ? "bg-yellow-600 hover:bg-yellow-700"
+                              : "bg-blue-600 hover:bg-blue-700"
+                          }`}
+                        >
+                          รายละเอียด
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
+              </div>
             </div>
 
             {/* --- รายงานจากช่าง --- */}

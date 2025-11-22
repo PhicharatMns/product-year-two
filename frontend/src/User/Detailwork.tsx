@@ -328,6 +328,13 @@ export default function Detailwork() {
                 );
               })}
               <div className="flex gap-1 items-center  ">
+                <p className={` ${titleColor}`}>สถานะงาน : </p>
+                <span>
+                 {job.Status}
+                </span>
+              </div>
+
+              <div className="flex gap-1 items-center  ">
                 <p className={` ${titleColor}`}>วันเริ่มงาน: </p>
                 <span>
                   {" "}
