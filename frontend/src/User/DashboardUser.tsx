@@ -373,7 +373,7 @@ export default function DashboardUser() {
             anim ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className="rounded-2xl bg-white w-[900px] h-200 shadow-2xl border">
+          <div className={`rounded-2xl ${bgpopup} w-[900px] h-200 shadow-2xl border$`}>
             <div className="flex items-center justify-between border-b px-6 py-4 ">
               <p
                 className={` text-2xl  font-semibold  ${
@@ -437,7 +437,7 @@ export default function DashboardUser() {
             </div>
             <div className="h-150 border-b overflow-y-auto scrollber-hide px-6">
               {employees
-                .filter((emp) => emp.Status === "Finish") // เฉพาะงานเสร็จ
+                .filter((emp) => emp.Status === "เสร็จสิ้น") // เฉพาะงานเสร็จ
                 .filter((emp) =>
                   emp.Worksheet?.toLowerCase().includes(Search.toLowerCase())
                 ) // ค้นหาใบงาน

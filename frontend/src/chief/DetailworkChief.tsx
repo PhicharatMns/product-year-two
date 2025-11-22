@@ -723,19 +723,17 @@ export default function DetailworkChief() {
                                   className={`${
                                     e.status === "ไม่อนุมัติ"
                                       ? "text-red-500"
-                                      : ""
-                                  } ${
-                                    e.status === "รอดําเนินการ"
+                                      : e.status === "รอดําเนินการ"
                                       ? "text-orange-500"
-                                      : ""
-                                  } ${
-                                    e.status === "อนุมัติเเล้วรอการติดต่อคลัง"
+                                      : e.status ===
+                                        "อนุมัติเเล้วรอการติดต่อคลัง"
+                                      ? "text-yellow-500"
+                                      : e.status ===
+                                        "ได้รับการยืนยันจากคลังแล้ว"
                                       ? "text-green-500"
-                                      : ""
-                                  } ${
-                                    e.status === "ได้รับการยืนยันจากคลังแล้ว"
-                                      ? "text-green-500"
-                                      : ""
+                                      : e.status === "เสร็จสิ้น"
+                                      ? "text-green-600"
+                                      : "text-gray-500"
                                   }`}
                                 >
                                   {e.status}
@@ -756,12 +754,14 @@ export default function DetailworkChief() {
                                 )}
                               </span>
                             </p>
-                            <button
-                              onClick={() => openPopupMessage(e.id)}
-                              className={`relative overflow-hidden cursor-pointer ${text_color} rounded-md   text-sm duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90`}
-                            >
-                              <TiMessage size={24} />
-                            </button>
+                            {e.status !== "เสร็จสิ้น" && (
+                              <button
+                                onClick={() => openPopupMessage(e.id)}
+                                className={`relative overflow-hidden cursor-pointer ${text_color} rounded-md   text-sm duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:translate-y-1 active:scale-x-110 active:scale-y-90`}
+                              >
+                                <TiMessage size={24} />
+                              </button>
+                            )}
                           </div>
                           <div className="flex gap-2 items-center">
                             <img
@@ -934,14 +934,12 @@ export default function DetailworkChief() {
                     onClick={() => setSelectedPosition(dept.name)}
                   >
                     <p
-                      className={`truncate relative w-fit mx-auto after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full
-                after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-500
+                      className={`truncate cursor-pointer relative w-fit mx-auto after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full
+                after:origin-bottom after:scale-x-0 ${
+                  theme === "dark" ? "after:bg-yellow-500" : "after:bg-blue-500"
+                } after:transition-transform after:duration-500
                 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100
-                ${
-                  selectedPosition === dept.name
-                    ? "font-bold text-blue-500"
-                    : ""
-                }`}
+                ${selectedPosition === dept.name ? titleColor : ""}`}
                     >
                       {dept.name}
                     </p>

@@ -144,21 +144,35 @@ export default function Dashboard({
   // Motion Values
   const countAll = useMotionValue(0);
   const roundedAll = useTransform(countAll, Math.round);
+
   const countHasJob = useMotionValue(0);
   const roundedHasJob = useTransform(countHasJob, Math.round);
+
   const countNoJob = useMotionValue(0);
   const roundedNoJob = useTransform(countNoJob, Math.round);
+
+  const conutnumber_requests_Items = useMotionValue(0);
+  const roundenumber_requests_Items = useTransform(
+    conutnumber_requests_Items,
+    Math.round
+  );
 
   useEffect(() => {
     const controlsAll = animate(countAll, totalTechnicians, { duration: 2 });
     const controlsHasJob = animate(countHasJob, workingCount, { duration: 2 });
-    const controlsNoJob = animate(countNoJob, totalTechnicians - workingCount, {
+    const controlsNoJob = animate(countNoJob, workingCount - totalTechnicians, {
       duration: 2,
     });
+    const controlsnumber_requests_Items = animate(
+      conutnumber_requests_Items,
+      number_requests_Items,
+      { duration: 2 }
+    );
     return () => {
       controlsAll.stop();
       controlsHasJob.stop();
       controlsNoJob.stop();
+      controlsnumber_requests_Items.stop();
     };
   }, [totalTechnicians, workingCount]);
 
@@ -313,7 +327,7 @@ export default function Dashboard({
             color: "bg-blue-800",
             color_bark: "bg-yellow-900",
             link: "Notification",
-            value: number_requests_Items,
+            value: roundenumber_requests_Items,
             icon: <CiSearch size={24} />,
           },
         ].map((item, index) => (

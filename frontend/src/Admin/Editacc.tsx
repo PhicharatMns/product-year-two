@@ -200,7 +200,7 @@ export default function Editacc() {
       }`}
     >
       {/* ตาราง */}
-      <div className={` h-screen `}>
+      <div className={`  `}>
         <div className="flex  items-center mb-5">
           <p className={`text-3xl font-bold ${texthead}`}>
             จัดการบัญชี{" "}
@@ -259,75 +259,93 @@ export default function Editacc() {
 
         {/* หัวตาราง */}
         <div
-          className={`grid grid-cols-7 pl-5 gap-5  font-semibold text-lg mb-3 ${
+          className={`grid grid-cols-9 pl-5 gap-5  font-semibold text-lg mb-3 ${
             theme === "dark"
               ? "text-yellow-500 border-b-4 border-yellow-500"
               : "text-blue-500 border-b-4 border-blue-200"
           }`}
         >
-          <p>รูป</p>
-          <p>ชื่อ</p>
+          <p className="col-span-2">ชื่อ</p>
+          <p>สายงาน</p>
           <p>ตำแหน่ง</p>
           <p>เบอร์โทรศัพท์</p>
           <p>เมล</p>
+          <p>เงินเดือน</p>
           <p>วันที่สมัคร</p>
           <p className="text-center">จัดการ</p>
         </div>
 
-        {filteredTradesmen.map((t, idx) => (
-          <motion.div
-            key={t._id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: idx * 0.05, ease: "easeOut" }}
-            className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center  pl-5 shadow-sm py-1  mt-2 ${
-              theme === "dark" ? "bg-gray-900 border-gray-700" : "bg-gray-100"
-            } border`}
-          >
-            <img
-              src={`http://localhost:5000/uploads/Profile/${
-                t.Profile || "default.png"
-              }`}
-              className="w-9 h-9 rounded-full object-cover  border-2"
-            />
-            <p
-              className={` font-medium ${
-                theme === "dark" ? "text-yellow-500" : "text-gray-900"
-              }`}
+        <div className=" scrollbar-hide h-200 overflow-auto">
+          {filteredTradesmen.map((t, idx) => (
+            <motion.div
+              key={t._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: idx * 0.05, ease: "easeOut" }}
+              className={`grid grid-cols-1  lg:grid-cols-9 rounded-lg gap-5 items-center  pl-5 shadow-sm py-1  mt-2 ${
+                theme === "dark" ? "bg-gray-900 border-gray-700" : "bg-gray-100"
+              } border`}
             >
-              {t.Name}
-            </p>
-            <p className="">{t.Position}</p>
-            <p className="">{t.Phone_Number}</p>
-            <p className="">{t.Email}</p>
-            <p className="">
-              {t.Start_data
-                ? new Date(t.Start_data).toLocaleDateString("th-TH")
-                : "-"}
-            </p>
-            <div className="flex justify-center gap-1">
-              <button
-                onClick={() => openDeleteModal(t)}
-                className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
+              <div className="flex gap-2 col-span-2 items-center">
+                <img
+                  src={`http://localhost:5000/uploads/Profile/${
+                    t.Profile || "default.png"
+                  }`}
+                  className="w-9 h-9 rounded-full object-cover  border-2"
+                />
+                <p
+                  className={` font-medium ${
+                    theme === "dark" ? "text-yellow-500" : "text-gray-900"
+                  }`}
+                >
+                  {t.Name}
+                </p>
+              </div>
+
+              <p className="">{t.Position}</p>
+              <p className="">
+                {t.role === "user"
+                  ? "ช่าง"
+                  : t.role === "chief"
+                  ? "หัวหน้าช่าง"
+                  : t.role === "admin"
+                  ? "ผู้ดูแล"
+                  : t.role === "executive"
+                  ? "ผู้บริหาร"
+                  : t.role}
+              </p>
+              <p className="">{t.Phone_Number}</p>
+              <p className="">{t.Email}</p>
+              <p className="">{t.Salary}</p>
+              <p className="">
+                {t.Start_data
+                  ? new Date(t.Start_data).toLocaleDateString("th-TH")
+                  : "-"}
+              </p>
+              <div className="flex justify-center gap-1">
+                <button
+                  onClick={() => openDeleteModal(t)}
+                  className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              hover:bg-red-600 active:-translate-y-1 active:scale-x-90 active:scale-y-110"
-              >
-                ลบ
-              </button>
+                >
+                  ลบ
+                </button>
 
-              <button
-                onClick={() => openModal(t)}
-                className={`relative overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
+                <button
+                  onClick={() => openModal(t)}
+                  className={`relative overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
               active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
                 theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
               }`}
-              >
-                แก้ไข
-              </button>
-            </div>
-          </motion.div>
-        ))}
+                >
+                  แก้ไข
+                </button>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
 
       {/* Modal */}

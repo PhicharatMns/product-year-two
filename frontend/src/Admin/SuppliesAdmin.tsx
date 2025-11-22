@@ -2,7 +2,7 @@
 import { Warehouse, Shapes, TriangleAlert, Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 
 type CountingType = {
   value: number; // จำนวน
@@ -23,9 +23,34 @@ const AddItemForm = ({ items }: { items: ItemType[] }) => {
   const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm bg-white";
 
   //นับเลข
-  const countAll = items.length;
-  const countCategory = new Set(items.map((i) => i.category)).size;
-  const countLowStock = items.filter((i) => i.counting?.value < 5).length;
+  const countAllMV = useMotionValue(0);
+  const countAll = useTransform(countAllMV, Math.round);
+
+  const countCategoryMV = useMotionValue(0);
+  const countCategory = useTransform(countCategoryMV, Math.round);
+
+  const countLowStockMV = useMotionValue(0);
+  const countLowStock = useTransform(countLowStockMV, Math.round);
+
+  useEffect(() => {
+    const c1 = animate(countAllMV, items.length, { duration: 1.5 });
+    const c2 = animate(
+      countCategoryMV,
+      new Set(items.map((i) => i.category)).size,
+      { duration: 1.5 }
+    );
+    const c3 = animate(
+      countLowStockMV,
+      items.filter((i) => i.counting?.value < 5).length,
+      { duration: 1.5 }
+    );
+
+    return () => {
+      c1.stop();
+      c2.stop();
+      c3.stop();
+    };
+  }, [items]);
 
   const menuList = [
     {
@@ -65,7 +90,7 @@ const AddItemForm = ({ items }: { items: ItemType[] }) => {
           />
           <div className="flex flex-col text-lg">
             <p className={`text-sm font-semibold ${texthead}`}>{item.name}</p>
-            <p>{item.value}</p>
+            <motion.p>{item.value}</motion.p>
           </div>
         </div>
       ))}
@@ -203,8 +228,13 @@ const Showlist: React.FC<ShowlistProps> = ({
           >
             <p className="col-span-2">{e.name}</p>
             <p className="col-span-2">{e.category}</p>
-            <p className={` ${Number(e.number) < 10 ? "text-red-500" : ""}`}>
-              {e.category}
+            <p className="text-sm">
+              {e.counting?.value ?? 0}
+              {e.counting?.value < 10 && (
+                <span className="ml-2 text-red-500 font-semibold">
+                  (ใกล้หมด)
+                </span>
+              )}
             </p>
 
             <p className="col-span-2 text-center">

@@ -362,7 +362,7 @@ export default function Searchpastjobs() {
   }, []);
 
   const bg = theme === "dark" ? "bg-gray-800" : " shadow-sm bg-white";
-  const bgborder = theme === "dark" ? "bg-gray-700" : "bg-gray-100";
+  const bgborder = theme === "dark" ? "bg-gray-700" : "bg-gray-50";
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const texthaed = theme === "dark" ? "text-yellow-500" : "text-blue-500";
 
@@ -640,11 +640,15 @@ export default function Searchpastjobs() {
                     </div>
                   ))}
 
-                  {["Date_of_acceptance_of_work", "Closing_date"].map((k) => (
+                  {[
+                    ["Date_of_acceptance_of_work", "วันเริ่มงาน"],
+                    ["Closing_date", "วันปิดงาน"],
+                  ].map(([k, label]) => (
                     <div key={k} className="flex flex-col">
                       <label className={`mb-1 font-semibold ${cls.label}`}>
-                        {k}
+                        {label}
                       </label>
+
                       <input
                         type="date"
                         value={form[k as keyof FormState] as string}
@@ -655,6 +659,7 @@ export default function Searchpastjobs() {
                       />
                     </div>
                   ))}
+
                   <div className="flex flex-col">
                     <label className={`mb-1 font-semibold ${cls.label}`}>
                       ไฟล์แนบ
