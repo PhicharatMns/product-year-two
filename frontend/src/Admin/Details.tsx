@@ -586,7 +586,7 @@ export default function Details() {
                             </p>
                             <button
                               onClick={() => openPopUpDate(event._id)}
-                              className={`relative overflow-hidden cursor-pointer rounded-md px-4 py-1 text-black text-sm duration-300 
+                              className={`relative items-center overflow-hidden cursor-pointer rounded-md px-4 py-1  text-sm duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
              active:translate-y-1 active:scale-x-110 active:scale-y-90`}
                             >
@@ -1189,9 +1189,9 @@ export default function Details() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className={`bg-white rounded-2xl shadow-2xl  p-5 h-100 w-120  flex flex-col `}
+            className={`rounded-2xl shadow-2xl ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} p-5 h-100 w-120  flex flex-col `}
           >
-            <h2 className="text-lg font-semibold text-red-500 mb-4">
+            <h2 className={` text-lg font-semibold text-red-500 mb-4 `}>
               ยืนยันการลบ
             </h2>
 

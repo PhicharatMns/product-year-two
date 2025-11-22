@@ -9,6 +9,8 @@ const otherTradesmanRouter = require("./routes/otherTradesman");
 const loginRouter = require("./routes/login");
 const item = require("./routes/iteme");
 const additem = require("./routes/additem");
+const message = require("./routes/message");
+
 const app = express();
 
 // ใช้ CORS ให้รองรับ cookie
@@ -35,7 +37,7 @@ app.use("/api/otherTradesman", otherTradesmanRouter);
 app.use("/api/login", loginRouter);
 app.use("/api/item", item);
 app.use("/api/additem", additem);
-
+app.use("/api/message", message);
 app.listen(5000, "localhost", () => {
   console.log("Server running at http://localhost:5000");
 });

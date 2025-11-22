@@ -38,7 +38,9 @@ const verifyToken = (req, res, next) => {
 router.post("/register", upload.single("Profile"), async (req, res) => {
   try {
     if (!req.body.username || !req.body.passwork) {
-      return res.status(400).json({ message: "Username and password required" });
+      return res
+        .status(400)
+        .json({ message: "Username and password required" });
     }
 
     const user = await Login.findOne({ username: req.body.username });
@@ -66,7 +68,9 @@ router.post("/register", upload.single("Profile"), async (req, res) => {
     });
 
     await newUser.save();
-    res.status(201).json({ message: "User registered successfully!", user: newUser });
+    res
+      .status(201)
+      .json({ message: "User registered successfully!", user: newUser });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Database Error" });
@@ -146,15 +150,15 @@ router.get("/dashboardUser", verifyToken, async (req, res) => {
       username: user.username,
       Name: user.Name,
       Nickname: user.Nickname, // เพิ่ม
-      ID: user.ID,             // เพิ่ม
+      ID: user.ID, // เพิ่ม
       Birthday: user.Birthday, // เพิ่ม
-      Address: user.Address,   // เพิ่ม
+      Address: user.Address, // เพิ่ม
       Phone_Number: user.Phone_Number,
       Email: user.Email,
       Position: user.Position,
       Start_data: user.Start_data, // เพิ่ม
       Profile: user.Profile,
-      Salary: user.Salary      // เพิ่ม (ถ้าอยากโชว์)
+      Salary: user.Salary, // เพิ่ม (ถ้าอยากโชว์)
     });
   } catch (err) {
     console.error(err);
@@ -191,7 +195,6 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
       Start_data,
       role,
       Salary,
-
     } = req.body;
 
     const user = await Login.findById(id);
@@ -199,7 +202,11 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
 
     if (req.file) {
       if (user.Profile) {
-        const oldFilePath = path.join(__dirname, "../uploads/Profile", user.Profile);
+        const oldFilePath = path.join(
+          __dirname,
+          "../uploads/Profile",
+          user.Profile
+        );
         if (fs.existsSync(oldFilePath)) {
           fs.unlinkSync(oldFilePath);
         }
@@ -231,6 +238,20 @@ router.put("/:id", upload.single("Profile"), async (req, res) => {
   } catch (err) {
     console.error("อัปเดตข้อมูลล้มเหลว:", err);
     res.status(500).json({ message: "เกิดข้อผิดพลาดในการอัปเดต" });
+  }
+});
+
+// ดึงข้อมูลผู้ใช้เฉพาะ field ที่กำหนด
+router.get("/", async (req, res) => {
+  try {
+    // ดึงเฉพาะ Name, Nickname, Profile, role, Position
+    const users = await Login.find().select(
+      "Name Nickname Profile role Position"
+    );
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Database Error" });
   }
 });
 

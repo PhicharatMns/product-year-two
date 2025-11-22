@@ -22,35 +22,85 @@ const AddItemForm = ({ items }: { items: ItemType[] }) => {
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
   const bg = theme === "dark" ? "bg-gray-900" : "shadow-sm bg-white";
 
-  //นับเลข
-  const countAllMV = useMotionValue(0);
-  const countAll = useTransform(countAllMV, Math.round);
+  // //นับเลข
+  // const countAllMV = useMotionValue(0);
+  // const countAll = useTransform(countAllMV, Math.round);
 
-  const countCategoryMV = useMotionValue(0);
-  const countCategory = useTransform(countCategoryMV, Math.round);
+  // const countCategoryMV = useMotionValue(0);
+  // const countCategory = useTransform(countCategoryMV, Math.round);
 
-  const countLowStockMV = useMotionValue(0);
-  const countLowStock = useTransform(countLowStockMV, Math.round);
+  // const countLowStockMV = useMotionValue(0);
+  // const countLowStock = useTransform(countLowStockMV, Math.round);
 
-  useEffect(() => {
-    const c1 = animate(countAllMV, items.length, { duration: 1.5 });
-    const c2 = animate(
-      countCategoryMV,
-      new Set(items.map((i) => i.category)).size,
-      { duration: 1.5 }
-    );
-    const c3 = animate(
-      countLowStockMV,
-      items.filter((i) => i.counting?.value < 5).length,
-      { duration: 1.5 }
-    );
+  // useEffect(() => {
+  //   const c1 = animate(countAllMV, items.length, { duration: 1.5 });
+  //   const c2 = animate(
+  //     countCategoryMV,
+  //     new Set(items.map((i) => i.category)).size,
+  //     { duration: 1.5 }
+  //   );
+  //   const c3 = animate(
+  //     countLowStockMV,
+  //     items.filter((i) => i.counting?.value < 5).length,
+  //     { duration: 1.5 }
+  //   );
 
-    return () => {
-      c1.stop();
-      c2.stop();
-      c3.stop();
-    };
-  }, [items]);
+  //   return () => {
+  //     c1.stop();
+  //     c2.stop();
+  //     c3.stop();
+  //   };
+  // }, [items]);
+
+  // นับเลข
+const countAllMV = useMotionValue(0);
+const countAll = useTransform(countAllMV, Math.round);
+
+const countCategoryMV = useMotionValue(0);
+const countCategory = useTransform(countCategoryMV, Math.round);
+
+const countLowStockMV = useMotionValue(0);
+const countLowStock = useTransform(countLowStockMV, Math.round);
+
+//  ฟังก์ชันนับจำนวนของแต่ละหมวดหมู่
+const getCategoryCounts = () => {
+  const result: Record<string, number> = {};
+  items.forEach((item) => {
+    const cat = item.category;
+    const count = item.counting?.value ?? 0;
+    result[cat] = (result[cat] || 0) + count;
+  });
+  return result;
+};
+
+useEffect(() => {
+  // นับทั้งหมด
+  const c1 = animate(countAllMV, items.length, { duration: 1.5 });
+
+  // นับจำนวนหมวดหมู่ทั้งหมด
+  const c2 = animate(
+    countCategoryMV,
+    new Set(items.map((i) => i.category)).size,
+    { duration: 1.5 }
+  );
+
+  // นับจำนวนหมวดหมู่ที่มีของรวม < 10
+  const categoryCounts = getCategoryCounts();
+  const lowStockCategoryCount = Object.values(categoryCounts).filter(
+    (sum) => sum < 10
+  ).length;
+
+  const c3 = animate(countLowStockMV, lowStockCategoryCount, {
+    duration: 1.5,
+  });
+
+  return () => {
+    c1.stop();
+    c2.stop();
+    c3.stop();
+  };
+}, [items]);
+
 
   const menuList = [
     {

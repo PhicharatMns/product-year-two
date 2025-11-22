@@ -1152,7 +1152,7 @@ export default function DetailworkChief() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className={`bg-white rounded-2xl shadow-2xl  p-5 h-100 w-120  flex flex-col `}
+            className={` ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} rounded-2xl shadow-2xl  p-5 h-100 w-120  flex flex-col `}
           >
             <h2 className="text-lg font-semibold text-red-500 mb-4">
               ยืนยันการลบ
