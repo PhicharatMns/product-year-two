@@ -1,6 +1,6 @@
 // routes/message.js
 const express = require("express");
-const Message = require("../models/message"); // โมเดลแบบ default export ก็ใช้ require ได้เลย
+const Message = require("../models/message");
 const router = express.Router();
 
 const jwt = require("jsonwebtoken");
@@ -15,39 +15,46 @@ const verifyToken = (req, res, next) => {
 
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) return res.sendStatus(403);
-    req.user = decoded; // จะมี id, username, role, Name
+    req.user = decoded; // มี Name, id, role
     next();
   });
 };
 
-router.post("/send", async (req, res) => {
+//  ส่งข้อความ (ต้องใช้ verifyToken)
+router.post("/send", verifyToken, async (req, res) => {
   try {
-    const { Name, message, ID, role, senderName } = req.body;
+    const { Name, message, ID, role } = req.body;
 
     if (!Name || !message) {
       return res.status(400).json({ error: "กรอกข้อมูลไม่ครบ" });
     }
 
+    // 👉 ชื่อคนส่งจาก token
+    const senderName = req.user.Name || "unknown";
+
     const newMsg = new Message({
-      Name,
-      message,
-      role,
-      ID,
-      requireNameinMessage: senderName || "unknown", // ต้องมีค่า
+      Name,        // ชื่อผู้รับ
+      message,     // ตัวข้อความ
+      role,        
+      ID,          // ID ของผู้รับ
+      requireNameinMessage: senderName, // 🟡 ใช้ชื่อจาก token แบบ 100%
     });
 
     await newMsg.save();
     res.json({ status: "success", data: newMsg });
+
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server error" });
   }
 });
 
-// ดึงข้อความทั้งหมด
+// =========================
+// 🟢 ดึงข้อความทั้งหมด
+// =========================
 router.get("/all", async (req, res) => {
   try {
-    const allMessages = await Message.find().sort({ timestamp: -1 }); // เรียงล่าสุดก่อน
+    const allMessages = await Message.find().sort({ timestamp: -1 });
     res.json(allMessages);
   } catch (err) {
     console.error(err);

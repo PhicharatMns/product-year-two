@@ -65,7 +65,10 @@ export default function Messager() {
     try {
       const res = await fetch("http://localhost:5000/api/message/send", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
         body: JSON.stringify(newMessage),
       });
 
@@ -85,21 +88,11 @@ export default function Messager() {
 
   const [messages, setMessages] = useState<typeMessage[]>([]);
 
-  // const fetchMessages = async () => {
-  //   try {
-  //     const res = await fetch("http://localhost:5000/api/message/all");
-  //     const data = await res.json();
-  //     setMessages(data); // อัปเดต state ทันที
-  //   } catch (err) {
-  //     console.error("ดึงข้อความล้มเหลว:", err);
-  //   }
-  // };
-
   const fetchMessages = async () => {
     try {
       const res = await fetch("http://localhost:5000/api/message/all");
       const data = await res.json();
-      setMessages(data); // ❗ ต้องแทนทั้งหมด ไม่ใช่ [...prev, data]
+      setMessages(data);
     } catch (err) {
       console.error("ดึงข้อความล้มเหลว:", err);
     }
