@@ -225,12 +225,12 @@ export default function Messager() {
               <div className=" rounded-lg p-4 flex-1 overflow-y-auto">
                 <div className="flex items-center">
                   {selectedUser.Profile && (
-                    <img
+                    <img 
                       src={`http://localhost:5000/uploads/Profile/${
                         selectedUser.Profile || "default.png"
                       }`}
                       alt="profile"
-                      className="w-24 h-24 rounded-lg mt-3 object-cover"
+                      className="w-12 h-12 rounded-full mt-3 object-cover"
                     />
                   )}
                   <h2 className="text-lg font-semibold mb-2">
