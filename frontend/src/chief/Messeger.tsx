@@ -5,6 +5,7 @@ import { CiSearch } from "react-icons/ci";
 import axios from "axios";
 import { motion, useMotionValue, useTransform, animate } from "framer-motion";
 import * as jwt_decode from "jwt-decode";
+import { HiUsers } from "react-icons/hi2";
 
 type typeMessage = {
   _id: string;
@@ -185,6 +186,7 @@ export default function Messager() {
   const primaryText = isDark ? "text-yellow-500" : "text-blue-500";
   const subText = isDark ? "text-gray-400" : "text-gray-500";
   const bg = isDark ? "bg-gray-900" : "shadow-sm bg-white";
+  const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
 
   return (
     <div className={`max-w-380 mx-auto container p-5 min-h-screen`}>
@@ -200,65 +202,57 @@ export default function Messager() {
 
       {/* Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-4 shrink-0">
-        {/* <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div
-                className={`p-2 rounded-lg bg-opacity-10 ${primaryText} bg-current`}
-              >
-                <MessageSquare size={20} />
-              </div>
-              <span className={`${subText} font-medium text-sm lg:text-base`}>
-                แจ้งปัญหา
-              </span>
-            </div>
-            <p className="text-lg">
-              {" "}
-              <motion.span>{countIssue}</motion.span> รายางน
-            </p>
-          </div> */}
         <div
-          className={`${bg} p-3 rounded-xl flex items-center justify-content-between`}
+          className={`rounded-2xl p-4 flex items-center justify-between shadow-md border ${bg}
+           `}
         >
           <div className="flex gap-3 items-center">
-            <div className="p-2 bg-gray-500/10 rounded-full text-blue-500">
+            <div className={`p-3 rounded-full bg-gray-500/10 text-blue-500  `}>
               <MessageSquare size={20} />
             </div>
-            <div className="flex-col font-semibold text-sm">
-              <p> แจ้งปัญหา</p>
+            <div className="flex flex-col font-semibold text-sm">
+              <p className={`${texthead}`}>แจ้งปัญหา</p>
               <p className="text-lg">5</p>
             </div>
           </div>
         </div>
 
+        {/* เหตุด่วน */}
         <div
-          className={`${bg} p-3 rounded-xl flex items-center justify-between`}
+          className={`rounded-2xl p-4 flex items-center justify-between shadow-md border  ${bg}
+           `}
         >
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-2 bg-rose-500/10 rounded-lg text-rose-500">
-                <AlertTriangle size={20} />
-              </div>
-              <span className={`${subText} font-medium text-sm lg:text-base`}>
+          <div className="flex gap-3 items-center">
+            <div className={`p-3 rounded-full bg-rose-500/10 text-rose-500 $`}>
+              <AlertTriangle size={20} />
+            </div>
+            <div className="flex flex-col font-semibold text-sm">
+              <span className={`${texthead} font-medium text-sm lg:text-base`}>
                 เหตุด่วน
               </span>
+              <motion.span className="text-lg">{countUrgent}</motion.span>
             </div>
-            <motion.span>{countUrgent}</motion.span>
           </div>
         </div>
 
+        {/* ข้อความ */}
         <div
-          className={`${bg} p-3 rounded-xl flex items-center justify-between`}
+          className={`rounded-2xl p-4 flex items-center justify-between shadow-md border ${bg}
+           `}
         >
-          <div>
-            <div className="flex items-center gap-2 mb-2">
-              <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-500">
-                <CheckCircle size={20} />
-              </div>
-              <span className={`${subText} font-medium text-sm lg:text-base`}>
+          <div className="flex gap-3 items-center">
+            <div
+              className={`p-3 rounded-full bg-emerald-500/10  text-emerald-500
+              `}
+            >
+              <CheckCircle size={20} />
+            </div>
+            <div className="flex flex-col font-semibold text-sm">
+              <span className={`${texthead} font-medium text-sm lg:text-base`}>
                 ข้อความ
               </span>
+              <motion.span className="text-lg">{countMessage}</motion.span>
             </div>
-            <motion.span>{countMessage}</motion.span>
           </div>
         </div>
       </div>
@@ -270,18 +264,15 @@ export default function Messager() {
           className={`lg:col-span-8 ${bg} rounded-xl overflow-hidden flex flex-col h-full`}
         >
           <div className="flex 5 justify-between items-center">
-            <div className="p-2 grid grid-cols-5 w-fit gap-3">
+            <div className="p-3 grid grid-cols-5 w-fit gap-2">
               {["all", "user", "admin", "chief", "executive"].map((role, i) => (
                 <div
                   key={i}
                   onClick={() => setSelectedRole(role as any)}
-                  className={`border text-center px-2 rounded-full py-1 text-white cursor-pointer ${
-                    selectedRole === role
-                      ? "bg-green-500"
-                      : theme === "dark"
-                      ? "bg-yellow-500"
-                      : "bg-blue-500"
-                  }`}
+                  className={`relative overflow-hidden truncate text-center cursor-pointer rounded-md px-4 py-1 text-white text-sm shadow-md transition-all duration-300
+      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
+      active:-translate-y-1 active:scale-x-90 active:scale-y-110
+      ${selectedRole === role ? "bg-yellow-500" : "bg-blue-500"}`}
                 >
                   {role === "all" ? "ทั้งหมด" : role}
                 </div>
@@ -304,138 +295,262 @@ export default function Messager() {
             </div>
           </div>
 
-          <div
-            className={`grid grid-cols-12 ${
-              isDark ? "bg-gray-900/30" : "bg-gray-50"
-            } p-4 text-xs uppercase font-semibold tracking-wider ${subText} shrink-0`}
-          >
-            <div className="col-span-6">ชื่อ / ตำแหน่ง</div>
-            <div className="col-span-3 text-center hidden sm:block">สถานะ</div>
-            <div className="col-span-3 text-end hidden sm:block">จัดการ</div>
+          <div className={`border`}>
+            <div
+              className={`grid grid-cols-5 pl-5 py-1 m-2 text-sm uppercase font-semibold tracking-wider shrink-0`}
+            >
+              <div className="col-span-2">ชื่อ / สายงาน</div>
+              <div className=" hidden sm:block">ตําเเหน่ง</div>
+              <div className="hidden sm:block">เบอร์ติดต่อ</div>
+              <div className=" hidden sm:block">Email</div>
+            </div>
           </div>
 
           <div
-            className={`divide-y overflow-y-auto overscroll-contain flex-1 ${
-              isDark ? "divide-gray-700" : "divide-gray-200"
+            className={` overflow-y-auto scrollbar-hide h-145  ${
+              isDark ? "divide-gray-800" : "divide-gray-200"
             }`}
           >
             {Message.filter(
               (e) =>
                 e.Name !== name &&
                 (selectedRole === "all" || e.role === selectedRole)
-            ).map((e) => (
-              <div
+            ).map((e, i) => (
+              <motion.div
                 key={e._id}
-                onClick={() => setSelectedUser(e)}
-                className={`grid grid-cols-12 px-4 py-2 cursor-pointer`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.5,
+                  delay: i * 0.1,
+                  ease: "easeOut",
+                }}
               >
-                <div className="col-span-6">
-                  {e.Name} / {e.Position}
+                <div
+                  onClick={() => setSelectedUser(e)}
+                  className={`grid grid-cols-5 border items-center rounded-lg pl-5 m-2 py-2 cursor-pointer ${
+                    theme === "dark" ? "bg-gray-800" : "bg-gray-50"
+                  }`}
+                >
+                  <div className="col-span-2 flex items-center gap-3">
+                    <img
+                      src={`http://localhost:5000/uploads/Profile/${
+                        e.Profile || "default.png"
+                      }`}
+                      alt="profile"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    {e.Name} / {e.Position}
+                  </div>
+
+                  <div className="hidden sm:block">
+                    {{
+                      admin: "แอดมิน",
+                      user: "ช่าง",
+                      chief: "หัวหน้าช่าง",
+                      executive: "ผู้บริหาร",
+                    }[e.role] || e.role}
+                  </div>
+
+                  <div className="hidden sm:block">{e.Phone_Number}</div>
+                  <div className="hidden sm:block">{e.Email}</div>
                 </div>
-                <div className="col-span-3 text-center hidden sm:block">
-                  {e.role}
-                </div>
-                <div className="col-span-3 text-end hidden sm:block">
-                  จัดการ
-                </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
 
         {/* Right */}
-        <div className={`col-span-4 h-165 ${bg} rounded-lg px-4`}>
+        <div className={`col-span-4 h-178 ${bg} rounded-lg`}>
           {!selectedUser ? (
-            <p className={subText}>➤ เลือกรายชื่อจากด้านซ้ายเพื่อแสดงข้อมูล</p>
+            <div
+              className={`${
+                theme === "dark" ? "text-white" : "text-black"
+              } flex items-center justify-center h-full`}
+            >
+              <div className="flex-col">
+                <p className="mx-auto w-fit">
+                  {" "}
+                  <HiUsers size={60} />
+                </p>{" "}
+                <p>เลือกรายชื่อจากด้านซ้ายเพื่อแสดงข้อมูล</p>
+              </div>
+            </div>
           ) : (
-            <div className="h-158 flex flex-col">
-              <div className="rounded-lg p-4 flex-1 overflow-y-auto">
-                <div className="flex items-center gap-3 mb-4">
-                  {selectedUser.Profile && (
-                    <img
-                      src={`http://localhost:5000/uploads/Profile/${
-                        selectedUser.Profile || "default.png"
-                      }`}
-                      alt="profile"
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
-                  )}
-                  <div>
-                    <h2 className="text-lg font-semibold items-center">
-                      {selectedUser.Name}
-                    </h2>
-                    <span className={subText}>
-                      ตำแหน่ง: {selectedUser.Position} / สายงาน:{" "}
-                      {selectedUser.role}
-                    </span>
+            // overflow-y-auto
+            <div className="h-175 flex flex-col">
+              <div className="rounded-xl  flex-1 ">
+                <div className="">
+                  <div
+                    className={`flex items-center px-4  py-3 gap-3 mb-4 ${
+                      theme === "dark" ? "bg-gray-800" : "bg-gray-100"
+                    }`}
+                  >
+                    {selectedUser.Profile && (
+                      <img
+                        src={`http://localhost:5000/uploads/Profile/${
+                          selectedUser.Profile || "default.png"
+                        }`}
+                        alt="profile"
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                    )}
+                    <div>
+                      <h2 className="text-lg font-semibold items-center">
+                        {selectedUser.Name}
+                      </h2>
+                      <span className={subText}>
+                        ตำแหน่ง: {selectedUser.Position} / สายงาน:{" "}
+                        {{
+                          admin: "แอดมิน",
+                          user: "ช่าง",
+                          chief: "หัวหน้าช่าง",
+                          executive: "ผู้บริหาร",
+                        }[selectedUser.role] || selectedUser.role}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
-                {messages
-                  .filter(
-                    (msg) =>
-                      msg?.ID === selectedUser?._id ||
-                      msg?.requireNameinMessage === loggedInUserName
-                  )
-                  .map((msg) => (
-                    <div
-                      key={msg._id}
-                      className={`mb-2 p-2 rounded-lg border ${
-                        msg.requireNameinMessage === loggedInUserName
-                          ? "bg-blue-100 text-right"
-                          : "bg-gray-100 text-left"
-                      }`}
-                    >
-                      <span className="text-sm font-semibold">
-                        {msg.requireNameinMessage || "ไม่ทราบชื่อ"}:
-                      </span>{" "}
-                      <span className="text-sm">{msg.message}</span>
-                      <br />
-                      <span className="text-xs text-gray-400">
-                        {msg.problem}
-                      </span>
-                      <br />
-                      {(msg.problem === "urgent" ||
-                        msg.problem === "issue") && (
-                        <button
-                          onClick={() => markAsCommit(msg._id)}
-                          className="mt-1 px-2 py-1 text-xs bg-purple-500 text-white rounded hover:bg-purple-600 transition"
-                        >
-                          เปลี่ยนเป็น commit
-                        </button>
-                      )}
-                    </div>
-                  ))}
+                <div className=" h-138 overflow-y-auto">
+                  {messages
+                    .filter(
+                      (msg) =>
+                        msg?.ID === selectedUser?._id ||
+                        msg?.requireNameinMessage === loggedInUserName
+                    )
+                    .map((msg) => (
+                      <div
+                        key={msg._id}
+                        className={`relative mb-2  p-3 m-4 rounded-xl border shadow-sm
+    ${theme === "dark" ? "bg-gray-800" : "bg-gray-100"}
+  `}
+                      >
+                        {/* ปุ่ม commit สำหรับ urgent หรือ issue */}
+                        {(msg.problem === "urgent" ||
+                          msg.problem === "issue") && (
+                          <div>
+                            <button
+                              onClick={() => markAsCommit(msg._id)}
+                              className="absolute top-2 right-2 px-3 py-1 text-xs  overflow-hidden truncate text-center cursor-pointer rounded-md  text-white  shadow-md transition-all duration-300
+      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
+      active:-translate-y-1 active:scale-x-90 active:scale-y-110  bg-green-500 hover:bg-green-600 "
+                            >
+                              รับเรื่อง
+                            </button>
+                          </div>
+                        )}
+
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={`http://localhost:5000/uploads/Profile/${
+                              selectedUser.Profile || "default.png"
+                            }`}
+                            alt="profile"
+                            className="w-12 h-12 rounded-full object-cover"
+                          />
+                          <div className="flex flex-col">
+                            <p
+                              className={`text-sm font-semibold ${
+                                theme === "dark"
+                                  ? "text-yellow-500"
+                                  : "text-blue-500"
+                              }`}
+                            >
+                              นาย :{" "}
+                              <span
+                                className={`${
+                                  theme === "dark" ? "text-white" : "text-black"
+                                }`}
+                              >
+                                {msg.Name}{" "}
+                                {new Date(msg.timestamp).toLocaleString(
+                                  "th-TH",
+                                  {
+                                    year: "numeric",
+                                    month: "2-digit",
+                                    day: "2-digit",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
+                              </span>
+                            </p>
+
+                            <p className="text-sm break-all w-[85%]">
+                              <span
+                                className={`font-medium ${
+                                  msg.problem === "urgent"
+                                    ? "text-red-500"
+                                    : msg.problem === "issue"
+                                    ? "text-blue-500"
+                                    : ""
+                                }`}
+                              >
+                                {msg.problem === "urgent"
+                                  ? "เหตุด่วน"
+                                  : msg.problem === "issue"
+                                  ? "แจ้งปัญหา"
+                                  : "ข้อความ"}
+                              </span>
+                              : {msg.message}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* badge problem */}
+                      </div>
+                    ))}
+                </div>
               </div>
 
               {/* ช่องกรอกข้อความ */}
-              <div className="mt-3 flex gap-2 items-center relative">
+              <div className="mt-3 px-4 flex gap-2  items-center relative">
                 <input
                   type="text"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  className="flex-1 border p-2 rounded-lg focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
+                  className={`flex-1 border p-2 rounded-lg focus:ring-2  ${
+                    theme === "dark"
+                      ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
+                      : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+                  }`}
                   placeholder="พิมพ์ข้อความ..."
                 />
                 <div className="relative">
                   <button
                     onClick={() => setShowMenu(!showMenu)}
-                    className="px-3 py-2 bg-purple-500 text-white rounded-lg font-semibold hover:bg-purple-600 transition"
+                    className={`relative overflow-hidden truncate text-center cursor-pointer rounded-md px-4 py-3 text-white text-sm shadow-md transition-all duration-300
+      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
+      active:-translate-y-1 active:scale-x-90 active:scale-y-110
+      ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"}`}
                   >
                     ตัวเลือก
                   </button>
                   {showMenu && (
-                    <div className="absolute left-0 bottom-12 mt-1 bg-white dark:bg-gray-800 border rounded-lg shadow-lg w-32 z-50">
+                    <div
+                      className={`absolute left-0 bottom-12 mt-1  border rounded-lg shadow-lg w-32 z-50 ${
+                        theme === "dark" ? "bg-black" : "bg-white"
+                      }`}
+                    >
                       <button
                         onClick={handleEmergency}
-                        className="w-full text-left px-4 py-2 hover:bg-red-100 dark:hover:bg-red-900 rounded-t-lg"
+                        className={`w-full text-left px-4 py-2 cursor-pointer duration-100  rounded-b-lg ${
+                          theme === "dark"
+                            ? "hover:bg-gray-800"
+                            : "hover:bg-gray-200"
+                        }`}
                       >
                         เหตุด่วน
                       </button>
                       <button
                         onClick={handleReport}
-                        className="w-full text-left px-4 py-2 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded-b-lg"
+                        className={`w-full text-left px-4 py-2 cursor-pointer duration-100  rounded-b-lg ${
+                          theme === "dark"
+                            ? "hover:bg-gray-800"
+                            : "hover:bg-gray-200"
+                        }`}
                       >
                         แจ้งปัญหา
                       </button>
@@ -445,7 +560,10 @@ export default function Messager() {
 
                 <button
                   onClick={sendMessage}
-                  className="flex items-center gap-1 px-3 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition"
+                  className={`relative overflow-hidden truncate text-center cursor-pointer rounded-md px-4 py-1 text-white text-sm shadow-md transition-all duration-300
+      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
+      active:-translate-y-1 active:scale-x-90 active:scale-y-110
+      ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"}`}
                 >
                   <Send size={16} />
                   ส่ง

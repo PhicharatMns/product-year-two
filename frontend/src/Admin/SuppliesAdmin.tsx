@@ -216,7 +216,7 @@ const Showlist: React.FC<ShowlistProps> = ({
         </div>
 
         {/* Search bar */}
-        <div className="col-span-3 flex items-center justify-end">
+        <div className="col-span-3 ml-auto">
           <div className="relative w-full">
             <Search
               className={`absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 ${
@@ -229,13 +229,11 @@ const Showlist: React.FC<ShowlistProps> = ({
               onFocus={() => setFocused(true)}
               onBlur={() => setFocused(false)}
               placeholder="ค้นหา..."
-              className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 w-full
-          ${
-            theme === "dark"
-              ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border border-gray-600"
-              : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border border-blue-300"
-          }
-          ${Focused ? "w-72" : "w-60"}`}
+              className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 border ${
+                theme === "dark"
+                  ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
+                  : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+              } ${Focused ? "w-72" : "w-60"}`}
             />
           </div>
         </div>
@@ -273,7 +271,7 @@ const Showlist: React.FC<ShowlistProps> = ({
               delay: i * 0.1,
               ease: "easeOut",
             }}
-            className={`grid grid-cols-9 pl-5 text-sm py-4 m-2 border rounded-lg items-center ${bgborder}`}
+            className={`grid grid-cols-9 pl-5 text-sm py-2 m-2 border rounded-lg items-center ${bgborder}`}
           >
             <p className="col-span-2">{e.name}</p>
             <p className="col-span-2">{e.category}</p>
