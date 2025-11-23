@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { useTheme } from "@/components/theme-provider";
-import {
-  AlertTriangle,
-  CheckCircle,
-  MessageSquare,
-} from "lucide-react";
+import { AlertTriangle, CheckCircle, MessageSquare } from "lucide-react";
 import { CiSearch } from "react-icons/ci";
 import axios from "axios";
 import { Send } from "lucide-react";
@@ -77,11 +73,10 @@ export default function Messager() {
 
       const data = await res.json();
 
-      setMessages((prev) =>
-        prev.map((msg) =>
-          msg._id === msgId ? { ...msg, problem: "commit" } : msg
-        )
-      );
+      setMessages((prev) => [...prev, data.data]);
+      fetchMessages();
+      setText("");
+      setProblemType("");
 
       fetchMessages();
       setText("");
@@ -385,7 +380,8 @@ export default function Messager() {
                       </span>
                       <br />
                       {/* ปุ่มเปลี่ยน urgent เป็น commit */}
-                      {msg.problem === "urgent" && (
+                      {(msg.problem === "urgent" ||
+                        msg.problem === "issue") && (
                         <button
                           onClick={() => markAsCommit(msg._id)}
                           className="mt-1 px-2 py-1 text-xs bg-purple-500 text-white rounded hover:bg-purple-600 transition"

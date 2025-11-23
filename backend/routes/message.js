@@ -72,6 +72,7 @@ router.get("/all", verifyToken, async (req, res) => {
   }
 });
 
+// routes/message.js
 router.patch("/update-problem/:id", verifyToken, async (req, res) => {
   const { id } = req.params;
   const { problem } = req.body;
