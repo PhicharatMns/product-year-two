@@ -14,6 +14,7 @@ const messageSchema = new mongoose.Schema({
   message: { type: String, required: true },
   timestamp: { type: Date, default: Date.now },
   requireNameinMessage: { type: String, required: true }, // ชื่อผู้ส่ง
+  problem: { type: String, default: "" },
 });
 
 const Message = mongoose.model("Message", messageSchema);

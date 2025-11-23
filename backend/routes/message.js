@@ -15,29 +15,32 @@ const verifyToken = (req, res, next) => {
 
   jwt.verify(token, JWT_SECRET, (err, decoded) => {
     if (err) return res.sendStatus(403);
-    req.user = decoded; // มี Name, id, role
+    req.user = decoded; // decoded จะมี { Name, id, role }
     next();
   });
 };
 
-//  ส่งข้อความ (ต้องใช้ verifyToken)
+// ------------------------------------------------
+//  ส่งข้อความ  (รองรับ problem ด้วย)
+// ------------------------------------------------
 router.post("/send", verifyToken, async (req, res) => {
   try {
-    const { Name, message, ID, role } = req.body;
+    const { Name, message, ID, role, problem } = req.body;
 
     if (!Name || !message) {
       return res.status(400).json({ error: "กรอกข้อมูลไม่ครบ" });
     }
 
-    // 👉 ชื่อคนส่งจาก token
+    // ชื่อคนส่งจาก token
     const senderName = req.user.Name || "unknown";
 
     const newMsg = new Message({
       Name, // ชื่อผู้รับ
-      message, // ตัวข้อความ
+      message,
       role,
-      ID, // ID ของผู้รับ
-      requireNameinMessage: senderName, // ใช้ชื่อจาก token แบบ
+      ID,
+      requireNameinMessage: senderName, // ชื่อผู้ส่งจาก token
+      problem: problem || "", // ใช้ค่า problem จาก frontend
     });
 
     await newMsg.save();
@@ -48,20 +51,17 @@ router.post("/send", verifyToken, async (req, res) => {
   }
 });
 
-// ดึงข้อความทั้งหมด
-// ดึงข้อความทั้งหมดของ "คนนี้" เท่านั้น
+// ------------------------------------------------
+//  ดึงข้อความทั้งหมดของ user ที่ล็อกอิน
+// ------------------------------------------------
 router.get("/all", verifyToken, async (req, res) => {
   try {
-    // user ที่ล็อกอินอยู่
     const myName = req.user.Name;
 
-    // ดึงเฉพาะข้อความที่:
-    //  requireNameinMessage = ชื่อเรา → เราเป็นคนส่ง
-    //  Name = ชื่อเรา → เราเป็นคนรับ
     const messages = await Message.find({
       $or: [
-        { requireNameinMessage: myName }, // ฉันเป็นคนส่ง
-        { Name: myName }, // ฉันเป็นคนรับ
+        { requireNameinMessage: myName }, // เราเป็นคนส่ง
+        { Name: myName }, // เราเป็นคนรับ
       ],
     }).sort({ timestamp: -1 });
 
@@ -69,6 +69,27 @@ router.get("/all", verifyToken, async (req, res) => {
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server error" });
+  }
+});
+
+router.patch("/update-problem/:id", verifyToken, async (req, res) => {
+  const { id } = req.params;
+  const { problem } = req.body;
+
+  if (!problem)
+    return res
+      .status(400)
+      .json({ success: false, error: "กรุณาส่งค่า problem" });
+
+  try {
+    const updated = await Message.findByIdAndUpdate(
+      id,
+      { problem },
+      { new: true }
+    );
+    res.json({ success: true, data: updated });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
   }
 });
 

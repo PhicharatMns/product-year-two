@@ -4,10 +4,10 @@ import {
   AlertTriangle,
   CheckCircle,
   MessageSquare,
-  Search,
 } from "lucide-react";
 import { CiSearch } from "react-icons/ci";
 import axios from "axios";
+import { Send } from "lucide-react";
 
 type typeMessage = {
   _id: string;
@@ -61,7 +61,8 @@ export default function Messager() {
       message: text,
       role: selectedUser.role,
       Position: selectedUser.Position,
-      requireNameinMessage: loggedInUserName, // ชื่อเราแสดงใน message
+      requireNameinMessage: loggedInUserName,
+      problem: problemType,
     };
 
     try {
@@ -76,21 +77,36 @@ export default function Messager() {
 
       const data = await res.json();
 
-      // อัปเดตข้อความทันทีใน state (แสดงทันที)
-      setMessages((prev) => [...prev, data]);
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg._id === msgId ? { ...msg, problem: "commit" } : msg
+        )
+      );
 
-      //  ดึงข้อมูลใหม่จาก server ทันที (ป้องกันไม่ sync)
       fetchMessages();
-
       setText("");
+      setProblemType(""); // รีเซ็ตหลังส่ง
     } catch (err) {
       console.error(err);
     }
   };
 
-  const [profileImg, setProfileImg] = useState<string | null>(null);
-  const [profileSuffix, setProfileSuffix] = useState(""); // เก็บค่า Profile string จาก API
+  // const [profileImg, setProfileImg] = useState<string | null>(null);
+  // const [profileSuffix, setProfileSuffix] = useState(""); // เก็บค่า Profile string จาก API
   const [name, setName] = useState("Chief"); // Default
+
+  const [showMenu, setShowMenu] = useState(false);
+  const [problemType, setProblemType] = useState("");
+
+  const handleEmergency = () => {
+    setProblemType("urgent"); // 🔥 เหตุด่วน
+    setShowMenu(false);
+  };
+
+  const handleReport = () => {
+    setProblemType("issue"); // ⚠ แจ้งปัญหา
+    setShowMenu(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,10 +117,10 @@ export default function Messager() {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        setProfileImg(response.data.Profile);
+        // setProfileImg(response.data.Profile);
         // Map ข้อมูลให้เหมือนกับหน้า ProfileChief
         setName(response.data.Name || "ไม่ระบุชื่อ");
-        setProfileSuffix(response.data.Profile || ""); // เก็บ path รูปถ้ามี
+        // setProfileSuffix(response.data.Profile || ""); // เก็บ path รูปถ้ามี
       } catch (err) {
         console.error("Sidebar fetch error:", err);
       }
@@ -127,6 +143,34 @@ export default function Messager() {
       setMessages(data);
     } catch (err) {
       console.error("ดึงข้อความล้มเหลว:", err);
+    }
+  };
+
+  const markAsCommit = async (msgId: string) => {
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/message/update-problem/${msgId}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+          body: JSON.stringify({ problem: "commit" }),
+        }
+      );
+
+      const data = await res.json();
+      if (data.success) {
+        // อัปเดต state ทันที
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg._id === msgId ? { ...msg, problem: "commit" } : msg
+          )
+        );
+      }
+    } catch (err) {
+      console.error("อัปเดตปัญหาล้มเหลว:", err);
     }
   };
 
@@ -320,7 +364,7 @@ export default function Messager() {
                   .filter(
                     (msg) =>
                       msg.ID === selectedUser._id ||
-                      msg.requireNameinMessage === selectedUser.Name
+                      msg.requireNameinMessage === loggedInUserName
                   )
                   .map((msg) => (
                     <div
@@ -337,22 +381,71 @@ export default function Messager() {
                       <span className="text-sm">{msg.message}</span>
                       <br />
                       <span className="text-xs text-gray-400">
-                        {new Date(msg.timestamp).toLocaleString()}
+                        {msg.problem}
                       </span>
+                      <br />
+                      {/* ปุ่มเปลี่ยน urgent เป็น commit */}
+                      {msg.problem === "urgent" && (
+                        <button
+                          onClick={() => markAsCommit(msg._id)}
+                          className="mt-1 px-2 py-1 text-xs bg-purple-500 text-white rounded hover:bg-purple-600 transition"
+                        >
+                          เปลี่ยนเป็น commit
+                        </button>
+                      )}
                     </div>
                   ))}
               </div>
 
               {/* ช่องกรอกข้อความ */}
-              <div className="mt-3">
+
+              <div className="mt-3 flex gap-2 items-center relative">
                 <input
                   type="text"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  className="border w-full p-2 rounded-lg"
+                  className="flex-1 border p-2 rounded-lg focus:ring-2 focus:ring-blue-400 dark:bg-gray-700 dark:text-white"
                   placeholder="พิมพ์ข้อความ..."
                 />
+
+                {/* ปุ่มเมนูแจ้ง */}
+                <div className="relative">
+                  <button
+                    onClick={() => setShowMenu(!showMenu)}
+                    className="px-3 py-2 bg-purple-500 text-white rounded-lg font-semibold hover:bg-purple-600 transition"
+                  >
+                    ตัวเลือก
+                  </button>
+
+                  {/* เมนู */}
+                  {showMenu && (
+                    <div className="absolute left-0 bottom-12 mt-1 bg-white dark:bg-gray-800 border rounded-lg shadow-lg w-32 z-50">
+                      <button
+                        onClick={handleEmergency}
+                        className="w-full text-left px-4 py-2 hover:bg-red-100 dark:hover:bg-red-900 rounded-t-lg"
+                      >
+                        เหตุด่วน
+                      </button>
+
+                      <button
+                        onClick={handleReport}
+                        className="w-full text-left px-4 py-2 hover:bg-yellow-100 dark:hover:bg-yellow-900 rounded-b-lg"
+                      >
+                        แจ้งปัญหา
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {/* ปุ่มส่ง */}
+                <button
+                  onClick={() => sendMessage()}
+                  className="flex items-center gap-1 px-3 py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition"
+                >
+                  <Send size={16} />
+                  ส่ง
+                </button>
               </div>
             </div>
           )}
