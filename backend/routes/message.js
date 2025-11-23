@@ -33,29 +33,39 @@ router.post("/send", verifyToken, async (req, res) => {
     const senderName = req.user.Name || "unknown";
 
     const newMsg = new Message({
-      Name,        // ชื่อผู้รับ
-      message,     // ตัวข้อความ
-      role,        
-      ID,          // ID ของผู้รับ
-      requireNameinMessage: senderName, // 🟡 ใช้ชื่อจาก token แบบ 100%
+      Name, // ชื่อผู้รับ
+      message, // ตัวข้อความ
+      role,
+      ID, // ID ของผู้รับ
+      requireNameinMessage: senderName, // ใช้ชื่อจาก token แบบ
     });
 
     await newMsg.save();
     res.json({ status: "success", data: newMsg });
-
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server error" });
   }
 });
 
-// =========================
-// 🟢 ดึงข้อความทั้งหมด
-// =========================
-router.get("/all", async (req, res) => {
+// ดึงข้อความทั้งหมด
+// ดึงข้อความทั้งหมดของ "คนนี้" เท่านั้น
+router.get("/all", verifyToken, async (req, res) => {
   try {
-    const allMessages = await Message.find().sort({ timestamp: -1 });
-    res.json(allMessages);
+    // user ที่ล็อกอินอยู่
+    const myName = req.user.Name;
+
+    // ดึงเฉพาะข้อความที่:
+    //  requireNameinMessage = ชื่อเรา → เราเป็นคนส่ง
+    //  Name = ชื่อเรา → เราเป็นคนรับ
+    const messages = await Message.find({
+      $or: [
+        { requireNameinMessage: myName }, // ฉันเป็นคนส่ง
+        { Name: myName }, // ฉันเป็นคนรับ
+      ],
+    }).sort({ timestamp: -1 });
+
+    res.json(messages);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "server error" });

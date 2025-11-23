@@ -15,6 +15,7 @@ type typeMessage = {
   Profile: string;
   role: string;
   Position: string;
+  requireNameinMessage: string;
 };
 
 import * as jwt_decode from "jwt-decode"; // แบบ non-default
@@ -59,7 +60,7 @@ export default function Messager() {
       message: text,
       role: selectedUser.role,
       Position: selectedUser.Position,
-      requireNameinMessage: selectedUser,
+      requireNameinMessage: loggedInUserName, // ชื่อเราแสดงใน message
     };
 
     try {
@@ -90,7 +91,12 @@ export default function Messager() {
 
   const fetchMessages = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/message/all");
+      const res = await fetch("http://localhost:5000/api/message/all", {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
       const data = await res.json();
       setMessages(data);
     } catch (err) {
@@ -236,7 +242,7 @@ export default function Messager() {
             {Message.map((e) => (
               <div
                 key={e._id}
-                onClick={() => setSelectedUser(e)} // ⭐ กดเลือกชื่อ
+                onClick={() => setSelectedUser(e)} //  กดเลือกชื่อ
                 className={`grid grid-cols-12 px-4 py-2 cursor-pointer `}
               >
                 <div className="col-span-6">
@@ -284,11 +290,22 @@ export default function Messager() {
 
                 {/* แสดงข้อความเฉพาะ ID ตรงกับ selectedUser._id */}
                 {messages
-                  .filter((msg) => msg.ID === selectedUser._id)
+                  .filter(
+                    (msg) =>
+                      msg.ID === selectedUser._id ||
+                      msg.requireNameinMessage === selectedUser.Name
+                  )
                   .map((msg) => (
-                    <div key={msg._id} className="mb-2 p-2 border rounded-lg">
+                    <div
+                      key={msg._id}
+                      className={`mb-2 p-2 rounded-lg border ${
+                        msg.requireNameinMessage === loggedInUserName
+                          ? "bg-blue-100 text-right"
+                          : "bg-gray-100 text-left"
+                      }`}
+                    >
                       <span className="text-sm font-semibold">
-                        {msg.requireNameinMessage}:
+                        {msg.requireNameinMessage || "ไม่ทราบชื่อ"}:
                       </span>{" "}
                       <span className="text-sm">{msg.message}</span>
                       <br />
