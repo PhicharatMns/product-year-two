@@ -212,7 +212,7 @@ export default function Messager() {
             </div>
             <div className="flex flex-col font-semibold text-sm">
               <p className={`${texthead}`}>แจ้งปัญหา</p>
-              <p className="text-lg">5</p>
+              <motion.span className="text-lg">{countIssue}</motion.span>
             </div>
           </div>
         </div>
@@ -382,8 +382,8 @@ export default function Messager() {
               <div className="rounded-xl  flex-1 ">
                 <div className="">
                   <div
-                    className={`flex items-center px-4  py-3 gap-3 mb-4 ${
-                      theme === "dark" ? "bg-gray-800" : "bg-gray-100"
+                    className={`flex items-center px-4 border-b-2  py-3 gap-3 mb-2 ${
+                      theme === "dark" ? "bg-gray-700" : "bg-gray-100"
                     }`}
                   >
                     {selectedUser.Profile && (
