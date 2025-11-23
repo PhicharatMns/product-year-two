@@ -51,9 +51,7 @@ router.post("/send", verifyToken, async (req, res) => {
   }
 });
 
-// ------------------------------------------------
 //  ดึงข้อความทั้งหมดของ user ที่ล็อกอิน
-// ------------------------------------------------
 router.get("/all", verifyToken, async (req, res) => {
   try {
     const myName = req.user.Name;
