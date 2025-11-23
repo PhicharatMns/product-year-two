@@ -161,6 +161,8 @@ export default function Messager() {
     setShowMenu(false);
   };
 
+  const [adminProfile, setAdminProfile] = useState<string | null>(null);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -169,6 +171,7 @@ export default function Messager() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setName(response.data.Name || "ไม่ระบุชื่อ");
+        setAdminProfile(response.data.Profile);
       } catch (err) {
         console.error("Sidebar fetch error:", err);
       }
@@ -388,9 +391,7 @@ export default function Messager() {
                   >
                     {selectedUser.Profile && (
                       <img
-                        src={`http://localhost:5000/uploads/Profile/${
-                          selectedUser.Profile || "default.png"
-                        }`}
+                        src={`http://localhost:5000/uploads/Profile/${adminProfile}`}
                         alt="profile"
                         className="w-12 h-12 rounded-full object-cover"
                       />

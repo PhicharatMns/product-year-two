@@ -13,11 +13,10 @@ import Editacc from "./Admin/Editacc";
 import Searchpastjobs from "./Admin/Searchpastjobs";
 import Details from "./Admin/Details";
 import EmployeeList from "./EmployeeList";
-import AddEmployee from "./AddEmployee";
 import Profileadmin from "./Admin/Profileadmin";
-import Addwork from "./Admin/Addwork";
 import Notification from "./Admin/Notification";
 import SuppliesAdmin from "./Admin/SuppliesAdmin";
+import MessagerAdmin from "./Admin/MessagerAdmin";
 
 // User Worker
 import UserLayout from "./User/UserLayout";
@@ -33,7 +32,6 @@ import DetailItem from "./User/Detailitem";
 import Profile from "./User/Profile";
 import Usermesseger from "./User/Usermesseger";
 
-
 // Auth
 import Login from "./sighup/Login";
 import Register from "./sighup/Register";
@@ -46,7 +44,6 @@ import MapWork from "./executive/MapWork";
 import Getpaperexecutive from "./executive/Getpaperexecutive";
 import ProfileExecutive from "./executive/ProfileExecutive";
 import Team from "./executive/Team";
-
 
 // userChief
 import Dashboardchief from "./chief/Dashboardchief";
@@ -84,6 +81,7 @@ const router = createBrowserRouter([
       // { path: "addwork", element: <Addwork /> },
       { path: "notification", element: <Notification /> },
       { path: "suppliesAdmin", element: <SuppliesAdmin /> },
+      { path: "MessagerAdmin", element: <MessagerAdmin /> },
     ],
   },
 
@@ -104,9 +102,9 @@ const router = createBrowserRouter([
       { path: "Detailwork/:id", element: <Detailwork /> },
       { path: "Calendar", element: <Calendars /> },
       { path: "withdraw", element: <Withdraw /> },
-      { path: 'Followtheprogress', element: <Followtheprogress /> },
+      { path: "Followtheprogress", element: <Followtheprogress /> },
       { path: "DetailItem", element: <DetailItem /> },
-      { path: "usermesseger", element: <Usermesseger /> }
+      { path: "usermesseger", element: <Usermesseger /> },
     ],
   },
 
@@ -123,7 +121,7 @@ const router = createBrowserRouter([
       { path: "getpaperexecutive", element: <Getpaperexecutive /> },
       { path: "MapWork", element: <MapWork /> },
       { path: "ProfileExecutive", element: <ProfileExecutive /> },
-      {path: "Team", element: <Team />},
+      { path: "Team", element: <Team /> },
       // {path: "Messeger", element: <Messeger />},
     ],
   },
@@ -136,16 +134,15 @@ const router = createBrowserRouter([
         <Chief />
       </ProtectedRoute>
     ),
-    children: [{ path: "Dashboardchief", element: <Dashboardchief /> },
-    { path: 'GetPaper', element: <GetPaper /> },
-    { path: 'CalendarChief', element: <CalendarChief /> },
-    { path: "DetailworkChief/:id", element: <DetailworkChief /> },
-    { path: "ItemChief", element: <ItemChief/> },
-    { path: "messeger", element: <Messeger /> },
-    { path: "edituser", element: <EditUser /> },
-    { path: "ProfileChief", element: <ProfileChief /> },
-
-
+    children: [
+      { path: "Dashboardchief", element: <Dashboardchief /> },
+      { path: "GetPaper", element: <GetPaper /> },
+      { path: "CalendarChief", element: <CalendarChief /> },
+      { path: "DetailworkChief/:id", element: <DetailworkChief /> },
+      { path: "ItemChief", element: <ItemChief /> },
+      { path: "messeger", element: <Messeger /> },
+      { path: "edituser", element: <EditUser /> },
+      { path: "ProfileChief", element: <ProfileChief /> },
     ],
   },
 ]);

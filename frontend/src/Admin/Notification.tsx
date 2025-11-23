@@ -199,11 +199,11 @@ export default function Notification() {
               }`}
             >
               {" "}
-              & ข้อความ
+              การเบิกของ
             </span>
           </p>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 my-5">
+          <div className=" lg:grid-cols-5 gap-6 my-5">
             {/* --- รายการเบิกของ --- */}
             <div
               className={`${border} col-span-1 h-205 lg:col-span-3 rounded-lg ${bg}`}
@@ -298,7 +298,9 @@ export default function Notification() {
               <div className="overflow-auto h-160 scrollbar-hide">
                 {requisitionItems
                   // ซ่อนสถานะว่าง / ไม่อนุมัติ
-                  .filter((e) => e.status !== "เสร็จสิ้น" && e.status !== "ไม่อนุมัติ")
+                  .filter(
+                    (e) => e.status !== "เสร็จสิ้น" && e.status !== "ไม่อนุมัติ"
+                  )
                   .filter((e) => {
                     if (selectedStatus === "ทั้งหมด") return true;
 
@@ -403,63 +405,6 @@ export default function Notification() {
                     </motion.div>
                   ))}
               </div>
-            </div>
-
-            {/* --- รายงานจากช่าง --- */}
-            <div className={`border col-span-2 rounded-lg ${bg}`}>
-              <div
-                className={`flex flex-col sm:flex-row justify-between items-center p-5 border-b ${border}`}
-              >
-                <p className={`text-lg font-semibold mb-2 sm:mb-0 ${texthead}`}>
-                  รายงานจากช่าง
-                  <span
-                    className={`text-sm font-normal ${
-                      theme === "dark" ? "text-gray-400" : "text-gray-600"
-                    } ml-2`}
-                  >
-                    รายการ
-                  </span>
-                </p>
-              </div>
-
-              <div className="border">
-                <div className="grid grid-cols-4 gap-5 p-2 m-2 pl-5 text-sm">
-                  {["ประเภทงาน", "งาน", "ข้อความ", "วันที่"].map(
-                    (event, index) => (
-                      <div
-                        key={index}
-                        className={index === 3 ? "text-center" : ""}
-                      >
-                        {event}
-                      </div>
-                    )
-                  )}
-                </div>
-              </div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.05, ease: "easeOut" }}
-                className={`border p-2 mt-2 m-2 pl-5 text-sm rounded-xl ${bgborder}`}
-              >
-                <div className="grid grid-cols-4 gap-5 items-center">
-                  <div className="flex items-center gap-2">
-                    <img
-                      className="bg-black rounded-4xl w-10 h-10"
-                      src=""
-                      alt=""
-                    />
-                    <div className="flex flex-col">
-                      <p>5</p>
-                      <p>5</p>
-                    </div>
-                  </div>
-                  <div>งาน</div>
-                  <div>ข้อความ</div>
-                  <div className="text-center">วันที่</div>
-                </div>
-              </motion.div>
             </div>
           </div>
         </div>

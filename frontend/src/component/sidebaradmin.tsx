@@ -29,7 +29,8 @@ export default function Sidebaradmin() {
   const token = localStorage.getItem("token");
 
   // รูป Default (ใช้เมื่อไม่มีรูป หรือโหลดไม่ขึ้น)
-  const defaultProfileImage = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
+  const defaultProfileImage =
+    "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png";
 
   // --- ดึงข้อมูล Admin ---
   useEffect(() => {
@@ -40,17 +41,20 @@ export default function Sidebaradmin() {
     const fetchData = async () => {
       try {
         // ดึงข้อมูลจาก API
-        const res = await axios.get("http://localhost:5000/api/login/dashboardUser", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        
+        const res = await axios.get(
+          "http://localhost:5000/api/login/dashboardUser",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
         // เซ็ตค่าลง State
         setAdminName(res.data.Name);
         setAdminProfile(res.data.Profile);
       } catch (err) {
         console.error("Error fetching admin data:", err);
         // กรณี Token หมดอายุหรือ Error อื่นๆ อาจจะให้เด้งออก (Optional)
-        // navigate("/logins"); 
+        // navigate("/logins");
       }
     };
     fetchData();
@@ -66,7 +70,8 @@ export default function Sidebaradmin() {
   const datasizebar: SidebarItem[] = [
     { text: "Dashboard", icons: MdDashboard, Link: "/Dashboard" },
     { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "/Searchpastjobs" },
-    { text: "ส่งการแจ้งเตือน", icons: TbBellPlus, Link: "/Notification" },
+    { text: "การแจ้งเตือนเบิกของ", icons: TbBellPlus, Link: "/Notification" },
+    { text: "การแจ้งเตือนข้อความ", icons: TbBellPlus, Link: "/MessagerAdmin" },
     { text: "จัดการวัสดุอุปกรณ์", icons: FaTools, Link: "/SuppliesAdmin" },
     { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "/Editacc" },
     { text: "ออกจากระบบ", icons: IoIosLogOut, onClick: handleLogout },
@@ -156,10 +161,9 @@ export default function Sidebaradmin() {
         {/* ส่วนล่าง: Theme Switcher และ Profile */}
         <div>
           <ThemeSwitcher />
-          
+
           <Link to="/Profileadmin" className="mt-auto">
             <div className="border-t border-blue-600 dark:border-gray-700 bg-blue-900 dark:bg-gray-800 duration-300 hover:bg-blue-700 dark:hover:bg-gray-700 h-20 flex items-center gap-4 cursor-pointer px-2">
-              
               {/* รูป Profile */}
               <img
                 src={
@@ -190,7 +194,7 @@ export default function Sidebaradmin() {
         <div
           className="fixed inset-0 bg-black opacity-40 md:hidden z-10"
           onClick={() => setOpen(false)}
-        ></div> 
+        ></div>
       )}
     </>
   );
