@@ -7,6 +7,7 @@ import {
   Search,
 } from "lucide-react";
 import { CiSearch } from "react-icons/ci";
+import axios from "axios";
 
 type typeMessage = {
   _id: string;
@@ -86,6 +87,31 @@ export default function Messager() {
       console.error(err);
     }
   };
+
+  const [profileImg, setProfileImg] = useState<string | null>(null);
+  const [profileSuffix, setProfileSuffix] = useState(""); // เก็บค่า Profile string จาก API
+  const [name, setName] = useState("Chief"); // Default
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/login/dashboardUser",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setProfileImg(response.data.Profile);
+        // Map ข้อมูลให้เหมือนกับหน้า ProfileChief
+        setName(response.data.Name || "ไม่ระบุชื่อ");
+        setProfileSuffix(response.data.Profile || ""); // เก็บ path รูปถ้ามี
+      } catch (err) {
+        console.error("Sidebar fetch error:", err);
+      }
+    };
+
+    fetchData();
+  }, [token]);
 
   const [messages, setMessages] = useState<typeMessage[]>([]);
 
@@ -239,23 +265,24 @@ export default function Messager() {
               isDark ? "divide-gray-700" : "divide-gray-200"
             }`}
           >
-            {Message.map((e) => (
-              <div
-                key={e._id}
-                onClick={() => setSelectedUser(e)} //  กดเลือกชื่อ
-                className={`grid grid-cols-12 px-4 py-2 cursor-pointer `}
-              >
-                <div className="col-span-6">
-                  {e.Name} / {e.Position}
+            {Message.filter((e) => e.Name !== name) // กรองไม่เอาชื่อเดียวกับ name
+              .map((e) => (
+                <div
+                  key={e._id} // ใช้ _id ชัวร์
+                  onClick={() => setSelectedUser(e)} // กดเลือก object ผู้ใช้
+                  className={`grid grid-cols-12 px-4 py-2 cursor-pointer`}
+                >
+                  <div className="col-span-6">
+                    {e.Name} / {e.Position}
+                  </div>
+                  <div className="col-span-3 text-center hidden sm:block">
+                    {e.role}
+                  </div>
+                  <div className="col-span-3 text-end hidden sm:block">
+                    จัดการ
+                  </div>
                 </div>
-                <div className="col-span-3 text-center hidden sm:block">
-                  {e.role}
-                </div>
-                <div className="col-span-3 text-end hidden sm:block">
-                  จัดการ
-                </div>
-              </div>
-            ))}
+              ))}
           </div>
         </div>
 
