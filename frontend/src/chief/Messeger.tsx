@@ -50,6 +50,10 @@ export default function Messager() {
   const countUrgent = useTransform(countUrgentMV, Math.round);
   const countMessage = useTransform(countMessageMV, Math.round);
 
+  const [selectedRole, setSelectedRole] = useState<
+    "all" | "user" | "admin" | "chief" | "executive"
+  >("all");
+
   // ดึงรายชื่อช่าง
   const fetchMessagess = async () => {
     try {
@@ -80,9 +84,9 @@ export default function Messager() {
     const urgentCount = msgs.filter((m) => m.problem === "urgent").length;
     const messageCount = msgs.length;
 
-    animate(countIssueMV, issueCount, { duration: 0.5 });
-    animate(countUrgentMV, urgentCount, { duration: 0.5 });
-    animate(countMessageMV, messageCount, { duration: 0.5 });
+    animate(countIssueMV, issueCount, { duration: 1.5 });
+    animate(countUrgentMV, urgentCount, { duration: 1.5 });
+    animate(countMessageMV, messageCount, { duration: 1.5 });
   };
 
   // ส่งข้อความ
@@ -195,11 +199,8 @@ export default function Messager() {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-6 shrink-0">
-        <div
-          className={`${bg} p-4 lg:p-6 rounded-xl flex items-center justify-between`}
-        >
-          <div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-4 shrink-0">
+        {/* <div>
             <div className="flex items-center gap-2 mb-2">
               <div
                 className={`p-2 rounded-lg bg-opacity-10 ${primaryText} bg-current`}
@@ -210,12 +211,27 @@ export default function Messager() {
                 แจ้งปัญหา
               </span>
             </div>
-            <motion.span>{countIssue}</motion.span>
+            <p className="text-lg">
+              {" "}
+              <motion.span>{countIssue}</motion.span> รายางน
+            </p>
+          </div> */}
+        <div
+          className={`${bg} p-3 rounded-xl flex items-center justify-content-between`}
+        >
+          <div className="flex gap-3 items-center">
+            <div className="p-2 bg-gray-500/10 rounded-full text-blue-500">
+              <MessageSquare size={20} />
+            </div>
+            <div className="flex-col font-semibold text-sm">
+              <p> แจ้งปัญหา</p>
+              <p className="text-lg">5</p>
+            </div>
           </div>
         </div>
 
         <div
-          className={`${bg} p-4 lg:p-6 rounded-xl flex items-center justify-between`}
+          className={`${bg} p-3 rounded-xl flex items-center justify-between`}
         >
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -231,7 +247,7 @@ export default function Messager() {
         </div>
 
         <div
-          className={`${bg} p-4 lg:p-6 rounded-xl flex items-center justify-between`}
+          className={`${bg} p-3 rounded-xl flex items-center justify-between`}
         >
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -254,15 +270,20 @@ export default function Messager() {
           className={`lg:col-span-8 ${bg} rounded-xl overflow-hidden flex flex-col h-full`}
         >
           <div className="flex 5 justify-between items-center">
-            <div className="p-2 grid grid-cols-3 w-fit gap-3">
-              {["ทั้งหมด", "ช่าง", "หัวหน้าช่าง"].map((e, i) => (
+            <div className="p-2 grid grid-cols-5 w-fit gap-3">
+              {["all", "user", "admin", "chief", "executive"].map((role, i) => (
                 <div
                   key={i}
-                  className={`border text-center px-2 rounded-full py-1 text-white ${
-                    theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                  onClick={() => setSelectedRole(role as any)}
+                  className={`border text-center px-2 rounded-full py-1 text-white cursor-pointer ${
+                    selectedRole === role
+                      ? "bg-green-500"
+                      : theme === "dark"
+                      ? "bg-yellow-500"
+                      : "bg-blue-500"
                   }`}
                 >
-                  {e}
+                  {role === "all" ? "ทั้งหมด" : role}
                 </div>
               ))}
             </div>
@@ -298,7 +319,11 @@ export default function Messager() {
               isDark ? "divide-gray-700" : "divide-gray-200"
             }`}
           >
-            {Message.filter((e) => e.Name !== name).map((e) => (
+            {Message.filter(
+              (e) =>
+                e.Name !== name &&
+                (selectedRole === "all" || e.role === selectedRole)
+            ).map((e) => (
               <div
                 key={e._id}
                 onClick={() => setSelectedUser(e)}

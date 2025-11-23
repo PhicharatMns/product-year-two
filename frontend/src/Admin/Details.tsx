@@ -988,16 +988,16 @@ export default function Details() {
                 {dataTradesman
                   .filter(
                     (t) =>
-                      // admin = หัวหน้าช่าง
+                      t.Name && // <-- ตรวจสอบว่ามี Name
                       ((t.role === "chief" &&
                         selectedPosition === "หัวหน้าช่าง") ||
-                        // user = ช่าง
                         (t.role === "user" && selectedPosition === "ช่าง") ||
-                        // เงื่อนไขปกติ
                         selectedPosition === "ทั้งหมด" ||
                         selectedPosition === "" ||
                         t.Position === selectedPosition) &&
-                      t.Name.toLowerCase().includes(Search.toLowerCase()) // ค้นหาชื่อ
+                      t.Name.toLowerCase().includes(
+                        (Search || "").toLowerCase()
+                      )
                   )
 
                   .sort(
@@ -1189,7 +1189,9 @@ export default function Details() {
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.8, opacity: 0 }}
             transition={{ duration: 0.25 }}
-            className={`rounded-2xl shadow-2xl ${theme === 'dark' ? 'bg-gray-800' : 'bg-white'} p-5 h-100 w-120  flex flex-col `}
+            className={`rounded-2xl shadow-2xl ${
+              theme === "dark" ? "bg-gray-800" : "bg-white"
+            } p-5 h-100 w-120  flex flex-col `}
           >
             <h2 className={` text-lg font-semibold text-red-500 mb-4 `}>
               ยืนยันการลบ
