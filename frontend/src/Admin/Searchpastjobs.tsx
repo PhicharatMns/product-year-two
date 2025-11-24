@@ -128,7 +128,10 @@ export default function Searchpastjobs() {
     const margin = 50;
     const contentWidth = pageWidth - 2 * margin;
     let currentY = 60;
+
+    // Primary color & style
     const primaryColor = [63, 81, 181]; // Deep Indigo
+    const secondaryColor = [100, 100, 100]; // Gray
 
     // 2. Font Setup
     doc.addFileToVFS("THSarabun.ttf", THSarabunFont);
@@ -142,18 +145,18 @@ export default function Searchpastjobs() {
     // --- HEADER ---
     doc.setFillColor(...primaryColor);
     doc.rect(0, 0, pageWidth, 70, "F");
-    doc.setFontSize(26);
+    doc.setFontSize(24);
     doc.setFont("THSarabun", "bold");
     doc.setTextColor(255);
     doc.text("TechJob - Employee Report", pageWidth / 2, 45, {
       align: "center",
     });
-    currentY += 30;
+    currentY += 40;
 
     // --- DATE ---
     const startDate = formatDate(form.Date_of_acceptance_of_work);
     const endDate = formatDate(form.Closing_date);
-    doc.setFontSize(12);
+    doc.setFontSize(10);
     doc.setFont("THSarabun", "normal");
     doc.setTextColor(0);
     doc.text(`วันที่รับงาน: ${startDate}`, margin, currentY);
@@ -162,13 +165,13 @@ export default function Searchpastjobs() {
     });
     currentY += 30;
 
-    // --- EMPLOYEE INFO ---
+    // --- EMPLOYEE INFO BOX ---
     const boxMargin = 15;
-    const boxHeight = 200;
+    const boxHeight = 180;
     const halfWidth = contentWidth / 2;
     doc.setDrawColor(...primaryColor);
-    doc.setLineWidth(4);
-    doc.roundedRect(margin, currentY, contentWidth, boxHeight, 15, 15, "S");
+    doc.setLineWidth(3);
+    doc.roundedRect(margin, currentY, contentWidth, boxHeight, 12, 12, "S");
 
     const employeeData = [
       { label: "ชื่องาน", value: form.Worksheet },
@@ -177,12 +180,13 @@ export default function Searchpastjobs() {
       { label: "เมล", value: form.address?.responsible },
     ];
 
-    doc.setFontSize(14);
-    let colY = currentY + boxMargin + 5;
+    doc.setFontSize(10);
+    let colY = currentY + boxMargin + 20;
     const colX1 = margin + boxMargin;
-    const colX2 = margin + contentWidth / 2;
+    const colX2 = margin + halfWidth + boxMargin;
     const labelOffset = 100;
     const maxTextWidth = halfWidth - 2 * boxMargin - labelOffset;
+    
 
     employeeData.forEach((item, index) => {
       const value = String(item.value || "- ไม่ระบุ -");
@@ -198,16 +202,14 @@ export default function Searchpastjobs() {
       const lines = doc.splitTextToSize(value, maxTextWidth);
       doc.text(lines, x + labelOffset, y);
 
-      if (index % 2 !== 0) {
-        colY += Math.max(lines.length * 16, 28);
-      }
+      if (index % 2 !== 0) colY += Math.max(lines.length * 16, 28);
     });
 
-    currentY = currentY + boxHeight + 40;
+    currentY += boxHeight + 40;
 
-    // --- DESCRIPTION ---
+    // --- DESCRIPTION BOX ---
     const detailBoxHeight = 140;
-    doc.setDrawColor(100, 100, 100);
+    doc.setDrawColor(...secondaryColor);
     doc.setLineWidth(1.5);
     doc.roundedRect(
       margin,
@@ -220,12 +222,12 @@ export default function Searchpastjobs() {
     );
 
     doc.setFont("THSarabun", "bold");
-    doc.setFontSize(14);
+    doc.setFontSize(10);
     doc.setTextColor(...primaryColor);
     doc.text("รายละเอียดเพิ่มเติม:", margin + boxMargin, currentY + 25);
 
     doc.setFont("THSarabun", "normal");
-    doc.setFontSize(9);
+    doc.setFontSize(10);
     doc.setTextColor(0);
     const detailText = String(form.description || "-");
     const detailLines = doc.splitTextToSize(
@@ -240,19 +242,21 @@ export default function Searchpastjobs() {
     const sigWidth = 160;
     const sigHeight = 50;
     const sigX = margin;
-
     if (signatureBase64) {
       doc.addImage(signatureBase64, "PNG", sigX, currentY, sigWidth, sigHeight);
     } else {
+      doc.setFont("THSarabun", "normal");
+      doc.setTextColor(secondaryColor);
       doc.text(
-        ".....................................................................",
+        "....................................................",
         sigX,
-        currentY
+        currentY + 25
       );
     }
 
     doc.setFontSize(10);
-    doc.text("ผู้รับมอบงาน", sigX + sigWidth / 2, currentY + sigHeight + 15, {
+    doc.setTextColor(0);
+    doc.text("ผู้รับมอบงาน", sigX + sigWidth / 2, currentY + sigHeight + 20, {
       align: "center",
     });
 
@@ -892,7 +896,6 @@ export default function Searchpastjobs() {
                   <button
                     onClick={() => {
                       handleSave(); // บันทึกฟอร์มก่อน
-      
                     }}
                     className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
                       theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
