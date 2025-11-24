@@ -46,6 +46,7 @@
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.9.3",
     "react-select": "^5.10.2",
+    "react-signature-canvas": "^1.1.0-alpha.2",
     "recharts": "^3.2.1",
     "rsuite": "^5.83.3",
     "socket.io": "^4.8.1",

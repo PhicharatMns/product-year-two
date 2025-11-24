@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
 import { CiSearch } from "react-icons/ci";
 import { Link } from "react-router-dom";
 import { useTheme } from "@/components/theme-provider";
 // import react-leaflet components
+import THSarabunFont from "./THSarabunBase64";
+import jsPDF from "jspdf";
 import {
   MapContainer,
   TileLayer,
@@ -20,6 +22,7 @@ interface GeoPoint {
   type: "Point";
   coordinates: [number, number];
 }
+import SignatureCanvas from "react-signature-canvas";
 
 //  ข้อมูลพนักงาน
 interface Employee {
@@ -89,6 +92,8 @@ export default function Searchpastjobs() {
   const [showTrash, setShowTrash] = useState(false);
   const [searchpopup, setSearchpopup] = useState("");
   const [opendatefilepopup, setopendatefilepopup] = useState(fade);
+  const [signature, setSignature] = useState<string | null>(null);
+  const sigCanvasRef = useRef<SignatureCanvas>(null);
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
@@ -112,19 +117,175 @@ export default function Searchpastjobs() {
   const handleChange = (key: keyof FormState, value: string | File | null) =>
     setForm((f) => ({ ...f, [key]: value }));
 
+  const generatePDF_Employee = (form, signatureBase64) => {
+    // 1. Setup Document
+    const doc = new jsPDF({ unit: "pt", format: "a4" });
+    const {
+      internal: { pageSize },
+    } = doc;
+    const pageWidth = pageSize.getWidth();
+    const pageHeight = pageSize.getHeight();
+    const margin = 50;
+    const contentWidth = pageWidth - 2 * margin;
+    let currentY = 60;
+    const primaryColor = [63, 81, 181]; // Deep Indigo
+
+    // 2. Font Setup
+    doc.addFileToVFS("THSarabun.ttf", THSarabunFont);
+    doc.addFont("THSarabun.ttf", "THSarabun", "normal");
+    doc.addFont("THSarabun.ttf", "THSarabun", "bold");
+    doc.setFont("THSarabun");
+
+    const formatDate = (dateString) =>
+      dateString ? new Date(dateString).toLocaleDateString("th-TH") : "-";
+
+    // --- HEADER ---
+    doc.setFillColor(...primaryColor);
+    doc.rect(0, 0, pageWidth, 70, "F");
+    doc.setFontSize(26);
+    doc.setFont("THSarabun", "bold");
+    doc.setTextColor(255);
+    doc.text("TechJob - Employee Report", pageWidth / 2, 45, {
+      align: "center",
+    });
+    currentY += 30;
+
+    // --- DATE ---
+    const startDate = formatDate(form.Date_of_acceptance_of_work);
+    const endDate = formatDate(form.Closing_date);
+    doc.setFontSize(12);
+    doc.setFont("THSarabun", "normal");
+    doc.setTextColor(0);
+    doc.text(`วันที่รับงาน: ${startDate}`, margin, currentY);
+    doc.text(`วันที่ปิดงาน: ${endDate}`, pageWidth - margin, currentY, {
+      align: "right",
+    });
+    currentY += 30;
+
+    // --- EMPLOYEE INFO ---
+    const boxMargin = 15;
+    const boxHeight = 200;
+    const halfWidth = contentWidth / 2;
+    doc.setDrawColor(...primaryColor);
+    doc.setLineWidth(4);
+    doc.roundedRect(margin, currentY, contentWidth, boxHeight, 15, 15, "S");
+
+    const employeeData = [
+      { label: "ชื่องาน", value: form.Worksheet },
+      { label: "ชื่อผู้จ้าง", value: form.Employer },
+      { label: "เบอร์ติดต่อ", value: form.Contact_number },
+      { label: "เมล", value: form.address?.responsible },
+    ];
+
+    doc.setFontSize(14);
+    let colY = currentY + boxMargin + 5;
+    const colX1 = margin + boxMargin;
+    const colX2 = margin + contentWidth / 2;
+    const labelOffset = 100;
+    const maxTextWidth = halfWidth - 2 * boxMargin - labelOffset;
+
+    employeeData.forEach((item, index) => {
+      const value = String(item.value || "- ไม่ระบุ -");
+      const x = index % 2 === 0 ? colX1 : colX2;
+      const y = colY;
+
+      doc.setFont("THSarabun", "bold");
+      doc.setTextColor(...primaryColor);
+      doc.text(`${item.label}:`, x, y);
+
+      doc.setFont("THSarabun", "normal");
+      doc.setTextColor(0);
+      const lines = doc.splitTextToSize(value, maxTextWidth);
+      doc.text(lines, x + labelOffset, y);
+
+      if (index % 2 !== 0) {
+        colY += Math.max(lines.length * 16, 28);
+      }
+    });
+
+    currentY = currentY + boxHeight + 40;
+
+    // --- DESCRIPTION ---
+    const detailBoxHeight = 140;
+    doc.setDrawColor(100, 100, 100);
+    doc.setLineWidth(1.5);
+    doc.roundedRect(
+      margin,
+      currentY,
+      contentWidth,
+      detailBoxHeight,
+      12,
+      12,
+      "S"
+    );
+
+    doc.setFont("THSarabun", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(...primaryColor);
+    doc.text("รายละเอียดเพิ่มเติม:", margin + boxMargin, currentY + 25);
+
+    doc.setFont("THSarabun", "normal");
+    doc.setFontSize(9);
+    doc.setTextColor(0);
+    const detailText = String(form.description || "-");
+    const detailLines = doc.splitTextToSize(
+      detailText,
+      contentWidth - 2 * boxMargin
+    );
+    doc.text(detailLines, margin + boxMargin, currentY + 50);
+
+    currentY += detailBoxHeight + 40;
+
+    // --- SIGNATURE ---
+    const sigWidth = 160;
+    const sigHeight = 50;
+    const sigX = margin;
+
+    if (signatureBase64) {
+      doc.addImage(signatureBase64, "PNG", sigX, currentY, sigWidth, sigHeight);
+    } else {
+      doc.text(
+        ".....................................................................",
+        sigX,
+        currentY
+      );
+    }
+
+    doc.setFontSize(10);
+    doc.text("ผู้รับมอบงาน", sigX + sigWidth / 2, currentY + sigHeight + 15, {
+      align: "center",
+    });
+
+    // --- FOOTER ---
+    doc.setFontSize(10);
+    doc.setTextColor(150);
+    doc.text(
+      "เอกสารนี้จัดทำโดยฝ่ายบุคคล TechJob เพื่อการศึกษา",
+      margin,
+      pageHeight - 30
+    );
+
+    // --- SAVE PDF ---
+    const fileName = form._id
+      ? `employee_${form._id}.pdf`
+      : "employee_report.pdf";
+    doc.save(fileName);
+  };
+
+  // -------------------- ตัวอย่างการเรียกใช้ --------------------
   const handleSave = async () => {
     try {
+      // 1. สร้าง FormData จาก form
       const fd = new FormData();
       Object.entries(form).forEach(([k, v]) => {
         if (v !== null && v !== "") {
-          if (k === "address") {
+          if (k === "address")
             fd.append("address", JSON.stringify(form.address));
-          } else {
-            fd.append(k, v instanceof File ? v : String(v));
-          }
+          else fd.append(k, v instanceof File ? v : String(v));
         }
       });
 
+      // 2. ส่งข้อมูลไป backend (POST หรือ PUT)
       if (editId) {
         await fetch(`http://localhost:5000/api/employees/${editId}`, {
           method: "PUT",
@@ -137,10 +298,20 @@ export default function Searchpastjobs() {
         });
       }
 
+      // 3. ดึงลายเซ็นต์จาก SignatureCanvas
+      const signatureBase64 = sigCanvasRef.current?.toDataURL("image/png");
+
+      // 4. สร้าง PDF พร้อมข้อมูลและลายเซ็นต์
+      generatePDF_Employee(form, signatureBase64);
+
+      // 5. ล้างลายเซ็นต์หลังสร้าง PDF
+      sigCanvasRef.current?.clear();
+
+      // 6. รีเฟรชข้อมูลและปิด Modal
       fetchData();
       closeModal();
     } catch (err) {
-      console.error(err);
+      console.error("เกิดข้อผิดพลาด:", err);
     }
   };
 
@@ -644,7 +815,12 @@ export default function Searchpastjobs() {
                     ["Date_of_acceptance_of_work", "วันเริ่มงาน"],
                     ["Closing_date", "วันปิดงาน"],
                   ].map(([k, label]) => (
-                    <div key={k} className="flex flex-col">
+                    <div
+                      key={k}
+                      className={`flex flex-col ${
+                        k === "Closing_date" ? "col-span-2" : ""
+                      }`}
+                    >
                       <label className={`mb-1 font-semibold ${cls.label}`}>
                         {label}
                       </label>
@@ -659,18 +835,36 @@ export default function Searchpastjobs() {
                       />
                     </div>
                   ))}
-
-                  <div className="flex flex-col">
-                    <label className={`mb-1 font-semibold ${cls.label}`}>
-                      ไฟล์แนบ
-                    </label>
-                    <input
-                      type="file"
-                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                        handleChange("image", e.target.files?.[0] ?? null)
-                      }
-                      className={`border w-full p-2 rounded-lg focus:ring-2 outline-none ${cls.input}`}
+                </div>
+                <div className="">
+                  <label className={`block mb-1 font-semibold ${cls.label}`}>
+                    ลายเซ็นต์
+                  </label>
+                  <div className="border rounded-lg">
+                    <SignatureCanvas
+                      ref={sigCanvasRef}
+                      penColor="black"
+                      canvasProps={{
+                        width: 600,
+                        height: 100,
+                        className: "rounded-lg",
+                      }}
                     />
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      type="button"
+                      className="px-4 py-1 bg-gray-300 rounded-lg"
+                      onClick={() => sigCanvasRef.current?.clear()}
+                    >
+                      ล้าง
+                    </button>
+                    {/* <button
+                          onClick={() => generatePDF_Employee(form, signature)}
+                          className="px-4 py-1 bg-blue-500 text-white rounded-lg"
+                        >
+                          ยืนยันและดาวน์โหลด PDF
+                        </button> */}
                   </div>
                 </div>
                 <div className="mt-4">
@@ -696,7 +890,10 @@ export default function Searchpastjobs() {
                     </span>
                   </button>
                   <button
-                    onClick={handleSave}
+                    onClick={() => {
+                      handleSave(); // บันทึกฟอร์มก่อน
+      
+                    }}
                     className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
                       theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
                     }`}
