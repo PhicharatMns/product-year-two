@@ -56,6 +56,7 @@ import Messeger from "./chief/Messeger";
 import EditUser from "./chief/EditUser";
 import ProfileChief from "./chief/ProfileChief";
 import GetPaper from "./chief/getpaper";
+import PFD from "./Admin/PDF";
 
 
 const router = createBrowserRouter([
@@ -83,6 +84,7 @@ const router = createBrowserRouter([
       { path: "notification", element: <Notification /> },
       { path: "suppliesAdmin", element: <SuppliesAdmin /> },
       { path: "MessagerAdmin", element: <MessagerAdmin /> },
+      { path : 'PFD' ,element : <PFD/>}
 
     ],
   },
