@@ -464,7 +464,7 @@ export default function Messager() {
                                   theme === "dark" ? "text-white" : "text-black"
                                 }`}
                               >
-                                {msg.Name}{" "}
+                                {msg.requireNameinMessage}{" "}
                                 {new Date(msg.timestamp).toLocaleString(
                                   "th-TH",
                                   {

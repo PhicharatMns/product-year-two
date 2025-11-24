@@ -57,6 +57,7 @@ import EditUser from "./chief/EditUser";
 import ProfileChief from "./chief/ProfileChief";
 import GetPaper from "./chief/getpaper";
 
+
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
   { path: "/logins", element: <Login /> },
@@ -82,6 +83,7 @@ const router = createBrowserRouter([
       { path: "notification", element: <Notification /> },
       { path: "suppliesAdmin", element: <SuppliesAdmin /> },
       { path: "MessagerAdmin", element: <MessagerAdmin /> },
+
     ],
   },
 

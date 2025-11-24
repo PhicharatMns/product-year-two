@@ -10,114 +10,204 @@ import {
   ResponsiveContainer,
   BarChart,
 } from "recharts";
-import { animate, motion, useMotionValue, useTransform } from "motion/react"
-import { useEffect } from "react"
+import { animate, motion, useMotionValue, useTransform } from "motion/react";
+import { useEffect, useState } from "react";
+import { useTheme } from "@/components/theme-provider";
 
+interface typeEmployee {
+  Date_of_acceptance_of_work?: string;
+  Status: string;
+  address?: string;
+}
 
-// #region Sample data
-const data = [
-  {
-    name: "มกราคม",
-    งาน: 120,
-    เหลือ: 15,
-  },
-  {
-    name: "กุมภาพันธ์",
-    งาน: 95,
-    เหลือ: 8,
-  },
-  {
-    name: "มีนาคม",
-    งาน: 110,
-    เหลือ: 12,
-  },
-  {
-    name: "เมษายน",
-    งาน: 130,
-    เหลือ: 20,
-  },
-  {
-    name: "พฤษภาคม",
-    งาน: 125,
-    เหลือ: 10,
-  },
-  {
-    name: "มิถุนายน",
-    งาน: 140,
-    เหลือ: 18,
-  },
-];
-
-// #endregion
 const DashboardExecutive = () => {
-  const count = useMotionValue(0)
-  const rounded = useTransform(() => Math.round(count.get()))
+  const [job, setJob] = useState<typeEmployee[]>([]);
+  const [chartData, setChartData] = useState<any[]>([]);
+  const { theme } = useTheme();
 
+  // fetch ข้อมูล
+  const fetchJobAdd = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/employees");
+      const data = await res.json();
+      setJob(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // motion values
+  const countTotal = useMotionValue(0);
+  const roundedTotal = useTransform(countTotal, Math.round);
+
+  const countWorking = useMotionValue(0);
+  const roundedWorking = useTransform(countWorking, Math.round);
+
+  const countDelayed = useMotionValue(0);
+  const roundedDelayed = useTransform(countDelayed, Math.round);
+
+  // สรุปข้อมูล
+  const Jobtotal = job.length;
+  const JobWorking = job.filter(
+    (item) => item.Status === "กำลังดำเนินการ"
+  ).length;
+  const JobDelayedLength = job.filter(
+    (item) => item.Status === "ล่าช้า"
+  ).length;
+
+  // Animate ตัวเลข
   useEffect(() => {
-    const controls = animate(count, 100, { duration: 5 })
-    return () => controls.stop()
-  }, [])
+    const controlsTotal = animate(countTotal, Jobtotal, {
+      duration: 2,
+      ease: "easeOut",
+    });
+    const controlsWorking = animate(countWorking, JobWorking, {
+      duration: 2,
+      ease: "easeOut",
+    });
+    const controlsDelayed = animate(countDelayed, JobDelayedLength, {
+      duration: 2,
+      ease: "easeInOut",
+    });
+
+    return () => {
+      controlsTotal.stop();
+      controlsWorking.stop();
+      controlsDelayed.stop();
+    };
+  }, [Jobtotal, JobWorking, JobDelayedLength]);
+
+  // สร้าง chart data per month
+  useEffect(() => {
+    const months = [
+      "มกราคม",
+      "กุมภาพันธ์",
+      "มีนาคม",
+      "เมษายน",
+      "พฤษภาคม",
+      "มิถุนายน",
+      "กรกฎาคม",
+      "สิงหาคม",
+      "กันยายน",
+      "ตุลาคม",
+      "พฤศจิกายน",
+      "ธันวาคม",
+    ];
+
+    const data = months.map((month) => ({
+      name: month,
+      งาน: 0,
+      เหลือ: 0,
+    }));
+
+    job.forEach((item) => {
+      if (!item.Date_of_acceptance_of_work) return;
+      const date = new Date(item.Date_of_acceptance_of_work);
+      const monthIndex = date.getMonth(); // 0-11
+      data[monthIndex].งาน += 1;
+      if (item.Status === "กำลังดำเนินการ" || item.Status === "ล่าช้า") {
+        data[monthIndex].เหลือ += 1;
+      }
+    });
+
+    setChartData(data);
+  }, [job]);
+
+  // โหลดข้อมูลครั้งแรก
+  useEffect(() => {
+    fetchJobAdd();
+  }, []);
 
   return (
-    <div className="w-max-380 p-5 mx-auto container pt-10">
-      <div className="p-5 ">
-        <p className="text-3xl  font-extrabold mb-5 ">Dashboard <span>ผู้บริหาร</span></p>
-        {/* ข้อมูล */}
-        <div className='grid grid-cols-4 gap-5 my-5'>
-          <div className="border rounded-xl h-35 text-white bg-blue-300 p-4 text-xl">
-            <p>งานทั้งหมดในเดือน ตุลา</p>
-            <p className="mt-5 text-2xl text-le flex gap-2 font-extrabold"> <motion.pre >{rounded}</motion.pre>งาน</p>
-          </div>
-          <div className="border rounded-xl h-35 text-white bg-blue-500 p-4 text-xl">
-            <p>งานที่กําลังดําเนินการ</p>
-            <p className="mt-5 text-2xl text-le flex gap-2 font-extrabold"> <motion.pre >{rounded}</motion.pre>งาน</p>
-          </div>
-          <div className="border rounded-xl h-35 text-white bg-blue-600 p-4 text-xl">
-            <p>งานที่ล่าช้า</p>
-            <p className="mt-5 text-2xl text-le flex gap-2 font-extrabold"> <motion.pre >{rounded}</motion.pre>งาน</p>
-          </div>
-          <div className="border rounded-xl h-35 text-white bg-blue-700 p-4 text-xl">
-            <p>รายการขอเบิกวัสดุ</p>
-            <p className="mt-5 text-2xl text-le flex gap-2 font-extrabold"> <motion.pre >{rounded}</motion.pre>งาน</p>
-          </div>
+    <div className="w-max-380 p-5 mx-auto container">
+      <p
+        className={`text-3xl font-extrabold mb-5 ${
+          theme === "dark" ? "text-yellow-500" : "text-blue-500"
+        }`}
+      >
+        Dashboard{" "}
+        <span
+          className={`${theme === "dark" ? "text-white" : "text-yellow-500"}`}
+        >
+          ผู้บริหาร
+        </span>
+      </p>
+      {/* ตัวเลขสรุป */}
+      <div className="grid grid-cols-4 gap-5 my-5">
+        <div className="border rounded-xl h-30 text-white bg-blue-300 p-4 text-xl">
+          <p>งานทั้งหมด</p>
+          <p className="mt-5 text-2xl flex gap-2 font-extrabold">
+            <motion.pre>{roundedTotal}</motion.pre> งาน
+          </p>
         </div>
-        {/* กราฟ */}
-        <div className="grid grid-cols-2 gap-5">
-          <div>
-            <p className="my-2 text-xl font-extrabold">งานทั้งหมด</p>
-            <ResponsiveContainer width='100%' height={400}>
-              <ComposedChart data={data}>
-                <CartesianGrid stroke="#f5f5f5" />
-                <XAxis dataKey="name" scale="band" />
-                <YAxis width={40} />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="งาน" barSize={20} fill="#413ea0" />
-                <Line type="monotone" dataKey="งาน" stroke="#ff7300" />
-              </ComposedChart>
-            </ResponsiveContainer>
-          </div>
 
-          <div>
-            <p className="my-2 text-xl font-extrabold">งานทั้งหมด</p>
-            <ResponsiveContainer width='100%' height={400}>
-              <BarChart
-                data={data}
-              >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis yAxisId="left" orientation="left" stroke="#05339C" width={40} />
-                <YAxis yAxisId="right" orientation="right" stroke="#FCB53B" width={40} />
-                <Tooltip />
-                <Legend />
-                <Bar yAxisId="left" dataKey="งาน" fill="#05339C" />
-                <Bar yAxisId="right" dataKey="เหลือ" fill="#FCB53B" />
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </div >
+        <div className="border rounded-xl h-30 text-white bg-blue-500 p-4 text-xl">
+          <p>งานที่กำลังดำเนินการ</p>
+          <p className="mt-5 text-2xl flex gap-2 font-extrabold">
+            <motion.pre>{roundedWorking}</motion.pre> งาน
+          </p>
+        </div>
 
+        <div className="border rounded-xl h-30 text-white bg-blue-600 p-4 text-xl">
+          <p>งานที่ล่าช้า</p>
+          <p className="mt-5 text-2xl flex gap-2 font-extrabold">
+            <motion.pre>{roundedDelayed}</motion.pre> งาน
+          </p>
+        </div>
 
+        <div className="border rounded-xl h-30 text-white bg-blue-700 p-4 text-xl">
+          <p>รายการขอเบิกวัสดุ</p>
+          <p className="mt-5 text-2xl flex gap-2 font-extrabold">
+            {/* ตัวอย่าง static */}
+            <motion.pre>0</motion.pre> งาน
+          </p>
+        </div>
+      </div>
+      {/* กราฟ */}
+      {/* <div>
+          <p className="my-2 text-xl font-extrabold">งานทั้งหมดต่อเดือน</p>
+          <ResponsiveContainer width="100%" height={400}>
+            <ComposedChart data={chartData}>
+              <CartesianGrid stroke="#f5f5f5" />
+              <XAxis dataKey="name" scale="band" />
+              <YAxis width={40} />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="งาน" barSize={20} fill="#413ea0" />
+              <Line type="monotone" dataKey="งาน" stroke="#ff7300" />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div> */}
+      <div
+        className={` p-2 rounded-lg ${
+          theme === "dark" ? "bg-gray-900" : "bg-gray-50 shadow"
+        } `}
+      >
+        <p className="my-2 text-xl  font-extrabold">
+          งานทั้งหมดต่อเดือน (แยกเหลือ)
+        </p>
+        <ResponsiveContainer width="100%" height={600}>
+          <BarChart data={chartData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis
+              yAxisId="left"
+              orientation="left"
+              stroke="#05339C"
+              width={40}
+            />
+            <YAxis
+              yAxisId="right"
+              orientation="right"
+              stroke="#FCB53B"
+              width={40}
+            />
+            <Tooltip />
+            <Legend />
+            <Bar yAxisId="left" dataKey="งาน" fill="#05339C" />
+            <Bar yAxisId="right" dataKey="เหลือ" fill="#FCB53B" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

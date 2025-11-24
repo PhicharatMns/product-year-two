@@ -125,7 +125,6 @@ export default function MessagerAdmin() {
       console.error(err);
     }
   };
-  const [adminProfile, setAdminProfile] = useState<string | null>(null);
 
   const markAsCommit = async (msgId: string) => {
     try {
@@ -170,7 +169,6 @@ export default function MessagerAdmin() {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setName(response.data.Name || "ไม่ระบุชื่อ");
-        setAdminProfile(response.data.Profile);
       } catch (err) {
         console.error("Sidebar fetch error:", err);
       }
@@ -194,7 +192,7 @@ export default function MessagerAdmin() {
     <div className={`max-w-380 mx-auto container p-5 min-h-screen`}>
       {/* Header */}
       <div className="mb-6 shrink-0">
-        <h1 className={`text-2xl font-semibold mb-1 ${primaryText}`}>
+        <h1 className={`text-3xl font-semibold mb-1 ${primaryText}`}>
           ภาพรวมข้อความจากช่าง
         </h1>
         <p className={`${subText} text-sm`}>
@@ -445,7 +443,8 @@ export default function MessagerAdmin() {
 
                         <div className="flex items-center gap-3">
                           <img
-                            src={`http://localhost:5000/uploads/Profile/${adminProfile}`}
+                            src={`http://localhost:5000/uploads/Profile/${"adminProfile"} || "default.png"
+                            }`}
                             alt="profile"
                             className="w-12 h-12 rounded-full object-cover"
                           />

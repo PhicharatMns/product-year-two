@@ -20,9 +20,8 @@ const verifyToken = (req, res, next) => {
   });
 };
 
-// ------------------------------------------------
 //  ส่งข้อความ  (รองรับ problem ด้วย)
-// ------------------------------------------------
+
 router.post("/send", verifyToken, async (req, res) => {
   try {
     const { Name, message, ID, role, problem } = req.body;
@@ -89,6 +88,17 @@ router.patch("/update-problem/:id", verifyToken, async (req, res) => {
     res.json({ success: true, data: updated });
   } catch (err) {
     res.status(500).json({ success: false, error: err.message });
+  }
+});
+
+// --- GET แบบไม่ต้อง verify token ---
+router.get("/all-public", async (req, res) => {
+  try {
+    const messages = await Message.find().sort({ timestamp: -1 });
+    res.json(messages);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server error" });
   }
 });
 
