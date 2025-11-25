@@ -420,10 +420,10 @@ export default function DetailworkChief() {
         prev.map((i) =>
           i.id === itemId || i._id === itemId
             ? {
-                ...i,
-                status: "ไม่อนุมัติ",
-                reasondescriptionstatus: rejectReason,
-              }
+              ...i,
+              status: "ไม่อนุมัติ",
+              reasondescriptionstatus: rejectReason,
+            }
             : i
         )
       );
@@ -470,10 +470,10 @@ export default function DetailworkChief() {
         prev.map((i) =>
           i.id === itemId || i._id === itemId
             ? {
-                ...i,
-                status: "อนุมัติเเล้วรอการติดต่อคลัง",
-                reasondescriptionstatus: rejectReason,
-              }
+              ...i,
+              status: "อนุมัติเเล้วรอการติดต่อคลัง",
+              reasondescriptionstatus: rejectReason,
+            }
             : i
         )
       );
@@ -513,9 +513,8 @@ export default function DetailworkChief() {
               <p className={`${titleColor} font-semibold `}>
                 สถานะงาน:{" "}
                 <span
-                  className={`${
-                    theme === "dark" ? "text-white" : "text-black"
-                  }`}
+                  className={`${theme === "dark" ? "text-white" : "text-black"
+                    }`}
                 >
                   {job.Status || "-"}
                 </span>
@@ -523,23 +522,21 @@ export default function DetailworkChief() {
               <p className={`${titleColor} font-semibold`}>
                 วันเริ่มงาน:
                 <span
-                  className={`${
-                    theme === "dark" ? "text-white" : "text-black"
-                  }`}
+                  className={`${theme === "dark" ? "text-white" : "text-black"
+                    }`}
                 >
                   {job.Date_of_acceptance_of_work
                     ? new Date(
-                        job.Date_of_acceptance_of_work
-                      ).toLocaleDateString("th-TH")
+                      job.Date_of_acceptance_of_work
+                    ).toLocaleDateString("th-TH")
                     : "-"}
                 </span>
               </p>
               <p className={`${titleColor} font-semibold`}>
                 วันปิดงาน:{" "}
                 <span
-                  className={`${
-                    theme === "dark" ? "text-white" : "text-black"
-                  }`}
+                  className={`${theme === "dark" ? "text-white" : "text-black"
+                    }`}
                 >
                   {job.Closing_date
                     ? new Date(job.Closing_date).toLocaleDateString("th-TH")
@@ -565,16 +562,14 @@ export default function DetailworkChief() {
                 className={`w-full h-80 mb-1 p-3 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
               >
                 <div
-                  className={`${
-                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                  } mb-3 border-b pb-3 flex justify-between`}
+                  className={`${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    } mb-3 border-b pb-3 flex justify-between`}
                 >
                   <p className="text-xl font-semibold">รายชื่อช่าง</p>
                   <button
                     onClick={openModal}
-                    className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-4 font-medium text-white transition duration-300 ${
-                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                    }`}
+                    className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-4 font-medium text-white transition duration-300 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                      }`}
                   >
                     + เพิ่มช่าง
                     <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
@@ -600,11 +595,10 @@ export default function DetailworkChief() {
                         }}
                       >
                         <div
-                          className={`items-center border p-1 my-2 rounded-xl ${
-                            theme === "dark"
-                              ? "bg-gray-800"
-                              : "shadow-sm bg-gray-50"
-                          }`}
+                          className={`items-center border p-1 my-2 rounded-xl ${theme === "dark"
+                            ? "bg-gray-800"
+                            : "shadow-sm bg-gray-50"
+                            }`}
                         >
                           <div className="items-center justify-between flex">
                             <p
@@ -612,9 +606,8 @@ export default function DetailworkChief() {
                             >
                               นาย :{" "}
                               <span
-                                className={`${
-                                  theme === "dark" ? "text-white" : "text-black"
-                                }`}
+                                className={`${theme === "dark" ? "text-white" : "text-black"
+                                  }`}
                               >
                                 {event.Name}
                               </span>
@@ -638,24 +631,42 @@ export default function DetailworkChief() {
                             />
                             <div className="text-sm flex flex-col gap-1">
                               <p
-                                className={` font-semibold ${
-                                  theme === "dark" ? "text-white" : "text-black"
-                                }`}
+                                className={` font-semibold ${theme === "dark" ? "text-white" : "text-black"
+                                  }`}
                               >
+                                <div>
+                                  <span
+                                    className={` font-extrabold ${theme === "dark"
+                                      ? "text-yellow-500"
+                                      : "text-blue-500"
+                                      }`}
+                                  >
+                                    ตำแหน่ง :
+                                  </span>{" "}
+                                  {({ admin: "แอดมิน", user: "ช่าง", chief: "หัวหน้าช่าง", staff: "พนักงาน" }[event.role] || event.role)}
+                                  <span> สายงาน {event.Position}</span>
+                                </div>
                                 <span className={`${titleColor} font-semibold`}>
                                   เบอร์ติดต่อ :
                                 </span>{" "}
                                 {event.Phone_Number}
                               </p>
                               <p
-                                className={` font-semibold ${
-                                  theme === "dark" ? "text-white" : "text-black"
-                                }`}
+                                className={`font-semibold ${theme === "dark" ? "text-white" : "text-black"
+                                  }`}
                               >
                                 <span className={`${titleColor} font-semibold`}>
-                                  สายงาน :
+                                  เมลติดต่อ :
                                 </span>{" "}
-                                {event.Position}
+                                {event.Email}
+                                <p
+                                  className={` font-semibold ${theme === "dark"
+                                    ? "text-white"
+                                    : "text-black"
+                                    }`}
+                                >
+                                </p>
+
                               </p>
                             </div>
                           </div>
@@ -672,9 +683,8 @@ export default function DetailworkChief() {
                 className={`w-full h-90 p-3 mt-3 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
               >
                 <div
-                  className={`${
-                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                  } text-xl font-semibold mb-3 border-b pb-3`}
+                  className={`${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    } text-xl font-semibold mb-3 border-b pb-3`}
                 >
                   รายการติดต่อ / เบิกของ
                 </div>
@@ -701,11 +711,10 @@ export default function DetailworkChief() {
                             delay: 0.2 * index,
                             ease: "easeOut",
                           }}
-                          className={`items-center border p-2 mb-2 rounded-xl ${
-                            theme === "dark"
-                              ? "bg-gray-800"
-                              : "shadow-sm bg-gray-50"
-                          }`}
+                          className={`items-center border p-2 mb-2 rounded-xl ${theme === "dark"
+                            ? "bg-gray-800"
+                            : "shadow-sm bg-gray-50"
+                            }`}
                         >
                           <div className="flex  justify-between">
                             {" "}
@@ -714,27 +723,25 @@ export default function DetailworkChief() {
                             >
                               {e.section} :
                               <span
-                                className={`${
-                                  theme === "dark" ? "text-white" : "text-black"
-                                }`}
+                                className={`${theme === "dark" ? "text-white" : "text-black"
+                                  }`}
                               >
                                 {" "}
                                 <span
-                                  className={`${
-                                    e.status === "ไม่อนุมัติ"
-                                      ? "text-red-500"
-                                      : e.status === "รอดําเนินการ"
+                                  className={`${e.status === "ไม่อนุมัติ"
+                                    ? "text-red-500"
+                                    : e.status === "รอดําเนินการ"
                                       ? "text-orange-500"
                                       : e.status ===
                                         "อนุมัติเเล้วรอการติดต่อคลัง"
-                                      ? "text-yellow-500"
-                                      : e.status ===
-                                        "ได้รับการยืนยันจากคลังแล้ว"
-                                      ? "text-green-500"
-                                      : e.status === "เสร็จสิ้น"
-                                      ? "text-green-600"
-                                      : "text-gray-500"
-                                  }`}
+                                        ? "text-yellow-500"
+                                        : e.status ===
+                                          "ได้รับการยืนยันจากคลังแล้ว"
+                                          ? "text-green-500"
+                                          : e.status === "เสร็จสิ้น"
+                                            ? "text-green-600"
+                                            : "text-gray-500"
+                                    }`}
                                 >
                                   {e.status}
                                 </span>
@@ -742,11 +749,10 @@ export default function DetailworkChief() {
                                   <span className="pl-1">
                                     หมายเหตุ:{" "}
                                     <span
-                                      className={`${
-                                        theme === "dark"
-                                          ? "text-white"
-                                          : "text-black"
-                                      }`}
+                                      className={`${theme === "dark"
+                                        ? "text-white"
+                                        : "text-black"
+                                        }`}
                                     >
                                       {e.description}
                                     </span>
@@ -776,11 +782,10 @@ export default function DetailworkChief() {
                             <div className="">
                               <div className="text-sm  gap-1">
                                 <p
-                                  className={`font-semibold ${
-                                    theme === "dark"
-                                      ? "text-white"
-                                      : "text-black"
-                                  }`}
+                                  className={`font-semibold ${theme === "dark"
+                                    ? "text-white"
+                                    : "text-black"
+                                    }`}
                                 >
                                   <span
                                     className={`font-semibold ${titleColor}`}
@@ -811,11 +816,10 @@ export default function DetailworkChief() {
                                   </p>
                                 </p>
                                 <p
-                                  className={` font-semibold  ${
-                                    theme === "dark"
-                                      ? "text-white"
-                                      : "text-black"
-                                  }`}
+                                  className={` font-semibold  ${theme === "dark"
+                                    ? "text-white"
+                                    : "text-black"
+                                    }`}
                                 >
                                   <span
                                     className={`${titleColor} font-semibold `}
@@ -824,12 +828,12 @@ export default function DetailworkChief() {
                                   </span>
                                   {e.createdAt
                                     ? new Date(e.createdAt).toLocaleString(
-                                        "th-TH",
-                                        {
-                                          dateStyle: "short",
-                                          timeStyle: "short",
-                                        }
-                                      )
+                                      "th-TH",
+                                      {
+                                        dateStyle: "short",
+                                        timeStyle: "short",
+                                      }
+                                    )
                                     : "-"}
                                 </p>
                               </div>
@@ -872,22 +876,19 @@ export default function DetailworkChief() {
         >
           {" "}
           <div
-            className={`rounded-2xl w-[900px] h-200 shadow-2xl border ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
-            } ${modalFade ? "opacity-100 " : "scale-90 opacity-0"} `}
+            className={`rounded-2xl w-[900px] h-200 shadow-2xl border ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              } ${modalFade ? "opacity-100 " : "scale-90 opacity-0"} `}
           >
             {" "}
             <div className="flex justify-between border-b px-6 py-4 ">
               <p
-                className={` text-2xl  font-semibold  ${
-                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                }`}
+                className={` text-2xl  font-semibold  ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
               >
                 เพิ่มช่าง
                 <span
-                  className={`${
-                    theme === "dark" ? "text-white" : "text-yellow-500"
-                  }`}
+                  className={`${theme === "dark" ? "text-white" : "text-yellow-500"
+                    }`}
                 >
                   เข้างาน
                 </span>
@@ -905,16 +906,14 @@ export default function DetailworkChief() {
                   onBlur={() => setFocused(false)}
                   type="text"
                   className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
-                                    ${
-                                      focused
-                                        ? "w-72 shadow-lg"
-                                        : "w-60 border-gray-300"
-                                    }  
-                                    ${
-                                      theme === "dark"
-                                        ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
-                                        : " focus:ring-blue-400 bg-white text-gray-800"
-                                    }`}
+                                    ${focused
+                      ? "w-72 shadow-lg"
+                      : "w-60 border-gray-300"
+                    }  
+                                    ${theme === "dark"
+                      ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
+                      : " focus:ring-blue-400 bg-white text-gray-800"
+                    }`}
                 />
               </div>
             </div>
@@ -935,9 +934,8 @@ export default function DetailworkChief() {
                   >
                     <p
                       className={`truncate cursor-pointer relative w-fit mx-auto after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full
-                after:origin-bottom after:scale-x-0 ${
-                  theme === "dark" ? "after:bg-yellow-500" : "after:bg-blue-500"
-                } after:transition-transform after:duration-500
+                after:origin-bottom after:scale-x-0 ${theme === "dark" ? "after:bg-yellow-500" : "after:bg-blue-500"
+                        } after:transition-transform after:duration-500
                 after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100
                 ${selectedPosition === dept.name ? titleColor : ""}`}
                     >
@@ -976,11 +974,10 @@ export default function DetailworkChief() {
                   >
                     <div
                       key={index}
-                      className={`flex my-2 py-1 justify-between shadow-sm  px-5 rounded-xl ${
-                        theme === "dark"
-                          ? "bg-gray-900"
-                          : "bg-gray-100/50 border"
-                      }`}
+                      className={`flex my-2 py-1 justify-between shadow-sm  px-5 rounded-xl ${theme === "dark"
+                        ? "bg-gray-900"
+                        : "bg-gray-100/50 border"
+                        }`}
                     >
                       <div className="flex  gap-5 items-center">
                         <img
@@ -989,50 +986,41 @@ export default function DetailworkChief() {
                           className="w-12 h-12 object-cover  rounded-full bg-blue-700 shadow-md"
                         />
                         <div className="flex-col">
-                          <p
-                            className={`text-sm ${
-                              theme === "dark" ? "text-white" : "text-black"
-                            }`}
-                          >
-                            <span
-                              className={` font-extrabold ${
-                                theme === "dark"
-                                  ? "text-yellow-500"
-                                  : "text-blue-500"
+                          <h2
+                            className={`text-lg font-extrabold ${theme === "dark"
+                              ? "text-yellow-500"
+                              : "text-blue-500"
                               }`}
-                            >
-                              ตำแหน่ง :
-                            </span>{" "}
-                            {event.Name}
-                          </p>{" "}
-                          <p
-                            className={`text-sm ${
-                              theme === "dark" ? "text-white" : "text-black"
-                            }`}
                           >
-                            <span
-                              className={` font-extrabold ${
-                                theme === "dark"
-                                  ? "text-yellow-500"
-                                  : "text-blue-500"
-                              }`}
-                            >
-                              ตำแหน่ง :
-                            </span>{" "}
-                            {event.Address}
-                          </p>{" "}
+                            นาย :  <span className={`${theme === 'dark' ? 'text-white' : 'text-black'}`}> {event.Name}</span>
+                          </h2>
                           <p
-                            className={`text-sm ${
-                              theme === "dark" ? "text-white" : "text-black"
-                            }`}
+                            className={`text-sm ${theme === "dark" ? "text-white" : "text-black"
+                              }`}
+                          >
+
+
+                          </p>{" "}
+                          <span
+                            className={` font-extrabold ${theme === "dark"
+                              ? "text-yellow-500"
+                              : "text-blue-500"
+                              }`}
+                          >
+                            ตำแหน่ง :
+                          </span>{" "}
+                          {({ admin: "แอดมิน", user: "ช่าง", chief: "หัวหน้าช่าง", staff: "พนักงาน" }[event.role] || event.role)}
+                          <span> สายงาน {event.Position}</span>
+                          <p
+                            className={`text-sm ${theme === "dark" ? "text-white" : "text-black"
+                              }`}
                           >
                             {" "}
                             <span
-                              className={` font-extrabold ${
-                                theme === "dark"
-                                  ? "text-yellow-500"
-                                  : "text-blue-500"
-                              }`}
+                              className={` font-extrabold ${theme === "dark"
+                                ? "text-yellow-500"
+                                : "text-blue-500"
+                                }`}
                             >
                               เบอร์โทร :
                             </span>{" "}
@@ -1040,16 +1028,14 @@ export default function DetailworkChief() {
                           </p>
                           <p>
                             <p
-                              className={`text-sm ${
-                                theme === "dark" ? "text-white" : "text-black"
-                              }`}
+                              className={`text-sm ${theme === "dark" ? "text-white" : "text-black"
+                                }`}
                             >
                               <span
-                                className={`font-extrabold ${
-                                  theme === "dark"
-                                    ? "text-yellow-500"
-                                    : "text-blue-500"
-                                }`}
+                                className={`font-extrabold ${theme === "dark"
+                                  ? "text-yellow-500"
+                                  : "text-blue-500"
+                                  }`}
                               >
                                 งานที่ได้รับในเดือนนี่ :
                               </span>{" "}
@@ -1067,11 +1053,10 @@ export default function DetailworkChief() {
                           }}
                           className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-2 text-white text-sm duration-300 
            [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-           active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
-             theme === "dark"
-               ? "bg-yellow-500 hover:bg-yellow-600"
-               : "bg-blue-500 hover:bg-blue-600"
-           }`}
+           active:translate-y-1 active:scale-x-110 active:scale-y-90  ${theme === "dark"
+                              ? "bg-yellow-500 hover:bg-yellow-600"
+                              : "bg-blue-500 hover:bg-blue-600"
+                            }`}
                         >
                           เพิ่มช่าง
                         </button>
@@ -1082,9 +1067,8 @@ export default function DetailworkChief() {
               {/* </AnimatePresence> */}
             </div>
             <div
-              className={`flex justify-end  border-t p-4 ${
-                theme === "dark" ? "border-gray-700" : "border-gray-200"
-              }`}
+              className={`flex justify-end  border-t p-4 ${theme === "dark" ? "border-gray-700" : "border-gray-200"
+                }`}
             >
               <button
                 onClick={closeModal}
@@ -1103,22 +1087,19 @@ export default function DetailworkChief() {
       {/* เตือนก่อนลบ */}
       {showOpenaddTradesman && duplicateTradesman && (
         <div
-          className={`fixed inset-0 duration-100 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 ${
-            duplicateFade ? "opacity-100" : "opacity-0"
-          }`}
+          className={`fixed inset-0 duration-100 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 ${duplicateFade ? "opacity-100" : "opacity-0"
+            }`}
         >
           <div
-            className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${
-              theme === "dark" ? "bg-gray-800" : "bg-white"
-            }`}
+            className={`rounded-2xl shadow-2xl p-8 w-[400px] border ${theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
           >
             <div className="flex items-center">
               <p className="flex gap-1">
                 ช่าง{" "}
                 <span
-                  className={`${
-                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                  }`}
+                  className={`${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
                 >
                   {duplicateTradesman.Name}
                 </span>
@@ -1141,11 +1122,10 @@ export default function DetailworkChief() {
 
       {PopUpDate && selectedTradesmanId && (
         <div
-          className={`fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${
-            duplicateFade
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
-          }`}
+          className={`fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${duplicateFade
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+            }`}
         >
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -1165,11 +1145,10 @@ export default function DetailworkChief() {
                 src={
                   SelectedTradesmen.find((t) => t._id === selectedTradesmanId)
                     ?.Profile
-                    ? `http://localhost:5000/uploads/Profile/${
-                        SelectedTradesmen.find(
-                          (t) => t._id === selectedTradesmanId
-                        )?.Profile
-                      }`
+                    ? `http://localhost:5000/uploads/Profile/${SelectedTradesmen.find(
+                      (t) => t._id === selectedTradesmanId
+                    )?.Profile
+                    }`
                     : "/default-profile.png"
                 }
                 alt="รูปช่าง"
@@ -1244,9 +1223,8 @@ export default function DetailworkChief() {
 
       {PopupMessage && selectedTradesmanId && (
         <div
-          className={`fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${
-            duplicateFade ? "opacity-100 " : "opacity-0 "
-          }`}
+          className={`fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${duplicateFade ? "opacity-100 " : "opacity-0 "
+            }`}
         >
           <motion.div
             initial={{ scale: 0.8, opacity: 0 }}
@@ -1305,9 +1283,9 @@ export default function DetailworkChief() {
                         </span>
                         {item.createdAt
                           ? new Date(item.createdAt).toLocaleString("th-TH", {
-                              dateStyle: "short",
-                              timeStyle: "short",
-                            })
+                            dateStyle: "short",
+                            timeStyle: "short",
+                          })
                           : "-"}
                       </p>
                     </div>
@@ -1341,11 +1319,10 @@ export default function DetailworkChief() {
                             <button
                               // onClick={colsePopupMessage}
                               onClick={() => handleApprove(item.id)}
-                              className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-                                theme === "dark"
-                                  ? "bg-yellow-500"
-                                  : "bg-blue-500"
-                              }`}
+                              className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark"
+                                ? "bg-yellow-500"
+                                : "bg-blue-500"
+                                }`}
                             >
                               <span className="relative z-10">อนุมัติ</span>
                               <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -1371,47 +1348,41 @@ export default function DetailworkChief() {
               return <p className="text-center text-gray-500">ไม่พบข้อมูล</p>;
             return (
               <div
-                className={`${
-                  duplicateFade ? "opacity-100" : "opacity-0"
-                } duration-300 inset-0 fixed flex items-center justify-center bg-black/40 backdrop-blur-sm z-50`}
+                className={`${duplicateFade ? "opacity-100" : "opacity-0"
+                  } duration-300 inset-0 fixed flex items-center justify-center bg-black/40 backdrop-blur-sm z-50`}
               >
                 <div
-                  className={`rounded-2xl shadow-2xl p-5 w-120 h-90 overflow-y-auto transform transition-all duration-300 ${
-                    duplicateFade
-                      ? "scale-100 opacity-100"
-                      : "scale-90 opacity-0"
-                  } ${
-                    theme === "dark"
+                  className={`rounded-2xl shadow-2xl p-5 w-120 h-90 overflow-y-auto transform transition-all duration-300 ${duplicateFade
+                    ? "scale-100 opacity-100"
+                    : "scale-90 opacity-0"
+                    } ${theme === "dark"
                       ? "bg-gray-800 text-white"
                       : "bg-white text-gray-900"
-                  }`}
+                    }`}
                 >
                   {" "}
                   <div className="flex items-center gap-1">
                     {" "}
                     <p
-                      className={`font-semibold text-lg ${
-                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                      }`}
+                      className={`font-semibold text-lg ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                        }`}
                     >
                       รายการ :
                     </p>
                     <span>{item.name}</span>
                     <p
-                      className={`font-semibold text-lg ${
-                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                      }`}
+                      className={`font-semibold text-lg ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                        }`}
                     >
                       จํานวน :
                     </p>
                     <span>{item.quantity}</span>
                   </div>
                   <div
-                    className={`p-3 my-4 rounded-lg text-sm ${
-                      theme === "dark"
-                        ? "bg-red-900/30 text-red-300"
-                        : "bg-red-100 text-red-600"
-                    }`}
+                    className={`p-3 my-4 rounded-lg text-sm ${theme === "dark"
+                      ? "bg-red-900/30 text-red-300"
+                      : "bg-red-100 text-red-600"
+                      }`}
                   >
                     หมายเหตุ: ข้อความที่ถูกส่งไปแล้วจะถูกส่งกลับไปให้ช่างทันที
                     หลังจากส่งแล้ว **ไม่สามารถแก้ไขได้**
@@ -1424,11 +1395,10 @@ export default function DetailworkChief() {
                       value={rejectReason}
                       onChange={(e) => setRejectReason(e.target.value)}
                       placeholder="พิมพ์เหตุผลที่ต้องการลบ..."
-                      className={`border rounded-lg p-3 h-28 outline-none transition ${
-                        theme === "dark"
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-300 text-gray-900"
-                      }`}
+                      className={`border rounded-lg p-3 h-28 outline-none transition ${theme === "dark"
+                        ? "bg-gray-700 border-gray-600 text-white"
+                        : "bg-white border-gray-300 text-gray-900"
+                        }`}
                     />
                   </div>
                   <div className="flex gap-2 justify-end mt-5">

@@ -160,7 +160,7 @@ export default function Dashboard({
   useEffect(() => {
     const controlsAll = animate(countAll, totalTechnicians, { duration: 2 });
     const controlsHasJob = animate(countHasJob, workingCount, { duration: 2 });
-    const controlsNoJob = animate(countNoJob, workingCount - totalTechnicians, {
+    const controlsNoJob = animate(countNoJob, totalTechnicians - workingCount, {
       duration: 2,
     });
     const controlsnumber_requests_Items = animate(
@@ -289,7 +289,7 @@ export default function Dashboard({
           <span
             className={`${theme === "dark" ? "text-white" : "text-yellow-500"}`}
           >
-            Admin
+            เเอดมิน
           </span>
         </h1>
         <p className={`text-lg font-medium ${descrtiption}`}>

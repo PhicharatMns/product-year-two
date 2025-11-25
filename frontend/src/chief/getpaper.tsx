@@ -327,23 +327,20 @@ export default function GetPaper() {
 
   return (
     <div
-      className={`transition-opacity duration-700 ${
-        fade ? "opacity-100" : "opacity-0"
-      }`}
+      className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"
+        }`}
     >
       <div className="max-w-380 p-5 mx-auto container">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <p
-            className={`text-3xl font-extrabold ${
-              theme === "dark" ? "text-yellow-500" : "text-blue-500"
-            }`}
+            className={`text-3xl font-extrabold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+              }`}
           >
             ใบ
             <span
-              className={`${
-                theme === "dark" ? "text-white" : "text-yellow-500"
-              }`}
+              className={`${theme === "dark" ? "text-white" : "text-yellow-500"
+                }`}
             >
               งาน
             </span>
@@ -362,11 +359,10 @@ export default function GetPaper() {
               type="text"
               className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
               ${focused ? "w-72 shadow-lg" : "w-60 border-gray-300"}  
-              ${
-                theme === "dark"
+              ${theme === "dark"
                   ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
                   : "border-b-purple-300 focus:ring-blue-400 bg-white text-gray-800"
-              }`}
+                }`}
             />
           </div>
         </div>
@@ -436,19 +432,17 @@ export default function GetPaper() {
                     {job.description || "-"}
                   </p>
                   <p
-                    className={`${
-                      job.Status === "กำลังดำเนินการ" ? texthaed : ""
-                    } ${job.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${
-                      job.Status === "ล่าช้า" ? "text-red-500" : ""
-                    }`}
+                    className={`${job.Status === "กำลังดำเนินการ" ? texthaed : ""
+                      } ${job.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${job.Status === "ล่าช้า" ? "text-red-500" : ""
+                      }`}
                   >
                     {job.Status || "-"}
                   </p>
                   <p>
                     {job.Date_of_acceptance_of_work
                       ? new Date(
-                          job.Date_of_acceptance_of_work
-                        ).toLocaleDateString("th-TH")
+                        job.Date_of_acceptance_of_work
+                      ).toLocaleDateString("th-TH")
                       : "-"}
                   </p>
                   <p>
@@ -457,51 +451,47 @@ export default function GetPaper() {
                       : "-"}
                   </p>
                   <div className="flex gap-2 col-span-2 mx-auto">
-                    <Link
-                      to={`/chief/DetailworkChief/${job._id}`}
-                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                theme === "dark"
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-blue-500 hover:bg-blue-600"
-              }`}
-                    >
-                      รายละเอียดงาน
-                    </Link>
-                    <button
-                      onClick={() => openItemModal(job)}
-                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                theme === "dark"
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-blue-500 hover:bg-blue-600"
-              }`}
-                    >
-                      เบิกของ
-                    </button>
                     <button
                       onClick={() => openUpdatePopup(job)}
                       className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
               [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                theme === "dark"
-                  ? "bg-yellow-500 hover:bg-yellow-600"
-                  : "bg-blue-500 hover:bg-blue-600"
-              }`}
+              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${theme === "dark"
+                          ? "bg-green-500 hover:bg-green-600"
+                          : "bg-green-500 hover:bg-green-600"
+                        }`}
                     >
                       อัปเดตงาน
                     </button>
+                    <button
+                      onClick={() => openItemModal(job)}
+                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${theme === "dark"
+                          ? "bg-orange-500 hover:bg-orange-500"
+                          : "bg-orange-500 hover:bg-orange-600"
+                        }`}
+                    >
+                      เบิกของ
+                    </button>
+                    <Link
+                      to={`/chief/DetailworkChief/${job._id}`}
+                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
+              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+              active:translate-y-1 active:scale-x-110 active:scale-y-90 ${theme === "dark"
+                          ? "bg-yellow-500 hover:bg-yellow-600"
+                          : "bg-blue-500 hover:bg-blue-600"
+                        }`}
+                    >
+                      รายละเอียดงาน
+                    </Link>
                   </div>
                 </div>
               </motion.div>
             ))
         ) : (
           <div
-            className={`text-center py-5 font-semibold ${
-              theme === "dark" ? "text-gray-400" : "text-gray-600"
-            }`}
+            className={`text-center py-5 font-semibold ${theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
           >
             ไม่พบใบงานของคุณ ในเวลานี่
           </div>
@@ -517,9 +507,8 @@ export default function GetPaper() {
           >
             {/* Modal Header */}
             <div
-              className={`flex gap-2 border-b px-6 py-4 text-2xl font-semibold ${
-                theme === "dark" ? "border-gray-700" : "border-gray-200"
-              }`}
+              className={`flex gap-2 border-b px-6 py-4 text-2xl font-semibold ${theme === "dark" ? "border-gray-700" : "border-gray-200"
+                }`}
             >
               <p
                 className={
@@ -538,11 +527,10 @@ export default function GetPaper() {
               {/* หัวตาราง */}
               <div
                 className={`grid grid-cols-4 text-center p-2 rounded-t-lg font-semibold shadow-sm 
-  ${
-    theme === "dark"
-      ? "bg-gray-900 text-yellow-500 border-b border-gray-700"
-      : "bg-blue-50/50 text-blue-500 border-b border-blue-200"
-  }`}
+  ${theme === "dark"
+                    ? "bg-gray-900 text-yellow-500 border-b border-gray-700"
+                    : "bg-blue-50/50 text-blue-500 border-b border-blue-200"
+                  }`}
               >
                 <div className="col-span-2">รายชื่อ</div>
                 <div>จำนวน</div>
@@ -555,9 +543,8 @@ export default function GetPaper() {
                   <div
                     key={index} // --- ใช้ id ที่ไม่ซ้ำกันเป็น key ---
                     className={`grid grid-cols-4 gap-4 items-center py-3 border-b 
-                    ${
-                      theme === "dark" ? "border-gray-700" : "border-gray-200"
-                    }`}
+                    ${theme === "dark" ? "border-gray-700" : "border-gray-200"
+                      }`}
                   >
                     {/* รายชื่อ */}
                     <div className="col-span-2">
@@ -569,11 +556,10 @@ export default function GetPaper() {
                           handleItemChange(item.id, "name", e.target.value)
                         } // --- เชื่อม onChange ---
                         className={`w-full p-2 rounded-lg border focus:ring-2 outline-none transition-all duration-200 
-          ${
-            theme === "dark"
-              ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-              : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-          }`}
+          ${theme === "dark"
+                            ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
+                            : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
+                          }`}
                       />
                     </div>
 
@@ -588,11 +574,10 @@ export default function GetPaper() {
                           handleItemChange(item.id, "quantity", e.target.value)
                         } // --- เชื่อม onChange ---
                         className={`w-full p-2 rounded-lg border focus:ring-2 outline-none transition-all duration-200 
-          ${
-            theme === "dark"
-              ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-              : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-          }`}
+          ${theme === "dark"
+                            ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
+                            : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
+                          }`}
                       />
                     </div>
 
@@ -602,17 +587,15 @@ export default function GetPaper() {
                         onClick={() => handleDeleteItem(item.id)}
                         className={` relative w-fit overflow-hidden cursor-pointer rounded-md px-5 py-2 text-white text-sm duration-300 
                   [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${
-                    items.length <= 1
-                      ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
-                      : theme === "dark"
-                      ? "hover:text-white"
-                      : "hover:text-white"
-                  } ${
-                          theme === "dark"
+                  active:translate-y-1 active:scale-x-110 active:scale-y-90 ${items.length <= 1
+                            ? "opacity-50 cursor-not-allowed" // --- สไตล์ตอน disable ---
+                            : theme === "dark"
+                              ? "hover:text-white"
+                              : "hover:text-white"
+                          } ${theme === "dark"
                             ? "bg-red-500 hover:bg-red-600"
                             : "bg-red-500 hover:bg-red-600"
-                        }`}
+                          }`}
                       >
                         ลบ
                       </button>
@@ -625,13 +608,11 @@ export default function GetPaper() {
               <div className="flex justify-start">
                 <button
                   onClick={handleAddItem}
-                  className={`py-1 px-3 rounded-lg hover:scale-110 text-sm font-medium transition-all duration-200 ${
-                    theme === "dark"
-                      ? "text-yellow-500 hover:bg-yellow-500 hover:text-gray-900"
-                      : "text-blue-500 hover:bg-blue-500 hover:text-white"
-                  } border ${
-                    theme === "dark" ? "border-yellow-500" : "border-blue-500"
-                  }`}
+                  className={`py-1 px-3 rounded-lg hover:scale-110 text-sm font-medium transition-all duration-200 ${theme === "dark"
+                    ? "text-yellow-500 hover:bg-yellow-500 hover:text-gray-900"
+                    : "text-blue-500 hover:bg-blue-500 hover:text-white"
+                    } border ${theme === "dark" ? "border-yellow-500" : "border-blue-500"
+                    }`}
                 >
                   + เพิ่มรายการ
                 </button>
@@ -641,28 +622,25 @@ export default function GetPaper() {
               {/* หมายเหตุรวม */}
               <div>
                 <p
-                  className={`text-lg mb-1 font-semibold ${
-                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                  }`}
+                  className={`text-lg mb-1 font-semibold ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
                 >
                   หมายเหตุ
                 </p>
                 <textarea
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
-                  className={`border w-full px-2 py-2 rounded-lg h-48 resize-none focus:ring-2 outline-none duration-200 ${
-                    theme === "dark"
-                      ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
-                      : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
-                  }`}
+                  className={`border w-full px-2 py-2 rounded-lg h-48 resize-none focus:ring-2 outline-none duration-200 ${theme === "dark"
+                    ? "bg-gray-700 border-gray-600 focus:ring-yellow-400 text-white placeholder-gray-400"
+                    : "bg-gray-50 border-gray-300 focus:ring-blue-400 text-gray-800 placeholder-gray-500"
+                    }`}
                 />
               </div>
             </div>
 
             <div
-              className={`flex justify-end gap-4 border-t p-4 ${
-                theme === "dark" ? "border-gray-700" : "border-gray-200"
-              }`}
+              className={`flex justify-end gap-4 border-t p-4 ${theme === "dark" ? "border-gray-700" : "border-gray-200"
+                }`}
             >
               <button
                 onClick={closeopenItemModal}
@@ -675,9 +653,8 @@ export default function GetPaper() {
               </button>
               <button
                 onClick={submitItems}
-                className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                }`}
+                className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                  }`}
               >
                 <span className="relative z-10">ยืนยัน</span>
                 <span className="absolute inset-0 overflow-hidden pointer-events-none">
