@@ -758,7 +758,7 @@ export default function Searchpastjobs() {
                 theme === "dark" ? "text-gray-400" : "text-gray-600"
               }`}
             >
-              ไม่พบใบงานของคุณ ในเวลานี่
+              ไม่พบใบงาน ในเวลานี่
             </div>
           )}
 
