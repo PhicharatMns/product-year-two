@@ -26,7 +26,8 @@ router.post("/", upload.single("image"), async (req, res) => {
       Closing_date,
       description,
       Status,
-      messageDelete
+      messageDelete,
+      pepleCreteJob
     } = req.body;
 
     const image = req.file ? req.file.filename : undefined;
@@ -53,6 +54,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       image,
       Status,
       messageDelete,
+      pepleCreteJob
     });
 
     await employee.save();

@@ -15,6 +15,7 @@ const employeeSchema = new mongoose.Schema({
   image: String,
   Status: String,
   messageDelete: String,
+  pepleCreteJob: String
 });
 
 module.exports = mongoose.model("employee", employeeSchema);

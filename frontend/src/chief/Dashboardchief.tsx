@@ -273,7 +273,7 @@ export default function Dashboardchief() {
                 theme === "dark" ? "text-white" : "text-yellow-500"
               }`}
             >
-              User
+              หัวหน้าช่าง
             </span>
           </h1>
           <p className={`text-lg font-medium ${descrtiption}`}>

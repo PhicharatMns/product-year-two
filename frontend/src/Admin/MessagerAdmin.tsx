@@ -30,17 +30,22 @@ export default function MessagerAdmin() {
   const [name, setName] = useState("Chief");
   const [showMenu, setShowMenu] = useState(false);
   const [problemType, setProblemType] = useState("");
+  const [loggedInUserName, setLoggedInUserName] = useState("ไม่ทราบชื่อ");
 
   const token = localStorage.getItem("token");
-  let loggedInUserName = "ไม่ทราบชื่อ";
-  if (token) {
-    try {
-      const decoded: any = (jwt_decode as any)(token);
-      loggedInUserName = decoded.Name || "ไม่ทราบชื่อ";
-    } catch (err) {
-      console.error("JWT decode error:", err);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded: any = (jwt_decode as any)(token);
+        setLoggedInUserName(decoded.Name || "ไม่ทราบชื่อ");
+      } catch (err) {
+        console.error("JWT decode error:", err);
+      }
     }
-  }
+  }, [token]);
+
+
 
   // Motion counts
   const countIssueMV = useMotionValue(0);
@@ -168,7 +173,8 @@ export default function MessagerAdmin() {
           "http://localhost:5000/api/login/dashboardUser",
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setName(response.data.Name || "ไม่ระบุชื่อ");
+        setName(response.data.Name || "ไม่ระบุชื่อ"); // สำหรับ display บนหน้า
+        setLoggedInUserName(response.data.Name || "ไม่ทราบชื่อ"); // สำหรับส่งข้อความ
       } catch (err) {
         console.error("Sidebar fetch error:", err);
       }
@@ -178,9 +184,8 @@ export default function MessagerAdmin() {
     fetchMessages();
   }, []);
 
-  useEffect(() => {
-    updateCounts(messages);
-  }, [messages]);
+
+
 
   const isDark = theme === "dark";
   const primaryText = isDark ? "text-yellow-500" : "text-blue-500";
@@ -197,6 +202,7 @@ export default function MessagerAdmin() {
         </h1>
         <p className={`${subText} text-sm`}>
           จัดการและติดตามข้อความแจ้งเตือนทั้งหมดในระบบ
+          <p>{loggedInUserName}</p>
         </p>
       </div>
 
@@ -286,11 +292,10 @@ export default function MessagerAdmin() {
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 placeholder="ค้นหา..."
-                className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 border ${
-                  theme === "dark"
-                    ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
-                    : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
-                } ${Focused ? "w-72" : "w-60"}`}
+                className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 border ${theme === "dark"
+                  ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
+                  : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+                  } ${Focused ? "w-72" : "w-60"}`}
               />
             </div>
           </div>
@@ -307,9 +312,8 @@ export default function MessagerAdmin() {
           </div>
 
           <div
-            className={` overflow-y-auto scrollbar-hide h-145  ${
-              isDark ? "divide-gray-800" : "divide-gray-200"
-            }`}
+            className={` overflow-y-auto scrollbar-hide h-145  ${isDark ? "divide-gray-800" : "divide-gray-200"
+              }`}
           >
             {Message.filter(
               (e) =>
@@ -328,15 +332,13 @@ export default function MessagerAdmin() {
               >
                 <div
                   onClick={() => setSelectedUser(e)}
-                  className={`grid grid-cols-5 border items-center rounded-lg pl-5 m-2 py-2 cursor-pointer ${
-                    theme === "dark" ? "bg-gray-800" : "bg-gray-50"
-                  }`}
+                  className={`grid grid-cols-5 border items-center rounded-lg pl-5 m-2 py-2 cursor-pointer ${theme === "dark" ? "bg-gray-800" : "bg-gray-50"
+                    }`}
                 >
                   <div className="col-span-2 flex items-center gap-3">
                     <img
-                      src={`http://localhost:5000/uploads/Profile/${
-                        e.Profile || "default.png"
-                      }`}
+                      src={`http://localhost:5000/uploads/Profile/${e.Profile || "default.png"
+                        }`}
                       alt="profile"
                       className="w-10 h-10 rounded-full object-cover"
                     />
@@ -364,9 +366,8 @@ export default function MessagerAdmin() {
         <div className={`col-span-4 h-178 ${bg} rounded-lg`}>
           {!selectedUser ? (
             <div
-              className={`${
-                theme === "dark" ? "text-white" : "text-black"
-              } flex items-center justify-center h-full`}
+              className={`${theme === "dark" ? "text-white" : "text-black"
+                } flex items-center justify-center h-full`}
             >
               <div className="flex-col">
                 <p className="mx-auto w-fit">
@@ -382,15 +383,13 @@ export default function MessagerAdmin() {
               <div className="rounded-xl  flex-1 ">
                 <div className="">
                   <div
-                    className={`flex items-center px-4 border-b-2  py-3 gap-3 mb-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                    }`}
+                    className={`flex items-center px-4 border-b-2  py-3 gap-3 mb-2 ${theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                      }`}
                   >
                     {selectedUser.Profile && (
                       <img
-                        src={`http://localhost:5000/uploads/Profile/${
-                          selectedUser.Profile || "default.png"
-                        }`}
+                        src={`http://localhost:5000/uploads/Profile/${selectedUser.Profile || "default.png"
+                          }`}
                         alt="profile"
                         className="w-12 h-12 rounded-full object-cover"
                       />
@@ -414,10 +413,14 @@ export default function MessagerAdmin() {
 
                 <div className=" h-138 overflow-y-auto">
                   {messages
-                    .filter(
-                      (msg) =>
-                        msg?.ID === selectedUser?._id ||
-                        msg?.requireNameinMessage === loggedInUserName
+                    .filter((msg) =>
+                      // ผู้ใช้ที่เลือกส่ง → admin เป็นผู้รับ
+                      (msg.Name === selectedUser.Name &&
+                        msg.requireNameinMessage === loggedInUserName) ||
+
+                      // admin ส่ง → ผู้ใช้ที่เลือกเป็นผู้รับ
+                      (msg.Name === loggedInUserName &&
+                        msg.requireNameinMessage === selectedUser.Name)
                     )
                     .map((msg) => (
                       <div
@@ -429,17 +432,17 @@ export default function MessagerAdmin() {
                         {/* ปุ่ม commit สำหรับ urgent หรือ issue */}
                         {(msg.problem === "urgent" ||
                           msg.problem === "issue") && (
-                          <div>
-                            <button
-                              onClick={() => markAsCommit(msg._id)}
-                              className="absolute top-2 right-2 px-3 py-1 text-xs  overflow-hidden truncate text-center cursor-pointer rounded-md  text-white  shadow-md transition-all duration-300
+                            <div>
+                              <button
+                                onClick={() => markAsCommit(msg._id)}
+                                className="absolute top-2 right-2 px-3 py-1 text-xs  overflow-hidden truncate text-center cursor-pointer rounded-md  text-white  shadow-md transition-all duration-300
       [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
       active:-translate-y-1 active:scale-x-90 active:scale-y-110  bg-green-500 hover:bg-green-600 "
-                            >
-                              รับเรื่อง
-                            </button>
-                          </div>
-                        )}
+                              >
+                                รับเรื่อง
+                              </button>
+                            </div>
+                          )}
 
                         <div className="flex items-center gap-3">
                           <img
@@ -450,19 +453,17 @@ export default function MessagerAdmin() {
                           />
                           <div className="flex flex-col">
                             <p
-                              className={`text-sm font-semibold ${
-                                theme === "dark"
-                                  ? "text-yellow-500"
-                                  : "text-blue-500"
-                              }`}
+                              className={`text-sm font-semibold ${theme === "dark"
+                                ? "text-yellow-500"
+                                : "text-blue-500"
+                                }`}
                             >
                               นาย :{" "}
                               <span
-                                className={`${
-                                  theme === "dark" ? "text-white" : "text-black"
-                                }`}
+                                className={`${theme === "dark" ? "text-white" : "text-black"
+                                  }`}
                               >
-                                {msg.Name}{" "}
+                                {msg.requireNameinMessage}{" "}
                                 {new Date(msg.timestamp).toLocaleString(
                                   "th-TH",
                                   {
@@ -478,19 +479,18 @@ export default function MessagerAdmin() {
 
                             <p className="text-sm break-all w-[85%]">
                               <span
-                                className={`font-medium ${
-                                  msg.problem === "urgent"
-                                    ? "text-red-500"
-                                    : msg.problem === "issue"
+                                className={`font-medium ${msg.problem === "urgent"
+                                  ? "text-red-500"
+                                  : msg.problem === "issue"
                                     ? "text-blue-500"
                                     : ""
-                                }`}
+                                  }`}
                               >
                                 {msg.problem === "urgent"
                                   ? "เหตุด่วน"
                                   : msg.problem === "issue"
-                                  ? "แจ้งปัญหา"
-                                  : "ข้อความ"}
+                                    ? "แจ้งปัญหา"
+                                    : "ข้อความ"}
                               </span>
                               : {msg.message}
                             </p>
@@ -510,11 +510,10 @@ export default function MessagerAdmin() {
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  className={`flex-1 border p-2 rounded-lg focus:ring-2  ${
-                    theme === "dark"
-                      ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
-                      : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
-                  }`}
+                  className={`flex-1 border p-2 rounded-lg focus:ring-2  ${theme === "dark"
+                    ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
+                    : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+                    }`}
                   placeholder="พิมพ์ข้อความ..."
                 />
                 <div className="relative">
@@ -529,27 +528,24 @@ export default function MessagerAdmin() {
                   </button>
                   {showMenu && (
                     <div
-                      className={`absolute left-0 bottom-12 mt-1  border rounded-lg shadow-lg w-32 z-50 ${
-                        theme === "dark" ? "bg-black" : "bg-white"
-                      }`}
+                      className={`absolute left-0 bottom-12 mt-1  border rounded-lg shadow-lg w-32 z-50 ${theme === "dark" ? "bg-black" : "bg-white"
+                        }`}
                     >
                       <button
                         onClick={handleEmergency}
-                        className={`w-full text-left px-4 py-2 cursor-pointer duration-100  rounded-b-lg ${
-                          theme === "dark"
-                            ? "hover:bg-gray-800"
-                            : "hover:bg-gray-200"
-                        }`}
+                        className={`w-full text-left px-4 py-2 cursor-pointer duration-100  rounded-b-lg ${theme === "dark"
+                          ? "hover:bg-gray-800"
+                          : "hover:bg-gray-200"
+                          }`}
                       >
                         เหตุด่วน
                       </button>
                       <button
                         onClick={handleReport}
-                        className={`w-full text-left px-4 py-2 cursor-pointer duration-100  rounded-b-lg ${
-                          theme === "dark"
-                            ? "hover:bg-gray-800"
-                            : "hover:bg-gray-200"
-                        }`}
+                        className={`w-full text-left px-4 py-2 cursor-pointer duration-100  rounded-b-lg ${theme === "dark"
+                          ? "hover:bg-gray-800"
+                          : "hover:bg-gray-200"
+                          }`}
                       >
                         แจ้งปัญหา
                       </button>
