@@ -27,7 +27,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       description,
       Status,
       messageDelete,
-      pepleCreteJob
+      pepleCreteJob,
     } = req.body;
 
     const image = req.file ? req.file.filename : undefined;
@@ -54,7 +54,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       image,
       Status,
       messageDelete,
-      pepleCreteJob
+      pepleCreteJob,
     });
 
     await employee.save();
@@ -152,6 +152,17 @@ router.put("/:id", upload.single("image"), async (req, res) => {
     emp.messageDelete = messageDelete ?? emp.messageDelete; // <-- แก้ตรงนี้
 
     await emp.save();
+    res.json(emp);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const emp = await Employee.findById(req.params.id);
+    if (!emp) return res.status(404).json({ message: "Not found" });
+
     res.json(emp);
   } catch (err) {
     res.status(500).json({ error: err.message });

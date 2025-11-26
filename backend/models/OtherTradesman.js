@@ -15,6 +15,9 @@ const otherTradesmanSchema = new mongoose.Schema({
     default: 0, // เริ่มจาก 0
   },
   role: String,
+  NameJOB: String,
+  Work_day: String,
+  Closing_day: String,
 });
 
 module.exports = mongoose.model("OtherTradesman", otherTradesmanSchema);

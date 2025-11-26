@@ -154,16 +154,17 @@ router.get("/dashboardUser", verifyToken, async (req, res) => {
     res.json({
       username: user.username,
       Name: user.Name,
-      Nickname: user.Nickname, // เพิ่ม
-      ID: user.ID, // เพิ่ม
-      Birthday: user.Birthday, // เพิ่ม
-      Address: user.Address, // เพิ่ม
+      Nickname: user.Nickname,
+      ID: user.ID,
+      Birthday: user.Birthday,
+      Address: user.Address,
       Phone_Number: user.Phone_Number,
       Email: user.Email,
       Position: user.Position,
-      Start_data: user.Start_data, // เพิ่ม
+      Start_data: user.Start_data,
       Profile: user.Profile,
-      Salary: user.Salary, // เพิ่ม (ถ้าอยากโชว์)
+      Salary: user.Salary,
+      role: user.role,
     });
   } catch (err) {
     console.error(err);

@@ -16,8 +16,18 @@ router.get("/", async (req, res) => {
 // POST - เพิ่มช่าง
 router.post("/", async (req, res) => {
   try {
-    const { Name, Position, Phone_Number, Profile, employeeId, id, role } =
-      req.body;
+    const {
+      Name,
+      Position,
+      Phone_Number,
+      Profile,
+      employeeId,
+      id,
+      role,
+      NameJOB,
+      Work_day,
+      Closing_day,
+    } = req.body;
 
     // หาว่าช่างคนนี้เคยอยู่ในงานนี้มาก่อนหรือยัง
     const existing = await OtherTradesman.findOne({ id, employeeId });
@@ -39,6 +49,9 @@ router.post("/", async (req, res) => {
       id,
       Jobs: 1,
       role: role || "worker", // default
+      NameJOB: NameJOB || "ไม่ระบุชื่องาน", // <-- ต้องใส่ตรงนี้
+      Work_day,
+      Closing_day,
     });
 
     const saved = await newTradesman.save();
@@ -102,6 +115,8 @@ router.get("/check/:id", async (req, res) => {
         Name: owner.Name,
         role: owner.role,
         Email: owner.Email,
+        NameJOB: owner.NameJOB,
+        
       },
     });
   } catch (err) {
@@ -116,10 +131,14 @@ router.get("/count/all", async (req, res) => {
     const result = await OtherTradesman.aggregate([
       {
         $group: {
-          _id: "$id", // แยกตาม id ของช่าง
-          count: { $sum: "$Jobs" }, // รวมค่าของฟิลด์ Jobs
+          _id: "$id", // แยกตามงาน
+          NameJOB: { $first: "$NameJOB" }, // ดึงชื่องาน
+          Work_day: { $first: "$Work_day" }, // ดึงวันเริ่มงาน
+          Closing_day: { $first: "$Closing_day" }, // ดึงวันปิดงาน
+          count: { $sum: "$Jobs" }, // รวม Jobs
         },
       },
+      { $sort: { count: -1 } },
     ]);
     res.json(result);
   } catch (err) {

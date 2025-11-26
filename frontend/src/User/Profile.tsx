@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import axios from "axios";
-
+import { motion } from "framer-motion";
 // ✨ [แก้ไข] Import ไอคอน BicepsFlexed
 import { BicepsFlexed } from "lucide-react";
 import {
@@ -60,6 +60,7 @@ export default function Profile() {
   const [Position, setposition] = useState("");
   const [profile, setprofile] = useState("");
   const [ID, setID] = useState("");
+  const [role, setrole] = useState("");
   const [Address, setAddress] = useState("");
   const [Start_data, setStart_data] = useState("");
   // const [loading, setLoading] = useState(true);
@@ -78,7 +79,7 @@ export default function Profile() {
       setprofile(response.data.Profile || "");
       setID(response.data.ID || "N/A");
       setAddress(response.data.Address || "ไม่ระบุที่อยู่");
-
+      setrole(response.data.role || "-");
       const rawDate = response.data.Start_data;
       if (rawDate) {
         const date = new Date(rawDate);
@@ -98,6 +99,81 @@ export default function Profile() {
     }
   };
 
+  interface RequisitionItem {
+    jobId?: string;
+    id: string;
+    name: string;
+    quantity: string;
+    description?: string;
+    requesterName?: string;
+    requesterProfile?: string;
+    section?: string;
+    role?: string;
+    Closing_date?: string;
+    createdAt?: string;
+    _id?: string;
+    status?: string;
+    statusUpdatedAt?: string;
+    additemecomfam?: string;
+  }
+
+  // const [employees, setEmployees] = useState([]);
+
+  // useEffect(() => {
+  //   const fetchEmployees = async () => {
+  //     try {
+  //       const res = await axios.get("http://localhost:5000/api/employees");
+  //       setEmployees(res.data); // ดึง array ของ employee
+  //     } catch (err) {
+  //       console.error("Error fetching employees:", err);
+  //     }
+  //   };
+
+  //   fetchEmployees();
+  // }, []);
+
+  interface typeJobCount {
+    _id: string;
+    NameJOB: string;
+    Work_day: string;
+    Closing_day: string;
+    count: number;
+    Name: string;
+  }
+
+  const [JobCount, setJobCount] = useState<typeJobCount[]>([]);
+
+  const fetchJobCounts = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/otherTradesman");
+      const data = await res.json();
+      setJobCount(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const [requisitionItems, setRequisitionItems] = useState<RequisitionItem[]>(
+    []
+  );
+
+  const fetchRequisitionItems = async () => {
+    try {
+      const res = await fetch("http://localhost:5000/api/additem");
+      const data = await res.json();
+      const list = Array.isArray(data) ? data : data.items || [];
+      setRequisitionItems(list);
+    } catch (err) {
+      console.error("โหลดรายการเบิกของล้มเหลว:", err);
+      setRequisitionItems([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchJobCounts();
+    fetchRequisitionItems();
+  }, []);
+
   useEffect(() => {
     fetchData();
     const timer = setTimeout(() => setfade(true), 100);
@@ -109,32 +185,33 @@ export default function Profile() {
   const textStyle = theme === "dark" ? "text-gray-50" : "text-gray-900";
   const subTextStyle = theme === "dark" ? "text-gray-400" : "text-gray-500";
   const borderColor = theme === "dark" ? "border-gray-700" : "border-gray-200";
+  const bgHead = theme === "dark" ? "bg-gray-900" : "bg-gray-50";
 
-  // if (loading) {
-  //   return (
-  //     <div
-  //       className={`min-h-screen flex items-center justify-center ${bgColor}`}
-  //     >
-  //       <Loader2 className={`w-8 h-8 ${primaryColor} animate-spin`} />
-  //       <span className={`ml-3 text-xl ${subTextStyle}`}>
-  //         กำลังโหลดข้อมูล...
-  //       </span>
-  //     </div>
-  //   );
-  // }
-
+  const textHead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
+  const textL = theme === "dark" ? "text-white" : "text-black";
   return (
     <div
-      className={`min-h-screen ${textStyle} transition-all duration-300 p-4 md:p-12 ${
+      className={` container mx-w-380 mx-auto ${textStyle} transition-all duration-300 p-5  ${
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="max-w-full mx-auto">
-        <h1 className="text-3xl font-bold mb-6">Employee Profile</h1>
+      <div className="">
+        <p
+          className={`text-3xl font-bold mb-6 ${
+            theme === "dark" ? "text-yellow-500" : "text-blue-500"
+          }`}
+        >
+          โปรไฟล์{" "}
+          <span
+            className={`${theme === "dark" ? "text-white" : "text-yellow-500"}`}
+          >
+            ช่าง
+          </span>
+        </p>
 
         {/* Profile Card */}
-        <div className={`${cardStyle} rounded-lg shadow-lg overflow-hidden`}>
-          <div className={`p-6 md:p-8 border-b ${borderColor}`}>
+        <div className={`${bgHead} rounded-lg shadow-lg overflow-hidden`}>
+          <div className={`p-5 border-b ${borderColor}`}>
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-5 md:space-x-6">
                 <img
@@ -143,33 +220,37 @@ export default function Profile() {
                   className="w-20 h-20 md:w-28 md:h-28 object-cover rounded-full border-2 border-gray-300 dark:border-gray-600 shadow-md"
                 />
                 <div>
-                  <h2 className="text-2xl md:text-3xl font-bold">{Name}</h2>
+                  <p className={`text-2xl font-bold ${textHead}`}>
+                    นาย : <span className={`${textL}`}>{Name}</span>
+                  </p>
                   <p
                     className={`text-lg md:text-xl ${subTextStyle} flex items-center space-x-2 mt-1`}
                   >
-                    <Briefcase className="w-5 h-5" />
-                    <span>{Position}</span>
+                    <Briefcase size={20} />
+                    <span className="text-sm">
+                      ตำแหน่ง :
+                      <span className="">
+                        {role === "user" ? "ช่าง" : "หัวหน้าช่าง"}
+                      </span>{" "}
+                      สายงาน : <span>{Position}</span>
+                    </span>
                   </p>
                 </div>
               </div>
 
               {/* Badge Button */}
-              <button className="flex items-center rounded-2xl bg-blue-500 py-2.5 px-3 border-b">
-                <BicepsFlexed className="w-5 h-5 text-white" />
-                <p className="ml-2 text-white">ช่างทึกทน</p>
-              </button>
             </div>
           </div>
 
           {/* Details */}
-          <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+          <div className="py-5 p-10 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
             <section>
               <h3
-                className={`text-lg font-semibold ${primaryColor} mb-4 pb-2 border-b ${borderColor}`}
+                className={`text-lg font-semibold ${textHead} mb-1 pb-2 border-b `}
               >
-                Contact Information
+                ข้อมูลการติดต่อ
               </h3>
-              <div className="space-y-2">
+              <div className={``}>
                 <DetailItem Icon={Mail} label="Email Address" value={email} />
                 <DetailItem Icon={Phone} label="Phone Number" value={phones} />
                 <DetailItem
@@ -182,9 +263,9 @@ export default function Profile() {
 
             <section>
               <h3
-                className={`text-lg font-semibold ${primaryColor} mb-4 pb-2 border-b ${borderColor}`}
+                className={`text-lg font-semibold ${textHead} mb-4 pb-2 border-b `}
               >
-                Work Details
+                รายละเอียดงาน
               </h3>
               <div className="space-y-2">
                 <DetailItem Icon={UserCheck} label="Employee ID" value={ID} />
@@ -195,6 +276,85 @@ export default function Profile() {
                 />
               </div>
             </section>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-5 my-5 h-90">
+          <div className={`border ${bgHead} rounded-lg`}>
+            <div className="p-4">
+              <p className={`text-lg ${textHead} font-semibold`}>
+                {" "}
+                ประวัติการได้รับงาน
+              </p>
+              <div className="grid grid-cols-3 gap- my-3 border-b">
+                {["ชื่องาน", "วันที่เริ่ม", "วันส่งมอบ"].map((e, i) => (
+                  <div className={`${textHead}`} key={i}>
+                    {e} {/* แสดงชื่อหัวข้อ */}
+                  </div>
+                ))}
+              </div>
+              {JobCount.filter((job) => job.Name === Name).map((e, i) => (
+                <motion.div
+                  key={e._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: i * 0.1,
+                    ease: "easeOut",
+                  }}
+                >
+                  <div className="grid grid-cols-3 my-3 border-b">
+                    <div>{e.NameJOB}</div>
+                    <div>
+                      {new Date(e.Work_day).toLocaleDateString("th-TH")}
+                    </div>
+                    <div>
+                      {new Date(e.Closing_day).toLocaleDateString("th-TH")}
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+          <div className={`border ${bgHead} rounded-lg`}>
+            <div className="p-4">
+              <p className={`text-lg ${textHead} font-semibold`}>
+                {" "}
+                ประวัติการขอเบิกของ
+              </p>
+              <div className="grid grid-cols-3 gap- my-3 border-b">
+                {["ของที่เบิก", "สถานะ", "วันที่เบิก"].map((e, i) => (
+                  <div className={`${textHead}`} key={i}>
+                    {e} {/* แสดงชื่อหัวข้อ */}
+                  </div>
+                ))}
+              </div>
+              {requisitionItems
+                .filter((e) => e.requesterName === Name)
+                .map((e, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      duration: 0.5,
+                      delay: i * 0.1,
+                      ease: "easeOut",
+                    }}
+                  >
+                    <div className="grid grid-cols-3 my-3 border-b">
+                      <div>{e.name}</div>
+                      <div>{e.status}</div>
+                      <div>
+                        {e.createdAt
+                          ? new Date(e.createdAt).toLocaleDateString("th-TH")
+                          : "ไม่ระบุวันที่"}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+            </div>
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { CiSearch } from "react-icons/ci";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 interface Tradesman {
   _id?: string;
@@ -287,12 +288,14 @@ export default function Editacc() {
               } border`}
             >
               <div className="flex gap-2 col-span-2 items-center">
-                <img
-                  src={`http://localhost:5000/uploads/Profile/${
-                    t.Profile || "default.png"
-                  }`}
-                  className="w-9 h-9 rounded-full object-cover  border-2"
-                />
+                <Link to={`/ProfileIDUser/${t._id}`}>
+                  <img
+                    src={`http://localhost:5000/uploads/Profile/${
+                      t.Profile || "default.png"
+                    }`}
+                    className="w-9 h-9 rounded-full object-cover  border-2"
+                  />
+                </Link>
                 <p
                   className={` font-medium ${
                     theme === "dark" ? "text-yellow-500" : "text-gray-900"

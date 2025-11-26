@@ -17,7 +17,6 @@ import "leaflet-draw"; // ต้อง import แบบนี้เพื่อ�
 import "leaflet-draw/dist/leaflet.draw.css"; // โหลด CSS ของ draw
 import L from "leaflet";
 import { motion } from "framer-motion";
-import axios from "axios";
 
 interface GeoPoint {
   type: "Point";
@@ -66,11 +65,13 @@ const headers = [
   "ชื่องาน",
   "รายชื่อผู้จ้าง",
   "เบอร์ติดต่อ",
+  'ผู้ออกใบงาน',
   "สถานะ",
   "วันที่รับ",
   "วันที่ต้องปิดงาน",
   "จัดการ",
 ];
+import axios from "axios";
 
 export default function Searchpastjobs() {
   const { theme } = useTheme();
@@ -93,8 +94,29 @@ export default function Searchpastjobs() {
   const [showTrash, setShowTrash] = useState(false);
   const [searchpopup, setSearchpopup] = useState("");
   const [opendatefilepopup, setopendatefilepopup] = useState(fade);
-  const [signature, setSignature] = useState<string | null>(null);
   const sigCanvasRef = useRef<SignatureCanvas>(null);
+
+  const [Message, setMessage] = useState("");
+
+  // ดึง token จาก localStorage
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!token) return; // ถ้าไม่มี token จะไม่เรียก API
+
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/login/dashboardUser",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setMessage(response.data.Name);
+      } catch (err) {
+        console.error("Error fetching profile:", err);
+      }
+    };
+    fetchData();
+  }, [token]);
 
   const cls = {
     label: t ? "text-yellow-500" : "text-blue-500",
@@ -129,10 +151,7 @@ export default function Searchpastjobs() {
     const margin = 50;
     const contentWidth = pageWidth - 2 * margin;
     let currentY = 60;
-
-    // Primary color & style
     const primaryColor = [63, 81, 181]; // Deep Indigo
-    const secondaryColor = [100, 100, 100]; // Gray
 
     // 2. Font Setup
     doc.addFileToVFS("THSarabun.ttf", THSarabunFont);
@@ -146,18 +165,18 @@ export default function Searchpastjobs() {
     // --- HEADER ---
     doc.setFillColor(...primaryColor);
     doc.rect(0, 0, pageWidth, 70, "F");
-    doc.setFontSize(24);
+    doc.setFontSize(26);
     doc.setFont("THSarabun", "bold");
     doc.setTextColor(255);
     doc.text("TechJob - Employee Report", pageWidth / 2, 45, {
       align: "center",
     });
-    currentY += 40;
+    currentY += 30;
 
     // --- DATE ---
     const startDate = formatDate(form.Date_of_acceptance_of_work);
     const endDate = formatDate(form.Closing_date);
-    doc.setFontSize(10);
+    doc.setFontSize(12);
     doc.setFont("THSarabun", "normal");
     doc.setTextColor(0);
     doc.text(`วันที่รับงาน: ${startDate}`, margin, currentY);
@@ -166,13 +185,13 @@ export default function Searchpastjobs() {
     });
     currentY += 30;
 
-    // --- EMPLOYEE INFO BOX ---
+    // --- EMPLOYEE INFO ---
     const boxMargin = 15;
-    const boxHeight = 180;
+    const boxHeight = 200;
     const halfWidth = contentWidth / 2;
     doc.setDrawColor(...primaryColor);
-    doc.setLineWidth(3);
-    doc.roundedRect(margin, currentY, contentWidth, boxHeight, 12, 12, "S");
+    doc.setLineWidth(4);
+    doc.roundedRect(margin, currentY, contentWidth, boxHeight, 15, 15, "S");
 
     const employeeData = [
       { label: "ชื่องาน", value: form.Worksheet },
@@ -181,13 +200,12 @@ export default function Searchpastjobs() {
       { label: "เมล", value: form.address?.responsible },
     ];
 
-    doc.setFontSize(10);
-    let colY = currentY + boxMargin + 20;
+    doc.setFontSize(14);
+    let colY = currentY + boxMargin + 5;
     const colX1 = margin + boxMargin;
-    const colX2 = margin + halfWidth + boxMargin;
+    const colX2 = margin + contentWidth / 2;
     const labelOffset = 100;
     const maxTextWidth = halfWidth - 2 * boxMargin - labelOffset;
-
 
     employeeData.forEach((item, index) => {
       const value = String(item.value || "- ไม่ระบุ -");
@@ -203,14 +221,16 @@ export default function Searchpastjobs() {
       const lines = doc.splitTextToSize(value, maxTextWidth);
       doc.text(lines, x + labelOffset, y);
 
-      if (index % 2 !== 0) colY += Math.max(lines.length * 16, 28);
+      if (index % 2 !== 0) {
+        colY += Math.max(lines.length * 16, 28);
+      }
     });
 
-    currentY += boxHeight + 40;
+    currentY = currentY + boxHeight + 40;
 
-    // --- DESCRIPTION BOX ---
+    // --- DESCRIPTION ---
     const detailBoxHeight = 140;
-    doc.setDrawColor(...secondaryColor);
+    doc.setDrawColor(100, 100, 100);
     doc.setLineWidth(1.5);
     doc.roundedRect(
       margin,
@@ -223,12 +243,12 @@ export default function Searchpastjobs() {
     );
 
     doc.setFont("THSarabun", "bold");
-    doc.setFontSize(10);
+    doc.setFontSize(14);
     doc.setTextColor(...primaryColor);
     doc.text("รายละเอียดเพิ่มเติม:", margin + boxMargin, currentY + 25);
 
     doc.setFont("THSarabun", "normal");
-    doc.setFontSize(10);
+    doc.setFontSize(9);
     doc.setTextColor(0);
     const detailText = String(form.description || "-");
     const detailLines = doc.splitTextToSize(
@@ -243,21 +263,19 @@ export default function Searchpastjobs() {
     const sigWidth = 160;
     const sigHeight = 50;
     const sigX = margin;
+
     if (signatureBase64) {
       doc.addImage(signatureBase64, "PNG", sigX, currentY, sigWidth, sigHeight);
     } else {
-      doc.setFont("THSarabun", "normal");
-      doc.setTextColor(secondaryColor);
       doc.text(
-        "....................................................",
+        ".....................................................................",
         sigX,
-        currentY + 25
+        currentY
       );
     }
 
     doc.setFontSize(10);
-    doc.setTextColor(0);
-    doc.text("ผู้รับมอบงาน", sigX + sigWidth / 2, currentY + sigHeight + 20, {
+    doc.text("ผู้รับมอบงาน", sigX + sigWidth / 2, currentY + sigHeight + 15, {
       align: "center",
     });
 
@@ -280,17 +298,18 @@ export default function Searchpastjobs() {
   // -------------------- ตัวอย่างการเรียกใช้ --------------------
   const handleSave = async () => {
     try {
-      // 1. สร้าง FormData จาก form
+      // เพิ่ม pepleCreteJob
+      const formWithJob = { ...form, pepleCreteJob: Message }; // <-- ใช้ Message ที่ดึงจาก backend
+
+      // 1. สร้าง FormData จาก formWithJob
       const fd = new FormData();
-      Object.entries(form).forEach(([k, v]) => {
+      Object.entries(formWithJob).forEach(([k, v]) => {
         if (v !== null && v !== "") {
           if (k === "address")
-            fd.append("address", JSON.stringify(form.address));
+            fd.append("address", JSON.stringify(formWithJob.address));
           else fd.append(k, v instanceof File ? v : String(v));
         }
       });
-
-      fd.append("pepleCreteJob", Message);
 
       // 2. ส่งข้อมูลไป backend (POST หรือ PUT)
       if (editId) {
@@ -309,7 +328,7 @@ export default function Searchpastjobs() {
       const signatureBase64 = sigCanvasRef.current?.toDataURL("image/png");
 
       // 4. สร้าง PDF พร้อมข้อมูลและลายเซ็นต์
-      generatePDF_Employee(form, signatureBase64);
+      generatePDF_Employee(formWithJob, signatureBase64);
 
       // 5. ล้างลายเซ็นต์หลังสร้าง PDF
       sigCanvasRef.current?.clear();
@@ -532,35 +551,9 @@ export default function Searchpastjobs() {
     shadowSize: [41, 41],
   });
 
-  const [Message, setMessage] = useState("");
-  const token = localStorage.getItem("token");
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-  };
-
-  // --- ดึงข้อมูล Profile ---
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          "http://localhost:5000/api/login/dashboardUser",
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-
-        // เก็บข้อมูลลง State
-        setMessage(response.data.Name);
-      } catch (err) {
-        console.error("Error fetching profile:", err);
-      }
-    };
-    fetchData();
-  }, []);
-
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
     fetchData();
-    handleLogout()
     const timer = setTimeout(() => setFade(true), 100);
     return () => clearTimeout(timer);
   }, []);
@@ -572,18 +565,19 @@ export default function Searchpastjobs() {
 
   return (
     <div
-      className={`transition-opacity duration-500 container mx-auto p-5 max-w-380   ${fade ? "opacity-100" : "opacity-0"
-        }`}
+      className={`transition-opacity duration-500 container mx-auto p-5 max-w-380   ${
+        fade ? "opacity-100" : "opacity-0"
+      }`}
     >
       <div className="">
         <div className={``}>
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-5">
             <h2
-              className={`text-3xl font-bold ${t ? "text-yellow-500" : "text-blue-700"
-                }`}
+              className={`text-3xl font-bold ${
+                t ? "text-yellow-500" : "text-blue-700"
+              }`}
             >
-
               สร้าง{" "}
               <span className={t ? "text-white" : "text-yellow-500"}>
                 ใบงาน
@@ -601,8 +595,9 @@ export default function Searchpastjobs() {
               </button>
               <button
                 onClick={() => openModal()}
-                className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                  }`}
+                className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white ${
+                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                }`}
               >
                 เพิ่มใบงาน
                 <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
@@ -621,9 +616,10 @@ export default function Searchpastjobs() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 border
-                    ${theme === "dark"
-                      ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
-                      : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+                    ${
+                      theme === "dark"
+                        ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
+                        : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
                     }}
                     ${Focused ? "w-72" : "w-60"} ${cls.input}`}
                 />
@@ -633,13 +629,14 @@ export default function Searchpastjobs() {
 
           {/* Table */}
           <div
-            className={`hidden lg:grid font-semibold  text-lg grid-cols-7 gap-5 border-b-2 px-5  mb-3 ${t
-              ? "text-yellow-500 border-yellow-500"
-              : "text-blue-500 border-blue-500"
-              }`}
+            className={`hidden lg:grid font-semibold  text-lg grid-cols-8 gap-5 border-b-2 px-5  mb-3 ${
+              t
+                ? "text-yellow-500 border-yellow-500"
+                : "text-blue-500 border-blue-500"
+            }`}
           >
             {headers.map((h, i) => (
-              <div key={i} className={`${i === 6 ? "text-center" : ""}`}>
+              <div key={i} className={`${i === 7 ? "text-center" : ""}`}>
                 {h}
               </div>
             ))}
@@ -694,8 +691,9 @@ export default function Searchpastjobs() {
                     delay: index * 0.1,
                     ease: "easeOut",
                   }}
-                  className={`grid grid-cols-1 lg:grid-cols-7 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${theme === "dark" ? "bg-gray-900" : "bg-gray-100"
-                    }`}
+                  className={`grid grid-cols-1 lg:grid-cols-8 rounded-lg gap-5 items-center py-1 px-5 mt-2 border ${
+                    theme === "dark" ? "bg-gray-900" : "bg-gray-100"
+                  }`}
                 >
                   {/* ชื่อ คต. */}
                   {(
@@ -703,6 +701,7 @@ export default function Searchpastjobs() {
                       "Worksheet",
                       "Employer",
                       "Contact_number",
+                      "pepleCreteJob",
                     ] as (keyof Employee)[]
                   ).map((k) => (
                     <p key={k} className="hidden lg:block truncate">
@@ -712,9 +711,11 @@ export default function Searchpastjobs() {
 
                   {/* สถานะ */}
                   <p
-                    className={`${e.Status === "กำลังดำเนินการ" ? texthaed : ""
-                      } ${e.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${e.Status === "ล่าช้า" ? "text-red-500" : ""
-                      }`}
+                    className={`${
+                      e.Status === "กำลังดำเนินการ" ? texthaed : ""
+                    } ${e.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${
+                      e.Status === "ล่าช้า" ? "text-red-500" : ""
+                    }`}
                   >
                     {e.Status || "-"}
                   </p>
@@ -741,7 +742,7 @@ export default function Searchpastjobs() {
                   })}
 
                   {/* ปุ่ม */}
-                  <div className="gap-1 flex justify-center">
+                  <div className="gap-0.5 flex  w-45">
                     <button
                       onClick={() => Opendatele_function(e)}
                       className="relative overflow-hidden cursor-pointer rounded-md bg-red-500 px-3 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] hover:bg-red-600 active:-translate-y-1 active:scale-x-90 active:scale-y-110"
@@ -751,20 +752,22 @@ export default function Searchpastjobs() {
 
                     <button
                       onClick={() => openModal(e)}
-                      className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${theme === "dark"
-                        ? "bg-blue-500 hover:bg-blue-600"
-                        : "bg-yellow-500 hover:bg-yellow-600"
-                        }`}
+                      className={`relative overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                        theme === "dark"
+                          ? "bg-blue-500 hover:bg-blue-600"
+                          : "bg-yellow-500 hover:bg-yellow-600"
+                      }`}
                     >
                       แก้ไข
                     </button>
 
                     <Link to={`/Details/${e._id}`}>
                       <button
-                        className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${theme === "dark"
-                          ? "bg-yellow-500 hover:bg-yellow-600"
-                          : "bg-blue-500 hover:bg-blue-600"
-                          }`}
+                        className={`relative overflow-hidden cursor-pointer rounded-md px-2 py-1 text-white text-sm shadow-md transition-all duration-300 [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
+                          theme === "dark"
+                            ? "bg-yellow-500 hover:bg-yellow-600"
+                            : "bg-blue-500 hover:bg-blue-600"
+                        }`}
                       >
                         รายละเอียด
                       </button>
@@ -774,25 +777,29 @@ export default function Searchpastjobs() {
               ))
           ) : (
             <div
-              className={`text-center py-5 font-semibold ${theme === "dark" ? "text-gray-400" : "text-gray-600"
-                }`}
+              className={`text-center py-5 font-semibold ${
+                theme === "dark" ? "text-gray-400" : "text-gray-600"
+              }`}
             >
-              ไม่พบใบงาน ในเวลานี่
+              ไม่พบใบงานของคุณ ในเวลานี่
             </div>
           )}
 
           {/* Modal */}
           {showModal && (
             <div
-              className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${anim ? "opacity-100" : "opacity-0"
-                }`}
+              className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${
+                anim ? "opacity-100" : "opacity-0"
+              }`}
             >
               <div
-                className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all duration-300 ${anim ? "scale-100 opacity-100" : "scale-95 opacity-0"
-                  } ${t
+                className={`rounded-2xl shadow-2xl p-8 w-[95%] md:w-[700px] lg:w-[900px] border max-h-[95vh] overflow-y-auto transform transition-all duration-300 ${
+                  anim ? "scale-100 opacity-100" : "scale-95 opacity-0"
+                } ${
+                  t
                     ? "bg-gray-800 border-gray-900 text-white"
                     : "bg-white border-blue-200 text-gray-900"
-                  }`}
+                }`}
               >
                 <h2
                   className={`text-2xl font-bold mb-6 border-b pb-3 ${cls.label}`}
@@ -837,8 +844,9 @@ export default function Searchpastjobs() {
                   ].map(([k, label]) => (
                     <div
                       key={k}
-                      className={`flex flex-col ${k === "Closing_date" ? "col-span-2" : ""
-                        }`}
+                      className={`flex flex-col ${
+                        k === "Closing_date" ? "col-span-2" : ""
+                      }`}
                     >
                       <label className={`mb-1 font-semibold ${cls.label}`}>
                         {label}
@@ -856,20 +864,19 @@ export default function Searchpastjobs() {
                   ))}
                 </div>
                 <div className="">
-                  <label className={`block my-3 font-semibold ${cls.label}`}>
+                  <label className={`block mb-1 font-semibold ${cls.label}`}>
                     ลายเซ็นต์
                   </label>
-                  <div className={`border rounded-lg ${cls.input}`}>
+                  <div className="border rounded-lg">
                     <SignatureCanvas
                       ref={sigCanvasRef}
                       penColor="black"
                       canvasProps={{
                         width: 600,
                         height: 100,
-                        className: `rounded-lg  `, // <-- ใช้ backtick
+                        className: "rounded-lg",
                       }}
                     />
-
                   </div>
                   <div className="flex gap-2 mt-2">
                     <button
@@ -913,8 +920,9 @@ export default function Searchpastjobs() {
                     onClick={() => {
                       handleSave(); // บันทึกฟอร์มก่อน
                     }}
-                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                      }`}
+                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
                   >
                     <span className="relative z-10">ยืนยัน</span>
                     <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -928,22 +936,26 @@ export default function Searchpastjobs() {
           {/* //เตือนก่อนลบ */}
           {Opendatele && deleteTarget && (
             <div
-              className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${anim ? "opacity-100" : "opacity-0"
-                }`}
+              className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${
+                anim ? "opacity-100" : "opacity-0"
+              }`}
             >
               <div
-                className={`rounded-2xl shadow-2xl p-5 w-120 max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
-                  } ${theme === "dark"
+                className={`rounded-2xl shadow-2xl p-5 w-120 max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+                  anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
+                } ${
+                  theme === "dark"
                     ? "bg-gray-800 text-white"
                     : "bg-white text-gray-900"
-                  }`}
+                }`}
               >
                 <div className="flex flex-col gap-4">
                   {/* หัวข้อ */}
                   <div className="flex items-center gap-1">
                     <p
-                      className={`font-semibold text-lg ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                        }`}
+                      className={`font-semibold text-lg ${
+                        theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                      }`}
                     >
                       ลบงาน :
                     </p>
@@ -952,10 +964,11 @@ export default function Searchpastjobs() {
 
                   {/* หมายเหตุเตือนก่อนลบ */}
                   <div
-                    className={`p-3 rounded-lg text-sm ${theme === "dark"
-                      ? "bg-red-900/30 text-red-300"
-                      : "bg-red-100 text-red-600"
-                      }`}
+                    className={`p-3 rounded-lg text-sm ${
+                      theme === "dark"
+                        ? "bg-red-900/30 text-red-300"
+                        : "bg-red-100 text-red-600"
+                    }`}
                   >
                     การลบงานนี้จะทำให้ระบบ ย้ายงานไปเก็บไว้ในถังขยะ งานจะ
                     ไม่แสดงในรายการหลัก อีกต่อไป แต่ ยังสามารถกู้คืนได้ในภายหลัง
@@ -971,10 +984,11 @@ export default function Searchpastjobs() {
                       value={messageDelete}
                       onChange={(e) => setMessageDelete(e.target.value)}
                       placeholder="พิมพ์เหตุผลที่ต้องการลบ..."
-                      className={`border rounded-lg p-3 h-28 outline-none transition ${theme === "dark"
-                        ? "bg-gray-700 border-gray-600 text-white"
-                        : "bg-white border-gray-300 text-gray-900"
-                        }`}
+                      className={`border rounded-lg p-3 h-28 outline-none transition ${
+                        theme === "dark"
+                          ? "bg-gray-700 border-gray-600 text-white"
+                          : "bg-white border-gray-300 text-gray-900"
+                      }`}
                     />
                   </div>
 
@@ -1048,8 +1062,9 @@ export default function Searchpastjobs() {
                       setOpenMap(false);
                       handleConfirm();
                     }}
-                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                      }`}
+                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
                   >
                     <span className="relative z-10">ยืนยัน</span>
                     <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -1064,27 +1079,31 @@ export default function Searchpastjobs() {
       </div>
       {showTrash && (
         <div
-          className={`inset-0 z-50 fixed flex justify-center items-center transition-all duration-300 backdrop-blur-sm bg-black/40 ${anim ? "opacity-100" : "opacity-0"
-            }`}
+          className={`inset-0 z-50 fixed flex justify-center items-center transition-all duration-300 backdrop-blur-sm bg-black/40 ${
+            anim ? "opacity-100" : "opacity-0"
+          }`}
         >
           <div
             className={`rounded-2xl w-[900px] h-200 shadow-2xl border ${bg}
     transition-all duration-300 transform
-    ${anim
-                ? "opacity-100 scale-100 translate-y-0"
-                : "opacity-0 scale-95 translate-y-5"
-              }
+    ${
+      anim
+        ? "opacity-100 scale-100 translate-y-0"
+        : "opacity-0 scale-95 translate-y-5"
+    }
   `}
           >
             <div className="flex justify-between border-b px-6 py-4 ">
               <p
-                className={` text-2xl  font-semibold  ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                  }`}
+                className={` text-2xl  font-semibold  ${
+                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                }`}
               >
                 ถังขยะ
                 <span
-                  className={`${theme === "dark" ? "text-white" : "text-yellow-500"
-                    }`}
+                  className={`${
+                    theme === "dark" ? "text-white" : "text-yellow-500"
+                  }`}
                 >
                   ไฟล์งาน
                 </span>
@@ -1103,9 +1122,10 @@ export default function Searchpastjobs() {
                   onBlur={() => setFocusedpopup(false)}
                   type="text"
                   className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 border
-                    ${theme === "dark"
-                      ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
-                      : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+                    ${
+                      theme === "dark"
+                        ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
+                        : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
                     }}
                     ${Focusedpopup ? "w-72" : "w-60"} ${cls.input}`}
                 />
@@ -1173,10 +1193,11 @@ export default function Searchpastjobs() {
                           <button
                             className={`relative overflow-hidden rounded-md cursor-pointer w-fit px-3 w-f py-1 text-white text-sm duration-300 
                [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${theme === "dark"
-                                ? "bg-yellow-500 hover:bg-yellow-700"
-                                : "bg-blue-500 hover:bg-blue-700"
-                              }`}
+               active:translate-y-1 active:scale-x-110 active:scale-y-90  ${
+                 theme === "dark"
+                   ? "bg-yellow-500 hover:bg-yellow-700"
+                   : "bg-blue-500 hover:bg-blue-700"
+               }`}
                           >
                             รายละเอียด
                           </button>
@@ -1203,22 +1224,26 @@ export default function Searchpastjobs() {
       {/* ลบจริง */}
       {opendatefilepopup && (
         <div
-          className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${anim ? "opacity-100" : "opacity-0"
-            }`}
+          className={`fixed inset-0 z-50 flex justify-center duration-300 items-center backdrop-blur-sm bg-black/40 transition-opacity ${
+            anim ? "opacity-100" : "opacity-0"
+          }`}
         >
           <div
-            className={`rounded-2xl shadow-2xl p-5 w-120 max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
-              } ${theme === "dark"
+            className={`rounded-2xl shadow-2xl p-5 w-120 max-h-[90vh] overflow-y-auto transform transition-all duration-300 ${
+              anim ? "scale-100 opacity-100" : "scale-90 opacity-0"
+            } ${
+              theme === "dark"
                 ? "bg-gray-800 text-white"
                 : "bg-white text-gray-900"
-              }`}
+            }`}
           >
             <div className="flex flex-col gap-4">
               {/* หัวข้อ */}
               <div className="flex items-center gap-1">
                 <p
-                  className={`font-semibold text-lg ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                    }`}
+                  className={`font-semibold text-lg ${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
                 >
                   ลบงานนี้
                 </p>
@@ -1226,10 +1251,11 @@ export default function Searchpastjobs() {
 
               {/* หมายเหตุเตือนก่อนลบ */}
               <div
-                className={`p-3 rounded-lg text-sm ${theme === "dark"
-                  ? "bg-red-900/30 text-red-300"
-                  : "bg-red-100 text-red-600"
-                  }`}
+                className={`p-3 rounded-lg text-sm ${
+                  theme === "dark"
+                    ? "bg-red-900/30 text-red-300"
+                    : "bg-red-100 text-red-600"
+                }`}
               >
                 การลบภาวะนี้จะทำให้ข้อมูลหายไปทันที และไม่สามารถกู้คืนได้
               </div>

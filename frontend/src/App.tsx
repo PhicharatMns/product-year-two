@@ -57,7 +57,7 @@ import EditUser from "./chief/EditUser";
 import ProfileChief from "./chief/ProfileChief";
 import GetPaper from "./chief/getpaper";
 import PFD from "./Admin/PDF";
-
+import ProfileIDUser from "./Admin/ProfileIDUser";
 
 const router = createBrowserRouter([
   { path: "/", element: <Navigate to="/logins" replace /> },
@@ -78,14 +78,13 @@ const router = createBrowserRouter([
       { path: "searchpastjobs", element: <Searchpastjobs /> },
       { path: "details/:id", element: <Details /> },
       { path: "employeelist", element: <EmployeeList /> },
-      // { path: "addemployee", element: <AddEmployee /> },
+      { path: "/ProfileIDUser/:_id", element: <ProfileIDUser /> },
       { path: "profileadmin", element: <Profileadmin /> },
       // { path: "addwork", element: <Addwork /> },
       { path: "notification", element: <Notification /> },
       { path: "suppliesAdmin", element: <SuppliesAdmin /> },
       { path: "MessagerAdmin", element: <MessagerAdmin /> },
-      { path : 'PFD' ,element : <PFD/>}
-
+      { path: "PFD", element: <PFD /> },
     ],
   },
 
