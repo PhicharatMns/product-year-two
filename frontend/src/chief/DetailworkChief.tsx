@@ -740,6 +740,12 @@ export default function DetailworkChief() {
                               : "shadow-sm bg-gray-50"
                           }`}
                         >
+                          {job.Status === "เสร็จสิ้น" && (
+                            <div className="pl-2 text-sm font-semibold text-green-500">
+                              ได้รับการอนุมัติปิดงานเเล้ว
+                            </div>
+                          )}
+
                           <div className="flex  justify-between">
                             {" "}
                             <p
@@ -766,7 +772,9 @@ export default function DetailworkChief() {
                                       ? "text-green-500"
                                       : e.status === "เสร็จสิ้น"
                                       ? "text-green-600"
-                                      : "text-gray-500"
+                                      : e.status === "รอการอนุมัติ"
+                                      ? "text-orange-500"
+                                      : ""
                                   }`}
                                 >
                                   {e.status}

@@ -159,21 +159,21 @@ export default function Calendar() {
 
   return (
     <div
-      className={`w-max-380 my-5 p-5 mx-auto container
-    transition-all duration-500 ease-out
-    ${mounted ? "opacity-100 " : "opacity-0 "}
-    ${
-      theme === "dark"
-        ? "bg-gray-900 shadow-2xl border border-gray-700"
-        : "bg-white shadow-2xl border border-gray-200"
-    }
-    rounded-3xl
-  `}
+      className={`w-max-380 container mx-auto my-5 p-4 sm:p-5 mx-auto
+  transition-all duration-500 ease-out
+  ${mounted ? "opacity-100" : "opacity-0"}
+  ${
+    theme === "dark"
+      ? "bg-gray-900 shadow-2xl border border-gray-700"
+      : "bg-white shadow-2xl border border-gray-200"
+  }
+  rounded-3xl
+`}
     >
       {/* Header */}
-      <div className="flex justify-between mb-5 items-center">
+      <div className="flex flex-col sm:flex-row justify-between mb-4 sm:mb-5 items-center gap-3 sm:gap-0">
         <p
-          className={`text-3xl font-extrabold ${
+          className={`text-2xl sm:text-3xl font-extrabold text-center sm:text-left ${
             theme === "dark" ? "text-yellow-500" : "text-blue-500"
           }`}
         >
@@ -184,27 +184,29 @@ export default function Calendar() {
             งานของฉัน
           </span>
         </p>
-        <div className="flex gap-5 items-center text-xl font-semibold">
+        <div className="flex gap-3 sm:gap-5 items-center text-lg sm:text-xl font-semibold justify-center sm:justify-start">
           <button onClick={() => changeMonth(-1)}>
-            <AiOutlineLeft className="text-2xl cursor-pointer" />
+            <AiOutlineLeft className="text-xl sm:text-2xl cursor-pointer" />
           </button>
-          <h2 className="flex gap-2 w-60 pl-8 items-center">
+          <h2 className="flex gap-1 sm:gap-2 w-full sm:w-60 justify-center sm:justify-start items-center">
             {month.toLocaleString("th-TH", { month: "long" })}
-            <p>{month.toLocaleString("th-TH", { year: "numeric" })}</p>
+            <p className="ml-1">
+              {month.toLocaleString("th-TH", { year: "numeric" })}
+            </p>
           </h2>
           <button onClick={() => changeMonth(1)}>
-            <AiOutlineRight className="text-2xl cursor-pointer" />
+            <AiOutlineRight className="text-xl sm:text-2xl cursor-pointer" />
           </button>
         </div>
       </div>
 
       {/* ตารางวันที่ */}
       <div
-        className={`border rounded-xl h-full p-3 ${
+        className={`border rounded-xl h-full p-2 sm:p-3 ${
           theme === "dark" ? "bg-gray-900" : "shadow-xl"
         }`}
       >
-        <div className="grid grid-cols-7 gap-2 mb-2">
+        <div className="grid grid-cols-7 gap-1 sm:gap-2 mb-2">
           {daysOfWeek.map((day, i) => (
             <div
               key={i}
@@ -218,17 +220,13 @@ export default function Calendar() {
         </div>
 
         <div
-          className={`
-    grid grid-cols-7 gap-2
-    transition-all duration-300 ease-in-out
-    ${
-      fade
-        ? "translate-x-0 opacity-100"
-        : slideDir === "right"
-        ? "translate-x-15 opacity-0"
-        : "-translate-x-15 opacity-0"
-    }
-  `}
+          className={`grid grid-cols-7 gap-1 sm:gap-2 transition-all duration-300 ease-in-out ${
+            fade
+              ? "translate-x-0 opacity-100"
+              : slideDir === "right"
+              ? "translate-x-15 opacity-0"
+              : "-translate-x-15 opacity-0"
+          }`}
         >
           {days.map((day, i) => {
             const dayStr = day
@@ -237,48 +235,41 @@ export default function Calendar() {
                   "0"
                 )}-${String(day.getDate()).padStart(2, "0")}`
               : null;
-
             const dayEvents = dayStr
               ? events.filter((e) => e.date === dayStr)
               : [];
-
             return (
               <div
                 key={i}
                 onClick={() => dayStr && openSelectedDate(dayStr)}
-                className={`relative overflow-y-auto scrollbar-hide border-t h-35 rounded-lg border cursor-pointer transition-all duration-200
-          ${
-            theme === "dark"
-              ? "hover:bg-gray-700 bg-gray-800"
-              : "hover:bg-blue-50 shadow-4xl"
-          }`}
+                className={`relative overflow-y-auto scrollbar-hide border-t h-28 sm:h-35 rounded-lg border cursor-pointer transition-all duration-200 ${
+                  theme === "dark"
+                    ? "hover:bg-gray-700 bg-gray-800"
+                    : "hover:bg-blue-50 shadow-4xl"
+                }`}
               >
-                {/* วันที่ */}
                 {day && (
                   <p
-                    className={`sticky top-0 z-10 text-sm font-bold pl-2 py-1 ${
+                    className={`sticky top-0 z-10 text-sm sm:text-base font-bold pl-2 py-1 ${
                       theme === "dark" ? "bg-gray-800" : "bg-blue-50 text-black"
                     }`}
                   >
                     {day.getDate()}
                   </p>
                 )}
-
-                {/* รายการงานในวันนั้น */}
                 {dayEvents.map((e, idx) => (
                   <div
                     key={idx}
-                    className={`text-xs mt-1 px-2 transition-all duration-200 ${
+                    className={`text-xs sm:text-sm mt-1 px-2 transition-all duration-200 ${
                       theme === "dark" ? "text-yellow-300" : "text-blue-600"
                     }`}
                   >
                     <p
                       className={`rounded-sm pl-1 py-[2px] ${
                         theme === "dark"
-                          ? "bg-yellow-500 text-white "
-                          : "bg-blue-500 text-white "
+                          ? "bg-yellow-500 text-white"
+                          : "bg-blue-500 text-white"
                       }`}
-                      //  ไม่ stopPropagation เพราะอยากให้คลิกได้ทุกส่วน
                       onClick={() => dayStr && openSelectedDate(dayStr)}
                     >
                       {e.title}
@@ -299,13 +290,13 @@ export default function Calendar() {
           }`}
         >
           <div
-            className={`rounded-2xl w-[600px] h-200  shadow-2xl border ${
+            className={`rounded-2xl w-full sm:w-[600px] h-auto sm:h-[500px] max-h-[90vh] shadow-2xl border ${
               theme === "dark" ? "bg-gray-800" : "bg-white"
             }`}
           >
-            <div className="flex justify-between border-b px-6 py-4 ">
+            <div className="flex justify-between border-b px-4 sm:px-6 py-4">
               <p
-                className={` text-2xl  font-semibold  ${
+                className={`text-xl sm:text-2xl font-semibold ${
                   theme === "dark" ? "text-yellow-500" : "text-blue-500"
                 }`}
               >
@@ -323,7 +314,7 @@ export default function Calendar() {
                 </span>
               </p>
             </div>
-            <div className="px-6 border-b h-165 mb-2">
+            <div className="px-4 sm:px-6 border-b h-auto max-h-[65%] overflow-y-auto mb-2">
               {events.filter((e) => e.date === selectedDate).length > 0 ? (
                 events
                   .filter((e) => e.date === selectedDate)
@@ -360,24 +351,22 @@ export default function Calendar() {
                   ))
               ) : (
                 <div
-                  className={` p-3 my-4 rounded-xl text-center ${
-                    theme === "dark"
-                      ? " text-yellow-500"
-                      : " text-blue-500 "
+                  className={`p-3 my-4 rounded-xl text-center ${
+                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
                   }`}
                 >
                   วันนี่ ยังไม่มีงาน
                 </div>
               )}
             </div>
-            <div className="flex w-full px-6 justify-end">
+            <div className="flex w-full px-4 sm:px-6 justify-end mb-4">
               <button
                 onClick={closeSelectedDate}
-                className="group relative py-1  overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
               >
                 <span className="relative z-10">ยกเลิก</span>
-                <span className="absolute inset-0 overflow-hidden  pointer-events-none">
-                  <span className="absolute left-0 top-0 w-0 h-full bg-gray-200  transition-all duration-500 group-hover:w-full"></span>
+                <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                  <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
                 </span>
               </button>
             </div>

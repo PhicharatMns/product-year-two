@@ -30,17 +30,20 @@ export default function Usermesseger() {
   const [name, setName] = useState("Chief");
   const [showMenu, setShowMenu] = useState(false);
   const [problemType, setProblemType] = useState("");
+  const [loggedInUserName, setLoggedInUserName] = useState("ไม่ทราบชื่อ");
 
   const token = localStorage.getItem("token");
-  let loggedInUserName = "ไม่ทราบชื่อ";
-  if (token) {
-    try {
-      const decoded: any = (jwt_decode as any)(token);
-      loggedInUserName = decoded.Name || "ไม่ทราบชื่อ";
-    } catch (err) {
-      console.error("JWT decode error:", err);
+
+  useEffect(() => {
+    if (token) {
+      try {
+        const decoded: any = (jwt_decode as any)(token);
+        setLoggedInUserName(decoded.Name || "ไม่ทราบชื่อ");
+      } catch (err) {
+        console.error("JWT decode error:", err);
+      }
     }
-  }
+  }, [token]);
 
   // Motion counts
   const countIssueMV = useMotionValue(0);
@@ -125,7 +128,6 @@ export default function Usermesseger() {
       console.error(err);
     }
   };
-  const [adminProfile, setAdminProfile] = useState<string | null>(null);
 
   const markAsCommit = async (msgId: string) => {
     try {
@@ -169,8 +171,8 @@ export default function Usermesseger() {
           "http://localhost:5000/api/login/dashboardUser",
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        setName(response.data.Name || "ไม่ระบุชื่อ");
-        setAdminProfile(response.data.Profile);
+        setName(response.data.Name || "ไม่ระบุชื่อ"); // สำหรับ display บนหน้า
+        setLoggedInUserName(response.data.Name || "ไม่ทราบชื่อ"); // สำหรับส่งข้อความ
       } catch (err) {
         console.error("Sidebar fetch error:", err);
       }
@@ -180,10 +182,6 @@ export default function Usermesseger() {
     fetchMessages();
   }, []);
 
-  useEffect(() => {
-    updateCounts(messages);
-  }, [messages]);
-
   const isDark = theme === "dark";
   const primaryText = isDark ? "text-yellow-500" : "text-blue-500";
   const subText = isDark ? "text-gray-400" : "text-gray-500";
@@ -191,10 +189,14 @@ export default function Usermesseger() {
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-500";
 
   return (
-    <div className={`max-w-380 mx-auto container p-5 min-h-screen`}>
+    <div
+      className={`max-w-380 container mx-auto container p-4 sm:p-5 min-h-screen`}
+    >
       {/* Header */}
       <div className="mb-6 shrink-0">
-        <h1 className={`text-2xl font-semibold mb-1 ${primaryText}`}>
+        <h1
+          className={`text-2xl sm:text-3xl font-semibold mb-1 ${primaryText}`}
+        >
           ภาพรวมข้อความจากช่าง
         </h1>
         <p className={`${subText} text-sm`}>
@@ -203,16 +205,16 @@ export default function Usermesseger() {
       </div>
 
       {/* Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-6 mb-4 shrink-0">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-6 mb-4 shrink-0">
+        {/* แจ้งปัญหา */}
         <div
-          className={`rounded-2xl p-4 flex items-center justify-between shadow-md border ${bg}
-           `}
+          className={`rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-md border ${bg}`}
         >
           <div className="flex gap-3 items-center">
-            <div className={`p-3 rounded-full bg-gray-500/10 text-blue-500  `}>
+            <div className={`p-3 rounded-full bg-gray-500/10 text-blue-500`}>
               <MessageSquare size={20} />
             </div>
-            <div className="flex flex-col font-semibold text-sm">
+            <div className="flex flex-col font-semibold text-sm sm:text-base">
               <p className={`${texthead}`}>แจ้งปัญหา</p>
               <motion.span className="text-lg">{countIssue}</motion.span>
             </div>
@@ -221,17 +223,14 @@ export default function Usermesseger() {
 
         {/* เหตุด่วน */}
         <div
-          className={`rounded-2xl p-4 flex items-center justify-between shadow-md border  ${bg}
-           `}
+          className={`rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-md border ${bg}`}
         >
           <div className="flex gap-3 items-center">
-            <div className={`p-3 rounded-full bg-rose-500/10 text-rose-500 $`}>
+            <div className={`p-3 rounded-full bg-rose-500/10 text-rose-500`}>
               <AlertTriangle size={20} />
             </div>
-            <div className="flex flex-col font-semibold text-sm">
-              <span className={`${texthead} font-medium text-sm lg:text-base`}>
-                เหตุด่วน
-              </span>
+            <div className="flex flex-col font-semibold text-sm sm:text-base">
+              <span className={`${texthead} font-medium`}>เหตุด่วน</span>
               <motion.span className="text-lg">{countUrgent}</motion.span>
             </div>
           </div>
@@ -239,20 +238,16 @@ export default function Usermesseger() {
 
         {/* ข้อความ */}
         <div
-          className={`rounded-2xl p-4 flex items-center justify-between shadow-md border ${bg}
-           `}
+          className={`rounded-2xl p-3 sm:p-4 flex items-center justify-between shadow-md border ${bg}`}
         >
           <div className="flex gap-3 items-center">
             <div
-              className={`p-3 rounded-full bg-emerald-500/10  text-emerald-500
-              `}
+              className={`p-3 rounded-full bg-emerald-500/10 text-emerald-500`}
             >
               <CheckCircle size={20} />
             </div>
-            <div className="flex flex-col font-semibold text-sm">
-              <span className={`${texthead} font-medium text-sm lg:text-base`}>
-                ข้อความ
-              </span>
+            <div className="flex flex-col font-semibold text-sm sm:text-base">
+              <span className={`${texthead} font-medium`}>ข้อความ</span>
               <motion.span className="text-lg">{countMessage}</motion.span>
             </div>
           </div>
@@ -260,56 +255,54 @@ export default function Usermesseger() {
       </div>
 
       {/* Main grid */}
-      <div className="grid grid-cols-12 gap-4 lg:gap-6 flex-1 min-h-0">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 sm:gap-4 lg:gap-6 flex-1 min-h-0">
         {/* Left */}
         <div
           className={`lg:col-span-8 ${bg} rounded-xl overflow-hidden flex flex-col h-full`}
         >
-          <div className="flex 5 justify-between items-center">
-            <div className="p-3 grid grid-cols-5 w-fit gap-2">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-0 p-2">
+            <div className="p-1 sm:p-3 grid grid-cols-3 sm:grid-cols-5 w-full gap-2 sm:gap-2">
               {["all", "user", "admin", "chief", "executive"].map((role, i) => (
                 <div
                   key={i}
-                  onClick={() => setSelectedRole(role as any)}
-                  className={`relative overflow-hidden truncate text-center cursor-pointer rounded-md px-4 py-1 text-white text-sm shadow-md transition-all duration-300
-      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
-      active:-translate-y-1 active:scale-x-90 active:scale-y-110
-      ${selectedRole === role ? "bg-yellow-500" : "bg-blue-500"}`}
+                  onClick={() => setSelectedRole(role)}
+                  className={`truncate text-center cursor-pointer rounded-md px-2 sm:px-4 py-1 text-white text-xs sm:text-sm shadow-md transition-all duration-300 active:-translate-y-1 active:scale-x-90 active:scale-y-110
+                ${selectedRole === role ? "bg-yellow-500" : "bg-blue-500"}`}
                 >
                   {role === "all" ? "ทั้งหมด" : role}
                 </div>
               ))}
             </div>
-            <div className="relative pr-4">
-              <CiSearch
-                className={`absolute left-3 top-1/2 -translate-y-1/2 `}
-              />
+            <div className="relative w-full sm:w-auto mt-2 sm:mt-0">
+              <CiSearch className="absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 placeholder="ค้นหา..."
-                className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 border ${
+                className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 border w-full sm:w-${
+                  Focused ? "72" : "60"
+                } ${
                   theme === "dark"
-                    ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
-                    : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
-                } ${Focused ? "w-72" : "w-60"}`}
+                    ? "bg-gray-700 text-white focus:ring-yellow-400 border"
+                    : "bg-white text-gray-800 focus:ring-blue-400 border"
+                }`}
               />
             </div>
           </div>
 
           <div className={`border`}>
             <div
-              className={`grid grid-cols-5 pl-5 py-1 m-2 text-sm uppercase font-semibold tracking-wider shrink-0`}
+              className={`grid grid-cols-5 pl-2 sm:pl-5 py-1 m-2 text-xs sm:text-sm uppercase font-semibold tracking-wider shrink-0`}
             >
               <div className="col-span-2">ชื่อ / สายงาน</div>
-              <div className=" hidden sm:block">ตําเเหน่ง</div>
+              <div className="hidden sm:block">ตําเเหน่ง</div>
               <div className="hidden sm:block">เบอร์ติดต่อ</div>
-              <div className=" hidden sm:block">Email</div>
+              <div className="hidden sm:block">Email</div>
             </div>
           </div>
 
           <div
-            className={` overflow-y-auto scrollbar-hide h-145  ${
+            className={`overflow-y-auto scrollbar-hide h-72 sm:h-145 ${
               isDark ? "divide-gray-800" : "divide-gray-200"
             }`}
           >
@@ -322,25 +315,21 @@ export default function Usermesseger() {
                 key={e._id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{
-                  duration: 0.5,
-                  delay: i * 0.1,
-                  ease: "easeOut",
-                }}
+                transition={{ duration: 0.5, delay: i * 0.1, ease: "easeOut" }}
               >
                 <div
                   onClick={() => setSelectedUser(e)}
-                  className={`grid grid-cols-5 border items-center rounded-lg pl-5 m-2 py-2 cursor-pointer ${
+                  className={`grid grid-cols-5 border items-center rounded-lg pl-2 sm:pl-5 m-1 sm:m-2 py-2 cursor-pointer ${
                     theme === "dark" ? "bg-gray-800" : "bg-gray-50"
                   }`}
                 >
-                  <div className="col-span-2 flex items-center gap-3">
+                  <div className="col-span-2 flex items-center gap-2 sm:gap-3">
                     <img
                       src={`http://localhost:5000/uploads/Profile/${
                         e.Profile || "default.png"
                       }`}
                       alt="profile"
-                      className="w-10 h-10 rounded-full object-cover"
+                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover"
                     />
                     {e.Name} / {e.Position}
                   </div>
@@ -363,95 +352,91 @@ export default function Usermesseger() {
         </div>
 
         {/* Right */}
-        <div className={`col-span-4 h-178 ${bg} rounded-lg`}>
+        <div
+          className={`col-span-4 h-auto sm:h-178 ${bg} rounded-lg mt-3 sm:mt-0`}
+        >
           {!selectedUser ? (
             <div
               className={`${
                 theme === "dark" ? "text-white" : "text-black"
               } flex items-center justify-center h-full`}
             >
-              <div className="flex-col">
-                <p className="mx-auto w-fit">
-                  {" "}
-                  <HiUsers size={60} />
-                </p>{" "}
+              <div className="flex-col text-center">
+                <HiUsers size={60} className="mx-auto mb-2" />
                 <p>เลือกรายชื่อจากด้านซ้ายเพื่อแสดงข้อมูล</p>
               </div>
             </div>
           ) : (
-            // overflow-y-auto
-            <div className="h-175 flex flex-col">
-              <div className="rounded-xl  flex-1 ">
-                <div className="">
-                  <div
-                    className={`flex items-center px-4 border-b-2  py-3 gap-3 mb-2 ${
-                      theme === "dark" ? "bg-gray-700" : "bg-gray-100"
-                    }`}
-                  >
-                    {selectedUser.Profile && (
-                      <img
-                        src={`http://localhost:5000/uploads/Profile/${
-                          selectedUser.Profile || "default.png"
-                        }`}
-                        alt="profile"
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    )}
-                    <div>
-                      <h2 className="text-lg font-semibold items-center">
-                        {selectedUser.Name}
-                      </h2>
-                      <span className={subText}>
-                        ตำแหน่ง: {selectedUser.Position} / สายงาน:{" "}
-                        {{
-                          admin: "แอดมิน",
-                          user: "ช่าง",
-                          chief: "หัวหน้าช่าง",
-                          executive: "ผู้บริหาร",
-                        }[selectedUser.role] || selectedUser.role}
-                      </span>
-                    </div>
+            <div className="flex flex-col h-full">
+              {/* ข้อมูลผู้ใช้ */}
+              <div className="rounded-xl flex-1 overflow-y-auto">
+                <div
+                  className={`flex items-center px-4 border-b-2 py-3 gap-3 mb-2 ${
+                    theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                  }`}
+                >
+                  {selectedUser.Profile && (
+                    <img
+                      src={`http://localhost:5000/uploads/Profile/${
+                        selectedUser.Profile || "default.png"
+                      }`}
+                      alt="profile"
+                      className="w-10 sm:w-12 h-10 sm:h-12 rounded-full object-cover"
+                    />
+                  )}
+                  <div>
+                    <h2 className="text-base sm:text-lg font-semibold">
+                      {selectedUser.Name}
+                    </h2>
+                    <span className={subText}>
+                      ตำแหน่ง: {selectedUser.Position} / สายงาน:{" "}
+                      {{
+                        admin: "แอดมิน",
+                        user: "ช่าง",
+                        chief: "หัวหน้าช่าง",
+                        executive: "ผู้บริหาร",
+                      }[selectedUser.role] || selectedUser.role}
+                    </span>
                   </div>
                 </div>
 
-                <div className=" h-138 overflow-y-auto">
+                <div className="h-60 sm:h-138 overflow-y-auto px-2 sm:px-4">
                   {messages
                     .filter(
                       (msg) =>
-                        msg?.ID === selectedUser?._id ||
-                        msg?.requireNameinMessage === loggedInUserName
+                        (msg.Name === selectedUser.Name &&
+                          msg.requireNameinMessage === loggedInUserName) ||
+                        (msg.Name === loggedInUserName &&
+                          msg.requireNameinMessage === selectedUser.Name)
                     )
                     .map((msg) => (
                       <div
                         key={msg._id}
-                        className={`relative mb-2  p-3 m-4 rounded-xl border shadow-sm
-    ${theme === "dark" ? "bg-gray-800" : "bg-gray-100"}
-  `}
+                        className={`relative mb-2 p-2 sm:p-3 rounded-xl border shadow-sm ${
+                          theme === "dark" ? "bg-gray-800" : "bg-gray-100"
+                        }`}
                       >
-                        {/* ปุ่ม commit สำหรับ urgent หรือ issue */}
                         {(msg.problem === "urgent" ||
                           msg.problem === "issue") && (
-                          <div>
-                            <button
-                              onClick={() => markAsCommit(msg._id)}
-                              className="absolute top-2 right-2 px-3 py-1 text-xs  overflow-hidden truncate text-center cursor-pointer rounded-md  text-white  shadow-md transition-all duration-300
-      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
-      active:-translate-y-1 active:scale-x-90 active:scale-y-110  bg-green-500 hover:bg-green-600 "
-                            >
-                              รับเรื่อง
-                            </button>
-                          </div>
+                          <button
+                            onClick={() => markAsCommit(msg._id)}
+                            className="absolute top-1 sm:top-2 right-1 sm:right-2 px-2 py-1 text-xs sm:text-sm text-white rounded-md shadow-md bg-green-500 hover:bg-green-600 transition-all duration-300"
+                          >
+                            รับเรื่อง
+                          </button>
                         )}
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-start gap-2 sm:gap-3">
                           <img
-                            src={`http://localhost:5000/uploads/Profile/${adminProfile}`}
+                            src={`http://localhost:5000/uploads/Profile/${
+                              "adminProfile" || "default.png"
+                            }`}
                             alt="profile"
-                            className="w-12 h-12 rounded-full object-cover"
+                            className="w-10 sm:w-12 h-10 sm:h-12 rounded-full object-cover"
                           />
                           <div className="flex flex-col">
                             <p
-                              className={`text-sm font-semibold ${
+                              className={`text-xs sm:text-sm font-semibold ${
                                 theme === "dark"
                                   ? "text-yellow-500"
                                   : "text-blue-500"
@@ -463,7 +448,7 @@ export default function Usermesseger() {
                                   theme === "dark" ? "text-white" : "text-black"
                                 }`}
                               >
-                                {msg.Name}{" "}
+                                {msg.requireNameinMessage}{" "}
                                 {new Date(msg.timestamp).toLocaleString(
                                   "th-TH",
                                   {
@@ -476,8 +461,7 @@ export default function Usermesseger() {
                                 )}
                               </span>
                             </p>
-
-                            <p className="text-sm break-all w-[85%]">
+                            <p className="text-xs sm:text-sm break-all w-[85%]">
                               <span
                                 className={`font-medium ${
                                   msg.problem === "urgent"
@@ -497,59 +481,52 @@ export default function Usermesseger() {
                             </p>
                           </div>
                         </div>
-
-                        {/* badge problem */}
                       </div>
                     ))}
                 </div>
               </div>
 
               {/* ช่องกรอกข้อความ */}
-              <div className="mt-3 px-4 flex gap-2  items-center relative">
+              <div className="my-3 sm:mt-3 px-2 sm:px-4 flex gap-2 items-center">
                 <input
                   type="text"
                   value={text}
                   onChange={(e) => setText(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && sendMessage()}
-                  className={`flex-1 border p-2 rounded-lg focus:ring-2  ${
+                  className={`flex-1 border p-2 rounded-lg focus:ring-2 ${
                     theme === "dark"
-                      ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
-                      : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
+                      ? "bg-gray-700 text-white focus:ring-yellow-400 border"
+                      : "bg-white text-gray-800 focus:ring-blue-400 border"
                   }`}
                   placeholder="พิมพ์ข้อความ..."
                 />
                 <div className="relative">
                   <button
                     onClick={() => setShowMenu(!showMenu)}
-                    className={`relative overflow-hidden truncate text-center cursor-pointer rounded-md px-4 py-3 text-white text-sm shadow-md transition-all duration-300
-      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
-      active:-translate-y-1 active:scale-x-90 active:scale-y-110
-      ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"}`}
+                    className={`relative px-3 py-2 text-white text-xs sm:text-sm rounded-md shadow-md transition-all duration-300 ${
+                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
                   >
                     ตัวเลือก
                   </button>
                   {showMenu && (
                     <div
-                      className={`absolute left-0 bottom-12 mt-1  border rounded-lg shadow-lg w-32 z-50 ${
+                      className={`absolute left-0 bottom-12 mt-1 border rounded-lg shadow-lg w-32 z-50 ${
                         theme === "dark" ? "bg-black" : "bg-white"
                       }`}
                     >
                       <button
                         onClick={handleEmergency}
-                        className={`w-full text-left px-4 py-2 cursor-pointer duration-100  rounded-b-lg ${
-                          theme === "dark"
-                            ? "hover:bg-gray-800"
-                            : "hover:bg-gray-200"
+                        className={`w-full text-left px-4 py-2 cursor-pointer hover:bg-gray-800 ${
+                          theme === "dark" ? "" : "hover:bg-gray-200"
                         }`}
                       >
                         เหตุด่วน
                       </button>
                       <button
                         onClick={handleReport}
-                        className={`w-full text-left px-4 py-2 cursor-pointer duration-100  rounded-b-lg ${
-                          theme === "dark"
-                            ? "hover:bg-gray-800"
-                            : "hover:bg-gray-200"
+                        className={`w-full text-left px-4 py-2 cursor-pointer hover:bg-gray-800 ${
+                          theme === "dark" ? "" : "hover:bg-gray-200"
                         }`}
                       >
                         แจ้งปัญหา
@@ -557,16 +534,13 @@ export default function Usermesseger() {
                     </div>
                   )}
                 </div>
-
                 <button
                   onClick={sendMessage}
-                  className={`relative overflow-hidden truncate text-center cursor-pointer rounded-md px-4 py-1 text-white text-sm shadow-md transition-all duration-300
-      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
-      active:-translate-y-1 active:scale-x-90 active:scale-y-110
-      ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"}`}
+                  className={`relative px-3 py-0.5 text-white text-xs sm:text-sm rounded-md shadow-md transition-all duration-300 ${
+                    theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                  }`}
                 >
-                  <Send size={16} />
-                  ส่ง
+                  <Send size={16} /> ส่ง
                 </button>
               </div>
             </div>

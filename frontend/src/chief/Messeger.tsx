@@ -20,7 +20,7 @@ type typeMessage = {
   ID?: string; // สำหรับเช็ค selectedUser._id
 };
 
-export default function MessagerAdmin() {
+export default function Messeger() {
   const { theme } = useTheme();
   const [Message, setMessage] = useState<typeMessage[]>([]);
   const [messages, setMessages] = useState<typeMessage[]>([]);
@@ -202,7 +202,6 @@ export default function MessagerAdmin() {
         </h1>
         <p className={`${subText} text-sm`}>
           จัดการและติดตามข้อความแจ้งเตือนทั้งหมดในระบบ
-          <p>{loggedInUserName}</p>
         </p>
       </div>
 

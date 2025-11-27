@@ -169,4 +169,18 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+router.put("/status/:id", async (req, res) => {
+  try {
+    const emp = await Employee.findById(req.params.id);
+    if (!emp) return res.status(404).json({ error: "Employee not found" });
+
+    emp.Status = "เสร็จสิ้น"; // ← เปลี่ยนสถานะตรงนี้
+
+    await emp.save();
+    res.json({ message: "Status updated", employee: emp });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

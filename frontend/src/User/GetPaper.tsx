@@ -240,11 +240,11 @@ export default function GetPaper() {
         fade ? "opacity-100" : "opacity-0"
       }`}
     >
-      <div className="max-w-380 p-5 mx-auto container">
+      <div className="max-w-380 lg:p-5 p-2 mx-auto container">
         {/* Header */}
         <div className="flex items-center justify-between mb-5">
           <p
-            className={`text-3xl font-extrabold ${
+            className={`text-3xl  lg:pl-0 pl-15 font-extrabold ${
               theme === "dark" ? "text-yellow-500" : "text-blue-500"
             }`}
           >
@@ -270,7 +270,11 @@ export default function GetPaper() {
               onBlur={() => setFocused(false)}
               type="text"
               className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
-              ${focused ? "w-72 shadow-lg" : "w-60 border-gray-300"}  
+              ${
+                focused
+                  ? "lg:w-72 w-50 shadow-lg"
+                  : "lg:w-60 w-40 border-gray-300"
+              }  
               ${
                 theme === "dark"
                   ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
@@ -282,14 +286,16 @@ export default function GetPaper() {
 
         {/* Header Row */}
         <div
-          className={`grid grid-cols-7 gap-5 border-b-2 px-5 text-lg items-center font-semibold mb-3 ${border_b_2_data}`}
+          className={`lg:grid hidden lg:grid-cols-7 grid-cols-5 lg:gap-5 border-b-2 lg:my-1 my-5 text-lg items-center font-semibold mb-3 ${border_b_2_data}`}
         >
           <div>ชื่องาน</div>
           <div className="col-span-2">รายละเอียดงาน</div>
-          <div>สถานะ</div>
-          <div>วันเริ่มงาน</div>
-          <div>วันปิดงาน</div>
-          <div className="text-center">รายละเอียด</div>
+          <div className="hidden lg:block">สถานะ</div>
+          <div className="hidden lg:block">วันเริ่มงาน</div>
+          <div className="hidden lg:block">วันปิดงาน</div>
+          <div className="lg:text-center  lg:col-span-1 col-span-2">
+            รายละเอียด
+          </div>
         </div>
 
         {/* ข้อมูลใบงาน */}
@@ -298,14 +304,16 @@ export default function GetPaper() {
             job.Status === "ล่าช้า" ||
             job.Status === "กำลังดำเนินการ" ||
             job.Status === "Active" ||
-            job.Status === "เสร็จสิ้น"
+            job.Status === "เสร็จสิ้น" ||
+            job.Status === "รอการอนุมัติ"
         ).length > 0 ? (
           filtered
             .filter(
               (job) =>
                 job.Status === "ล่าช้า" ||
                 job.Status === "กำลังดำเนินการ" ||
-                job.Status === "เสร็จสิ้น"
+                job.Status === "เสร็จสิ้น" ||
+                job.Status === "รอการอนุมัติ"
             )
             .sort((a, b) => {
               const statusOrder = ["ล่าช้า", "กำลังดำเนินการ", "เสร็จสิ้น"];
@@ -338,57 +346,86 @@ export default function GetPaper() {
                 }}
               >
                 <div
-                  className={`grid grid-cols-7 items-center gap-5 px-5 mb-1 border rounded-lg mt-2 py-1 ${headerBg}`}
+                  className={`grid grid-cols-1  lg:grid-cols-7 items-center gap-3 lg:gap-5 px-3 lg:px-5 mb-1 border rounded-lg mt-2 py-2 ${headerBg}`}
                 >
+                  {/* ใบงาน */}
                   <p className="truncate">{job.Worksheet || "-"}</p>
-                  <p className="col-span-2 truncate">
+
+                  {/* รายละเอียด */}
+                  <p className="truncate lg:col-span-2">
                     {job.description || "-"}
                   </p>
+
+                  {/* สถานะ */}
                   <p
                     className={`${
                       job.Status === "กำลังดำเนินการ" ? texthaed : ""
                     } ${job.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${
                       job.Status === "ล่าช้า" ? "text-red-500" : ""
+                    } ${
+                      job.Status === "รอการอนุมัติ" ? "text-orange-500" : ""
                     }`}
                   >
                     {job.Status || "-"}
                   </p>
-                  <p>
+
+                  {/* วันที่เริ่มงาน (ซ่อนมือถือ) */}
+                  <p className="hidden lg:block">
                     {job.Date_of_acceptance_of_work
                       ? new Date(
                           job.Date_of_acceptance_of_work
                         ).toLocaleDateString("th-TH")
                       : "-"}
                   </p>
-                  <p>
+
+                  {/* วันที่ปิดงาน (ซ่อนมือถือ) */}
+                  <p className="hidden lg:block">
                     {job.Closing_date
                       ? new Date(job.Closing_date).toLocaleDateString("th-TH")
                       : "-"}
                   </p>
-                  <div className="flex gap-2 mx-auto">
+
+                  {/* ปุ่ม */}
+                  <div className="flex gap-2 mt-2 lg:mt-0">
                     <button
-                      onClick={() => openItemModal(job)}
-                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-      active:translate-y-1 active:scale-x-110 active:scale-y-90
-      ${
-        theme === "dark"
-          ? "bg-blue-500 hover:bg-blue-500"
-          : "bg-yellow-500 hover:bg-yellow-600"
-      }`}
+                      onClick={() => {
+                        if (
+                          job.Status !== "รอการอนุมัติ" &&
+                          job.Status !== "เสร็จสิ้น"
+                        ) {
+                          openItemModal(job);
+                        }
+                      }}
+                      disabled={
+                        job.Status === "รอการอนุมัติ" ||
+                        job.Status === "เสร็จสิ้น"
+                      }
+                      className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300
+        [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
+        active:translate-y-1 active:scale-x-110 active:scale-y-90
+        ${
+          theme === "dark"
+            ? job.Status === "รอการอนุมัติ" || job.Status === "เสร็จสิ้น"
+              ? "bg-gray-600 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600"
+            : job.Status === "รอการอนุมัติ" || job.Status === "เสร็จสิ้น"
+            ? "bg-gray-300 cursor-not-allowed"
+            : "bg-yellow-500 hover:bg-yellow-600"
+        }`}
                     >
                       เบิกของ
                     </button>
+
                     <Link
                       to={`/user/Detailwork/${job._id}`}
                       className={`relative w-fit overflow-hidden cursor-pointer rounded-md px-3 py-1 text-white text-sm duration-300 
-      [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-      active:translate-y-1 active:scale-x-110 active:scale-y-90
-      ${
-        theme === "dark"
-          ? "bg-yellow-500 hover:bg-yellow-600"
-          : "bg-blue-500 hover:bg-blue-600"
-      }`}
+        [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
+        active:translate-y-1 active:scale-x-110 active:scale-y-90
+        ${
+          theme === "dark"
+            ? "bg-yellow-500 hover:bg-yellow-600"
+            : "bg-blue-500 hover:bg-blue-600"
+        }`}
                     >
                       รายละเอียดงาน
                     </Link>

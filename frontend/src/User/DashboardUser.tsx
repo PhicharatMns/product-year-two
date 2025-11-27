@@ -199,14 +199,14 @@ export default function DashboardUser() {
   const bgpopup = theme === "dark" ? "bg-gray-800" : " shadow-sm bg-white";
   return (
     <div
-      className={`w-max-380 p-5 mx-auto container duration-300 ${
+      className={`w-max-380 lg:p-5 p-3 mx-auto container duration-300 ${
         Faev ? "opacity-100" : "opacity-0"
       }`}
     >
       <div>
         <header className="mb-5">
           <h1
-            className={`text-3xl font-extrabold drop-shadow-sm ${
+            className={`text-3xl lg:text-left text-center font-extrabold drop-shadow-sm ${
               theme === "dark" ? "text-yellow-500" : "text-blue-500"
             }`}
           >
@@ -219,14 +219,14 @@ export default function DashboardUser() {
               ช่าง
             </span>
           </h1>
-          <p className={`text-lg font-medium ${descrtiption}`}>
+          <p className={`text-lg mt-3 lg:mt-0 font-medium ${descrtiption}`}>
             ภาพรวมการทำงานของช่างคนนี้
           </p>
         </header>
 
         <section>
           <div className="flex flex-col lg:flex-row gap-10">
-            <div className="grid grid-cols-1 w-90 gap-5">
+            <div className="grid lg:grid-cols-1  grid-cols-2 w-90 gap-5">
               {[
                 {
                   title: "งานทั้งหมด",
@@ -259,7 +259,7 @@ export default function DashboardUser() {
               ].map((item, index) => (
                 <div
                   key={index}
-                  className={`text-white rounded-2xl flex pl-5 justify-center flex-col shadow-lg ${
+                  className={`text-white rounded-2xl flex pl-5 lg:p p-5 justify-center flex-col shadow-lg ${
                     theme === "dark" ? item.color_bark : item.color
                   }`}
                 >
@@ -325,7 +325,7 @@ export default function DashboardUser() {
                 >
                   จำนวนงานแต่ละเดือน
                 </h2>
-                <div className="w-full h-160">
+                <div className="w-full lg:h-160 h-120">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={monthlyData}>
                       <CartesianGrid
@@ -369,11 +369,13 @@ export default function DashboardUser() {
       </div>
       {finish && (
         <div
-          className={`z-50 duration-300 inset-0 fixed justify-center items-center flex backdrop-blur-sm bg-black/40 ${
+          className={`z-50 lg:p-0 p-2 duration-300 inset-0 fixed justify-center items-center flex backdrop-blur-sm bg-black/40 ${
             anim ? "opacity-100" : "opacity-0"
           }`}
         >
-          <div className={`rounded-2xl ${bgpopup} w-[900px] h-200 shadow-2xl border$`}>
+          <div
+            className={`rounded-2xl ${bgpopup} w-[900px] lg:h-200 h-180 shadow-2xl border$`}
+          >
             <div className="flex items-center justify-between border-b px-6 py-4 ">
               <p
                 className={` text-2xl  font-semibold  ${
@@ -404,8 +406,8 @@ export default function DashboardUser() {
                   className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
                                                    ${
                                                      focused
-                                                       ? "w-72 shadow-lg"
-                                                       : "w-60 border-gray-300"
+                                                       ? "lg:w-72 w-50 shadow-lg"
+                                                       : "lg:w-60 w-40 border-gray-300"
                                                    }  
                                                    ${
                                                      theme === "dark"
@@ -415,7 +417,7 @@ export default function DashboardUser() {
                 />
               </div>
             </div>
-            <div className="grid grid-cols-7 py-3 border-b mb-3 gap-5 px-6">
+            <div className="lg:grid grid-cols-7 py-3 border-b mb-3 gap-5 px-6 hidden">
               {[
                 { name: "ใบงาน" },
                 { name: "รายละเอียดงาน" },
@@ -478,10 +480,10 @@ export default function DashboardUser() {
                   </div>
                 ))}
             </div>
-            <div className="flex justify-end gap-4 pr-4 mt-4">
+            <div className="flex justify-end gap-4 lg:pr-4 lg:mt-4 pr-3 my-2">
               <button
                 onClick={closeModalfinish}
-                className="group relative py-1  overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                className="group relative py-1 overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
               >
                 <span className="relative z-10">ยกเลิก</span>
                 <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -495,16 +497,16 @@ export default function DashboardUser() {
 
       {inProgress && (
         <div
-          className={`z-50 duration-300 inset-0 fixed justify-center items-center flex backdrop-blur-sm bg-black/40 ${
+          className={`z-50 duration-300 lg:p-0 p-2 inset-0 fixed justify-center items-center flex backdrop-blur-sm bg-black/40 ${
             animInProgress ? "opacity-100" : "opacity-0"
           }`}
         >
           <div
-            className={`rounded-2xl ${bgpopup} w-[900px] h-200 shadow-2xl border `}
+            className={`rounded-2xl ${bgpopup} lg:w-[900px]  lg:h-200 h-180 shadow-2xl border `}
           >
             <div className="flex items-center justify-between border-b px-6 py-4 ">
               <p
-                className={` text-2xl  font-semibold  ${
+                className={` text-2xl  font-semibold lg:w-full w-30  ${
                   theme === "dark" ? "text-yellow-500" : "text-blue-500"
                 }`}
               >
@@ -528,7 +530,11 @@ export default function DashboardUser() {
                   onBlur={() => setFocused(false)}
                   type="text"
                   className={`border rounded-xl pl-10 pr-3 duration-300 transition-all focus:outline-none focus:ring-2 py-1 
-              ${focused ? "w-72 shadow-lg" : "w-60 border-gray-300"}  
+              ${
+                focused
+                  ? "lg:w-72 w-50 shadow-lg"
+                  : "lg:w-60 w-40 border-gray-300"
+              }  
               ${
                 theme === "dark"
                   ? "border-gray-600 focus:ring-yellow-500 bg-gray-700 text-white"
@@ -538,7 +544,7 @@ export default function DashboardUser() {
               </div>
             </div>
 
-            <div className="grid grid-cols-7 py-3 border-b gap-5 px-6">
+            <div className="lg:grid hidden  grid-cols-7 py-3 border-b gap-5 px-6">
               {[
                 "ใบงาน",
                 "รายละเอียดงาน",
@@ -557,7 +563,7 @@ export default function DashboardUser() {
               ))}
             </div>
 
-            <div className="h-150 border-b overflow-y-auto scrollber-hide px-6">
+            <div className="lg:h-160 h-140 border-b overflow-y-auto scrollber-hide px-6">
               {employees
                 .filter(
                   (emp) =>
@@ -571,7 +577,7 @@ export default function DashboardUser() {
                 .map((emp) => (
                   <div
                     key={emp._id}
-                    className="grid grid-cols-7 py-3 border-b gap-5 items-center"
+                    className="grid lg:grid-cols-7 grid-cols-5 py-3 border-b gap-5 items-center"
                   >
                     <div className="col-span-1 truncate">
                       {emp.Worksheet || "-"}
@@ -579,12 +585,13 @@ export default function DashboardUser() {
                     <div className="col-span-2 truncate">
                       {emp.description || "-"}
                     </div>
-                    <div className="col-span-1">
+                    <div className="col-span-1 hidden lg:block">
                       {formatDate(emp.Date_of_acceptance_of_work)}
                     </div>
-                    <div className="col-span-1">
+                    <div className="col-span-1 hidden lg:block">
                       {formatDate(emp.Closing_date)}
                     </div>
+
                     <div className="col-span-2 text-center">
                       <Link to={`/user/Detailwork/${emp._id}`}>
                         <button
@@ -603,7 +610,7 @@ export default function DashboardUser() {
                   </div>
                 ))}
             </div>
-            <div className="flex justify-end gap-4 pr-4 mt-4">
+            <div className="flex justify-end gap-4 lg:pr-4 lg:mt-4 pr-3 mt-3">
               <button
                 onClick={closeModalinProgress}
                 className="group relative py-1  overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
@@ -625,7 +632,7 @@ export default function DashboardUser() {
           }`}
         >
           <div
-            className={`rounded-2xl  w-[900px] h-200 shadow-2xl border ${bgpopup}`}
+            className={`rounded-2xl ${bgpopup} lg:w-[900px]  lg:h-200  shadow-2xl borde`}
           >
             <div className="flex items-center justify-between border-b px-6 py-4 ">
               <p
@@ -727,7 +734,7 @@ export default function DashboardUser() {
                   </div>
                 ))}
             </div>
-            <div className="flex justify-end gap-4 pr-4 mt-4">
+            <div className="flex justify-end gap-4 lg:pr-4 lg:mt-4">
               <button
                 onClick={closepopupdelayed}
                 className="group relative py-1  overflow-hidden rounded-lg cursor-pointer border bg-white px-4  text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"

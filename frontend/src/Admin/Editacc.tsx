@@ -384,7 +384,7 @@ export default function Editacc() {
                   Email: "Email",
                   Position: "สายงาน",
                   Salary: "เงินเดือน",
-                  role: "Role",
+                  role: "ตําเเหน่ง",
                   Birthday: "วันเกิด",
                   Start_data: "วันที่เริ่มงาน",
                   username: "User",
@@ -405,16 +405,18 @@ export default function Editacc() {
                         onChange={(e) => handleChange("role", e.target.value)}
                         className={inputClass}
                       >
-                        <option value="user">User</option>
-                        <option value="admin">Admin</option>
-                        <option value="chief">Chief</option>
-                        <option value="executive">Executive</option>
+                        <option value="user">ช่าง</option>
+                        <option value="chief">หัวหน้าช่าง</option>
+                        <option value="admin">เเอดมิน</option>
+                        {/* <option value="executive">Executive</option> */}
                       </select>
                     ) : (
                       <input
                         type={
                           {
                             Salary: "number",
+                            ID: "number",
+                            Phone_Number: "number",
                             Birthday: "date",
                             Start_data: "date",
                             Profile: "file",

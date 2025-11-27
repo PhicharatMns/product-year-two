@@ -291,14 +291,14 @@ export default function Detailwork() {
   if (!job) return <div></div>;
 
   return (
-    <div className={`w-max-380 p-5 mx-auto container 0 ${text}`}>
+    <div className={` max-w-380 p-5 mx-auto container ${text}`}>
       <div
         className={`transition-opacity duration-700 ${
           fade ? "opacity-100" : "opacity-0"
         }`}
       >
-        <div className="text-3xl font-bold flex gap-2">
-          <p className={` ${titleColor}`}>รายละเอียดงาน :</p>
+        <div className="text-2xl sm:text-3xl font-bold flex justify-center lg:justify-start gap-2">
+          <p className={`${titleColor}`}>รายละเอียดงาน :</p>
           <span
             className={`${theme === "dark" ? "text-white" : "text-yellow-500"}`}
           >
@@ -306,38 +306,32 @@ export default function Detailwork() {
           </span>
         </div>
 
-        <div className={`mt-5 transition-all duration-300 rounded-2xl`}>
-          <div className="grid grid-cols-2 gap-5">
-            <div className={`border p-3 rounded-xl font-semibold  ${bg}`}>
-              {SelectedTradesmen.map((event, index) => {
-                return (
+        <div className="mt-5 transition-all duration-300 rounded-2xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className={`border p-3 rounded-xl font-semibold ${bg}`}>
+              {SelectedTradesmen.map((event, index) =>
+                event.role.toLowerCase() === "chief" ? (
                   <div key={index}>
-                    {event.role.toLowerCase() == "chief" && (
-                      <div>
-                        <div className="flex gap-1 items-center">
-                          <p className={` ${titleColor}`}>หัวหน้างาน :</p>{" "}
-                          <span>{event.Name}</span>
-                        </div>
-                        <div className="flex gap-1 items-center">
-                          <p className={`${titleColor}`}>เบอร์ติดต่อ:</p>
-                          <span> {event.Phone_Number || "-"}</span>
-                        </div>
-                      </div>
-                    )}
+                    <div className="flex gap-1 items-center">
+                      <p className={`${titleColor}`}>หัวหน้างาน :</p>
+                      <span>{event.Name}</span>
+                    </div>
+                    <div className="flex gap-1 items-center">
+                      <p className={`${titleColor}`}>เบอร์ติดต่อ:</p>
+                      <span>{event.Phone_Number || "-"}</span>
+                    </div>
                   </div>
-                );
-              })}
-              <div className="flex gap-1 items-center  ">
-                <p className={` ${titleColor}`}>สถานะงาน : </p>
-                <span>
-                 {job.Status}
-                </span>
+                ) : null
+              )}
+
+              <div className="flex gap-1 items-center">
+                <p className={`${titleColor}`}>สถานะงาน : </p>
+                <span>{job.Status}</span>
               </div>
 
-              <div className="flex gap-1 items-center  ">
-                <p className={` ${titleColor}`}>วันเริ่มงาน: </p>
+              <div className="flex gap-1 items-center">
+                <p className={`${titleColor}`}>วันเริ่มงาน: </p>
                 <span>
-                  {" "}
                   {job.Date_of_acceptance_of_work
                     ? new Date(
                         job.Date_of_acceptance_of_work
@@ -345,10 +339,10 @@ export default function Detailwork() {
                     : "-"}
                 </span>
               </div>
-              <div className="flex gap-1 items-center ">
-                <p className={` ${titleColor}`}>วันปิดงาน: </p>
+
+              <div className="flex gap-1 items-center">
+                <p className={`${titleColor}`}>วันปิดงาน: </p>
                 <span>
-                  {" "}
                   {job.Closing_date
                     ? new Date(job.Closing_date).toLocaleDateString("th-TH")
                     : "-"}
@@ -356,20 +350,22 @@ export default function Detailwork() {
               </div>
             </div>
 
+            {/* รายละเอียดงาน */}
             <div className={`border p-3 rounded-xl ${bg}`}>
-              <p className={`text-lg mb-1   ${titleColor}`}>รายละเอียดงาน</p>
-              <div className="">
-                <p className="  h-17 overflow-auto scrollbar-hide ">
-                  {" "}
+              <p className={`text-lg mb-1 ${titleColor}`}>รายละเอียดงาน</p>
+              <div>
+                <p className="h-auto max-h-44 overflow-auto scrollbar-hide">
                   {job.description || "-"}
                 </p>
               </div>
             </div>
           </div>
 
-          <div className="grid grid-cols-5 gap-4 mt-3">
+          {/* รายการเบิกของ + แผนที่ */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4 mt-3">
+            {/* รายการเบิกของ */}
             <div
-              className={`w-full p-3 h-174  col-span-2 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
+              className={`w-full p-3 col-span-2 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
             >
               <div
                 className={`${
@@ -378,19 +374,13 @@ export default function Detailwork() {
               >
                 รายการติดต่อ / เบิกของ
               </div>
-
-              <div className="h-155  overflow-auto scrollbar-hide">
+              <div className="max-h-80 overflow-auto scrollbar-hide">
                 {requisitionItems
-                  .sort((a, b) => {
-                    const dateA = a.createdAt
-                      ? new Date(a.createdAt).getTime()
-                      : 0;
-                    const dateB = b.createdAt
-                      ? new Date(b.createdAt).getTime()
-                      : 0;
-
-                    return dateB - dateA; // ใหม่ → เก่า
-                  })
+                  .sort(
+                    (a, b) =>
+                      (new Date(b.createdAt).getTime() || 0) -
+                      (new Date(a.createdAt).getTime() || 0)
+                  )
                   .map((item, index) => (
                     <motion.div
                       key={item.id}
@@ -407,17 +397,21 @@ export default function Detailwork() {
                           : "shadow-sm bg-gray-50"
                       }`}
                     >
+                      {job.Status === "เสร็จสิ้น" && (
+                        <div className="pl-2 text-sm font-semibold text-green-500">
+                          ได้รับการอนุมัติปิดงานเเล้ว
+                        </div>
+                      )}
                       <div>
                         <p
-                          className={`text-sm pl-2 font-semibold truncate  w-120 ${titleColor}`}
+                          className={`text-sm pl-2 font-semibold truncate w-full ${titleColor}`}
                         >
-                          {item.section} :
+                          {item.section} :{" "}
                           <span
                             className={`${
                               theme === "dark" ? "text-white" : "text-black"
                             }`}
                           >
-                            {" "}
                             สถานะ :{" "}
                             <span
                               className={`${
@@ -436,12 +430,16 @@ export default function Detailwork() {
                                 item.status === "ได้รับการยืนยันจากคลังแล้ว"
                                   ? "text-green-500"
                                   : ""
+                              } ${
+                                item.status === "รอการอนุมัติ"
+                                  ? "text-orange-500"
+                                  : ""
                               }`}
                             >
                               {item.status}
                             </span>
                             {item.reasondescriptionstatus?.trim() && (
-                              <span className="">
+                              <span>
                                 หมายเหตุ:{" "}
                                 <span
                                   className={`${
@@ -457,8 +455,7 @@ export default function Detailwork() {
                           </span>
                         </p>
                       </div>
-
-                      <div className="flex gap-2 items-center">
+                      <div className="flex gap-2 items-center flex-wrap">
                         <img
                           className="w-12 h-12 rounded-full object-cover"
                           src={
@@ -475,42 +472,36 @@ export default function Detailwork() {
                             }`}
                           >
                             <span className={`font-semibold ${titleColor}`}>
-                              {" "}
-                              {item.role}{" "}
-                            </span>
+                              {item.role}
+                            </span>{" "}
                             นาย : {item.requesterName}
                           </p>
                           <p
-                            className={`truncate w-120 flex gap-2 font-semibold  ${text_color}`}
+                            className={`truncate flex gap-2 font-semibold ${text_color}`}
                           >
-                            <span className={`font-semibold  ${titleColor}`}>
+                            <span className={`font-semibold ${titleColor}`}>
                               รายงาน:
                             </span>{" "}
                             {item.name}
-                            <p className="font-semibold ">
-                              {" "}
+                            <span className="font-semibold">
                               <span className={`${titleColor} font-semibold`}>
-                                {" "}
-                                จํานวน :{" "}
-                              </span>
+                                จำนวน :
+                              </span>{" "}
                               {item.quantity}
-                            </p>
+                            </span>
                           </p>
                           <p
-                            className={`font-semibold  ${
+                            className={`font-semibold ${
                               theme === "dark" ? "text-white" : "text-black"
                             }`}
                           >
-                            <span className={`${titleColor} font-semibold `}>
-                              วันที่ :{" "}
-                            </span>
+                            <span className={`${titleColor} font-semibold`}>
+                              วันที่ :
+                            </span>{" "}
                             {item.createdAt
                               ? new Date(item.createdAt).toLocaleString(
                                   "th-TH",
-                                  {
-                                    dateStyle: "short",
-                                    timeStyle: "short",
-                                  }
+                                  { dateStyle: "short", timeStyle: "short" }
                                 )
                               : "-"}
                           </p>
@@ -526,19 +517,19 @@ export default function Detailwork() {
               </div>
             </div>
 
-            {/* แผนที่*/}
+            {/* แผนที่ */}
             <div
-              className={`border py-3 px-4 col-span-3 rounded-2xl h-175 ${bg}`}
+              className={`border py-3 px-4 col-span-3 rounded-2xl h-auto ${bg} min-h-[250px]`}
             >
               <h2
-                className={`text-xl font-semibold text-blue-500 mb-3 ${
+                className={`text-xl font-semibold mb-3 ${
                   theme === "dark" ? "text-yellow-500" : "text-blue-500"
                 }`}
               >
                 แผนที่งาน
               </h2>
               {loading || !markerPos || !userPos ? (
-                <div className="w-full   rounded-lg bg-gray-200 animate-pulse"></div>
+                <div className="w-full rounded-lg bg-gray-200 animate-pulse h-full"></div>
               ) : (
                 <JobMap
                   markerPos={markerPos}

@@ -210,7 +210,8 @@ export default function Details() {
       // หา Worksheet และวันของงานนี้จาก dataEmployees
       const employee = dataEmployees.find((e) => e._id === id);
       const worksheetName = employee?.Worksheet || "ไม่ระบุชื่องาน";
-      const workDay = employee?.Date_of_acceptance_of_work || "ไม่ระบุวันเริ่มงาน";
+      const workDay =
+        employee?.Date_of_acceptance_of_work || "ไม่ระบุวันเริ่มงาน";
       const closingDay = employee?.Closing_date || "ไม่ระบุวันปิดงาน";
 
       const payload = {
@@ -700,8 +701,25 @@ export default function Details() {
                               : "shadow-sm bg-gray-50"
                           }`}
                         >
+                          {/* {e.Status === "เสร็จสิ้น" && (
+                            <p className="pl-2 text-sm font-semibold text-green-500">
+                              ได้รับการอนุมัติปิดงานเเล้ว
+                            </p>
+                          )} */}
+                          {dataEmployees.map((e, i) => {
+                            return (
+                              e.Status === "เสร็จสิ้น" && (
+                                <div
+                                  key={i}
+                                  className="pl-2 text-sm font-semibold text-green-500"
+                                >
+                                  ได้รับการอนุมัติปิดงานเเล้ว
+                                </div>
+                              )
+                            );
+                          })}
                           <div className="flex  justify-between">
-                            {" "}
+                          
                             <p
                               className={`text-sm pl-2 truncate  w-120 font-semibold ${titleColor}`}
                             >
@@ -728,6 +746,10 @@ export default function Details() {
                                   } ${
                                     e.status === "ได้รับการยืนยันจากคลังแล้ว"
                                       ? "text-green-500"
+                                      : ""
+                                  } ${
+                                    e.status === "รอการอนุมัติ"
+                                      ? "text-orange-500"
                                       : ""
                                   }`}
                                 >

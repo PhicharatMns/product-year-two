@@ -281,7 +281,7 @@ export default function Dashboard({
       {/* Header */}
       <header className="mb-5">
         <h1
-          className={`text-3xl font-extrabold drop-shadow-sm ${
+          className={`text-3xl lg:text-left text-center font-extrabold drop-shadow-sm ${
             theme === "dark" ? "text-yellow-500" : "text-blue-500"
           }`}
         >
@@ -298,7 +298,7 @@ export default function Dashboard({
       </header>
 
       {/* KPI Cards */}
-      <div className="grid w-full grid-cols-4 gap-5">
+      <div className="grid w-full grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {[
           {
             title: "จำนวนช่าง",
@@ -366,8 +366,8 @@ export default function Dashboard({
         ))}
       </div>
 
-      <div className="grid grid-cols-12 gap-5">
-        <div className="col-span-8">
+      <div className="grid lg:grid-cols-12 gap-5">
+        <div className="lg:col-span-8 col-span-6">
           <div
             className={`rounded-xl w-full col-span-6 mt-4 shadow-xl p-3  ${cardBg}`}
           >
@@ -378,7 +378,7 @@ export default function Dashboard({
             >
               การดําเนินงาน
             </h2>
-            <div className="h-135">
+            <div className="lg:h-135 h-100">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={monthlyData}>
                   {" "}
@@ -414,7 +414,7 @@ export default function Dashboard({
           </div>
         </div>
 
-        <div className="col-span-4">
+        <div className="lg:col-span-4 col-span-6">
           <div className={`rounded-xl w-full mt-4 shadow-xl p-3  ${cardBg}`}>
             <h2
               className={`text-2xl font-extrabold mb-4 text-center ${

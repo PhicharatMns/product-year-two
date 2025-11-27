@@ -202,7 +202,6 @@ export default function MessagerAdmin() {
         </h1>
         <p className={`${subText} text-sm`}>
           จัดการและติดตามข้อความแจ้งเตือนทั้งหมดในระบบ
-          <p>{loggedInUserName}</p>
         </p>
       </div>
 

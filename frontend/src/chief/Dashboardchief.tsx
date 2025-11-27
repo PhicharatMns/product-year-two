@@ -284,11 +284,11 @@ export default function Dashboardchief() {
         <section>
           <div className="flex flex-col lg:flex-row gap-10">
             {/* Dashboard Cards */}
-            <div className="grid grid-cols-1 w-90 gap-5">
+            <div className="grid lg:grid-cols-1 grid-cols-2 w-90 gap-5">
               {statsItems.map((item, index) => (
                 <div
                   key={index}
-                  className={`text-white rounded-2xl flex pl-5 justify-center flex-col shadow-lg ${
+                  className={`text-white rounded-2xl flex lg:pl-5 lg:p-0 p-5 justify-center flex-col shadow-lg ${
                     theme === "dark" ? item.color_bark : item.color
                   }`}
                 >
@@ -303,9 +303,14 @@ export default function Dashboardchief() {
                   <div>
                     <Link
                       to={`/${item.link}`}
-                      className={`relative cursor-pointer after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-full after:translate-y-1  after:opacity-0 after:transition after:duration-150 after:ease-in-out hover:after:translate-y-0 hover:after:opacity-100 ${
-                        theme === "dark" ? "after:bg-white" : "after:bg-white"
-                      }`}
+                      className={`relative cursor-pointer 
+      after:absolute after:bottom-0 after:left-0 
+      after:h-[2px] after:w-full 
+      after:translate-y-1 after:opacity-0 
+      after:transition after:duration-200 after:ease-in-out 
+      hover:after:translate-y-0 hover:after:opacity-100
+      ${theme === "dark" ? "after:bg-white" : "after:bg-white"}
+    `}
                     >
                       รายละเอียด
                     </Link>

@@ -16,7 +16,7 @@ import {
 import "leaflet-draw"; // ต้อง import แบบนี้เพื่อให้ L.Control.Draw ทำงาน
 import "leaflet-draw/dist/leaflet.draw.css"; // โหลด CSS ของ draw
 import L from "leaflet";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface GeoPoint {
   type: "Point";
@@ -65,7 +65,7 @@ const headers = [
   "ชื่องาน",
   "รายชื่อผู้จ้าง",
   "เบอร์ติดต่อ",
-  'ผู้ออกใบงาน',
+  "ผู้ออกใบงาน",
   "สถานะ",
   "วันที่รับ",
   "วันที่ต้องปิดงาน",
@@ -95,6 +95,7 @@ export default function Searchpastjobs() {
   const [searchpopup, setSearchpopup] = useState("");
   const [opendatefilepopup, setopendatefilepopup] = useState(fade);
   const sigCanvasRef = useRef<SignatureCanvas>(null);
+  const [openstatus, setopenstatus] = useState(false);
 
   const [Message, setMessage] = useState("");
 
@@ -168,7 +169,7 @@ export default function Searchpastjobs() {
     doc.setFontSize(26);
     doc.setFont("THSarabun", "bold");
     doc.setTextColor(255);
-    doc.text("TechJob - Employee Report", pageWidth / 2, 45, {
+    doc.text("TechJob", pageWidth / 2, 45, {
       align: "center",
     });
     currentY += 30;
@@ -539,6 +540,8 @@ export default function Searchpastjobs() {
     return null;
   }
 
+  const [selectedJob, setSelectedJob] = useState<Employee | null>(null);
+
   // สร้าง icon กำหนดสีเอง
   const customIcon = new L.Icon({
     iconUrl:
@@ -550,6 +553,17 @@ export default function Searchpastjobs() {
     popupAnchor: [1, -34],
     shadowSize: [41, 41],
   });
+
+  const handleConfirmFinish = async () => {
+    if (!selectedJob) return;
+
+    await axios.put(`http://localhost:5000/api/employees/${selectedJob._id}`, {
+      Status: "เสร็จสิ้น",
+    });
+
+    setopenstatus(false);
+    fetchData(); // โหลดข้อมูลใหม่
+  };
 
   // โหลดข้อมูลทั้งหมดตอนเปิดหน้า
   useEffect(() => {
@@ -648,7 +662,8 @@ export default function Searchpastjobs() {
               e.Status === "ล่าช้า" ||
               e.Status === "กำลังดำเนินการ" ||
               e.Status === "Active" ||
-              e.Status === "เสร็จสิ้น"
+              e.Status === "เสร็จสิ้น" ||
+              e.Status === "รอการอนุมัติ"
           ).length > 0 ? (
             filtered
               .filter(
@@ -656,7 +671,8 @@ export default function Searchpastjobs() {
                   e.Status === "ล่าช้า" ||
                   e.Status === "กำลังดำเนินการ" ||
                   e.Status === "Active" ||
-                  e.Status === "เสร็จสิ้น"
+                  e.Status === "เสร็จสิ้น" ||
+                  e.Status === "รอการอนุมัติ"
               )
               .sort((a, b) => {
                 const statusOrder = [
@@ -711,11 +727,19 @@ export default function Searchpastjobs() {
 
                   {/* สถานะ */}
                   <p
-                    className={`${
+                    onClick={() => {
+                      if (e.Status === "รอการอนุมัติ") {
+                        // ✔ เฉพาะสถานะนี้
+                        setSelectedJob(e);
+                        setopenstatus(true);
+                      }
+                    }}
+                    className={`cursor-pointer ${
                       e.Status === "กำลังดำเนินการ" ? texthaed : ""
-                    } ${e.Status === "เสร็จสิ้น" ? "text-green-500" : ""} ${
-                      e.Status === "ล่าช้า" ? "text-red-500" : ""
-                    }`}
+                    } ${e.Status === "เสร็จสิ้น" ? "text-green-500" : ""}
+    ${e.Status === "ล่าช้า" ? "text-red-500" : ""}
+    ${e.Status === "รอการอนุมัติ" ? "text-orange-500" : ""}
+ `}
                   >
                     {e.Status || "-"}
                   </p>
@@ -864,10 +888,10 @@ export default function Searchpastjobs() {
                   ))}
                 </div>
                 <div className="">
-                  <label className={`block mb-1 font-semibold ${cls.label}`}>
+                  <label className={`block my-2 font-semibold ${cls.label}`}>
                     ลายเซ็นต์
                   </label>
-                  <div className="border rounded-lg">
+                  <div className={`border rounded-lg ${cls.input}`}>
                     <SignatureCanvas
                       ref={sigCanvasRef}
                       penColor="black"
@@ -1294,6 +1318,71 @@ export default function Searchpastjobs() {
           </div>
         </div>
       )}
+      <AnimatePresence>
+        {openstatus && (
+          <motion.div
+            key="status-popup"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm bg-black/40"
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 20, scale: 0.92 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className={`w-[90%] max-w-md p-6 rounded-2xl shadow-xl ${
+                theme === "dark" ? "bg-gray-800" : "bg-white"
+              }`}
+            >
+              <p
+                className={`text-xl font-semibold mb-4 ${
+                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                }`}
+              >
+                เหตุผลการขอปิดงาน
+              </p>
+
+              <div
+                className={`p-3 mb-4 rounded-lg border ${
+                  theme === "dark" ? "bg-gray-700" : "bg-gray-100"
+                }`}
+              >
+                งานที่ได้รับมอบหมายได้ดำเนินการครบถ้วนแล้ว
+                ทั้งในส่วนของงานหลักและงานเสริมตามที่ผู้ว่าจ้างระบุไว้
+                พร้อมส่งมอบผลลัพธ์ทั้งหมดตามที่ตกลงไว้
+                จึงขอปิดงานเพื่อดำเนินการขั้นตอนต่อไป
+              </div>
+
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={() => setopenstatus(false)}
+                  className="group relative overflow-hidden rounded-lg cursor-pointer border bg-white px-4 text-gray-700 font-medium shadow-md transition-transform duration-300 hover:scale-103 active:scale-95"
+                >
+                  <span className="relative z-10">ยกเลิก</span>
+                  <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <span className="absolute left-0 top-0 w-0 h-full bg-gray-200 transition-all duration-500 group-hover:w-full"></span>
+                  </span>
+                </button>
+
+                <button
+                  onClick={handleConfirmFinish}
+                  className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
+                    theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                  }`}
+                >
+                  <span className="relative z-10">ยืนยัน</span>
+                  <span className="absolute inset-0 overflow-hidden pointer-events-none">
+                    <span className="absolute left-0 top-0 w-0 h-full bg-white opacity-20 transition-all duration-500 group-hover:w-full"></span>
+                  </span>
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

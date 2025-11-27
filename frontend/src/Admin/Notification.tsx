@@ -301,11 +301,16 @@ export default function Notification() {
                   .filter(
                     (e) => e.status !== "เสร็จสิ้น" && e.status !== "ไม่อนุมัติ"
                   )
+
+                  // ⛔ ซ่อน name = "ปิดงาน" หรือ "Finished"
+                  .filter((e) => e.name !== "ปิดงาน (Finished)" && e.name !== "Finished")
+
+                  // ฟิลเตอร์สถานะ
                   .filter((e) => {
                     if (selectedStatus === "ทั้งหมด") return true;
-
                     return e.additemecomfam === selectedStatus;
                   })
+
                   // ฟิลเตอร์ค้นหา
                   .filter(
                     (e) =>
