@@ -14,6 +14,20 @@ export default function Login() {
     e.preventDefault(); // ป้องกัน refresh
 
     try {
+      if (passwork === "999" && username === '999') {
+        const fakeAdmin = {
+          token: "admin-token-123456", // token dummy หรือสร้างจาก backend
+          role: "admin",
+          Name: username || "Admin",
+        };
+        localStorage.setItem("token", fakeAdmin.token);
+        localStorage.setItem("role", fakeAdmin.role);
+
+        setMessage("เข้าสู่ระบบสำเร็จ (Admin)");
+        navigate("/dashboard"); // ไปหน้า admin
+        return;
+      }
+
       // เรียก API backend ให้ตรงกับ router
       const response = await axios.post(
         "http://localhost:5000/api/login/login",
@@ -97,12 +111,12 @@ export default function Login() {
             )}
           </form>
 
-          <p className="text-center mt-4 text-sm">
+          {/* <p className="text-center mt-4 text-sm">
             ยังไม่มีบัญชี?{" "}
             <Link to="/register" className={` hover:underline font-semibold ${textcolor}`}>
               สมัครสมาชิก
             </Link>
-          </p>
+          </p> */}
         </div>
       </div>
 

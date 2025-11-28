@@ -158,11 +158,11 @@ export default function Dashboardchief() {
         return {
           เดือน: month,
           งานทั้งหมด: jobsInMonth.length,
-          เสร็จสิ้น: jobsInMonth.filter((j) => j.Status === "Finish").length,
           กำลังดำเนินการ: jobsInMonth.filter(
             (j) => j.Status === "กำลังดำเนินการ" || j.Status === "Active"
           ).length,
           ล่าช้า: jobsInMonth.filter((j) => j.Status === "ล่าช้า").length,
+          เสร็จสิ้น: jobsInMonth.filter((j) => j.Status === "เสร็จสิ้น").length,
         };
       });
 
@@ -223,8 +223,8 @@ export default function Dashboardchief() {
         value: dashboardStats.totalTradesmen,
         color: "bg-blue-400",
         color_bark: "bg-yellow-500",
-        link: "user/getpaper",
-        valueFn: () => {},
+
+        valueFn: () => { },
       },
       {
         title: "ช่างที่ได้งาน",
@@ -232,7 +232,7 @@ export default function Dashboardchief() {
         color: "bg-blue-500",
         color_bark: "bg-yellow-500",
         valueFn: OpenModadShowfinishpopup,
-        link: "chief/edituser",
+
       },
       {
         title: "ช่างที่ยังไม่มีงาน",
@@ -240,7 +240,7 @@ export default function Dashboardchief() {
         color: "bg-blue-600",
         color_bark: "bg-yellow-600",
         valueFn: OpenInProgressPopup,
-        link: "chief/edituser",
+
       },
       {
         title: "รายการขอเบิกของ",
@@ -256,22 +256,19 @@ export default function Dashboardchief() {
 
   return (
     <div
-      className={`w-max-380 p-5 mx-auto container duration-300 ${
-        fadeIn ? "opacity-100" : "opacity-0"
-      }`}
+      className={`w-max-380 p-5 mx-auto container duration-300 ${fadeIn ? "opacity-100" : "opacity-0"
+        }`}
     >
       <div>
         <header className="mb-5">
           <h1
-            className={`text-3xl font-extrabold drop-shadow-sm ${
-              theme === "dark" ? "text-yellow-500" : "text-blue-500"
-            }`}
+            className={`text-3xl font-extrabold drop-shadow-sm ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+              }`}
           >
             Dashboard{" "}
             <span
-              className={`${
-                theme === "dark" ? "text-white" : "text-yellow-500"
-              }`}
+              className={`${theme === "dark" ? "text-white" : "text-yellow-500"
+                }`}
             >
               หัวหน้าช่าง
             </span>
@@ -288,9 +285,8 @@ export default function Dashboardchief() {
               {statsItems.map((item, index) => (
                 <div
                   key={index}
-                  className={`text-white rounded-2xl flex lg:pl-5 lg:p-0 p-5 justify-center flex-col shadow-lg ${
-                    theme === "dark" ? item.color_bark : item.color
-                  }`}
+                  className={`text-white rounded-2xl flex lg:pl-5 lg:p-0 p-5 justify-center flex-col shadow-lg ${theme === "dark" ? item.color_bark : item.color
+                    }`}
                 >
                   <h2 className="text-2xl mb-3 font-extrabold">{item.title}</h2>
                   <p className="mb-3 font-extrabold text-xl">
@@ -301,9 +297,12 @@ export default function Dashboardchief() {
                     )}
                   </p>
                   <div>
-                    <Link
-                      to={`/${item.link}`}
-                      className={`relative cursor-pointer 
+                    {item.title !== "ช่างที่ได้งาน" &&
+                      item.title !== "ช่างที่ยังไม่มีงาน" &&
+                      item.title !== "จำนวนช่างทั้งหมด" && (
+                        <Link
+                          to={`/${item.link}`}
+                          className={`relative cursor-pointer 
       after:absolute after:bottom-0 after:left-0 
       after:h-[2px] after:w-full 
       after:translate-y-1 after:opacity-0 
@@ -311,9 +310,11 @@ export default function Dashboardchief() {
       hover:after:translate-y-0 hover:after:opacity-100
       ${theme === "dark" ? "after:bg-white" : "after:bg-white"}
     `}
-                    >
-                      รายละเอียด
-                    </Link>
+                        >
+                          รายละเอียด
+                        </Link>
+                      )}
+
                   </div>
                 </div>
               ))}
@@ -324,9 +325,8 @@ export default function Dashboardchief() {
               {/* กราฟ Bar Chart เดิม */}
               <div className={`rounded-xl shadow-sm h-200 p-6 ${cardBg}`}>
                 <h2
-                  className={`text-2xl font-extrabold mb-4 text-center ${
-                    theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                  }`}
+                  className={`text-2xl font-extrabold mb-4 text-center ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                    }`}
                 >
                   จำนวนงานแต่ละเดือน
                 </h2>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { AiTwotoneCalendar } from "react-icons/ai"; import { useState, useEffect } from "react";
 import { Link, useNavigate, NavLink } from "react-router-dom";
 import { MdDashboard } from "react-icons/md";
 import { IoIosLogOut } from "react-icons/io";
@@ -10,6 +10,8 @@ import { AiOutlineTeam } from "react-icons/ai";
 import { RiFilePaper2Line } from "react-icons/ri";
 import axios from "axios";
 import { LuMessageSquareText } from "react-icons/lu";
+import { FaClipboardList } from "react-icons/fa";
+
 interface SidebarItem {
   text: string;
   icon: React.ComponentType<{ size?: number }>;
@@ -72,7 +74,7 @@ export default function SidebarChief() {
     },
     {
       text: "ปฎิทิน",
-      icon: RiFilePaper2Line,
+      icon: AiTwotoneCalendar,
       link: "/chief/CalendarChief",
     },
     {
@@ -81,12 +83,12 @@ export default function SidebarChief() {
       link: "/chief/messeger",
     },
 
-    { text: "รายการเบิกของ", icon: AiOutlineTeam, link: "/chief/ItemChief" },
-    {
-      text: "ทีม",
-      icon: LuMessageSquareText,
-      link: "/chief/edituser",
-    },
+    { text: "รายการเบิกของ", icon: FaClipboardList, link: "/chief/ItemChief" },
+    // {
+    //   text: "ทีม",
+    //   icon: LuMessageSquareText,
+    //   link: "/chief/edituser",
+    // },
 
     // { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
     { text: "ออกจากระบบ", icon: IoIosLogOut, onClick: handleLogout },
@@ -141,9 +143,8 @@ export default function SidebarChief() {
       </button>
 
       <div
-        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 ${linkTextColor} font-bold border-r transition-transform duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 ${linkTextColor} font-bold border-r transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
       >
         <div className="flex flex-col">
           <div className="flex items-center py-3 p-4">
@@ -166,8 +167,7 @@ export default function SidebarChief() {
                     to={item.link}
                     key={index}
                     className={({ isActive }) =>
-                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium ${linkTextColor} transition duration-300 ${
-                        isActive ? "bg-yellow-500" : ""
+                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium ${linkTextColor} transition duration-300 ${isActive ? "bg-yellow-500" : ""
                       }`
                     }
                     onClick={() => setOpen(false)}
@@ -237,10 +237,9 @@ export default function SidebarChief() {
             rounded-t-xl h-180 w-80 p-2 ${bgside}
             transition-all transform duration-500
             z-15 shadow-2xl border-t border-r border-gray-200 dark:border-gray-700
-            ${
-              slideIn
-                ? "translate-x-67 scale-100 opacity-100"
-                : "-translate-x-full opacity-0"
+            ${slideIn
+              ? "translate-x-67 scale-100 opacity-100"
+              : "-translate-x-full opacity-0"
             }
           `}
         >
@@ -283,11 +282,10 @@ export default function SidebarChief() {
       {/* Slide Menu รายละเอียด */}
       {openManage && (
         <div
-          className={`fixed left-4 lg:left-150 bottom-0 rounded-t-xl h-150 w-80 p-2 ${bgside} z-20 transition-all transform duration-500 shadow-2xl border-t border-gray-200 dark:border-gray-700 ${
-            slideManage
-              ? "-translate-x-0 scale-100 opacity-100"
-              : "-translate-x-20 scale-100 opacity-0"
-          }`}
+          className={`fixed left-4 lg:left-150 bottom-0 rounded-t-xl h-150 w-80 p-2 ${bgside} z-20 transition-all transform duration-500 shadow-2xl border-t border-gray-200 dark:border-gray-700 ${slideManage
+            ? "-translate-x-0 scale-100 opacity-100"
+            : "-translate-x-20 scale-100 opacity-0"
+            }`}
         >
           <div className="border-black p-2 rounded-xl flex items-center gap-3">
             <img

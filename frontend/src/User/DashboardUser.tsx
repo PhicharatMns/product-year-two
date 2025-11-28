@@ -156,7 +156,7 @@ export default function DashboardUser() {
         return {
           เดือน: month,
           งานทั้งหมด: jobsInMonth.length,
-          เสร็จสิ้น: jobsInMonth.filter((j) => j.Status === "Finish").length,
+          เสร็จสิ้น: jobsInMonth.filter((j) => j.Status === "เสร็จสิ้น").length,
           กำลังดำเนินการ: jobsInMonth.filter(
             (j) => j.Status === "กำลังดำเนินการ" || j.Status === "Active"
           ).length,
@@ -563,7 +563,7 @@ export default function DashboardUser() {
               ))}
             </div>
 
-            <div className="lg:h-160 h-140 border-b overflow-y-auto scrollber-hide px-6">
+            <div className="lg:h-155 h-140 border-b overflow-y-auto scrollber-hide px-6">
               {employees
                 .filter(
                   (emp) =>

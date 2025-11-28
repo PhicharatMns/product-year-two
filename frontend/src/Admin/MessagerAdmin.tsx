@@ -31,6 +31,7 @@ export default function MessagerAdmin() {
   const [showMenu, setShowMenu] = useState(false);
   const [problemType, setProblemType] = useState("");
   const [loggedInUserName, setLoggedInUserName] = useState("ไม่ทราบชื่อ");
+  const [search, setSearch] = useState("");
 
   const token = localStorage.getItem("token");
 
@@ -198,7 +199,7 @@ export default function MessagerAdmin() {
       {/* Header */}
       <div className="mb-6 shrink-0">
         <h1 className={`text-3xl font-semibold mb-1 ${primaryText}`}>
-          ภาพรวมข้อความจากช่าง
+          กล่องข้อความจากช่างเเละหัวหน้าช่าง
         </h1>
         <p className={`${subText} text-sm`}>
           จัดการและติดตามข้อความแจ้งเตือนทั้งหมดในระบบ
@@ -279,7 +280,19 @@ export default function MessagerAdmin() {
       active:-translate-y-1 active:scale-x-90 active:scale-y-110
       ${selectedRole === role ? "bg-yellow-500" : "bg-blue-500"}`}
                 >
-                  {role === "all" ? "ทั้งหมด" : role}
+                  <span>
+                    {role === "all"
+                      ? "ทั้งหมด"
+                      : role === "user"
+                        ? "ช่าง"
+                        : role === "admin"
+                          ? "แอดมิน"
+                          : role === "chief"
+                            ? "หัวหน้าช่าง"
+                            : role === "executive"
+                              ? "ผู้บริหาร"
+                              : role}
+                  </span>
                 </div>
               ))}
             </div>
@@ -288,6 +301,8 @@ export default function MessagerAdmin() {
                 className={`absolute left-3 top-1/2 -translate-y-1/2 `}
               />
               <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 placeholder="ค้นหา..."
@@ -317,7 +332,12 @@ export default function MessagerAdmin() {
             {Message.filter(
               (e) =>
                 e.Name !== name &&
-                (selectedRole === "all" || e.role === selectedRole)
+                (selectedRole === "all" || e.role === selectedRole) &&
+                (
+                  e.Name.toLowerCase().includes(search.toLowerCase()) ||
+                  e.requesterName?.toLowerCase().includes(search.toLowerCase()) ||
+                  e.status?.toLowerCase().includes(search.toLowerCase())
+                )
             ).map((e, i) => (
               <motion.div
                 key={e._id}

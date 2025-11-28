@@ -293,9 +293,8 @@ export default function Detailwork() {
   return (
     <div className={` max-w-380 p-5 mx-auto container ${text}`}>
       <div
-        className={`transition-opacity duration-700 ${
-          fade ? "opacity-100" : "opacity-0"
-        }`}
+        className={`transition-opacity duration-700 ${fade ? "opacity-100" : "opacity-0"
+          }`}
       >
         <div className="text-2xl sm:text-3xl font-bold flex justify-center lg:justify-start gap-2">
           <p className={`${titleColor}`}>รายละเอียดงาน :</p>
@@ -334,8 +333,8 @@ export default function Detailwork() {
                 <span>
                   {job.Date_of_acceptance_of_work
                     ? new Date(
-                        job.Date_of_acceptance_of_work
-                      ).toLocaleDateString("th-TH")
+                      job.Date_of_acceptance_of_work
+                    ).toLocaleDateString("th-TH")
                     : "-"}
                 </span>
               </div>
@@ -368,13 +367,12 @@ export default function Detailwork() {
               className={`w-full p-3 col-span-2 rounded-2xl border ${bg} ${borderSoft} text-gray-600`}
             >
               <div
-                className={`${
-                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                } text-xl font-semibold mb-3 border-b pb-3`}
+                className={`${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  } text-xl font-semibold mb-3 border-b pb-3`}
               >
-                รายการติดต่อ / เบิกของ
+                รายการ / เบิกของ / ปิดงาน
               </div>
-              <div className="max-h-80 overflow-auto scrollbar-hide">
+              <div className="max-h-150 overflow-auto scrollbar-hide">
                 {requisitionItems
                   .sort(
                     (a, b) =>
@@ -391,11 +389,10 @@ export default function Detailwork() {
                         delay: 0.05 * index,
                         ease: "easeOut",
                       }}
-                      className={`items-center border p-2 my-2 rounded-xl ${
-                        theme === "dark"
+                      className={`items-center border p-2 my-2 rounded-xl ${theme === "dark"
                           ? "bg-gray-800"
                           : "shadow-sm bg-gray-50"
-                      }`}
+                        }`}
                     >
                       {job.Status === "เสร็จสิ้น" && (
                         <div className="pl-2 text-sm font-semibold text-green-500">
@@ -408,33 +405,27 @@ export default function Detailwork() {
                         >
                           {item.section} :{" "}
                           <span
-                            className={`${
-                              theme === "dark" ? "text-white" : "text-black"
-                            }`}
+                            className={`${theme === "dark" ? "text-white" : "text-black"
+                              }`}
                           >
                             สถานะ :{" "}
                             <span
-                              className={`${
-                                item.status === "ไม่อนุมัติ"
+                              className={`${item.status === "ไม่อนุมัติ"
                                   ? "text-red-500"
                                   : ""
-                              } ${
-                                item.status === "รอดําเนินการ"
+                                } ${item.status === "รอดําเนินการ"
                                   ? "text-orange-500"
                                   : ""
-                              } ${
-                                item.status === "อนุมัติเเล้วรอการติดต่อคลัง"
+                                } ${item.status === "อนุมัติเเล้วรอการติดต่อคลัง"
                                   ? "text-green-500"
                                   : ""
-                              } ${
-                                item.status === "ได้รับการยืนยันจากคลังแล้ว"
+                                } ${item.status === "ได้รับการยืนยันจากคลังแล้ว"
                                   ? "text-green-500"
                                   : ""
-                              } ${
-                                item.status === "รอการอนุมัติ"
+                                } ${item.status === "รอการอนุมัติ"
                                   ? "text-orange-500"
                                   : ""
-                              }`}
+                                }`}
                             >
                               {item.status}
                             </span>
@@ -442,11 +433,10 @@ export default function Detailwork() {
                               <span>
                                 หมายเหตุ:{" "}
                                 <span
-                                  className={`${
-                                    theme === "dark"
+                                  className={`${theme === "dark"
                                       ? "text-white"
                                       : "text-black"
-                                  }`}
+                                    }`}
                                 >
                                   {item.reasondescriptionstatus}
                                 </span>
@@ -467,9 +457,8 @@ export default function Detailwork() {
                         />
                         <div className="text-sm flex flex-col gap-1">
                           <p
-                            className={`font-semibold ${
-                              theme === "dark" ? "text-white" : "text-black"
-                            }`}
+                            className={`font-semibold ${theme === "dark" ? "text-white" : "text-black"
+                              }`}
                           >
                             <span className={`font-semibold ${titleColor}`}>
                               {item.role}
@@ -491,18 +480,17 @@ export default function Detailwork() {
                             </span>
                           </p>
                           <p
-                            className={`font-semibold ${
-                              theme === "dark" ? "text-white" : "text-black"
-                            }`}
+                            className={`font-semibold ${theme === "dark" ? "text-white" : "text-black"
+                              }`}
                           >
                             <span className={`${titleColor} font-semibold`}>
                               วันที่ :
                             </span>{" "}
                             {item.createdAt
                               ? new Date(item.createdAt).toLocaleString(
-                                  "th-TH",
-                                  { dateStyle: "short", timeStyle: "short" }
-                                )
+                                "th-TH",
+                                { dateStyle: "short", timeStyle: "short" }
+                              )
                               : "-"}
                           </p>
                         </div>
@@ -522,9 +510,8 @@ export default function Detailwork() {
               className={`border py-3 px-4 col-span-3 rounded-2xl h-auto ${bg} min-h-[250px]`}
             >
               <h2
-                className={`text-xl font-semibold mb-3 ${
-                  theme === "dark" ? "text-yellow-500" : "text-blue-500"
-                }`}
+                className={`text-xl font-semibold mb-3 ${theme === "dark" ? "text-yellow-500" : "text-blue-500"
+                  }`}
               >
                 แผนที่งาน
               </h2>

@@ -31,7 +31,7 @@ export default function Messeger() {
   const [showMenu, setShowMenu] = useState(false);
   const [problemType, setProblemType] = useState("");
   const [loggedInUserName, setLoggedInUserName] = useState("ไม่ทราบชื่อ");
-
+  const [search, setSearch] = useState("");
   const token = localStorage.getItem("token");
 
   useEffect(() => {
@@ -198,7 +198,7 @@ export default function Messeger() {
       {/* Header */}
       <div className="mb-6 shrink-0">
         <h1 className={`text-3xl font-semibold mb-1 ${primaryText}`}>
-          ภาพรวมข้อความจากช่าง
+          กล่องข้อความจากช่าง
         </h1>
         <p className={`${subText} text-sm`}>
           จัดการและติดตามข้อความแจ้งเตือนทั้งหมดในระบบ
@@ -269,8 +269,8 @@ export default function Messeger() {
           className={`lg:col-span-8 ${bg} rounded-xl overflow-hidden flex flex-col h-full`}
         >
           <div className="flex 5 justify-between items-center">
-            <div className="p-3 grid grid-cols-5 w-fit gap-2">
-              {["all", "user", "admin", "chief", "executive"].map((role, i) => (
+            <div className="p-3 grid grid-cols-4 w-fit gap-2">
+              {["all", "user", "admin", "chief"].map((role, i) => (
                 <div
                   key={i}
                   onClick={() => setSelectedRole(role as any)}
@@ -279,7 +279,17 @@ export default function Messeger() {
       active:-translate-y-1 active:scale-x-90 active:scale-y-110
       ${selectedRole === role ? "bg-yellow-500" : "bg-blue-500"}`}
                 >
-                  {role === "all" ? "ทั้งหมด" : role}
+                  <span>
+                    {role === "all"
+                      ? "ทั้งหมด"
+                      : role === "user"
+                        ? "ช่าง"
+                        : role === "admin"
+                          ? "แอดมิน"
+                          : role === "chief"
+                            ? "หัวหน้าช่าง"
+                            : ''}
+                  </span>
                 </div>
               ))}
             </div>
@@ -288,6 +298,8 @@ export default function Messeger() {
                 className={`absolute left-3 top-1/2 -translate-y-1/2 `}
               />
               <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
                 placeholder="ค้นหา..."
@@ -316,8 +328,13 @@ export default function Messeger() {
           >
             {Message.filter(
               (e) =>
-                e.Name !== name &&
-                (selectedRole === "all" || e.role === selectedRole)
+                e.role !== "executive" && // <--- ซ่อนผู้บริหาร
+                (selectedRole === "all" || e.role === selectedRole) &&
+                (
+                  e.Name.toLowerCase().includes(search.toLowerCase()) ||
+                  e.requesterName?.toLowerCase().includes(search.toLowerCase()) ||
+                  e.status?.toLowerCase().includes(search.toLowerCase())
+                )
             ).map((e, i) => (
               <motion.div
                 key={e._id}
@@ -432,14 +449,17 @@ export default function Messeger() {
                         {(msg.problem === "urgent" ||
                           msg.problem === "issue") && (
                             <div>
-                              <button
-                                onClick={() => markAsCommit(msg._id)}
-                                className="absolute top-2 right-2 px-3 py-1 text-xs  overflow-hidden truncate text-center cursor-pointer rounded-md  text-white  shadow-md transition-all duration-300
+                              {(msg.problem === "urgent" || msg.problem === "issue") && msg.requireRole === "admin" && (
+                                <button
+                                  onClick={() => markAsCommit(msg._id)}
+                                  className="absolute top-2 right-2 px-3 py-1 text-xs overflow-hidden truncate text-center cursor-pointer rounded-md text-white shadow-md transition-all duration-300
       [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)]
-      active:-translate-y-1 active:scale-x-90 active:scale-y-110  bg-green-500 hover:bg-green-600 "
-                              >
-                                รับเรื่อง
-                              </button>
+      active:-translate-y-1 active:scale-x-90 active:scale-y-110 bg-green-500 hover:bg-green-600"
+                                >
+                                  รับเรื่อง
+                                </button>
+                              )}
+
                             </div>
                           )}
 

@@ -6,9 +6,7 @@ import { FaInbox } from "react-icons/fa6";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { IoClose, IoLogOutOutline } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
-import { SiGooglemaps } from "react-icons/si";
 import { useTheme } from "@/components/theme-provider";
-import { FaTools } from "react-icons/fa";
 import axios from "axios";
 import { AiTwotoneCalendar } from "react-icons/ai";
 
@@ -54,11 +52,12 @@ export default function Sidebar() {
     navigate("/logins");
   };
 
+
+
   const items: SidebarItem[] = [
     { text: "Dashboard", icon: MdDashboard, link: "/user/DashboardUser" },
     { text: "รับใบงาน", icon: RiFilePaper2Line, link: "/user/getpaper" },
     { text: "ปฏิทินงาน", icon: AiTwotoneCalendar, link: "/user/Calendar" },
-    // { text: "กล่องข้อความ", icon: FaInbox, onClick: () => openManu() },
     { text: "กล่องข้อความ", icon: FaInbox, link: "/user/usermesseger" },
     { text: "ออกจากระบบ", icon: IoLogOutOutline, onClick: handleLogout },
   ];
@@ -75,10 +74,10 @@ export default function Sidebar() {
           "http://localhost:5000/api/login/dashboardUser",
           { headers: { Authorization: `Bearer ${token}` } }
         );
-        
+
         // เก็บข้อมูลลง State
         setMessage(response.data.Name);
-        setProfileImg(response.data.Profile); 
+        setProfileImg(response.data.Profile);
       } catch (err) {
         console.error("Error fetching profile:", err);
       }
@@ -183,12 +182,12 @@ export default function Sidebar() {
             <ThemeSwitcher />
             <Link to="Profile" className="mt-auto">
               <div className="border-t border-blue-600 bg-blue-900 h-20 flex items-center gap-4 cursor-pointer px-2 hover:bg-blue-700 duration-300">
-                
+
                 {/* --- ส่วนแสดงรูป Profile --- */}
                 <img
                   src={
-                    profileImg 
-                      ? `http://localhost:5000/uploads/Profile/${profileImg}` 
+                    profileImg
+                      ? `http://localhost:5000/uploads/Profile/${profileImg}`
                       : defaultProfileImage
                   }
                   className="object-cover w-10 h-10 rounded-full border-2 border-white/30 bg-gray-500"

@@ -281,6 +281,7 @@ export default function GetPaper() {
             role: "ช่าง",
             status: "รอการอนุมัติ",
             additemecomfam: "รอการอนุมัติ",
+            status : 'ปิดงาน'
           }),
         }),
       ]);

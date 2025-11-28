@@ -309,8 +309,6 @@ type TeamSectionProps = {
   theme: string | undefined;
 };
 const TeamSection = ({
-  title,
-  description,
   members,
   theme,
 }: TeamSectionProps) => {
@@ -326,22 +324,13 @@ const TeamSection = ({
   return (
     <div className="mb-10">
       {/* 1. หัวข้อกลุ่ม (อยู่นิ่ง) */}
-      <h2
-        className={`text-lg font-medium mb-1 ${
-          theme === "dark" ? "text-white" : "text-gray-900"
-        }`}
-      >
-        {title}
-      </h2>
-      <p className={`text-sm ${textMuted} mb-5`}>{description}</p>
-
       {/* 2. Wrapper สำหรับเลื่อน (scroll) แนวนอน */}
       <div className="overflow-x-auto rounded-md">
         {/* 3. Inner Wrapper (บังคับความกว้างขั้นต่ำ) */}
         <div className="min-w-[640px]">
           {/* 4. Header ของลิสต์ (อยู่นิ่ง - ไม่ scroll แนวตั้ง) */}
           <div
-            className={`grid ${gridColsClass} gap-4 py-3 px-4 border rounded-2xl  ${headerBg} mb-2`}
+            className={`grid ${gridColsClass} gap-4 py-3 px-4 border rounded-2xl   mb-2`}
           >
             <div className={`text-xs font-medium ${textMuted} uppercase`}>
               ID
@@ -359,15 +348,15 @@ const TeamSection = ({
 
           {/* *** START: การเปลี่ยนแปลง *** */}
           {/* 5. Wrapper สำหรับ "ข้อมูล" ที่จะ scroll แนวตั้ง */}
-          <div className="flex flex-col max-h-[400px] overflow-y-auto border rounded-2xl">
+          <div className={`flex flex-col h-145 overflow-y-auto border p-3 ${theme === 'dark' ? 'bg-gray-900' : 'bg-gray-100'} rounded-2xl `}>
             {members.map((member) => (
               <div
                 key={member.id}
-                className={`grid ${gridColsClass} gap-4 py-3 px-4 rounded-md border-b  ${rowHoverBg} transition-colors`}
+                className={`grid ${gridColsClass} gap-4 py-3 px-4 ${theme === 'dark' ? 'bg-gray-700' : 'bg-white'} rounded-md border-b   my-1  transition-colors`}
               >
                 {/* Col 1: ID */}
                 <div
-                  className={`flex items-center text-sm ${textMuted} font-mono`}
+                  className={`flex  items-center text-sm ${textMuted} font-mono`}
                 >
                   {member.id}
                 </div>
@@ -554,14 +543,14 @@ export default function Team() {
     <div
       className={`transition-opacity duration-700 ${
         fade ? "opacity-100" : "opacity-0"
-      } ${pageBg} min-h-screen`}
+      }  min-h-screen`}
     >
       <div
         className={`max-w-380 h-screen transition-opacity duration-300 p-5 mx-auto container`}
       >
         {/* Header Section */}
         <div className="mb-6">
-          <h1 className={`text-3xl font-bold ${textPrimary}`}>ทีมงานของเรา</h1>
+          <h1 className={`text-3xl font-bold ${theme === 'dark' ? 'text-yellow-500' :'text-blue-500'}`}>ทีมงานของ<span className={`${theme === 'dark' ? 'text-white' : 'text-yellow-500'}`}>เรา</span></h1>
           <p className={`text-sm ${textMuted} mt-1`}>
             ภาพรวมและข้อมูลติดต่อสมาชิกในทีม
           </p>

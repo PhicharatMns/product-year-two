@@ -314,7 +314,7 @@ export default function Calendar() {
                 </span>
               </p>
             </div>
-            <div className="px-4 sm:px-6 border-b h-auto max-h-[65%] overflow-y-auto mb-2">
+            <div className="px-4 sm:px-6 border-b h-95 overflow-y-auto mb-2">
               {events.filter((e) => e.date === selectedDate).length > 0 ? (
                 events
                   .filter((e) => e.date === selectedDate)

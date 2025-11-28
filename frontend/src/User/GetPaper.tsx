@@ -286,7 +286,7 @@ export default function GetPaper() {
 
         {/* Header Row */}
         <div
-          className={`lg:grid hidden lg:grid-cols-7 grid-cols-5 lg:gap-5 border-b-2 lg:my-1 my-5 text-lg items-center font-semibold mb-3 ${border_b_2_data}`}
+          className={`lg:grid hidden lg:grid-cols-7 grid-cols-5 lg:gap-5 px-3 border-b-2 lg:my-1 my-5 text-lg items-center font-semibold mb-3 ${border_b_2_data}`}
         >
           <div>ชื่องาน</div>
           <div className="col-span-2">รายละเอียดงาน</div>
@@ -346,7 +346,7 @@ export default function GetPaper() {
                 }}
               >
                 <div
-                  className={`grid grid-cols-1  lg:grid-cols-7 items-center gap-3 lg:gap-5 px-3 lg:px-5 mb-1 border rounded-lg mt-2 py-2 ${headerBg}`}
+                  className={`grid grid-cols-1 lg:grid-cols-7 items-center gap-3 lg:gap-5 px-3 lg:px-3 mb-1 border rounded-lg mt-2 py-2 ${headerBg}`}
                 >
                   {/* ใบงาน */}
                   <p className="truncate">{job.Worksheet || "-"}</p>

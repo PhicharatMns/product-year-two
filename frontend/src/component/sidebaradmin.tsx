@@ -11,7 +11,7 @@ import { IoClose } from "react-icons/io5";
 import ThemeSwitcher from "./ThemeSwitcher";
 import { FaTools } from "react-icons/fa";
 import axios from "axios";
-
+import { AiTwotoneCalendar } from "react-icons/ai";
 interface SidebarItem {
   text: string;
   icons: React.ComponentType<{ size?: number }>;
@@ -70,8 +70,8 @@ export default function Sidebaradmin() {
   const datasizebar: SidebarItem[] = [
     { text: "Dashboard", icons: MdDashboard, Link: "/Dashboard" },
     { text: "สร้างใบงานใหม่", icons: VscNewFile, Link: "/Searchpastjobs" },
+    { text: "การแจ้งเตือนข้อความ", icons: AiTwotoneCalendar, Link: "/MessagerAdmin" },
     { text: "การแจ้งเตือนเบิกของ", icons: TbBellPlus, Link: "/Notification" },
-    { text: "การแจ้งเตือนข้อความ", icons: TbBellPlus, Link: "/MessagerAdmin" },
     { text: "จัดการวัสดุอุปกรณ์", icons: FaTools, Link: "/SuppliesAdmin" },
     { text: "จัดการบัญชีช่าง", icons: LiaUserEditSolid, Link: "/Editacc" },
     { text: "ออกจากระบบ", icons: IoIosLogOut, onClick: handleLogout },
@@ -92,9 +92,8 @@ export default function Sidebaradmin() {
 
       {/* Container Sidebar */}
       <div
-        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white dark:text-gray-200 font-bold border-r transition-transform duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 bg-blue-500 text-white dark:text-gray-200 font-bold border-r transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
       >
         {/* ส่วนบน: Logo และ Menu */}
         <div className="flex flex-col">
@@ -122,8 +121,7 @@ export default function Sidebaradmin() {
                     to={event.Link}
                     key={index}
                     className={({ isActive }) =>
-                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium text-neutral-0 transition duration-300 ${
-                        isActive ? "bg-yellow-500" : ""
+                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium text-neutral-0 transition duration-300 ${isActive ? "bg-yellow-500" : ""
                       }`
                     }
                     onClick={() => setOpen(false)}

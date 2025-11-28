@@ -41,6 +41,9 @@ export default function Editacc() {
   const [Anim, setAmin] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [Focused, setFocused] = useState(false);
+  const [passwork, setPasswork] = useState(""); // ถ้ายังไม่มี
+  const token = localStorage.getItem("token");
+
   //ระบบค้นหา
   const filteredTradesmen = tradesmen.filter((t) => {
     const term = (searchTerm ?? "").toLowerCase(); // ป้องกัน searchTerm undefined
@@ -187,18 +190,16 @@ export default function Editacc() {
     }
   };
 
-  const inputClass = `border w-full focus:ring-2 outline-none p-2 rounded-lg  mt-2 ${
-    theme === "dark"
-      ? "border-gray-600 duration-300 bg-gray-700 focus:ring-yellow-400  text-white"
-      : " focus:ring-blue-400 duration-300 text-gray-800 bg-gray-50"
-  }`;
+  const inputClass = `border w-full focus:ring-2 outline-none p-2 rounded-lg  mt-2 ${theme === "dark"
+    ? "border-gray-600 duration-300 bg-gray-700 focus:ring-yellow-400  text-white"
+    : " focus:ring-blue-400 duration-300 text-gray-800 bg-gray-50"
+    }`;
   const texthead = theme === "dark" ? "text-yellow-500" : "text-blue-700";
 
   return (
     <div
-      className={`w-max-380  container duration-300 p-5 mx-auto  ${
-        fade ? "opacity-100" : "opacity-0"
-      }`}
+      className={`w-max-380  container duration-300 p-5 mx-auto  ${fade ? "opacity-100" : "opacity-0"
+        }`}
     >
       {/* ตาราง */}
       <div className={`  `}>
@@ -214,9 +215,8 @@ export default function Editacc() {
           <div className="flex gap-3 ml-auto">
             <button
               onClick={openAddEmployee}
-              className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white  ${
-                theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-              }`}
+              className={`border p-1 group relative flex items-center cursor-pointer overflow-hidden rounded-md px-6 font-medium text-neutral-0 transition duration-300  text-white  ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                }`}
             >
               เพิ่มช่าง
               <div className="absolute inset-0 flex h-full w-full justify-center [transform:skew(-12deg)_translateX(-100%)] group-hover:duration-1000 group-hover:[transform:skew(-12deg)_translateX(100%)] pointer-events-none">
@@ -226,13 +226,12 @@ export default function Editacc() {
             <div className="relative">
               <CiSearch
                 className={`absolute left-3 top-1/2 -translate-y-1/2 transition-all duration-300 
-      ${
-        searchTerm
-          ? "text-blue-500 scale-125"
-          : theme === "dark"
-          ? "text-white"
-          : "text-black"
-      }`}
+      ${searchTerm
+                    ? "text-blue-500 scale-125"
+                    : theme === "dark"
+                      ? "text-white"
+                      : "text-black"
+                  }`}
               />
               <input
                 placeholder="ค้นหา..."
@@ -240,19 +239,16 @@ export default function Editacc() {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onFocus={() => setFocused(true)}
                 onBlur={() => setFocused(false)}
-                className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 ${
-                  Focused ? "w-72" : "w-60"
-                } ${
-                  theme === "dark"
+                className={`pl-10 pr-3 py-1 rounded-xl transition-all duration-300 ${Focused ? "w-72" : "w-60"
+                  } ${theme === "dark"
                     ? "bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-yellow-400 border"
                     : "bg-white text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-400 border"
-                } ${
-                  searchTerm
+                  } ${searchTerm
                     ? "border-blue-500 shadow-lg"
                     : theme === "dark"
-                    ? "border-gray-600"
-                    : "border-blue-300"
-                }`}
+                      ? "border-gray-600"
+                      : "border-blue-300"
+                  }`}
               />
             </div>
           </div>
@@ -260,11 +256,10 @@ export default function Editacc() {
 
         {/* หัวตาราง */}
         <div
-          className={`grid grid-cols-9 pl-5 gap-5  font-semibold text-lg mb-3 ${
-            theme === "dark"
-              ? "text-yellow-500 border-b-4 border-yellow-500"
-              : "text-blue-500 border-b-4 border-blue-200"
-          }`}
+          className={`grid grid-cols-9 pl-5 gap-5  font-semibold text-lg mb-3 ${theme === "dark"
+            ? "text-yellow-500 border-b-4 border-yellow-500"
+            : "text-blue-500 border-b-4 border-blue-200"
+            }`}
         >
           <p className="col-span-2">ชื่อ</p>
           <p>สายงาน</p>
@@ -283,23 +278,20 @@ export default function Editacc() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: idx * 0.05, ease: "easeOut" }}
-              className={`grid grid-cols-1  lg:grid-cols-9 rounded-lg gap-5 items-center  pl-5 shadow-sm py-1  mt-2 ${
-                theme === "dark" ? "bg-gray-900 border-gray-700" : "bg-gray-100"
-              } border`}
+              className={`grid grid-cols-1  lg:grid-cols-9 rounded-lg gap-5 items-center  pl-5 shadow-sm py-1  mt-2 ${theme === "dark" ? "bg-gray-900 border-gray-700" : "bg-gray-100"
+                } border`}
             >
               <div className="flex gap-2 col-span-2 items-center">
                 <Link to={`/ProfileIDUser/${t._id}`}>
                   <img
-                    src={`http://localhost:5000/uploads/Profile/${
-                      t.Profile || "default.png"
-                    }`}
+                    src={`http://localhost:5000/uploads/Profile/${t.Profile || "default.png"
+                      }`}
                     className="w-9 h-9 rounded-full object-cover  border-2"
                   />
                 </Link>
                 <p
-                  className={` font-medium ${
-                    theme === "dark" ? "text-yellow-500" : "text-gray-900"
-                  }`}
+                  className={` font-medium ${theme === "dark" ? "text-yellow-500" : "text-gray-900"
+                    }`}
                 >
                   {t.Name}
                 </p>
@@ -310,12 +302,12 @@ export default function Editacc() {
                 {t.role === "user"
                   ? "ช่าง"
                   : t.role === "chief"
-                  ? "หัวหน้าช่าง"
-                  : t.role === "admin"
-                  ? "ผู้ดูแล"
-                  : t.role === "executive"
-                  ? "ผู้บริหาร"
-                  : t.role}
+                    ? "หัวหน้าช่าง"
+                    : t.role === "admin"
+                      ? "ผู้ดูแล"
+                      : t.role === "executive"
+                        ? "ผู้บริหาร"
+                        : t.role}
               </p>
               <p className="">{t.Phone_Number}</p>
               <p className="">{t.Email}</p>
@@ -339,9 +331,8 @@ export default function Editacc() {
                   onClick={() => openModal(t)}
                   className={`relative overflow-hidden cursor-pointer rounded-md  px-3 py-1 text-white text-sm shadow-md transition-all duration-300 
              [transition-timing-function:cubic-bezier(0.175,0.885,0.32,1.275)] 
-              active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${
-                theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-              }`}
+              active:-translate-y-1 active:scale-x-90 active:scale-y-110 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                    }`}
                 >
                   แก้ไข
                 </button>
@@ -355,18 +346,15 @@ export default function Editacc() {
       {showModal && (
         <form onSubmit={handleSubmit}>
           <div
-            className={`fixed inset-0 flex justify-center items-center bg-black/40 z-50 backdrop-blur-sm transition-opacity duration-300 ${
-              Anim ? "opacity-100" : "opacity-0"
-            }`}
+            className={`fixed inset-0 flex justify-center items-center bg-black/40 z-50 backdrop-blur-sm transition-opacity duration-300 ${Anim ? "opacity-100" : "opacity-0"
+              }`}
           >
             <div
-              className={`rounded-2xl shadow-2xl p-8 w-[900px] border transition-transform duration-300 ${
-                Anim ? "scale-100" : "scale-90 translate-y-5"
-              } ${
-                theme === "dark"
+              className={`rounded-2xl shadow-2xl p-8 w-[900px] border transition-transform duration-300 ${Anim ? "scale-100" : "scale-90 translate-y-5"
+                } ${theme === "dark"
                   ? "bg-gray-800 border-gray-700 text-yellow-500"
                   : "bg-white border-blue-200 text-blue-500"
-              }`}
+                }`}
             >
               <h2
                 className={`text-2xl font-bold mb-6 border-b pb-3 ${texthead}`}
@@ -394,9 +382,8 @@ export default function Editacc() {
                 }).map(([key, label]) => (
                   <div
                     key={key}
-                    className={`${
-                      key === "Address" || key === "Profile" ? "col-span-2" : ""
-                    }`}
+                    className={`${key === "Address" || key === "Profile" ? "col-span-2" : ""
+                      }`}
                   >
                     <label>{label}</label>
                     {key === "role" ? (
@@ -408,8 +395,11 @@ export default function Editacc() {
                         <option value="user">ช่าง</option>
                         <option value="chief">หัวหน้าช่าง</option>
                         <option value="admin">เเอดมิน</option>
-                        {/* <option value="executive">Executive</option> */}
+                        {token === "admin-token-123456" && (
+                          <option value="executive">ผู้บริหาร</option>
+                        )}
                       </select>
+
                     ) : (
                       <input
                         type={
@@ -431,11 +421,14 @@ export default function Editacc() {
                           if (key === "Profile") {
                             const file = e.target.files?.[0];
                             if (file) handleChange("Profile", file);
+                          } else if (key === "ID") {
+                            // จำกัดไม่เกิน 14 หลัก
+                            let value = e.target.value;
+                            if (value.length > 14) value = value.slice(0, 14);
+
+                            handleChange("ID", value);
                           } else {
-                            handleChange(
-                              key as keyof Tradesman,
-                              e.target.value
-                            );
+                            handleChange(key as keyof Tradesman, e.target.value);
                           }
                         }}
                         className={`focus:ring-2 outline-none  ${inputClass}`}
@@ -462,9 +455,8 @@ export default function Editacc() {
                   {/* ปุ่มยืนยัน */}
                   <button
                     type="submit"
-                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-                      theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                    }`}
+                    className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                      }`}
                   >
                     <span className="relative z-10">ยืนยัน</span>
                     <span className="absolute inset-0 overflow-hidden  pointer-events-none">
@@ -481,14 +473,12 @@ export default function Editacc() {
       {/* mode delete  */}
       {openDelete && selectedDelete && (
         <div
-          className={`fixed inset-0 z-50 backdrop-blur-sm flex justify-center items-center bg-black/40 transition-opacity duration-300 ${
-            Anim ? "opacity-100" : "opacity-0"
-          }`}
+          className={`fixed inset-0 z-50 backdrop-blur-sm flex justify-center items-center bg-black/40 transition-opacity duration-300 ${Anim ? "opacity-100" : "opacity-0"
+            }`}
         >
           <div
-            className={`rounded-2xl shadow-2xl p-5 h-100 w-120  items-center gap-4 transition-transform duration-300 ${
-              Anim ? "scale-100" : "scale-90"
-            } ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}
+            className={`rounded-2xl shadow-2xl p-5 h-100 w-120  items-center gap-4 transition-transform duration-300 ${Anim ? "scale-100" : "scale-90"
+              } ${theme === "dark" ? "bg-gray-800" : "bg-white"}`}
           >
             <p className="text-lg font-semibold text-red-500">ยืนยันการลบ</p>
             {/* <div className="flex gap-2  items-center ">
@@ -504,9 +494,8 @@ export default function Editacc() {
             <div className="border-b h-70  mb-5">
               <img
                 className="border rounded-full mx-auto object-cover mb-5 bg-yellow-500 w-35 h-35"
-                src={`http://localhost:5000/uploads/Profile/${
-                  selectedDelete.Profile || "default.png"
-                }`}
+                src={`http://localhost:5000/uploads/Profile/${selectedDelete.Profile || "default.png"
+                  }`}
                 alt={selectedDelete.Name || "Profile"}
               />
               <div className=" w-fit text-light mx-auto">
@@ -528,9 +517,8 @@ export default function Editacc() {
               </button>
               <button
                 onClick={handleConfirmDelete}
-                className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${
-                  theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
-                }`}
+                className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4  text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark" ? "bg-yellow-500" : "bg-blue-500"
+                  }`}
               >
                 <span className="relative z-10">ยืนยัน</span>
                 <span className="absolute inset-0 overflow-hidden  pointer-events-none">

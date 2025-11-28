@@ -22,7 +22,7 @@ export default function Sidebarexecutive() {
   const [open, setOpen] = useState(false); // sidebar มือถือ
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  
+
   // --- State สำหรับเก็บข้อมูล User ---
   const [Message, setMessage] = useState("ผู้บริหาร");
   const [userProfile, setUserProfile] = useState<string | null>(null);
@@ -48,7 +48,6 @@ export default function Sidebarexecutive() {
       link: "/executive/Getpaperexecutive",
     },
     { text: "ทีมงาน", icon: AiOutlineTeam, link: "/executive/Team" },
-    { text: "แผนที่", icon: FaMapMarkedAlt, link: "/executive/MapWork" },
     { text: "ออกจากระบบ", icon: IoIosLogOut, onClick: handleLogout },
   ];
 
@@ -106,9 +105,8 @@ export default function Sidebarexecutive() {
 
       {/* Sidebar หลัก */}
       <div
-        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 ${linkTextColor} font-bold border-r transition-transform duration-300 ${
-          open ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        className={`${bg} fixed z-20 flex flex-col justify-between h-screen w-64 ${linkTextColor} font-bold border-r transition-transform duration-300 ${open ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
       >
         {/* Logo */}
         <div className="flex flex-col">
@@ -134,8 +132,7 @@ export default function Sidebarexecutive() {
                     to={item.link}
                     key={index}
                     className={({ isActive }) =>
-                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium ${linkTextColor} transition duration-300 ${
-                        isActive ? "bg-yellow-500" : ""
+                      `group relative flex items-center gap-2 my-2 pl-5 py-3 cursor-pointer overflow-hidden rounded-md hover:bg-yellow-500 px-6 font-medium ${linkTextColor} transition duration-300 ${isActive ? "bg-yellow-500" : ""
                       }`
                     }
                     onClick={() => setOpen(false)}
@@ -180,7 +177,7 @@ export default function Sidebarexecutive() {
             <div className="border-t border-blue-700 dark:border-gray-700 bg-blue-900 dark:bg-gray-800 duration-300 hover:bg-blue-700 dark:hover:bg-gray-700 h-20 flex items-center gap-4 cursor-pointer px-2">
               {/* ส่วนที่เเก้ไขรูปภาพ */}
               <img
-                 src={
+                src={
                   userProfile
                     ? `http://localhost:5000/uploads/Profile/${userProfile}`
                     : defaultProfileImage
@@ -191,7 +188,7 @@ export default function Sidebarexecutive() {
                 className="object-cover w-10 h-10 rounded-full duration-300 bg-gray-400"
                 alt="profile"
               />
-              
+
               <div className="text-lg font-semibold text-white dark:text-white">
                 คุณ <span className="text-yellow-400">{Message}</span>
                 <div className="text-sm text-yellow-400">Executive</div>

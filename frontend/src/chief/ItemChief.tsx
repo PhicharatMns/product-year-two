@@ -383,7 +383,7 @@ export default function ItemChief() {
             : "bg-blue-500 hover:bg-blue-600"
         }`}
                     >
-                      เบิกของ
+                      จัดการ
                     </button>
                   </div>
                 </div>
