@@ -121,6 +121,7 @@ export default function Dashboardchief() {
       // --- คำนวณสถิติใหม่ (ใช้ tradesmen ที่ได้จากการ fetch) ---
       const totalTradesmenReal = tradesmen.length;
 
+
       const uniqueTradesmenWithJobs = new Set(
         tradesmen.filter((t) => t.employeeId).map((t) => t.id)
       ).size;

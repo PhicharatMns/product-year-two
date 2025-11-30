@@ -499,35 +499,8 @@ export default function Dashboard({
                 />
               </div>
             </div>
-            <div className="grid grid-cols-8 py-3 border-b mb-3 gap-5 px-6">
-              {[
-                { name: "ทั้งหมด" },
-                { name: "IT Support" },
-                { name: "Helpdesk" },
-                { name: "Network" },
-                { name: "System Admin" },
-                { name: "ยังไม่คิด" },
-                { name: "Technical" },
-                { name: "Customer" },
-              ].map((dept) => (
-                <div key={dept.name}>
-                  <div
-                    // onClick={() => setSelectedPosition(dept.name)}
-                    className="relative cursor-pointer"
-                  >
-                    <p
-                      className={`truncate relative w-fit mx-auto after:absolute after:bottom-0 after:left-0 after:right-0 after:h-[2px] after:w-full
-          after:origin-bottom after:scale-x-0 after:bg-neutral-800 after:transition-transform after:duration-500
-          after:ease-[cubic-bezier(0.65_0.05_0.36_1)] hover:after:origin-bottom hover:after:scale-x-100
-       `}
-                    >
-                      {dept.name}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="px-6 h-150 border-b overflow-y-auto scrollber-hide">
+           
+            <div className="px-6 h-165 border-b overflow-y-auto scrollber-hide">
               {SelectedTradesmen.filter(
                 (e) =>
                   (e.role === "user" || e.role === "chief") &&

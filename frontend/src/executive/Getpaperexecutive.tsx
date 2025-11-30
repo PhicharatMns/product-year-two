@@ -182,16 +182,23 @@ const Centraldata = ({
                           <p className="font-semibold">{msg.message}</p>
                           <p
                             className={`text-xs rounded-full px-2 ${msg.problem === "issue"
-                              ? "bg-yellow-500 text-white"
-                              : msg.problem === "urgent"
-                                ? "bg-red-500 text-white"
-                                : msg.problem === "report"
-                                  ? "bg-blue-500 text-white"
-                                  : "bg-gray-300 text-black"
+                                ? "bg-yellow-500 text-white"
+                                : msg.problem === "urgent"
+                                  ? "bg-red-500 text-white"
+                                  : msg.problem === "report"
+                                    ? "bg-blue-500 text-white"
+                                    : "bg-gray-300 text-black"
                               }`}
                           >
-                            {msg.problem}
+                            {msg.problem === "issue"
+                              ? "มีปัญหา"
+                              : msg.problem === "urgent"
+                                ? "ด่วน"
+                                : msg.problem === "report"
+                                  ? "รายงาน"
+                                  : "-"}
                           </p>
+                              
                         </div>
                         <p className="text-sm">ส่งโดย: {msg.Name}</p>
                         <p className="text-xs">
@@ -210,7 +217,7 @@ const Centraldata = ({
                       <>
                         <p className="font-semibold">{msg.jobName}</p>
                         <p>ชื่องาน : {msg.Worksheet}</p>
-                        <p>สถานะงาน: {msg.status}</p>
+                        <p>สถานะงาน: {msg.Status}</p>
                       </>
                     )}
                   </div>

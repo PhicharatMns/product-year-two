@@ -225,6 +225,7 @@ export default function Details() {
         NameJOB: worksheetName,
         Work_day: workDay, // <-- เพิ่มตรงนี้
         Closing_day: closingDay, // <-- เพิ่มตรงนี้
+        Email: tradesman.Email
       };
 
       const res = await fetch("http://localhost:5000/api/otherTradesman", {
@@ -561,8 +562,8 @@ export default function Details() {
                       >
                         <div
                           className={`items-center border p-1 my-2 rounded-xl ${theme === "dark"
-                              ? "bg-gray-800"
-                              : "shadow-sm bg-gray-50"
+                            ? "bg-gray-800"
+                            : "shadow-sm bg-gray-50"
                             }`}
                         >
                           <div className="items-center justify-between flex">
@@ -604,8 +605,8 @@ export default function Details() {
                                 <div>
                                   <span
                                     className={` font-extrabold ${theme === "dark"
-                                        ? "text-yellow-500"
-                                        : "text-blue-500"
+                                      ? "text-yellow-500"
+                                      : "text-blue-500"
                                       }`}
                                   >
                                     ตำแหน่ง :
@@ -627,16 +628,6 @@ export default function Details() {
                                 className={`font-semibold ${theme === "dark" ? "text-white" : "text-black"
                                   }`}
                               >
-                                <span className={`${titleColor} font-semibold`}>
-                                  เมลติดต่อ :
-                                </span>{" "}
-                                {event.Email}
-                                <p
-                                  className={` font-semibold ${theme === "dark"
-                                      ? "text-white"
-                                      : "text-black"
-                                    }`}
-                                ></p>
                               </p>
                             </div>
                           </div>
@@ -679,8 +670,8 @@ export default function Details() {
                             ease: "easeOut",
                           }}
                           className={`items-center border p-2 mb-2 rounded-xl ${theme === "dark"
-                              ? "bg-gray-800"
-                              : "shadow-sm bg-gray-50"
+                            ? "bg-gray-800"
+                            : "shadow-sm bg-gray-50"
                             }`}
                         >
                           {/* {e.Status === "เสร็จสิ้น" && (
@@ -713,8 +704,8 @@ export default function Details() {
                                 {" "}
                                 <span
                                   className={`${e.status === "ไม่อนุมัติ"
-                                      ? "text-red-500"
-                                      : ""
+                                    ? "text-red-500"
+                                    : ""
                                     } ${e.status === "รอดําเนินการ"
                                       ? "text-orange-500"
                                       : ""
@@ -736,8 +727,8 @@ export default function Details() {
                                     หมายเหตุ:{" "}
                                     <span
                                       className={`${theme === "dark"
-                                          ? "text-white"
-                                          : "text-black"
+                                        ? "text-white"
+                                        : "text-black"
                                         }`}
                                     >
                                       {e.description}
@@ -769,8 +760,8 @@ export default function Details() {
                               <div className="text-sm  gap-1">
                                 <p
                                   className={`font-semibold ${theme === "dark"
-                                      ? "text-white"
-                                      : "text-black"
+                                    ? "text-white"
+                                    : "text-black"
                                     }`}
                                 >
                                   <span
@@ -803,8 +794,8 @@ export default function Details() {
                                 </p>
                                 <p
                                   className={` font-semibold  ${theme === "dark"
-                                      ? "text-white"
-                                      : "text-black"
+                                    ? "text-white"
+                                    : "text-black"
                                     }`}
                                 >
                                   <span
@@ -935,7 +926,7 @@ export default function Details() {
                     className={`absolute left-3 top-1/2 -translate-y-1/2 transition-all duration-300`}
                   />
                   <input
-                    placeholder="ค้นหาใบงาน..."
+                    placeholder="ค้นหาชื่อช่าง..."
                     value={Search}
                     onChange={(e) => setSearch(e.target.value)}
                     onFocus={() => setFocused(true)}
@@ -998,6 +989,7 @@ export default function Details() {
                       t.Name.toLowerCase().includes(
                         (Search || "").toLowerCase()
                       )
+                      || t.Position.toLowerCase().includes(Search || '')
                   )
 
                   .sort(
@@ -1028,8 +1020,8 @@ export default function Details() {
                           <div className="flex-col">
                             <h2
                               className={`text-lg font-extrabold ${theme === "dark"
-                                  ? "text-yellow-500"
-                                  : "text-blue-500"
+                                ? "text-yellow-500"
+                                : "text-blue-500"
                                 }`}
                             >
                               นาย :{" "}
@@ -1047,8 +1039,8 @@ export default function Details() {
                             >
                               <span
                                 className={` font-extrabold ${theme === "dark"
-                                    ? "text-yellow-500"
-                                    : "text-blue-500"
+                                  ? "text-yellow-500"
+                                  : "text-blue-500"
                                   }`}
                               >
                                 ตำแหน่ง :
@@ -1068,8 +1060,8 @@ export default function Details() {
                               {" "}
                               <span
                                 className={` font-extrabold ${theme === "dark"
-                                    ? "text-yellow-500"
-                                    : "text-blue-500"
+                                  ? "text-yellow-500"
+                                  : "text-blue-500"
                                   }`}
                               >
                                 เบอร์โทร :
@@ -1083,8 +1075,8 @@ export default function Details() {
                               >
                                 <span
                                   className={`font-extrabold ${theme === "dark"
-                                      ? "text-yellow-500"
-                                      : "text-blue-500"
+                                    ? "text-yellow-500"
+                                    : "text-blue-500"
                                     }`}
                                 >
                                   งานที่ได้รับในเดือนนี่ :
@@ -1181,8 +1173,8 @@ export default function Details() {
       {PopUpDate && selectedTradesmanId && (
         <div
           className={`fixed inset-0 flex justify-center items-center bg-black/40 backdrop-blur-sm z-50 transition-opacity duration-300 ${duplicateFade
-              ? "opacity-100 pointer-events-auto"
-              : "opacity-0 pointer-events-none"
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
             }`}
         >
           <motion.div
@@ -1376,8 +1368,8 @@ export default function Details() {
                             <button
                               onClick={() => handleApprove(item.id)}
                               className={`group relative py-1 overflow-hidden rounded-lg border cursor-pointer px-4 text-white font-medium shadow-lg transition-transform duration-300 hover:scale-103 active:scale-95 ${theme === "dark"
-                                  ? "bg-yellow-500"
-                                  : "bg-blue-500"
+                                ? "bg-yellow-500"
+                                : "bg-blue-500"
                                 }`}
                             >
                               <span className="relative z-10">อนุมัติ</span>
@@ -1409,8 +1401,8 @@ export default function Details() {
               >
                 <div
                   className={`rounded-2xl shadow-2xl p-5 w-120 h-90 overflow-y-auto transform transition-all duration-300 ${duplicateFade
-                      ? "scale-100 opacity-100"
-                      : "scale-90 opacity-0"
+                    ? "scale-100 opacity-100"
+                    : "scale-90 opacity-0"
                     } ${theme === "dark"
                       ? "bg-gray-800 text-white"
                       : "bg-white text-gray-900"
@@ -1436,8 +1428,8 @@ export default function Details() {
                   </div>
                   <div
                     className={`p-3 my-4 rounded-lg text-sm ${theme === "dark"
-                        ? "bg-red-900/30 text-red-300"
-                        : "bg-red-100 text-red-600"
+                      ? "bg-red-900/30 text-red-300"
+                      : "bg-red-100 text-red-600"
                       }`}
                   >
                     หมายเหตุ: ข้อความที่ถูกส่งไปแล้วจะถูกส่งกลับไปให้ช่างทันที
@@ -1452,8 +1444,8 @@ export default function Details() {
                       onChange={(e) => setRejectReason(e.target.value)}
                       placeholder="พิมพ์เหตุผลที่ต้องการลบ..."
                       className={`border rounded-lg p-3 h-28 outline-none transition ${theme === "dark"
-                          ? "bg-gray-700 border-gray-600 text-white"
-                          : "bg-white border-gray-300 text-gray-900"
+                        ? "bg-gray-700 border-gray-600 text-white"
+                        : "bg-white border-gray-300 text-gray-900"
                         }`}
                     />
                   </div>

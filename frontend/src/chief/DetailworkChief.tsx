@@ -668,16 +668,6 @@ export default function DetailworkChief() {
                                 className={`font-semibold ${theme === "dark" ? "text-white" : "text-black"
                                   }`}
                               >
-                                <span className={`${titleColor} font-semibold`}>
-                                  เมลติดต่อ :
-                                </span>{" "}
-                                {event.Email}
-                                <p
-                                  className={` font-semibold ${theme === "dark"
-                                    ? "text-white"
-                                    : "text-black"
-                                    }`}
-                                ></p>
                               </p>
                             </div>
                           </div>
